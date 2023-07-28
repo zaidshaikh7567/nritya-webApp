@@ -1,0 +1,13 @@
+.creator-plans-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  
+  .creator-plans-container > * {
+    flex: 1 1 300px;
+    margin: 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
