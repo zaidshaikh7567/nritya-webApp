@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import {Container} from 'react-bootstrap';
 import { useState } from 'react';
 import LoginPage from './Screens/LoginPage';
@@ -45,7 +45,7 @@ function App() {
   };
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
-    <Router basename='/nritya-webApp' >
+    <HashRouter >
       <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
       <main className='py-1'>
         <Container>
@@ -67,7 +67,7 @@ function App() {
       </main>
       <br />
       <Footer/>
-    </Router>
+    </HashRouter>
   );
 }
 
