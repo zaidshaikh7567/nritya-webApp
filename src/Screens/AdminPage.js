@@ -149,7 +149,7 @@ function AdminPage() {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
-                <a onClick={() => dispatch(adminLogoutFn())} href="/">
+                <a onClick={() => dispatch(adminLogoutFn())} href="/nritya-webApp">
                   Exit
                 </a>
               </Navbar.Text>
