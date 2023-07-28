@@ -89,7 +89,7 @@ function LandingPage() {
                   Team Nritya
                 </Card.Text>
               </Card.Body>
-              <Button variant="primary" href="/search/studios">
+              <Button variant="primary" href="#/search/studios">
                 Search!
               </Button>
             </Card>

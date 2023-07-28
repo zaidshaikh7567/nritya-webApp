@@ -42,7 +42,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
 
   const handleButtonClick = () => {
     console.log("Button clicked from Header.js");
-    navigate('/search/'+searchText);
+    navigate('#/search/'+searchText);
   };
 
   const handleSubmit = (event) => {
@@ -57,7 +57,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
   return (
     <Navbar style={styleObj} >
       <Container fluid>
-        <Navbar.Brand href="/" style={{textTransform: 'none'}}  >
+        <Navbar.Brand href="/nritya-webApp" style={{textTransform: 'none'}}  >
           <img style={{ width: 60, height: 60}}
             src={logo}
             alt="Logo"       
@@ -79,17 +79,17 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
           
           {JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).displayName ? (
             <Nav className="ms-auto">
-              <Button variant="outline-info" className="me-2 rounded-pill" href="/cart" style={{ textTransform: 'none' }} disabled >
+              <Button variant="outline-info" className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none' }} disabled >
               <FontAwesomeIcon icon={faShoppingCart} />
               </Button>
-              <Button variant="outline-info" className="me-2 rounded-pill"  href="/profile" style={{textTransform: 'none'}}>List Studios</Button>
+              <Button variant="outline-info" className="me-2 rounded-pill"  href="#/profile" style={{textTransform: 'none'}}>List Studios</Button>
             </Nav>
           ) : (
             <Nav className="ms-auto">
-              <Button variant="outline-info" className="me-2 rounded-pill" href="/cart" style={{ textTransform: 'none' }}>
+              <Button variant="outline-info" className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none' }}>
               <FontAwesomeIcon icon={faShoppingCart} />
             </Button>
-              <Button variant="outline-info" className="me-2 rounded-pill" href="/login" style={{textTransform: 'none'}}> List Studios</Button>
+              <Button variant="outline-info" className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none'}}> List Studios</Button>
             </Nav>
           )}
 
@@ -105,16 +105,16 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
 
               </Modal.Header>
               <Modal.Body>
-                 <Button variant="outline-warning" className=" rounded-pill"  href="/profile">Profile</Button>
+                 <Button variant="outline-warning" className=" rounded-pill"  href="#/profile">Profile</Button>
        
-                <Button variant="outline-warning" className=" rounded-pill" onClick={handleLogout} href="/">Sign Out</Button>
-                <Button variant="outline-warning" className=" rounded-pill" href="/orders">Orders</Button>
+                <Button variant="outline-warning" className=" rounded-pill" onClick={handleLogout} href="/nritya-webApp">Sign Out</Button>
+                <Button variant="outline-warning" className=" rounded-pill" href="#/orders">Orders</Button>
               </Modal.Body>
             </Modal>
               </Nav>
           ) : (
             <Nav>
-              <Button variant="outline-warning" className=" rounded-pill" href="/login" style={{textTransform: 'none'}}>Sign In</Button>
+              <Button variant="outline-warning" className=" rounded-pill" href="#/login" style={{textTransform: 'none'}}>Sign In</Button>
             </Nav>
           )}
         </Navbar.Collapse>

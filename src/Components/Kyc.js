@@ -169,7 +169,7 @@ function Kyc() {
         <Button variant="primary" type="submit">
           Submit
         </Button>
-        <Button variant="info" href='/profile'>
+        <Button variant="info" href='#/profile'>
           Profile
         </Button>
       </Form>

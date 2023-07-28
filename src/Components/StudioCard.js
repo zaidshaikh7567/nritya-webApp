@@ -25,7 +25,7 @@ function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioIns
                         alt="pic"
                         />
                     </div>
-                    <a href={"/studio/"+studioId}>
+                    <a href={"#/studio/"+studioId}>
                     <Button variant="outline-warning" className="me-2 rounded-pill mb-2" size="sm" style={{ fontSize: '1.4rem' }}  >Explore studio</Button>
                   
                     </a>
