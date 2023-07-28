@@ -45,7 +45,7 @@ function App() {
   };
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
-    <Router basename='nritya-webApp' >
+    <Router basename='/nritya-webApp' >
       <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
       <main className='py-1'>
         <Container>
