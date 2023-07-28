@@ -17,7 +17,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
   const [premiumTill, setPremiumTill] = useState(-1);
   const navigate = useNavigate();
   if(!JSON.parse(localStorage.getItem('isLoggedIn'))){
-    navigate('/login');
+    navigate('#/login');
   }
   useEffect(() => {
     
@@ -79,12 +79,12 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
                 <>
                 <Card.Text style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}>Creator </Card.Text>
                 <Card.Text style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}> {getCurrentUnixTimestamp() > parseInt(premiumTill) ?
-                                                ( <Button variant="outline-warning" className="me-2 rounded-pill" size="sm" href="/cplans" >Subscribe</Button>) 
-                                                : ( <a href="/cplans" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Premium</a>
+                                                ( <Button variant="outline-warning" className="me-2 rounded-pill" size="sm" href="#/cplans" >Subscribe</Button>) 
+                                                : ( <a href="#/cplans" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Premium</a>
                                                 )} </Card.Text>
                 </>
               ) : (
-                <Card.Text style={{ fontSize: '0.8rem', textAlign: "center" }}><Button variant="outline-warning" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.8rem' }} href="/kyc">Apply for Creator</Button> </Card.Text>
+                <Card.Text style={{ fontSize: '0.8rem', textAlign: "center" }}><Button variant="outline-warning" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.8rem' }} href="#/kyc">Apply for Creator</Button> </Card.Text>
               )}
               <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Email: {JSON.parse(localStorage.getItem('userInfoFull')).email}</Card.Text>
               <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Account Created : {new Date(JSON.parse(localStorage.getItem('userInfoFull')).createdAt * 1).toLocaleString()}</Card.Text>
