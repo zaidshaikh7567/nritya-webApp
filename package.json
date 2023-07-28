@@ -1,8 +1,7 @@
-{ "homepage": "https://nritya-official.github.io/nritya-webApp",
-  "name": "my-app1",
+{ "homepage": "https://nritya-official.github.io/nritya-webApp/",
+  "name": "nritya-webApp",
   "version": "0.1.0",
-  "private": true,
-  "proxy": "http://localhost:5000/",
+  "private": false,
   "dependencies": {
     "@babel/runtime": "^7.22.5",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",

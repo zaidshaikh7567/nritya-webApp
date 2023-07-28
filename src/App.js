@@ -45,12 +45,12 @@ function App() {
   };
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
-    <Router>
+    <Router basename='nritya-webApp' >
       <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
       <main className='py-1'>
         <Container>
           <Routes>
-            <Route exact path="/" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
             <Route path='/profile' element={<UserPage onLogout={handleLogout} username={username} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />}/>
             <Route path='/kyc' element={<Kyc/>}/>
