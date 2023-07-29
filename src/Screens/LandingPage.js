@@ -205,7 +205,7 @@ function LandingPage() {
         <Row>
           <Col>
           {exploreCards.length > 0 && <h2>Explore</h2>}
-          <Carousel onSelect={handleCarouselSelect}>
+          <Carousel onSelect={handleCarouselSelect} style={{ height: "100%", overflow: "hidden" }}>
             { exploreCards.map((exploreCards, index) => (
             <Carousel.Item key={index}>
               {console.log("explore studio ",exploreCards,index)}

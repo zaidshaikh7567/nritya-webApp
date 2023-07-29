@@ -44,9 +44,9 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
             </div>
             <div style={{ padding: "20px" }}>
               <Card.Title style={{ fontSize: '1.5rem', textAlign: "left", marginBottom: "10px" }}>{studioName}</Card.Title>
-              <Card.Subtitle style={{ fontSize: '0.8rem', textAlign: "left", marginBottom: "10px", textTransform: "none" }}>{studioId}</Card.Subtitle>
-              <Card.Subtitle style={{ fontSize: '0.9rem', textAlign: "left", marginBottom: "10px", textTransform: "none" }}>4.2 <RenderRating rating="4.2" /> 350(ratings)</Card.Subtitle>
-              <Card.Text style={{ fontSize: '1.0rem', color: '#E4A11B', textAlign: "left" }}>Instructor: {studioInstructors}</Card.Text>
+              <Card.Subtitle style={{ fontSize: '0.8rem', textAlign: "left", marginBottom: "10px", textTransform: "none" , wordBreak: 'break-word'}}>{studioId}</Card.Subtitle>
+              <Card.Subtitle style={{ fontSize: '0.9rem', textAlign: "left", marginBottom: "10px", textTransform: "none", wordBreak: 'break-word' }}>4.2 <RenderRating rating="4.2" /> 350(ratings)</Card.Subtitle>
+              <Card.Text style={{ fontSize: '1.0rem', color: '#E4A11B', textAlign: "left", wordBreak: 'break-word' }}>Instructor: {studioInstructors}</Card.Text>
               <Card.Text style={{ fontSize: '1.0rem', textAlign: "left" }}>{studioAddress}</Card.Text>
               <Card.Text style={{ fontSize: '1.0rem', textAlign: "left" }}>Timing: {studioTiming}</Card.Text>
               <Card.Text style={{ fontSize: '1.0rem', textAlign: "left" }}>Price: {studioPrice}</Card.Text>
@@ -57,7 +57,7 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
                   key={index}
                   bg={index % 2 === 0 ? "danger" : "info"} // Alternate badge colors
                   className="me-2 rounded-pill"
-                  style={{ marginBottom: "10px" }}
+                  style={{ marginBottom: "10px", fontSize: '0.8rem' }}
                 >
                   {form.trim()}
                 </Badge>
