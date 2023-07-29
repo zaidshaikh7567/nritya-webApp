@@ -20,7 +20,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
   const styleObj = {
     fontSize: 10,
     textAlign: "center",
-    backgroundColor: "#000000"
+    background: "linear-gradient(to right, #000000, #FFFFFF)", // Gradient from black to white
     }
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
