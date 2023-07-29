@@ -55,7 +55,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
   
 
   return (
-    <Navbar style={styleObj} >
+    <Navbar style={styleObj} expand="lg" collapseOnSelect >
       <Container fluid>
         <Navbar.Brand href="/nritya-webApp" style={{textTransform: 'none'}}  >
           <img style={{ width: 60, height: 60}}
