@@ -36,11 +36,13 @@ const SearchPage = () => {
   );
 
   return (
+    <>
     <InstantSearch searchClient={searchClient} indexName="companies">
       <SearchBox autoFocus />
       <Stats />
       <Hits hitComponent={Hit} />
     </InstantSearch>
+    </>
   );
 };
 

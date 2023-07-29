@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Container, Row, Col, Card, Button, Carousel } from "react-bootstrap";
 import Dance1 from "../Components/DanceImg/Dance1.jpg";
 import Dance2 from "../Components/DanceImg/Dance2.jpg";
 import Dance3 from "../Components/DanceImg/Dance3.jpg";
 import Dance4 from "../Components/DanceImg/Dance4.jpg";
 import Dance5 from "../Components/DanceImg/Dance5.jpg";
+import { db } from '../config';
+import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
+import { COLLECTIONS } from '../constants';
+import StudioCard from "../Components/StudioCard";
 
 const danceImages = [Dance3, Dance4, Dance5, Dance1, Dance2];
 const overlayCards = [
@@ -19,6 +23,7 @@ const overlayCards = [
 function LandingPage() {
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayCard, setOverlayCard] = useState({ title: "", text: "" });
+  const [exploreCards, setExploreCards] = useState([])
 
   const handleCarouselSelect = (selectedIndex) => {
     setShowOverlay(true);
@@ -133,6 +138,24 @@ function LandingPage() {
     borderRadius: "10px",
   };
 
+  useEffect(() => {
+    const getStudios = async () => {
+      const studioRef = collection(db, COLLECTIONS.STUDIO);
+      const q = query(studioRef, limit(5));
+      const querySnapshot = await getDocs(q);
+      const exploreStudioList = querySnapshot.docs.filter(doc => doc.data().studioName).map(doc => 
+        { const data = doc.data();
+          return {
+            id: doc.id, // Include the document ID in the data
+            ...data
+          };
+      });
+      setExploreCards(exploreStudioList)
+      console.log(exploreCards)
+    }
+
+    getStudios();
+  }, []);
 
   return (
     <div className="landing-page">
@@ -175,6 +198,21 @@ function LandingPage() {
                 Search!
               </Button>
             </Card>
+          </Col>
+        </Row>
+        <br />
+        <br />
+        <Row>
+          <Col>
+          {exploreCards.length > 0 && <h2>Explore</h2>}
+          <Carousel onSelect={handleCarouselSelect}>
+            { exploreCards.map((exploreCards, index) => (
+            <Carousel.Item key={index}>
+              {console.log("explore studio ",exploreCards,index)}
+              <StudioCard studioName={exploreCards.studioName} studioAddress={exploreCards.address} studioInstructors={exploreCards.instructors} studioPrice={exploreCards.price} studioTiming={exploreCards.timing} studioDanceStyles={exploreCards.danceStyles} studioContactNumber={exploreCards.contactNumber} studioId={exploreCards.id}/>
+            </Carousel.Item>
+          ))}
+          </Carousel>
           </Col>
         </Row>
       </Container>
