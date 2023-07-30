@@ -96,7 +96,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
          {JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).displayName ? (
             <Nav>
               <a onClick={openProfileModal}>
-                <Navbar.Text style={{ color: 'black',fontSize:'1.0 rem',fontFamily:'Times Roman'}}>{JSON.parse(localStorage.getItem('userInfo')).displayName}</Navbar.Text>
+                <Navbar.Text style={{ color: 'black',fontSize:'1.5 rem',fontFamily:'Times Roman'}}>{JSON.parse(localStorage.getItem('userInfo')).displayName}</Navbar.Text>
               </a>
               <Modal show={showProfileModal} onHide={closeProfileModal}>
               <Modal.Header closeButton>

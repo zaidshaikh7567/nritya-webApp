@@ -47,13 +47,29 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
                 {form.trim()}
               </Badge>
             ))}
+
+            {/* Buttons in one line */}
+            <div className="d-flex justify-content-center">
+              <ButtonGroup>
+                <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
+                  <a href={"tel:" + studioContactNumber} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    Call
+                  </a>
+                </Button>
+                <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
+                  <a href={"https://wa.me/" + studioContactNumber} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    WhatsApp
+                  </a>
+                </Button>
+              </ButtonGroup>
+            </div>
           </div>
 
           <div style={{ backgroundColor: "#000000", display: "grid", gridTemplateColumns: "1fr 2fr" }}>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "10px" }}>
               {/* Hide image for larger screens */}
               <div className="d-none d-md-block">
-                <div style={{ borderRadius: '5%', overflow: 'hidden', border: '1px solid #64FFDA', marginBottom: "10px", height: "66%", width: "100%" }}>
+                <div style={{ overflow: 'hidden', marginBottom: "10px", height: "66%", width: "100%" }}>
                   <img
                     className="d-block w-100"
                     src="https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
@@ -63,9 +79,10 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
                 </div>
               </div>
               <a href={"#/studio/" + studioId}>
-                <Button variant="outline-warning" className="me-2 rounded-pill mb-2" size="sm" style={{ fontSize: '1.4rem' }}>Explore studio</Button>
-              </a>
-              <div>
+              <Button variant="outline-warning" className="me-2 rounded-pill mb-2 d-flex justify-content-center align-items-center" size="sm" style={{ fontSize: '1.4rem' }}>Explore studio</Button>
+     </a>
+              {/* Buttons for larger screens */}
+              <div className="d-none d-md-flex justify-content-center">
                 <ButtonGroup>
                   <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
                     <a href={"tel:" + studioContactNumber} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -101,6 +118,8 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
                   {form.trim()}
                 </Badge>
               ))}
+
+              <br />
             </div>
           </div>
         </Card.Body>

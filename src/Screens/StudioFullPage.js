@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Carousel, Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Bu } from 'react-bootstrap';
 import { db,storage } from '../config';
 import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, setDoc, getDocs, collection } from "firebase/firestore";
@@ -34,7 +34,6 @@ function StudioFullPage() {
   const [studioTableData, setStudioTableData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
-
   useEffect(() => {
     const fetchData = async () => {
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
@@ -87,6 +86,18 @@ console.log("StudioData",studioData)
           <h1>{studioData.studioName}</h1>
             <div>{studioData.address}</div>
           </div>
+          <ButtonGroup>
+        <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
+          <a href={"tel:" + studioData.contactNumber} style={{ textDecoration: 'none', color: 'inherit' }}>
+            Call
+          </a>
+        </Button>
+        <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
+          <a href={"https://wa.me/" + studioData.contactNumber} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+            WhatsApp
+          </a>
+        </Button>
+      </ButtonGroup>
         </>
       )}
 
@@ -180,15 +191,13 @@ console.log("StudioData",studioData)
                   ))}
                 </tbody>
               </Table>
+              
             ) : (
               <Spinner animation="border" />
             )}
           </Col>
         </Row>
-      </Container>
-
-
-      
+      </Container>      
     </div>
     
   );
