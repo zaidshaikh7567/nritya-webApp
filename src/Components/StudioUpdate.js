@@ -20,7 +20,7 @@ function isMapOfMaps(data) {
 }
 
 
-function StudioUpdate2({ studio, setStudio, studioId, setStudioId }) {
+function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [tableData, setTableData] = useState({
     0:{
@@ -403,4 +403,4 @@ function StudioUpdate2({ studio, setStudio, studioId, setStudioId }) {
   );
 }
 
-export default StudioUpdate2;
+export default StudioUpdate;
