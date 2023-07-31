@@ -6,6 +6,7 @@ import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, setDoc, getDocs, collection } from "firebase/firestore";
 import { STATUSES, COLLECTIONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
+import './Carousel.css';
 
 const cardStyle = {
   borderRadius: '5px',
@@ -103,7 +104,7 @@ console.log("StudioData")
               <Spinner animation="border" />
             ) : (
               
-              <Carousel >
+              <Carousel className="custom-carousel" >
                 {carouselImages.map((image, index) => (
                   <Carousel.Item key={index}>
                     <img src={image} className="d-block w-100"  style={{ height: '100vh' }}  alt={`Carousel Slide ${index}`} />
