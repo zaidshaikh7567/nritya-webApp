@@ -1,21 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form, Table, Button } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import './StudioTable.css'; // Import the CSS file for styling
 
-function StudioTable({ tableData, setTableData }) {
-  // Convert the state to an array of objects
-  const [tableDataReplace, setTableDataReplace] = useState([tableData]);
+function StudioTable({tableData,setTableData}) {
+  
 
   const handleAddRow = () => {
-    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' }]);
-    console.log(tableDataReplace,"AFter adding")
+    setTableData((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' }]);
   };
 
-  const printData = () => {console.log(tableDataReplace)};
-
   const handleRemoveRow = (index) => {
-    setTableDataReplace((prevData) => {
+    setTableData((prevData) => {
       const newData = [...prevData];
       newData.splice(index, 1);
       return newData;
@@ -23,21 +19,12 @@ function StudioTable({ tableData, setTableData }) {
   };
 
   const handleTableChange = (index, field, value) => {
-    setTableDataReplace((prevData) => {
+    setTableData((prevData) => {
       const newData = [...prevData];
       newData[index][field] = value;
       return newData;
     });
   };
-
-  // Convert the array of objects back to an object whenever the 'tableDataReplace' state changes
-  useEffect(() => {
-    const newData = tableDataReplace.reduce((accumulator, current, index) => {
-      accumulator[index] = current;
-      return accumulator;
-    }, {});
-    setTableData(newData);
-  }, [tableDataReplace, setTableData]);
 
   return (
     <>
@@ -49,13 +36,13 @@ function StudioTable({ tableData, setTableData }) {
             <th>Days</th>
             <th>Time</th>
             <th>Instructors</th>
-            <th>Status</th>
+            <th>Price</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {tableDataReplace.map((row, index) => (
-            <tr key={index}>
+          {tableData.map((row, index) => (
+            <tr key={index} >
               <td>
                 <Form.Control
                   type="text"
@@ -94,9 +81,11 @@ function StudioTable({ tableData, setTableData }) {
               <td>
                 <Form.Control
                   type="text"
-                  value={row.status}
-                  onChange={(e) => handleTableChange(index, 'status', e.target.value)}
-                />
+                  value={row.price}
+                  onChange={(e) => handleTableChange(index, 'price', e.target.value)}
+                >
+                  
+                </Form.Control>
               </td>
               <td>
                 {index === 0 ? (
@@ -113,7 +102,6 @@ function StudioTable({ tableData, setTableData }) {
           ))}
         </tbody>
       </Table>
-      <Button onClick={printData}>Print</Button>
     </>
   );
 }

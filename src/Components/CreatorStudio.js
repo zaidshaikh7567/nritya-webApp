@@ -53,16 +53,13 @@ function CreatorStudio() {
   return (
     <div>
        <br></br>
-        <StudioAdd studio={studio} setStudio={setStudio} studioId={studioId} setStudioId={setStudioId}/>
-        <StudioUpdate studio={studio} setStudio={setStudio} studioId={studioId} setStudioId={setStudioId}/>
+        <StudioAdd/>
+         <StudioUpdate studio={studio} setStudio={setStudio} studioId={studioId} setStudioId={setStudioId}/>
       <br></br>
  
       <h3>Your Studios:</h3>
- 
        <ul>
-      
- 
-    <br/>
+      <br/>
       <Row xs={1} md={2} lg={2} className="g-4">
         {studio.length > 0 ? (
           studio.map((studio, index) => (
@@ -75,13 +72,8 @@ function CreatorStudio() {
           <p>No studio yet!</p>
         )}
       </Row>
- 
       </ul>
- 
- 
-      
     </div>
   )
 }
- 
 export default CreatorStudio

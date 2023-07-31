@@ -7,11 +7,11 @@ import { COLLECTIONS } from '../constants';
 import StudioTable from './StudioTable';
 import ImageUpload from './ImageUpload';
 
-function StudioAdd({studio, setStudio,studioId, setStudioId}) {
+function StudioAdd() {
     const [newStudioId, setNewStudioId] = useState("")
-    const [tableData, setTableData] = useState([
+    const [tableData, setTableData] = useState(
       { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' },
-    ]);
+    );
     const [showToast, setShowToast] = useState(false);
       
       const handleAddStudio = async (event) => {
@@ -23,7 +23,7 @@ function StudioAdd({studio, setStudio,studioId, setStudioId}) {
         console.log(JSON.parse(localStorage.getItem('userInfo')))
         const creatorRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
         let isPremium=true
-        
+        console.log()
             
         //body: event.target.body.value,
         try {
@@ -37,6 +37,7 @@ function StudioAdd({studio, setStudio,studioId, setStudioId}) {
               instructors: event.target.instructors.value,
               status: event.target.status.value,
               contactNumber: event.target.contactNumber.value,
+              tableData: tableData,
      
               enrolledId:[],
               reviews:[],
@@ -47,19 +48,6 @@ function StudioAdd({studio, setStudio,studioId, setStudioId}) {
             });
             console.log("Studio added successfully");
             setNewStudioId(studioRef.id)
-            try {
-              const tableDataCollectionRef = collection(db, COLLECTIONS.STUDIO, studioRef.id, "TableData");
-     
-              // Iterate over the tableData array and add each map as a separate document in the subcollection
-              for (const data of tableData) {
-                await addDoc(tableDataCollectionRef, data);
-              }
-     
-              console.log("Table data added successfully");
-            } catch (error) {
-              console.error('Error adding studio and table data:', error);
-            }
-            
             const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {

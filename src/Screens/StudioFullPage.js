@@ -43,20 +43,7 @@ function StudioFullPage() {
           const data = studioSnap.data();
           setStudioData(data);
           console.log(studioData);
-
-  
-
-          // Fetch subcollection documents
-          const subcollectionTableDataRef = collection(studioRef, 'TableData');
-          const subcollectionTableDataSnapshot = await getDocs(subcollectionTableDataRef);
-
-          if (!subcollectionTableDataSnapshot.empty) {
-            const subcollectionTableData = subcollectionTableDataSnapshot.docs.map((doc) => doc.data());
-            console.log(subcollectionTableData);
-            setStudioTableData(subcollectionTableData)
-          }
     
-
           const storageRef = ref(storage, `StudioImages/${studioId}`);
           const result = await listAll(storageRef);
 
@@ -73,7 +60,7 @@ function StudioFullPage() {
     fetchData();
    
   }, []);
-console.log("StudioData",studioData)
+console.log("StudioData")
   
 
   return (
@@ -165,38 +152,39 @@ console.log("StudioData",studioData)
         </Row>
         <br></br>
         <Row>
-          <Col>
-            {studioTableData ? (
-              <Table bordered style={{ ...cardStyle, ...gradientStyles[5] }}>
-                <thead>
-                  <tr>
-                    <th>Class Name</th>
-                    <th>Dance Forms</th>
-                    <th>Days</th>
-                    <th>Time</th>
-                    <th>Instructors</th>
-                    
+        <Col>
+          {studioData && studioData.tableData ? (
+            <Table bordered style={{ ...cardStyle, ...gradientStyles[5] }}>
+              <thead>
+                <tr>
+                  <th>Class Name</th>
+                  <th>Dance Forms</th>
+                  <th>Days</th>
+                  <th>Time</th>
+                  <th>Instructors</th>
+                </tr>
+              </thead>
+              <tbody>
+              {Object.keys(studioData.tableData).map((key, index) => {
+                const classItem = studioData.tableData[key];
+                return (
+                  <tr key={index}>
+                    <td>{classItem.className}</td>
+                    <td>{classItem.danceForms}</td>
+                    <td>{classItem.days}</td>
+                    <td>{classItem.time}</td>
+                    <td>{classItem.instructors}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {studioTableData.map((classItem, index) => (
-                    <tr key={index}>
-                      <td>{classItem.className}</td>
-                      <td>{classItem.danceForms}</td>
-                      <td>{classItem.days}</td>
-                      <td>{classItem.time}</td>
-                      <td>{classItem.instructors}</td>
-                      
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-              
-            ) : (
-              <Spinner animation="border" />
-            )}
-          </Col>
-        </Row>
+                );
+              })}
+
+              </tbody>
+            </Table>
+          ) : (
+            <Spinner animation="border" />
+          )}
+        </Col>
+      </Row>
       </Container>      
     </div>
     
