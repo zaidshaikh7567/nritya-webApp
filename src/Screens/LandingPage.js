@@ -43,32 +43,47 @@ function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
 
-  // Function to fetch recently watched studio data from Firebase
-const fetchRecentlyWatchedStudios = async (userId) => {
-  try {
-    const userRef = doc(db, COLLECTIONS.USER, userId);
-    const userDoc = await getDoc(userRef);
-    const recentlyWatchedMap = userDoc.exists() ? userDoc.data().recentlyWatched : {};
-
-    // Get the studio IDs from the recentlyWatched map
-    const studioIds = Object.values(recentlyWatchedMap);
-
-    // Fetch the studio data for each studio ID
-    const studioData = [];
-    for (const studioId of studioIds) {
-      const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
-      const studioDoc = await getDoc(studioRef);
-      if (studioDoc.exists()) {
-        const studio = { id: studioId, ...studioDoc.data() };
-        studioData.push(studio);
-      }
+  const fetchRecentlyWatchedStudios = async (userId) => {
+    try {
+      const userRef = doc(db, COLLECTIONS.USER, userId);
+      const userDoc = await getDoc(userRef);
+      const recentlyWatchedMap = userDoc.exists() ? userDoc.data().recentlyWatched : {};
+  
+      // Get the studio IDs from the recentlyWatched map
+      const studioIds = Object.values(recentlyWatchedMap);
+      console.log("got",studioIds)
+      // Fetch the studio data for each studio ID using Promise.all
+      const studioDataPromises = studioIds.map(async (studioId) => {
+        console.log(studioId)
+        if (!studioId) {
+          console.warn("Invalid studioId:", studioId);
+          return null;
+        }
+        console.log("studioId", studioId);
+        const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
+        const studioDoc = await getDoc(studioRef);
+        if (studioDoc.exists()) {
+          console.log(studioDoc.data())
+          return { id: studioId, ...studioDoc.data() };
+        } else {
+          console.warn(`Studio document not found for ID: ${studioId}`);
+          return null;
+        }
+      });
+  
+      // Wait for all promises to resolve using Promise.all
+      const studioData = await Promise.all(studioDataPromises);
+  
+      // Filter out any null values caused by invalid or missing studioId values
+      const validStudioData = studioData.filter((studio) => studio !== null);
+  
+      // Update the state with the fetched studio data
+      setRecentlyWatchedStudios(validStudioData);
+    } catch (error) {
+      console.error("Error fetching recently watched studios:", error);
     }
-
-    setRecentlyWatchedStudios(studioData);
-  } catch (error) {
-    console.error("Error fetching recently watched studios:", error);
-  }
-};
+  };
+  
 
 
 
