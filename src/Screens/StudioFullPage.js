@@ -107,7 +107,7 @@ console.log("StudioData")
               <Carousel className="custom-carousel" >
                 {carouselImages.map((image, index) => (
                   <Carousel.Item key={index}>
-                    <img src={image} className="d-block w-100"  style={{ height: '100vh' }}  alt={`Carousel Slide ${index}`} />
+                    <img src={image} className="d-block w-100" alt={`Carousel Slide ${index}`} />
                   </Carousel.Item>
                 ))}
               </Carousel>

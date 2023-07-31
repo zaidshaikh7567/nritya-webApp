@@ -1,12 +1,15 @@
-/* Default height for large screens */
-.carousel-item {
-    height: 100vh;
+/* Styles for the Carousel with the custom-carousel class */
+.custom-carousel .carousel-item img {
+    max-height: 100vh;
+    width: auto;
+    display: block;
+    margin: 0 auto;
   }
   
   /* For screens with width less than 768px (smaller devices) */
   @media (max-width: 767px) {
-    .carousel-item {
-      height: calc(100vw * 0.5); /* Decrease height to 50% of the screen width */
+    .custom-carousel .carousel-item img {
+      max-height: 50vh;
     }
   }
   
