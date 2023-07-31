@@ -124,7 +124,14 @@ console.log("StudioData")
                 <Card.Body>
                   <Card.Title  style={{ color: '#333', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>Description</Card.Title>
                   <Card.Text>
-                  <pre>{decodeUnicode(studioData.description)}</pre>
+                  {
+                     decodeUnicode(studioData.description).split('\n').map((line, index) => (
+                      <React.Fragment key={index}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))
+                  }
                   </Card.Text>
                 </Card.Body>
               </Card>
