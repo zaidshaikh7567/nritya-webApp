@@ -9,6 +9,21 @@ import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
 import StudioCard from "../Components/StudioCard";
+import { faBolt, faMusic, faHiking, faTrophy, faGlassCheers } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// Define the array of dance forms with their names and corresponding icons
+const danceForms = [
+  { name: "Bollywood", icon: faMusic },
+  { name: "Salsa", icon: faGlassCheers },
+  { name: "Hip Hop", icon: faBolt },
+  { name: "Party", icon: faTrophy },
+  { name: "Ballroom", icon: faHiking },
+  { name: "Bollywood", icon: faMusic },
+  { name: "Salsa", icon: faGlassCheers },
+  { name: "Hip Hop", icon: faBolt },
+  // Add more dance forms as needed
+];
 
 const danceImages = [Dance3, Dance4, Dance5, Dance1, Dance2];
 const overlayCards = [
@@ -157,6 +172,31 @@ function LandingPage() {
     getStudios();
   }, []);
 
+    // Define a state variable to hold the dynamic image height
+    const [imageHeight, setImageHeight] = useState(400);
+
+    useEffect(() => {
+      // Calculate the desired height based on the aspect ratio (16:9) and the available width
+      const calculateImageHeight = () => {
+        const screenWidth = window.innerWidth;
+        // Define the aspect ratio (16:9)
+        const aspectRatioWidth = 16;
+        const aspectRatioHeight = 9;
+        // Calculate the height based on the aspect ratio and available width
+        const desiredHeight = (screenWidth * aspectRatioHeight) / aspectRatioWidth;
+        setImageHeight(desiredHeight);
+      };
+  
+      calculateImageHeight();
+      // Add event listener to handle resizing
+      window.addEventListener("resize", calculateImageHeight);
+  
+      // Clean up the event listener when the component unmounts
+      return () => {
+        window.removeEventListener("resize", calculateImageHeight);
+      };
+    }, []);
+
   return (
     <div className="landing-page">
       <Container className="my-5">
@@ -165,12 +205,17 @@ function LandingPage() {
             <Carousel onSelect={handleCarouselSelect}>
               {danceImages.map((image, index) => (
                 <Carousel.Item key={index}>
+                {window.innerWidth > 768 && ( // Show the overlay only when the screen is larger than 768 pixels
                   <div style={currentOverlayStyle}>
                     <h1 style={currentTitleStyle}>{overlayCards[index].title}</h1>
-                    <p className="carousel-text"style={currentSubtitleStyle}>{overlayCards[index].text}</p>
+                    <p className="carousel-text" style={currentSubtitleStyle}>
+                      {overlayCards[index].text}
+                    </p>
                   </div>
-                  <img src={image} alt={`Carousel Item ${index + 1}`} style={{ height: "400px", width: "100%" }} />
-                </Carousel.Item>
+                )}
+                <img src={image} alt={`Carousel Item ${index + 1}`} style={{ height: `${imageHeight}px`, width: "100%" }} />
+              </Carousel.Item>
+              
               ))}
             </Carousel>
           </Col>
@@ -199,6 +244,28 @@ function LandingPage() {
               </Button>
             </Card>
           </Col>
+
+          <Col>
+            <Card className="h-100" style={cardStyle}>
+              <Card.Body>
+                <Card.Title className="text-primary">
+                  <h1>Search for workshops near you!</h1>
+                </Card.Title>
+                <Card.Text className="text-secondary">
+                  Welcome to Nritya!
+                  <br />
+                  <br />
+                  Are you looking for a fun and convenient way to learn new dance moves and build your dance community?
+                  <br />
+                  <br />
+                  Team Nritya
+                </Card.Text>
+              </Card.Body>
+              <Button variant="primary" href="#/search/workshop">
+                Search!
+              </Button>
+            </Card>
+          </Col>
         </Row>
         <br />
         <br />
@@ -214,6 +281,21 @@ function LandingPage() {
           ))}
           </Carousel>
           </Col>
+        </Row>
+        <br></br>
+        <h1>Top dance forms</h1>
+        <Row>
+          {danceForms.map((danceForm, index) => (
+            <Col key={index} sm={6} md={4} lg={3}>
+              <Card style={cardStyle}>
+                <Card.Body>
+                  <FontAwesomeIcon icon={danceForm.icon} size="3x" />
+                  <h3>{danceForm.name}</h3>
+                </Card.Body>
+              </Card>
+              <br></br>
+            </Col>
+          ))}
         </Row>
       </Container>
     </div>
