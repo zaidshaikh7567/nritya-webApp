@@ -15,6 +15,13 @@ const cardStyle = {
   height: '100%',
 };
 
+// Function to decode a Unicode (UTF-8) encoded string back to the original text
+const decodeUnicode = (unicodeString) => {
+  const utf8Encoded = unicodeString.split('').map((c) => c.charCodeAt(0));
+  const textDecoder = new TextDecoder();
+  return textDecoder.decode(new Uint8Array(utf8Encoded));
+};
+
 const gradientStyles = [
   { background: 'linear-gradient(to bottom right, #FFD700, #FFA500)', color: 'black' },
   { background: 'linear-gradient(to bottom right, #00BFFF, #1E90FF)', color: 'black' },
@@ -113,10 +120,11 @@ console.log("StudioData")
           <Col md={8}>
             {studioData ? (
               <Card style={{ ...cardStyle, ...gradientStyles[0] }}>
+                {console.log(decodeUnicode(studioData.description))}
                 <Card.Body>
                   <Card.Title  style={{ color: '#333', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>Description</Card.Title>
                   <Card.Text>
-                    {studioData.description}
+                  <pre>{decodeUnicode(studioData.description)}</pre>
                   </Card.Text>
                 </Card.Body>
               </Card>

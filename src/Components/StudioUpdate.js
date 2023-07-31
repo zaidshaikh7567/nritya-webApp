@@ -19,6 +19,18 @@ function isMapOfMaps(data) {
   return true; // It's a map of maps
 }
 
+const encodeToUnicode = (text) => {
+  const textEncoder = new TextEncoder();
+  const utf8Encoded = textEncoder.encode(text);
+  return String.fromCharCode(...utf8Encoded);
+};
+
+// Function to decode a Unicode (UTF-8) encoded string back to the original text
+const decodeUnicode = (unicodeString) => {
+  const utf8Encoded = unicodeString.split('').map((c) => c.charCodeAt(0));
+  const textDecoder = new TextDecoder();
+  return textDecoder.decode(new Uint8Array(utf8Encoded));
+};
 
 function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
   const [selectedStudio, setSelectedStudio] = useState(null);
@@ -101,10 +113,11 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
     const instructors = event.target.instructors.value;
     const status = event.target.status.value;
     const contactNumber = event.target.contactNumber.value;
-    const description = event.target.description.value;
+    const description = encodeToUnicode(event.target.description.value);
 
     try {
       // Update the studio document with the new values
+      console.log(description)
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
       await updateDoc(studioRef, {
         studioName,
@@ -289,7 +302,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
                 rows={3}
                 placeholder="Enter body"
                 name="description"
-                defaultValue={selectedStudio ? selectedStudio.description : ''}
+                defaultValue={selectedStudio ? decodeUnicode(selectedStudio.description) : ''}
               />
             </Form.Group>
               <br></br>
