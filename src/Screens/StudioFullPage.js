@@ -102,7 +102,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
     const fetchData = async () => {
       if(JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId){
         const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
-        updateRecentlyWatchedInFirebase(UserId,studioId );
+        updateRecentlyWatchedInFirebase(UserId,studioId);
       }
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
       const studioSnap = await getDoc(studioRef);

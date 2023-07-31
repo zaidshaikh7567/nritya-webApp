@@ -279,14 +279,14 @@ function LandingPage() {
         <Row>
           {recentlyWatchedStudios.slice(0, 3).map((studio, index) => (
             <Col key={index} md={2}>
-
-                <StudioCardIcon
-                key={index}
-                studioName={studio.studioName}
-                studioAddress={studio.address}
-                studioPrice={studio.price}
-                studioTiming={studio.timing} 
-              />
+                  <a href={`#/studio/${studio.id}`}>
+                    <StudioCardIcon
+                      studioName={studio.studioName}
+                      studioAddress={studio.address}
+                      studioPrice={studio.price}
+                      studioTiming={studio.timing}
+                    />
+                  </a>
             </Col>
           ))}
         </Row>
