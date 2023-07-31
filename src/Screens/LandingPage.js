@@ -9,8 +9,10 @@ import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
 import StudioCard from "../Components/StudioCard";
-import { faBolt, faMusic, faHiking, faTrophy, faGlassCheers } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
+import { faBolt, faMusic, faHiking, faTrophy, faGlassCheers,faClock } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import StudioCardIcon from "../Components/StudioCardIcon";
+
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -39,6 +41,36 @@ function LandingPage() {
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayCard, setOverlayCard] = useState({ title: "", text: "" });
   const [exploreCards, setExploreCards] = useState([])
+  const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
+
+  // Function to fetch recently watched studio data from Firebase
+const fetchRecentlyWatchedStudios = async (userId) => {
+  try {
+    const userRef = doc(db, COLLECTIONS.USER, userId);
+    const userDoc = await getDoc(userRef);
+    const recentlyWatchedMap = userDoc.exists() ? userDoc.data().recentlyWatched : {};
+
+    // Get the studio IDs from the recentlyWatched map
+    const studioIds = Object.values(recentlyWatchedMap);
+
+    // Fetch the studio data for each studio ID
+    const studioData = [];
+    for (const studioId of studioIds) {
+      const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
+      const studioDoc = await getDoc(studioRef);
+      if (studioDoc.exists()) {
+        const studio = { id: studioId, ...studioDoc.data() };
+        studioData.push(studio);
+      }
+    }
+
+    setRecentlyWatchedStudios(studioData);
+  } catch (error) {
+    console.error("Error fetching recently watched studios:", error);
+  }
+};
+
+
 
   const handleCarouselSelect = (selectedIndex) => {
     setShowOverlay(true);
@@ -167,6 +199,10 @@ function LandingPage() {
       });
       setExploreCards(exploreStudioList)
       console.log(exploreCards)
+      if (JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId) {
+        const userId = JSON.parse(localStorage.getItem('userInfo')).UserId;
+        fetchRecentlyWatchedStudios(userId);
+      }
     }
 
     getStudios();
@@ -221,6 +257,27 @@ function LandingPage() {
           </Col>
         </Row>
         <br />
+      
+
+      <Col>
+        {recentlyWatchedStudios.length > 0 && <h2> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Watched Studios</h2>}
+        <Row>
+          {recentlyWatchedStudios.slice(0, 3).map((studio, index) => (
+            <Col key={index} md={2}>
+
+                <StudioCardIcon
+                key={index}
+                studioName={studio.studioName}
+                studioAddress={studio.address}
+                studioPrice={studio.price}
+                studioTiming={studio.timing} 
+              />
+            </Col>
+          ))}
+        </Row>
+      </Col>
+
+
         <br />
         <Row>
           <Col>
@@ -283,7 +340,7 @@ function LandingPage() {
           </Col>
         </Row>
         <br></br>
-        <h1>Top dance forms</h1>
+        <h1>BROWSE BY GENRE</h1>
         <Row>
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>

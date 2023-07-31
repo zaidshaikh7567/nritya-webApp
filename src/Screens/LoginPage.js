@@ -37,6 +37,7 @@ function LoginPage({onLogin,setIsLoggedIn}) {
             StudioCreated:[],
             premiumTill: false,
             TransactionIDs:[],
+            recentlyWatched:{0:"",1:"",2:"",3:"",4:""},
           });
           console.log("User added successfully");
         }

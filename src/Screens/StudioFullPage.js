@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Bu } from 'react-bootstrap';
 import { db,storage } from '../config';
 import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
-import { doc, getDoc, setDoc, getDocs, collection } from "firebase/firestore";
+import { doc, getDoc, setDoc, getDocs, collection , updateDoc} from "firebase/firestore";
 import { STATUSES, COLLECTIONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
 import './Carousel.css';
@@ -42,8 +42,68 @@ function StudioFullPage() {
   const [studioTableData, setStudioTableData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
+
+// Function to update the recently watched studios in Firebase
+const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
+  try {
+    // Fetch the current "recentlyWatched" map from Firebase
+    const userRef = doc(db, COLLECTIONS.USER, userId);
+    const userDoc = await getDoc(userRef);
+    const recentlyWatchedMap = userDoc.exists() ? userDoc.data().recentlyWatched : {};
+
+    // Check if the studio ID is already present in the "recentlyWatched" map
+    const isStudioWatched = Object.values(recentlyWatchedMap).includes(studioId);
+
+    // If the studio ID is already present, remove its older occurrences and keep the new one at the 0th key
+    if (isStudioWatched) {
+      const updatedRecentlyWatched = {};
+      let count = 1;
+      console.log(recentlyWatchedMap)
+      for (const key in recentlyWatchedMap) {
+        if (recentlyWatchedMap[key] === studioId) {
+          // Skip the older occurrence of the studio ID
+          continue;
+        }
+        updatedRecentlyWatched[count] = recentlyWatchedMap[key];
+        count++;
+      }
+
+      // Add the latest watched studio ID at the 0th key
+      updatedRecentlyWatched[0] = studioId;
+
+      // Save the updated "recentlyWatched" map back to Firebase
+      await updateDoc(userRef, { recentlyWatched: updatedRecentlyWatched });
+    } else {
+      // If the studio ID is not already present, follow the same logic as before
+      const updatedRecentlyWatched = { ...recentlyWatchedMap };
+      // Shift the existing entries in the "recentlyWatched" map to create space for the latest watched studio ID
+      for (let i = Object.keys(updatedRecentlyWatched).length - 1; i >= 0; i--) {
+        if (i === 0) {
+          delete updatedRecentlyWatched[i]; // Remove the last entry to keep the map size within 5
+        } else {
+          updatedRecentlyWatched[i] = updatedRecentlyWatched[i - 1];
+        }
+      }
+
+      // Add the latest watched studio ID at the first index (key "0")
+      updatedRecentlyWatched[0] = studioId;
+      console.log(updatedRecentlyWatched)
+      // Save the updated "recentlyWatched" map back to Firebase
+      await updateDoc(userRef, { recentlyWatched: updatedRecentlyWatched });
+    }
+  } catch (error) {
+    console.error("Error updating recently watched in Firebase:", error);
+  }
+};
+
+
+
   useEffect(() => {
     const fetchData = async () => {
+      if(JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId){
+        const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
+        updateRecentlyWatchedInFirebase(UserId,studioId );
+      }
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
       const studioSnap = await getDoc(studioRef);
       if (studioSnap) {
@@ -60,6 +120,7 @@ function StudioFullPage() {
           const imageUrls = await Promise.all(urlPromises);
           setCarouselImages(imageUrls);
           setIsLoadingImages(false);
+        
         }
 
       }
@@ -121,7 +182,6 @@ console.log("StudioData")
           <Col md={8}>
             {studioData ? (
               <Card style={{ ...cardStyle, ...gradientStyles[0] }}>
-                {console.log(decodeUnicode(studioData.description))}
                 <Card.Body>
                   <Card.Title  style={{ color: '#333', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>Description</Card.Title>
                   <Card.Text>
