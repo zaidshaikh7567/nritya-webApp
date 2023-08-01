@@ -1,0 +1,29 @@
+/* Add this CSS to your stylesheet */
+.row-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .row-item {
+    flex-shrink: 0;
+    position: relative;
+    margin: 10px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  
+  .row-item:hover {
+    z-index: 1;
+    transform: scale(1.2);
+  }
+  
+  .row-item:not(:hover) {
+    opacity: 0.5;
+  }
+  
+  /* Add this if you want a smooth scroll */
+  /* Uncomment it if you want to use smooth scrolling */
+  /* .row-container {
+    scroll-behavior: smooth;
+  } */
+  

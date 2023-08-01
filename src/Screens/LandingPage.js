@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect,useRef  } from "react";
 import { Container, Row, Col, Card, Button, Carousel } from "react-bootstrap";
 import Dance1 from "../Components/DanceImg/Dance1.jpg";
 import Dance2 from "../Components/DanceImg/Dance2.jpg";
@@ -12,6 +12,7 @@ import StudioCard from "../Components/StudioCard";
 import { faBolt, faMusic, faHiking, faTrophy, faGlassCheers,faClock } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StudioCardIcon from "../Components/StudioCardIcon";
+import './LandingPage.css'
 
 
 // Define the array of dance forms with their names and corresponding icons
@@ -42,6 +43,7 @@ function LandingPage() {
   const [overlayCard, setOverlayCard] = useState({ title: "", text: "" });
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
+  const rowRef = useRef(null);
 
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
@@ -272,25 +274,25 @@ function LandingPage() {
           </Col>
         </Row>
         <br />
-      
-
-      <Col>
-        {recentlyWatchedStudios.length > 0 && <h2> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Watched Studios</h2>}
+    
         <Row>
-          {recentlyWatchedStudios.slice(0, 3).map((studio, index) => (
-            <Col key={index} md={2}>
-                  <a href={`#/studio/${studio.id}`}>
-                    <StudioCardIcon
-                      studioName={studio.studioName}
-                      studioAddress={studio.address}
-                      studioPrice={studio.price}
-                      studioTiming={studio.timing}
-                    />
-                  </a>
-            </Col>
+          {recentlyWatchedStudios.length > 0 && <h2> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Watched Studios</h2>}
+          <div className="row-container">
+          {recentlyWatchedStudios.map((studio, index) => (
+            <div key={index} className="row-item" md={2}>
+              <a href={`#/studio/${studio.id}`}>
+                <StudioCardIcon
+                  studioName={studio.studioName}
+                  studioAddress={studio.address}
+                  studioPrice={studio.price}
+                  studioTiming={studio.timing}
+                />
+              </a>
+            </div>
           ))}
+        </div>
         </Row>
-      </Col>
+     
 
 
         <br />
