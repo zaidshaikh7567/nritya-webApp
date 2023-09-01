@@ -3,22 +3,64 @@ import { Card, Button, Row, Col , Form,Accordion } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, listAll,deleteObject } from 'firebase/storage';
 import Creator from '../Components/Creator';
 import NonCreator from '../Components/NonCreator';
+import ImageUpload from '../Components/ImageUpload';
+import { storage } from '../config'; // Import Firebase Storage
+import { STORAGES } from '../constants';
 
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
 }
 
+
+
+
+
 function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }) {
 
   const [isCreator, setIsCreator] = useState(false);
   const [premiumTill, setPremiumTill] = useState(-1);
+  const [profilePictureUrl,setProfilePictureUrl] = useState(null);
   const navigate = useNavigate();
   if(!JSON.parse(localStorage.getItem('isLoggedIn'))){
     navigate('#/login');
   }
+
+  useEffect(() => {
+    const userId=JSON.parse(localStorage.getItem('userInfo')).UserId
+    // Fetch and set the studio icon URL using studioId
+    if (userId) {
+      const storagePath = `${STORAGES.USERIMAGE}/${userId}`;
+      const folderRef = ref(storage, storagePath);
+  
+      try {
+        listAll(folderRef)
+          .then((result) => {
+            if (result.items.length > 0) {
+              const firstFileRef = result.items[0];
+              getDownloadURL(firstFileRef)
+                .then((url) => {
+                  setProfilePictureUrl(url);
+                })
+                .catch((error) => {
+                  console.error('Error fetching studio icon:', error);
+                });
+            } else {
+              console.log('No files found in the folder.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error listing files in the folder:', error);
+          });
+      } catch (error) {
+        console.error('Error fetching studio icon:', error);
+      }
+    }
+  }, [profilePictureUrl]);
+
   useEffect(() => {
     
     const getCreatorMode = async (event) => {
@@ -48,6 +90,42 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
 
   console.log("hi",JSON.parse(localStorage.getItem('userInfoFull')))
 
+
+  const handleProfilePictureChange = async (e) => {
+    const file = e.target.files[0]; // Get the selected file
+  
+    if (file) {
+      try {
+        // Delete old files in the storage folder
+        const userId = JSON.parse(localStorage.getItem('userInfo')).UserId;
+        const storageFolder = 'UserImage'; // Replace with your desired storage folder name
+        const folderPath = `${storageFolder}/${userId}`;
+        const storageRef = ref(storage, folderPath);
+  
+        const itemsToDelete = await listAll(storageRef);
+        itemsToDelete.items.forEach(async (itemRef) => {
+          await deleteObject(itemRef);
+        });
+  
+        // Upload the new file
+        const fileRef = ref(storage, `${folderPath}/${file.name}`);
+        await uploadBytes(fileRef, file);
+  
+        // Get the updated download URL for the uploaded image
+        const imageUrl = await getDownloadURL(fileRef);
+  
+        // Update the profile picture URL in the state
+        setProfilePictureUrl(imageUrl);
+  
+      } catch (error) {
+        console.error('Error handling profile picture:', error);
+      }
+    }
+  };
+  
+  
+  
+
   return (
     <div >
         
@@ -67,11 +145,21 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
               <div style={{ borderRadius: '50%', overflow: 'hidden', border: '1px solid #00ed64', marginBottom: "2px" }}>
                 <img
                   className="d-block w-100"
-                  src='https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/' 
+                  src={profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/' }
                   style={{ maxHeight: '100%', maxWidth: '100%', borderRadius: '70%' }}
                   alt="pic"
                 />
               </div>
+              <label htmlFor="profilePictureInput" style={{ cursor: 'pointer', color: 'white', fontSize: '1.2rem', marginTop: '5px' }}>
+                +
+                <input
+                  type="file"
+                  id="profilePictureInput"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleProfilePictureChange}
+                />
+              </label>
             </div>
             <div style={{borderLeft: "1px solid #00ed64" }}>
             <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color:'#ffffff' ,marginBottom: "5px",marginTop: "5px" }}>{JSON.parse(localStorage.getItem('userInfoFull')).displayName}</Card.Title>

@@ -1,11 +1,46 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { Card, Button, Row, Col, Form, Accordion, Badge, ButtonGroup } from 'react-bootstrap';
 import RenderRating from './RenderRating';
 import { useNavigate } from 'react-router-dom';
+import { ref, getDownloadURL,listAll } from 'firebase/storage';
+import { storage } from '../config';
+import { STORAGES } from '../constants';
 
 function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, studioInstructors, studioDanceStyles, studioContactNumber, studioId }) {
   const navigate = useNavigate();
+  const [studioIconUrl, setStudioIconUrl] = useState(null);
 
+  useEffect(() => {
+    // Fetch and set the studio icon URL using studioId
+    if (studioId) {
+      const storagePath = `${STORAGES.STUDIOICON}/${studioId}`;
+      const folderRef = ref(storage, storagePath);
+  
+      try {
+        listAll(folderRef)
+          .then((result) => {
+            if (result.items.length > 0) {
+              const firstFileRef = result.items[0];
+              getDownloadURL(firstFileRef)
+                .then((url) => {
+                  setStudioIconUrl(url);
+                })
+                .catch((error) => {
+                  console.error('Error fetching studio icon:', error);
+                });
+            } else {
+              console.log('No files found in the folder.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error listing files in the folder:', error);
+          });
+      } catch (error) {
+        console.error('Error fetching studio icon:', error);
+      }
+    }
+  }, [studioId]);
+  
   return (
     <div>
       <Card
@@ -18,7 +53,7 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
           <div style={{ borderRadius: '5%', overflow: 'hidden', border: '1px solid #64FFDA', marginBottom: "10px", height: "250px", width: "100%" }}>
             <img
               className="d-block w-100"
-              src="https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
+              src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
               style={{ height: '100%', width: '100%', objectFit: 'cover' }}
               alt="pic"
             />
@@ -69,10 +104,10 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "10px" }}>
               {/* Hide image for larger screens */}
               <div className="d-none d-md-block">
-                <div style={{ overflow: 'hidden', marginBottom: "10px", height: "66%", width: "100%" }}>
+                <div style={{ overflow: 'hidden', marginBottom: "10px", height: "100%", width: "100%" }}>
                   <img
                     className="d-block w-100"
-                    src="https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
+                    src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
                     style={{ height: '100%', width: '100%', objectFit: 'cover' }}
                     alt="pic"
                   />

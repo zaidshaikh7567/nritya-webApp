@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import shortid from "shortid";
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { storage } from '../config';
 
-const ImageUpload = ({studioId}) => {
+
+const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  console.log("Studio",studioId)
+  console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
+
   const filesizes = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -15,6 +17,10 @@ const ImageUpload = ({studioId}) => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   };
+
+  useEffect(() => {
+    fetchStudioImages(entityId); // Fetch images when component mounts
+  }, [entityId]);
 
   const handleInputChange = (e) => {
     const files = Array.from(e.target.files);
@@ -54,10 +60,11 @@ const ImageUpload = ({studioId}) => {
     e.preventDefault();
     console.log("inside handleUploadSubmit ")
     if (selectedFiles.length > 0) {
-      for (const fileData of selectedFiles) {
+      const filesToUpload = selectedFiles.slice(0, maxImageCount);
+      for (const fileData of filesToUpload) {
         try {
-          const folderPath = `StudioImages/${studioId}`; // Replace studioId with the actual user ID
-
+          const folderPath = `${storageFolder}/${entityId}`; // Replace entityId with the actual user ID
+          console.log(folderPath)
           const fileRef = ref(storage, `${folderPath}/${fileData.file.name}`);
           console.log(fileRef)
           await uploadBytes(fileRef, fileData.file);
@@ -78,7 +85,7 @@ const ImageUpload = ({studioId}) => {
   const handleDeleteFile = async (id, filename) => {
     if (window.confirm("Are you sure you want to delete this image?")) {
       try {
-        const folderPath = `StudioImages/${studioId}`; // Replace studioId with the actual user ID
+        const folderPath = `${storageFolder}/${entityId}`; // Replace entityId with the actual user ID
 
         const fileRef = ref(storage, `${folderPath}/${filename}`);
         await deleteObject(fileRef);
@@ -92,11 +99,11 @@ const ImageUpload = ({studioId}) => {
     }
   };
 
-  // Fetch all images of a user using their studioId
-  const fetchStudioImages = async () => {
-    try {
-      const folderPath = `StudioImages/${studioId}`; // Replace studioId with the actual user ID
 
+  const fetchStudioImages = async (entityId) => {
+    try {
+      const folderPath = `${storageFolder}/${entityId}`;
+      console.log(folderPath)
       const folderRef = ref(storage, folderPath);
       const fileList = await listAll(folderRef);
 
@@ -111,8 +118,8 @@ const ImageUpload = ({studioId}) => {
           };
         })
       );
-
-      setUploadedFiles(files);
+      console.error('File fetching');
+      setUploadedFiles(files); // Update the uploadedFiles state with fetched data
     } catch (error) {
       console.error('Error fetching user images:', error);
     }
@@ -155,7 +162,7 @@ const ImageUpload = ({studioId}) => {
                               src={file.fileimage}
                               alt={file.filename}
                               className="preview-image"
-                              style={{maxHeight:"300px",maxWidth:"100%" }}
+                              style={{maxHeight:"30%",maxWidth:"30%" }}
                             />
                             <br />
                             <button
@@ -245,6 +252,11 @@ const ImageUpload = ({studioId}) => {
       </div>
     </div>
   );
+};
+
+// Set default prop values
+ImageUpload.defaultProps = {
+  maxImageCount: 5, // Default maximum image count
 };
 
 export default ImageUpload;

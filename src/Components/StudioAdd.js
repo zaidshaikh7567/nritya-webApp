@@ -6,6 +6,7 @@ import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } fr
 import { COLLECTIONS } from '../constants';
 import StudioTable from './StudioTable';
 import ImageUpload from './ImageUpload';
+import { STORAGES } from '../constants';
 
 function StudioAdd() {
     const [newStudioId, setNewStudioId] = useState("")
@@ -146,9 +147,12 @@ function StudioAdd() {
             }
             </>
  
-            <span>Images</span>
-              <ImageUpload studioId={newStudioId}></ImageUpload>
-            <br></br>
+          <span>Images</span>
+            <ImageUpload entityId={newStudioId} storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
+          <br></br>
+          <span>Studio Icon</span>
+            <ImageUpload entityId={newStudioId} storageFolder={STORAGES.STUDIOICON} maxImageCount={1}></ImageUpload>
+          <br></br>
  
           </Accordion.Body>
         </Accordion.Item>

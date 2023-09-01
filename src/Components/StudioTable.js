@@ -12,7 +12,7 @@ function StudioTable({ tableData, setTableData }) {
     console.log(tableDataReplace,"AFter adding")
   };
 
-  const printData = () => {console.log(tableDataReplace)};
+
 
   const handleRemoveRow = (index) => {
     setTableDataReplace((prevData) => {
@@ -113,7 +113,7 @@ function StudioTable({ tableData, setTableData }) {
           ))}
         </tbody>
       </Table>
-      <Button onClick={printData}>Print</Button>
+
     </>
   );
 }

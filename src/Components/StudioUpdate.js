@@ -4,7 +4,8 @@ import { db } from '../config';
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
 import AlertPopup from './AlertPopup';
-
+import ImageUpload from './ImageUpload';
+import { STORAGES } from '../constants';
 function isMapOfMaps(data) {
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
     return false; // Not an object (map)
@@ -34,6 +35,7 @@ const decodeUnicode = (unicodeString) => {
 
 function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
   const [selectedStudio, setSelectedStudio] = useState(null);
+  const [selectedStudioId, setSelectedStudioId] = useState(null);
   const [tableData, setTableData] = useState({
     0:{
       className: '',
@@ -60,11 +62,19 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
     console.log("studioId", studioId);
   }, []);
 
+  useEffect(() => {
+    // Fetch data for the selected studio when studioId changes
+    if (selectedStudio) {
+      console.log("Studio id changes",selectedStudio)
+    }
+  }, [selectedStudio]);
+
   const handleSelectStudio = async (event) => {
     event.preventDefault();
     const selected = event.target.value;
     const selectedId = selected.split(":").pop().trim();
     console.log("&**&(*", selected, selectedId);
+    setSelectedStudioId(selectedId);
 
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.STUDIO, selectedId));
@@ -390,10 +400,27 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
                 Update Studio
               </Button>
             </Form>
+            {studioId && studioId.length > 0 && selectedStudioId && (
+              <>
+                <div>
+                  <span>Images</span>
+                  <ImageUpload entityId={selectedStudioId} storageFolder={STORAGES.STUDIOIMAGES} />
+                </div>
+                <br />
+                <div>
+                  <span>Studio Icon</span>
+                  <ImageUpload entityId={selectedStudioId} storageFolder={STORAGES.STUDIOICON} maxImageCount={1} />
+                </div>
+                <br />
+              </>
+            )}
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      
+      
 
+     
       {showUpdateSuccessAlert && (
         <AlertPopup
           type="info"

@@ -16,4 +16,10 @@ export const COLLECTIONS ={
     TRANSACTIONS: "Transactions",
     STUDIO: "Studio"
 }
+
+export const STORAGES ={
+    STUDIOIMAGES:'StudioImages',
+    STUDIOICON:'StudioIcon',
+    USERIMAGE:'UserImage'
+}
   

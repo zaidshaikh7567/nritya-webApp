@@ -115,7 +115,7 @@ function KycApproval() {
                             <p>City : {JSON.parse(Data).city} </p>
                             <p>State: {JSON.parse(Data).state}</p>
                             <p>UID: {JSON.parse(Data).uid}</p>
-                            <p>UID: {JSON.parse(Data).status}</p>
+                            <p>Status: {JSON.parse(Data).status}</p>
                             <Card >
                             <Form onSubmit={(event) => handleAdminAction(event, kycId)}>
                                 <Form.Group controlId="formBasicStatus">
@@ -163,7 +163,7 @@ function KycApproval() {
                                   <p>City : {JSON.parse(Data).city} </p>
                                   <p>State: {JSON.parse(Data).state}</p>
                                   <p>UID: {JSON.parse(Data).uid}</p>
-                                  <p>UID: {JSON.parse(Data).status}</p>
+                                  <p>Status: {JSON.parse(Data).status}</p>
                                   <Card>
                                   <Form onSubmit={(event) => handleAdminAction(event, kycId)}>
                                       <Form.Group controlId="formBasicStatus">
