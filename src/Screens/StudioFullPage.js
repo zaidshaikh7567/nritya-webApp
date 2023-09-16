@@ -7,6 +7,7 @@ import { doc, getDoc, setDoc, getDocs, collection , updateDoc} from "firebase/fi
 import { STATUSES, COLLECTIONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
 import './Carousel.css';
+import MapReadOnly from '../Components/MapReadOnly';
 
 const cardStyle = {
   borderRadius: '5px',
@@ -140,7 +141,17 @@ console.log("StudioData")
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1>{studioData.studioName}</h1>
-            <div>{studioData.address}</div>
+          {studioData.geolocation ? (
+              <a
+                href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <PinMarker lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.address} />
+              </a>
+            ) : (
+              <div style={{ color: 'blue', fontSize: '16px' }}>{studioData.address}</div>
+            )}
           </div>
           <ButtonGroup>
         <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
@@ -261,10 +272,22 @@ console.log("StudioData")
           )}
         </Col>
       </Row>
+      {studioData && studioData.geolocation ? (
+              
+              <MapReadOnly selectedLocationParam={studioData.geolocation}></MapReadOnly>
+            ) : (
+              <br></br>
+            )}
       </Container>      
     </div>
     
   );
 }
 
+const PinMarker = ({ text }) => (
+  <div style={{ position: 'relative', textAlign: 'center' }}>
+    <div style={{ color: 'red', fontSize: '24px' }}>📍</div>
+    <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>{text}</div>
+  </div>
+);
 export default StudioFullPage;

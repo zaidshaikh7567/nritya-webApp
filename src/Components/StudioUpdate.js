@@ -6,6 +6,8 @@ import { COLLECTIONS } from '../constants';
 import AlertPopup from './AlertPopup';
 import ImageUpload from './ImageUpload';
 import { STORAGES } from '../constants';
+import MapsInput from './MapsInput';
+
 function isMapOfMaps(data) {
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
     return false; // Not an object (map)
@@ -48,6 +50,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
 });
   const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
   const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
     // Fetch the list of studios created by the user from localStorage
@@ -75,7 +78,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
     const selectedId = selected.split(":").pop().trim();
     console.log("&**&(*", selected, selectedId);
     setSelectedStudioId(selectedId);
-
+    setSelectedLocation(selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : null);
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.STUDIO, selectedId));
       if (studioDoc.exists) {
@@ -124,10 +127,11 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
     const status = event.target.status.value;
     const contactNumber = event.target.contactNumber.value;
     const description = encodeToUnicode(event.target.description.value);
+    const geolocation = selectedLocation;
 
     try {
       // Update the studio document with the new values
-      console.log(description)
+      console.log(description,geolocation)
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
       await updateDoc(studioRef, {
         studioName,
@@ -139,7 +143,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
         status,
         contactNumber,
         description,
-        tableData // Save the tableData along with other fields
+        tableData, // Save the tableData along with other fields
+        geolocation
       });
 
       console.log("Studio updated successfully");
@@ -256,6 +261,12 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
                 name="address"
                 defaultValue={selectedStudio ? selectedStudio.address : ''}
               />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicBody">
+                <Form.Label>Save exact Address</Form.Label>
+                <MapsInput selectedLocation={selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : selectedLocation}
+                            setSelectedLocation={setSelectedLocation} />
             </Form.Group>
           
             <Form.Group controlId="formBasicUpdate">

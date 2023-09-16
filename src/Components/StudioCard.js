@@ -114,7 +114,7 @@ function StudioCard({ studioName, studioAddress, studioTiming, studioPrice, stud
                 </div>
               </div>
               <a href={"#/studio/" + studioId}>
-              <Button variant="outline-warning" className="me-2 rounded-pill mb-2 d-flex justify-content-center align-items-center" size="sm" style={{ fontSize: '1.4rem' }}>Explore studio</Button>
+              <Button variant="outline-warning" className="me-2 rounded-pill mb-2 d-flex justify-content-center align-items-center" size="sm" style={{ fontSize: '1.4rem' }}>Explore</Button>
      </a>
               {/* Buttons for larger screens */}
               <div className="d-none d-md-flex justify-content-center">

@@ -10,11 +10,6 @@ import { adminLoginFn, adminLogoutFn } from '../reduxStore/adminLoginSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
 
-import Dance1 from "./DanceImg/Dance1.jpg";
-import Dance2 from "./DanceImg/Dance2.jpg";
-import Dance3 from "./DanceImg/Dance3.jpg";
-import Dance4 from "./DanceImg/Dance4.jpg";
-import Dance5 from "./DanceImg/Dance5.jpg";
 
 function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn }) {
   const styleObj = {

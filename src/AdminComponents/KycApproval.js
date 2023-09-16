@@ -72,9 +72,11 @@ function KycApproval() {
         console.error("Update error:", error);
       }
 
+      // Parse the JSON string into an object before updating
       const updatedPendingKyc = { ...pendingKyc };
-      updatedPendingKyc[kycID].status = event.target.status.value;
-      setPendingKyc(updatedPendingKyc);
+      const kycData = JSON.parse(updatedPendingKyc[kycID]);
+      kycData.status = event.target.status.value;
+      updatedPendingKyc[kycID] = JSON.stringify(kycData);
     
   };
 

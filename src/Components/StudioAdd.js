@@ -1,12 +1,14 @@
 import React from 'react'
 import { Card, Button, Row, Col , Form,Accordion,Table,Toast } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
 import StudioTable from './StudioTable';
 import ImageUpload from './ImageUpload';
 import { STORAGES } from '../constants';
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import MapsInput from './MapsInput';
 
 function StudioAdd() {
     const [newStudioId, setNewStudioId] = useState("")
@@ -14,6 +16,7 @@ function StudioAdd() {
       { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' },
     );
     const [showToast, setShowToast] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
       
       const handleAddStudio = async (event) => {
         event.preventDefault();
@@ -71,7 +74,7 @@ function StudioAdd() {
         }
      
       };
-
+  
 
   return (
     <div>
@@ -102,6 +105,11 @@ function StudioAdd() {
                 <Form.Label>Address</Form.Label>
                 <Form.Control as="textarea" rows={1} placeholder="Enter address" name="address" />
               </Form.Group>
+              <Form.Group controlId="formBasicBody">
+                <Form.Label>Save exact Address</Form.Label>
+                <MapsInput selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}></MapsInput>
+              </Form.Group>
+              
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Contact Numer</Form.Label>
                 <Form.Control as="textarea" rows={1} placeholder="Enter contact number for calling and whatsapp" pattern="[0-9+]+"

@@ -1,6 +1,6 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import {Container} from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoginPage from './Screens/LoginPage';
 import UserPage from './Screens/UserPage';
 import LandingPage from './Screens/LandingPage'
@@ -14,12 +14,21 @@ import Order from './Screens/Order';
 import Cart from './Screens/Cart';
 import Transactions from './Components/Transactions';
 import AdminPage from './Screens/AdminPage';
+import Trail from './Components/Trail';
 
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
   const [userID, setUserID] = useState(null);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false)
+  useEffect(() => {
+    // Check if the URL contains 'n-admin'
+    const isNAdminRoute = window.location.pathname.includes('/n-admin');
+    // You can add more routes to exclude from header and footer if needed
+    setAdminLoggedIn((isNAdminRoute || JSON.parse(localStorage.getItem('adminLogin'))))
+    console.log("Admin n",adminLoggedIn)
+  }, [adminLoggedIn]);
 
   const handleLogin = (UserInfo,userInfoFull) => {
     setUsername(UserInfo.displayName);
@@ -46,7 +55,10 @@ function App() {
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
     <HashRouter >
-      <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+    
+            <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+     
+      
       <main className='py-1'>
         <Container>
           <Routes>
@@ -62,11 +74,14 @@ function App() {
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/transactions' element={<Transactions/>}/>
             <Route path='/n-admin' element={<AdminPage/>}/>
+            <Route path='/n-trail' element={<Trail/>}/>
           </Routes>
         </Container>
       </main>
       <br />
-      <Footer/>
+     
+            <Footer/>
+      
     </HashRouter>
   );
 }

@@ -13,7 +13,9 @@ const firebaseConfig = {
   appId: "1:847422777654:web:7d51e9533167704bafab97",
   measurementId: "G-YSM4JX078D"
 };
-
+const gMapApiKey ={
+  key: "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ"
+};
 const razorpayConfig = {
   key_id: "rzp_test_KGN4elrXhQOG65",
   key_secret : "wmMR51UhKWEJf1LeHKiJ24S5"
@@ -30,4 +32,4 @@ const auth = getAuth(app)
 const db = getFirestore(app);
 const storage = getStorage(app)
 
-export {auth,provider,db,storage,razorpayConfig};
+export {auth,provider,db,storage,razorpayConfig,gMapApiKey};

@@ -13,6 +13,7 @@ import { faBolt, faMusic, faHiking, faTrophy, faGlassCheers,faClock } from "@for
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StudioCardIcon from "../Components/StudioCardIcon";
 import './LandingPage.css'
+import MapsInput from "../Components/MapsInput";
 
 
 // Define the array of dance forms with their names and corresponding icons
