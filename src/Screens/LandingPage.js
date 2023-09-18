@@ -5,6 +5,7 @@ import Dance2 from "../Components/DanceImg/Dance2.jpg";
 import Dance3 from "../Components/DanceImg/Dance3.jpg";
 import Dance4 from "../Components/DanceImg/Dance4.jpg";
 import Dance5 from "../Components/DanceImg/Dance5.jpg";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
@@ -45,6 +46,20 @@ function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
   const rowRef = useRef(null);
+
+  const containerRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollLeft += 200; // Adjust the scroll amount as needed
+    }
+  };
+
+  const scrollRight = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollLeft -= 200; // Adjust the scroll amount as needed
+    }
+  };
 
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
@@ -282,12 +297,15 @@ function LandingPage() {
           {recentlyWatchedStudios.map((studio, index) => (
             <div key={index} className="row-item" md={2}>
               <a href={`#/studio/${studio.id}`}>
-                <StudioCardIcon
-                  studioName={studio.studioName}
-                  studioAddress={studio.address}
-                  studioPrice={studio.price}
-                  studioTiming={studio.timing}
-                />
+              <StudioCard
+                    studioName={studio.studioName}
+                    studioAddress={studio.address}
+                    studioPrice={studio.price}
+                    studioTiming={studio.timing}
+                    studioDanceStyles={studio.danceStyles}
+                    studioId={studio.id}
+                    forceSmallView={1}
+                  />
               </a>
             </div>
           ))}
@@ -345,7 +363,7 @@ function LandingPage() {
         <br />
         <br />
         <Row>
-          <Col>
+          <Col style={{ display: 'none'}}>
           {exploreCards.length > 0 && <h2>Explore</h2>}
           <Carousel
           onSelect={handleCarouselSelect}
@@ -391,6 +409,78 @@ function LandingPage() {
           </Col>
         </Row>
         <br></br>
+        <Row style={{ display: 'none'}}>
+          {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+          <div className="row-container">
+            {exploreCards.map((studio, index) => (
+              <div key={index} style={{ padding: '1px' }}>
+                <a href={`#/studio/${studio.id}`}>
+                  <StudioCard
+                    studioName={studio.studioName}
+                    studioAddress={studio.address}
+                    studioPrice={studio.price}
+                    studioTiming={studio.timing}
+                    studioDanceStyles={studio.danceStyles}
+                    studioId={studio.id}
+                    forceSmallView={1}
+                  />
+                </a>
+              </div>
+            ))}
+          </div>
+        </Row>
+
+        <Row>
+        {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+      <div style={{ display: 'flex', alignItems: 'center' , overflowX: 'hidden'}}>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            scrollLeft();
+          }}
+          style={{ backgroundColor: '#F5F5DC', border: '2px', cursor: 'pointer',borderRadius:'50px' ,fontSize: '24px' }}
+        >
+          <FaChevronLeft />
+        </button>
+        <div
+          ref={containerRef}
+          className="row-container"
+          style={{ overflowX: 'hidden', whiteSpace: 'nowrap', display: 'flex' }}
+        >
+          {exploreCards.map((studio, index) => (
+            <div key={index} style={{ marginRight: '10px', padding: '1px' }}>
+              <a href={`#/studio/${studio.id}`}>
+                <StudioCard
+                  studioName={studio.studioName}
+                  studioAddress={studio.address}
+                  studioPrice={studio.price}
+                  studioTiming={studio.timing}
+                  studioDanceStyles={studio.danceStyles}
+                  studioId={studio.id}
+                  forceSmallView={1}
+                />
+              </a>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            scrollRight();
+          }}
+          style={{ backgroundColor: '#F5F5DC', border: '2px', cursor: 'pointer',borderRadius:'50px' ,fontSize: '24px' }}
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+        </Row>
+
+
+
+
+
+
+
         <h1>BROWSE BY GENRE</h1>
         <Row>
           {danceForms.map((danceForm, index) => (
