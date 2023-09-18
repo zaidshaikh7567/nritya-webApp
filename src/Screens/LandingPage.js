@@ -206,7 +206,7 @@ function LandingPage() {
   useEffect(() => {
     const getStudios = async () => {
       const studioRef = collection(db, COLLECTIONS.STUDIO);
-      const q = query(studioRef, limit(5));
+      const q = query(studioRef, limit(15));
       const querySnapshot = await getDocs(q);
       const exploreStudioList = querySnapshot.docs.filter(doc => doc.data().studioName).map(doc => 
         { const data = doc.data();
@@ -347,14 +347,47 @@ function LandingPage() {
         <Row>
           <Col>
           {exploreCards.length > 0 && <h2>Explore</h2>}
-          <Carousel onSelect={handleCarouselSelect} style={{ height: "100%", overflow: "hidden" }}>
-            { exploreCards.map((exploreCards, index) => (
+          <Carousel
+          onSelect={handleCarouselSelect}
+          style={{ height: "100%", overflow: "hidden" }}
+          interval={5000} // Adjust interval as needed
+          wrap={false} // Prevent wrapping when reaching the beginning or end
+        >
+          {exploreCards.map((exploreCard, index) => (
             <Carousel.Item key={index}>
-              {console.log("explore studio ",exploreCards,index)}
-              <StudioCard studioName={exploreCards.studioName} studioAddress={exploreCards.address} studioInstructors={exploreCards.instructors} studioPrice={exploreCards.price} studioTiming={exploreCards.timing} studioDanceStyles={exploreCards.danceStyles} studioContactNumber={exploreCards.contactNumber} studioId={exploreCards.id}/>
+              <div className="d-flex justify-content-between">
+                {[index, index + 1, index + 2].map((cardIndex) => {
+                  // Use modulo to loop through the cards in a circular fashion
+                  const circularIndex = cardIndex % exploreCards.length;
+                  const card = exploreCards[circularIndex];
+
+                  return (
+                    <div
+                      key={circularIndex}
+                      className="studio-card-container"
+                      style={{ flex: "1", padding: "10px" }}
+                    >
+                      <StudioCard
+                        studioName={card.studioName}
+                        studioAddress={card.address}
+                        studioInstructors={card.instructors}
+                        studioPrice={card.price}
+                        studioTiming={card.timing}
+                        studioDanceStyles={card.danceStyles}
+                        studioContactNumber={card.contactNumber}
+                        studioId={card.id}
+                        forceSmallView={1}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </Carousel.Item>
           ))}
-          </Carousel>
+        </Carousel>
+
+
+
           </Col>
         </Row>
         <br></br>

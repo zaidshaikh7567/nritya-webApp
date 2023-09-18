@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import StudioCard from './StudioCard';
 
 function Trail() {
   const [data, setData] = useState([]);
@@ -28,13 +29,13 @@ function Trail() {
   // Fetch data when the component mounts or when the query changes
   useEffect(() => {
     fetchData();
+    console.log(data)
   }, [fetchData]);
 
   return (
     
     <div>
-        <h1>Search</h1>
-      {/* Search bar */}
+      <h1>Search</h1>
       <input
         type="text"
         placeholder="Search..."
@@ -46,11 +47,22 @@ function Trail() {
       ) : error ? (
         <p>Error: {error.message}</p>
       ) : (
-        <ul>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {data.map((item) => (
-            <li key={item.UserId}>{item.studioName} {item.address}</li>
+            <div key={item.UserId} style={{ flex: '50%', padding: '10px' }}>
+              <StudioCard
+                studioName={item.studioName}
+                studioAddress={item.address}
+                studioTiming={item.timing}
+                studioPrice={item.price}
+                studioInstructors={item.instructors}
+                studioDanceStyles={item.danceStyles}
+                studioContactNumber={item.contactNumber}
+                studioId={item.studioId}
+              />
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

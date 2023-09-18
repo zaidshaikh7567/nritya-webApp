@@ -167,7 +167,7 @@ console.log("StudioData")
       </ButtonGroup>
         </>
       )}
-
+<br></br>
       <Container fluid>
         <Row>
         <Col >
@@ -272,6 +272,7 @@ console.log("StudioData")
           )}
         </Col>
       </Row>
+      <br></br>
       {studioData && studioData.geolocation ? (
               
               <MapReadOnly selectedLocationParam={studioData.geolocation}></MapReadOnly>
@@ -286,7 +287,7 @@ console.log("StudioData")
 
 const PinMarker = ({ text }) => (
   <div style={{ position: 'relative', textAlign: 'center' }}>
-    <div style={{ color: 'red', fontSize: '24px' }}>📍</div>
+    <div style={{ color: 'blue', fontSize: '24px' }}>📍</div>
     <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>{text}</div>
   </div>
 );
