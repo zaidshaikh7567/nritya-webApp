@@ -266,6 +266,8 @@ function LandingPage() {
       };
     }, []);
 
+    const isSmallScreen = window.innerWidth <= 768;
+
   return (
     <div className="landing-page">
       <Container className="my-5">
@@ -429,8 +431,94 @@ function LandingPage() {
             ))}
           </div>
         </Row>
+        <br/>
 
         <Row>
+      {isSmallScreen ? (
+        // Code for small screens
+        <>
+          {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+          <div className="row-container">
+            {exploreCards.map((studio, index) => (
+              <div key={index}  md={2}>
+                <a href={`#/studio/${studio.id}`}>
+                  <StudioCard
+                     studioName={studio.studioName}
+                     studioAddress={studio.address}
+                     studioPrice={studio.price}
+                     studioTiming={studio.timing}
+                     studioDanceStyles={studio.danceStyles}
+                     studioId={studio.id}
+                     forceSmallView={1}
+                  />
+                </a>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        // Code for larger screens
+        <>
+          {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+          <div style={{ display: 'flex', alignItems: 'center', overflowX: 'hidden' }}>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                scrollLeft();
+              }}
+              style={{
+                backgroundColor: '#F5F5DC',
+                border: '2px',
+                cursor: 'pointer',
+                borderRadius: '50px',
+                fontSize: '24px',
+              }}
+            >
+              <FaChevronLeft />
+            </button>
+            <div
+              ref={containerRef}
+              className="row-container"
+              style={{ overflowX: 'hidden', whiteSpace: 'nowrap', display: 'flex' }}
+            >
+              {exploreCards.map((studio, index) => (
+                <div key={index} style={{ marginRight: '10px', padding: '1px' }}>
+                  <a href={`#/studio/${studio.id}`}>
+                    <StudioCard
+                      studioName={studio.studioName}
+                      studioAddress={studio.address}
+                      studioPrice={studio.price}
+                      studioTiming={studio.timing}
+                      studioDanceStyles={studio.danceStyles}
+                      studioId={studio.id}
+                      forceSmallView={1}
+                    />
+                  </a>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                scrollRight();
+              }}
+              style={{
+                backgroundColor: '#F5F5DC',
+                border: '2px',
+                cursor: 'pointer',
+                borderRadius: '50px',
+                fontSize: '24px',
+              }}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+        </>
+      )}
+    </Row>
+
+
+        <Row style={{ display: 'none'}}>
         {exploreCards.length > 0 && <h2>Explore Studios</h2>}
       <div style={{ display: 'flex', alignItems: 'center' , overflowX: 'hidden'}}>
         <button
@@ -474,13 +562,6 @@ function LandingPage() {
         </button>
       </div>
         </Row>
-
-
-
-
-
-
-
         <h1>BROWSE BY GENRE</h1>
         <Row>
           {danceForms.map((danceForm, index) => (
