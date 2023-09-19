@@ -51,15 +51,34 @@ function LandingPage() {
 
   const scrollLeft = () => {
     if (containerRef.current) {
-      containerRef.current.scrollLeft += 200; // Adjust the scroll amount as needed
+      const container = containerRef.current;
+      const scrollDistance = container.clientWidth; // Scroll by one screen width
+  
+      // Calculate the new scroll position and ensure it doesn't go beyond the content boundaries
+      const newScrollLeft = Math.max(container.scrollLeft - scrollDistance, 0);
+  
+      // Set the new scroll position
+      container.scrollLeft = newScrollLeft;
     }
   };
-
+  
   const scrollRight = () => {
     if (containerRef.current) {
-      containerRef.current.scrollLeft -= 200; // Adjust the scroll amount as needed
+      const container = containerRef.current;
+      const scrollDistance = container.clientWidth; // Scroll by one screen width
+  
+      // Calculate the new scroll position and ensure it doesn't go beyond the content boundaries
+      const newScrollLeft = Math.min(
+        container.scrollLeft + scrollDistance,
+        container.scrollWidth - container.clientWidth
+      );
+  
+      // Set the new scroll position
+      container.scrollLeft = newScrollLeft;
     }
   };
+  
+  
 
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
