@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
 import { STORAGES } from '../constants';
+import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
+
 
 function StudioCard({
   studioName,
@@ -58,10 +60,11 @@ function StudioCard({
   // Content for small screens
   const smallScreenContent = (
     <Card style={{ width: '200px', height: '250px', marginBottom: '20px' }}>
-      <Card.Img variant="top"
-      src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
-           
-      style={{ height: '50%', objectFit: 'contain' }} />
+      <Card.Img
+        variant="top"
+        src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+        style={{ height: '50%', objectFit: 'contain' }}
+      />
       <Card.Body>
         <Card.Text style={{ fontSize: '0.8rem', marginBottom: '1px' }}>{studioName}</Card.Text>
         {studioDanceStyles && studioDanceStyles.split(",").slice(0, 3).map((form, index) => (
@@ -74,18 +77,21 @@ function StudioCard({
             {form.trim()}
           </Badge>
         ))}
-
-        <Card.Text style={{ fontSize: '0.6rem', marginBottom: '2px' }}>
-          {studioAddress}
-        </Card.Text>
-        <Card.Text style={{ fontSize: '0.6rem', marginBottom: '2px' }}>
-          Price: {studioPrice}
-        </Card.Text>
-        <Card.Text style={{ fontSize: '0.6rem' }}>
-            Time: {studioTiming}
-        </Card.Text>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+          <FaMapMarker size={14} className="me-2" />
+          <Card.Text style={{ fontSize: '0.6rem', marginBottom: '2px' }}>{studioAddress}</Card.Text>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+          <FaMoneyBill size={14} className="me-2" />
+          <Card.Text style={{ fontSize: '0.6rem', marginBottom: '2px' }}> {studioPrice}</Card.Text>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <FaClock size={14} className="me-2" />
+          <Card.Text style={{ fontSize: '0.6rem' }}> {studioTiming}</Card.Text>
+        </div>
       </Card.Body>
     </Card>
+
   );
 
   // Content for larger screens

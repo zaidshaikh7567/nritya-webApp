@@ -8,6 +8,7 @@ import { STATUSES, COLLECTIONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
+import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
 
 const cardStyle = {
   borderRadius: '5px',

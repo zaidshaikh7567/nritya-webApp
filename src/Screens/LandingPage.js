@@ -459,67 +459,7 @@ function LandingPage() {
       ) : (
         // Code for larger screens
         <>
-          {exploreCards.length > 0 && <h2>Explore Studios</h2>}
-          <div style={{ display: 'flex', alignItems: 'center', overflowX: 'hidden' }}>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                scrollLeft();
-              }}
-              style={{
-                backgroundColor: '#F5F5DC',
-                border: '2px',
-                cursor: 'pointer',
-                borderRadius: '50px',
-                fontSize: '24px',
-              }}
-            >
-              <FaChevronLeft />
-            </button>
-            <div
-              ref={containerRef}
-              className="row-container"
-              style={{ overflowX: 'hidden', whiteSpace: 'nowrap', display: 'flex' }}
-            >
-              {exploreCards.map((studio, index) => (
-                <div key={index} style={{ marginRight: '10px', padding: '1px' }}>
-                  <a href={`#/studio/${studio.id}`}>
-                    <StudioCard
-                      studioName={studio.studioName}
-                      studioAddress={studio.address}
-                      studioPrice={studio.price}
-                      studioTiming={studio.timing}
-                      studioDanceStyles={studio.danceStyles}
-                      studioId={studio.id}
-                      forceSmallView={1}
-                    />
-                  </a>
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                scrollRight();
-              }}
-              style={{
-                backgroundColor: '#F5F5DC',
-                border: '2px',
-                cursor: 'pointer',
-                borderRadius: '50px',
-                fontSize: '24px',
-              }}
-            >
-              <FaChevronRight />
-            </button>
-          </div>
-        </>
-      )}
-    </Row>
-
-
-        <Row style={{ display: 'none'}}>
-        {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+          {exploreCards.length > 0 && <h2>Studios you might like</h2>}
       <div style={{ display: 'flex', alignItems: 'center' , overflowX: 'hidden'}}>
         <button
           onClick={(e) => {
@@ -536,8 +476,8 @@ function LandingPage() {
           style={{ overflowX: 'hidden', whiteSpace: 'nowrap', display: 'flex' }}
         >
           {exploreCards.map((studio, index) => (
-            <div key={index} style={{ marginRight: '10px', padding: '1px' }}>
-              <a href={`#/studio/${studio.id}`}>
+            <div key={index} style={{ marginRight: '10px', padding: '1px' , textDecoration: 'none' }}>
+              <a href={`#/studio/${studio.id}`}  style={{ textDecoration: 'none' }}>
                 <StudioCard
                   studioName={studio.studioName}
                   studioAddress={studio.address}
@@ -561,6 +501,9 @@ function LandingPage() {
           <FaChevronRight />
         </button>
       </div>
+        </>
+      )}
+        
         </Row>
         <h1>BROWSE BY GENRE</h1>
         <Row>
