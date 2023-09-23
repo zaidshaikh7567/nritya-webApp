@@ -17,6 +17,7 @@ function CreatorStudio() {
   useEffect(() => {
     const getStudioCreated = async ()=>{
       const q = query(collection(db, COLLECTIONS.STUDIO), where("UserId", "==", localStorage.getItem('userInfo')).UserId    );
+      console.log(localStorage.getItem('userInfo').UserId)
       const querySnapshot = await getDocs(q);
       console.log("Studios : ",querySnapshot)
       const studiosOfUser = querySnapshot.docs.filter(doc => doc.data().studioName).map(doc => 

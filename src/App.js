@@ -51,6 +51,7 @@ function App() {
     localStorage.removeItem('posts');
     localStorage.removeItem('adminLogin');
     localStorage.removeItem('userDetails');
+    localStorage.removeItem('StudioCreated');
   };
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
