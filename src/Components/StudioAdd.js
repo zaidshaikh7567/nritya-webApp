@@ -42,7 +42,7 @@ function StudioAdd() {
               status: event.target.status.value,
               contactNumber: event.target.contactNumber.value,
               tableData: tableData,
-     
+              geolocation : selectedLocation,
               enrolledId:[],
               reviews:[],
               author: JSON.parse(localStorage.getItem('userInfo')).displayName,
