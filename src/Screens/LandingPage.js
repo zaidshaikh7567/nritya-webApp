@@ -317,7 +317,7 @@ function LandingPage() {
           <div className="row-container">
           {recentlyWatchedStudios.map((studio, index) => (
             <div key={index} className="row-item" md={2}>
-              <a href={`#/studio/${studio.id}`}>
+              <a href={`#/studio/${studio.id}`} style={{ textDecoration: 'none' }}>
               <StudioCard
                     studioName={studio.studioName}
                     studioAddress={studio.address}
@@ -325,6 +325,7 @@ function LandingPage() {
                     studioTiming={studio.timing}
                     studioDanceStyles={studio.danceStyles}
                     studioId={studio.id}
+                    averageRating={studio.avgRating}
                     forceSmallView={1}
                   />
               </a>
@@ -332,16 +333,26 @@ function LandingPage() {
           ))}
         </div>
         </Row>
-     
-
-
         <br />
+        
+        <Row>
+          <Col>
+            <Card className="h-100" style={cardStyle}>
+              <Card.Body>
+              <Card.Title className="text-primary" style={{ textAlign: 'center' }}>
+                Find exciting dance studios and workshops NEAR YOU
+              </Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <br></br>
         <Row>
           <Col>
             <Card className="h-100" style={cardStyle}>
               <Card.Body>
                 <Card.Title className="text-primary">
-                  <h1>Search for studios near you!</h1>
+                  <h3>Search for studios near you!</h3>
                 </Card.Title>
                 <Card.Text className="text-secondary">
                   Welcome to Nritya!
@@ -358,12 +369,12 @@ function LandingPage() {
               </Button>
             </Card>
           </Col>
-
+            <br></br>
           <Col>
             <Card className="h-100" style={cardStyle}>
               <Card.Body>
                 <Card.Title className="text-primary">
-                  <h1>Search for workshops near you!</h1>
+                  <h3>Search for workshops near you!</h3>
                 </Card.Title>
                 <Card.Text className="text-secondary">
                   Welcome to Nritya!
@@ -371,6 +382,7 @@ function LandingPage() {
                   <br />
                   Are you looking for a fun and convenient way to learn new dance moves and build your dance community?
                   <br />
+                  COMING SOON !
                   <br />
                   Team Nritya
                 </Card.Text>
@@ -399,7 +411,7 @@ function LandingPage() {
                   // Use modulo to loop through the cards in a circular fashion
                   const circularIndex = cardIndex % exploreCards.length;
                   const card = exploreCards[circularIndex];
-
+                  console.log(card.avgRating)
                   return (
                     <div
                       key={circularIndex}
@@ -415,6 +427,7 @@ function LandingPage() {
                         studioDanceStyles={card.danceStyles}
                         studioContactNumber={card.contactNumber}
                         studioId={card.id}
+                        averageRating={card.avgRating}
                         forceSmallView={1}
                       />
                     </div>
@@ -429,6 +442,7 @@ function LandingPage() {
 
           </Col>
         </Row>
+        
         <br></br>
         <Row style={{ display: 'none'}}>
           {exploreCards.length > 0 && <h2>Explore Studios</h2>}
@@ -468,6 +482,7 @@ function LandingPage() {
                      studioTiming={studio.timing}
                      studioDanceStyles={studio.danceStyles}
                      studioId={studio.id}
+                     averageRating={studio.avgRating}
                      forceSmallView={1}
                   />
                 </a>
@@ -478,7 +493,7 @@ function LandingPage() {
       ) : (
         // Code for larger screens
         <>
-          {exploreCards.length > 0 && <h2>Studios you might like</h2>}
+          {exploreCards.length > 0 && <h2>People are viewing</h2>}
       <div style={{ display: 'flex', alignItems: 'center' , overflowX: 'hidden'}}>
         <button
           onClick={(e) => {
@@ -504,6 +519,7 @@ function LandingPage() {
                   studioTiming={studio.timing}
                   studioDanceStyles={studio.danceStyles}
                   studioId={studio.id}
+                  averageRating={studio.avgRating}
                   forceSmallView={1}
                 />
               </a>

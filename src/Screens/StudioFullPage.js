@@ -9,6 +9,7 @@ import Table from 'react-bootstrap/Table';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
 import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
+import Ratings from '../Components/Ratings';
 
 const cardStyle = {
   borderRadius: '5px',
@@ -142,6 +143,7 @@ console.log("StudioData")
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1>{studioData.studioName}</h1>
+          <Ratings userID={JSON.parse(localStorage.getItem('userInfo'))? JSON.parse(localStorage.getItem('userInfo')).UserId: null} studioID={studioId}></Ratings>
           {studioData.geolocation ? (
               <a
                 href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}

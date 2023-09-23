@@ -6,6 +6,7 @@ import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
 import { STORAGES } from '../constants';
 import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
+import StarRating from './StarRating';
 
 
 function StudioCard({
@@ -17,11 +18,12 @@ function StudioCard({
   studioDanceStyles,
   studioContactNumber,
   studioId,
+  averageRating,
   forceSmallView,
 }) {
   const navigate = useNavigate();
   const [studioIconUrl, setStudioIconUrl] = useState(null);
-
+  console.log(averageRating,studioName)
   useEffect(() => {
     // Fetch and set the studio icon URL using studioId
     if (studioId) {
@@ -56,38 +58,40 @@ function StudioCard({
   const shouldShowSmallScreenView = () => {
     return forceSmallView === 1;
   };
+  
 
   // Content for small screens
   const smallScreenContent = (
-    <Card style={{ width: '200px', height: '250px', marginBottom: '20px' }}>
+    <Card style={{ width: '275px', height: '340px', marginBottom: '20px' }}>
       <Card.Img
         variant="top"
         src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
         style={{ height: '50%', objectFit: 'contain' }}
       />
       <Card.Body>
-        <Card.Text style={{ fontSize: '0.8rem', marginBottom: '1px' }}>{studioName}</Card.Text>
+        <Card.Text style={{ fontSize: '1rem', marginBottom: '1px' }}>{studioName}</Card.Text>
         {studioDanceStyles && studioDanceStyles.split(",").slice(0, 3).map((form, index) => (
           <Badge
             key={index}
             bg={index % 2 === 0 ? "danger" : "warning"} // Alternate badge colors
             className="me-2 rounded-pill"
-            style={{ marginBottom: "1px", fontSize: '0.4rem' }}
+            style={{ marginBottom: "1px", fontSize: '0.6rem' }}
           >
             {form.trim()}
           </Badge>
         ))}
+        <StarRating rating={averageRating} viewMode={true} />
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
           <FaMapMarker size={14} className="me-2" />
-          <Card.Text style={{ fontSize: '0.6rem', marginBottom: '2px' }}>{studioAddress}</Card.Text>
+          <Card.Text style={{ fontSize: '0.8rem', marginBottom: '2px' }}>{studioAddress}</Card.Text>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
           <FaMoneyBill size={14} className="me-2" />
-          <Card.Text style={{ fontSize: '0.6rem', marginBottom: '2px' }}> {studioPrice}</Card.Text>
+          <Card.Text style={{ fontSize: '0.8rem', marginBottom: '2px' }}> {studioPrice}</Card.Text>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <FaClock size={14} className="me-2" />
-          <Card.Text style={{ fontSize: '0.6rem' }}> {studioTiming}</Card.Text>
+          <Card.Text style={{ fontSize: '0.8rem' }}> {studioTiming}</Card.Text>
         </div>
       </Card.Body>
     </Card>
@@ -166,7 +170,7 @@ function StudioCard({
             </div>
             <a href={"#/studio/" + studioId}>
             <Button variant="outline-warning" className="me-2 rounded-pill mb-2 d-flex justify-content-center align-items-center" size="sm" style={{ fontSize: '1.4rem' }}>Explore</Button>
-   </a>
+            </a>
             {/* Buttons for larger screens */}
             <div className="d-none d-md-flex justify-content-center">
               <ButtonGroup>
@@ -216,7 +220,7 @@ function StudioCard({
   return (
     <div>
     {shouldShowSmallScreenView() ? smallScreenContent : autoMode}
-    
+
     </div>
   );
 }
