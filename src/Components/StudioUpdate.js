@@ -7,6 +7,8 @@ import AlertPopup from './AlertPopup';
 import ImageUpload from './ImageUpload';
 import { STORAGES } from '../constants';
 import MapsInput from './MapsInput';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 function isMapOfMaps(data) {
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
@@ -51,6 +53,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
   const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
   const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
 
   useEffect(() => {
     // Fetch the list of studios created by the user from localStorage
@@ -200,13 +203,13 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
     <div>
       <br></br>
       <Accordion defaultActiveKey="1">
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Update studio</Accordion.Header>
+        <Accordion.Item eventKey="1" style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
+          <Accordion.Header style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Update studio</Accordion.Header>
           <Accordion.Body>
             <Form id="updateStudioForm" onSubmit={handleUpdateStudio}>
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Id</Form.Label>
-                <Form.Control as="select" name="nameId" onChange={handleSelectStudio}>
+                <Form.Control as="select" name="nameId" style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }}  onChange={handleSelectStudio}>
                   <option value="">Select a studio...</option>
                   {studioId && studioId.length > 0 ? (
                     studioId.map((studioItem) => (
@@ -223,6 +226,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Studio Name</Form.Label>
                 <Form.Control
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                   type="textarea"
                   rows={1}
                   placeholder="Enter studio name"
@@ -234,6 +238,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Price Starts from</Form.Label>
                 <Form.Control
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                   as="textarea"
                   rows={1}
                   placeholder="Enter price"
@@ -245,6 +250,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Dance Styles</Form.Label>
                 <Form.Control
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                   as="textarea"
                   rows={1}
                   placeholder="Enter names of dance forms separated by commas like salsa, foreign, couple"
@@ -255,6 +261,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
               <Form.Group controlId="formBasicUpdate">
               <Form.Label>Address</Form.Label>
               <Form.Control
+                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                 as="textarea"
                 rows={1}
                 placeholder="Enter address"
@@ -272,6 +279,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
             <Form.Group controlId="formBasicUpdate">
               <Form.Label>Contact Number</Form.Label>
               <Form.Control
+                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                 as="textarea"
                 rows={1}
                 placeholder="Enter contact number for calling and WhatsApp"
@@ -285,6 +293,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
             <Form.Group controlId="formBasicUpdate">
               <Form.Label>Timing</Form.Label>
               <Form.Control
+                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                 as="textarea"
                 rows={1}
                 placeholder="Enter Studio time eg 6 am to 1 pm"
@@ -296,6 +305,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
             <Form.Group controlId="formBasicUpdate">
               <Form.Label>Instructors</Form.Label>
               <Form.Control
+                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                 as="textarea"
                 rows={1}
                 placeholder="Enter names of instructors separated by commas like John, Stephen"
@@ -307,6 +317,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
             <Form.Group controlId="formBasicUpdate">
               <Form.Label>Status</Form.Label>
               <Form.Control
+                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                 as="select"
                 name="status"
                 defaultValue={selectedStudio ? selectedStudio.status : 'active'}
@@ -319,6 +330,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
             <Form.Group controlId="formBasicUpdate">
               <Form.Label>Description</Form.Label>
               <Form.Control
+                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
                 as="textarea"
                 rows={3}
                 placeholder="Enter body"
@@ -407,7 +419,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
 
               <br></br>
 
-              <Button variant="primary" type="submit">
+              <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }} type="submit">
                 Update Studio
               </Button>
             </Form>

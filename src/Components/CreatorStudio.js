@@ -9,10 +9,13 @@ import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } fr
 import { COLLECTIONS } from '../constants';
 import StudioAdd from './StudioAdd';
 import StudioUpdate from './StudioUpdate';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 function CreatorStudio() {
   const [studio, setStudio] = useState([]);
   const [studioId, setStudioId] = useState([]);
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
  
   useEffect(() => {
     const getStudioCreated = async ()=>{
@@ -58,7 +61,7 @@ function CreatorStudio() {
          <StudioUpdate studio={studio} setStudio={setStudio} studioId={studioId} setStudioId={setStudioId}/>
       <br></br>
  
-      <h3>Your Studios:</h3>
+      <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}>Your Studios:</h3>
        <ul>
       <br/>
       <Row xs={1} md={2} lg={2} className="g-4">
@@ -70,7 +73,7 @@ function CreatorStudio() {
             </Col>
           ))
         ) : (
-          <p>No studio yet!</p>
+          <p style={{color: isDarkModeOn ? 'white' : 'black'}}>No studio yet!</p>
         )}
       </Row>
       </ul>

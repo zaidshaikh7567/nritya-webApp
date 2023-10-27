@@ -9,6 +9,8 @@ import ImageUpload from './ImageUpload';
 import { STORAGES } from '../constants';
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import MapsInput from './MapsInput';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 function StudioAdd() {
     const [newStudioId, setNewStudioId] = useState("")
@@ -17,6 +19,7 @@ function StudioAdd() {
     );
     const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
       
       const handleAddStudio = async (event) => {
         event.preventDefault();
@@ -79,31 +82,31 @@ function StudioAdd() {
   return (
     <div>
        <br></br>
-      <Accordion defaultActiveKey="0">
-      <Accordion.Item eventKey="0">
-        <Accordion.Header >
+      <Accordion defaultActiveKey="0" >
+      <Accordion.Item eventKey="0" style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
+        <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
           Add a new course or studio:
         </Accordion.Header> 
          
-        <Accordion.Body>
-            <Form onSubmit={handleAddStudio}>
+        <Accordion.Body >
+            <Form onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
               <Form.Group controlId="formBasicTitle">
                 <Form.Label>Studio Name</Form.Label>
-                <Form.Control type="textarea" rows={1} placeholder="Enter studio name" name="studioName" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter studio name" name="studioName" />
               </Form.Group>
  
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Price Starts from</Form.Label>
-                <Form.Control as="textarea" rows={1} placeholder="Enter price" name="price" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter price" name="price" />
               </Form.Group>
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Dance Styles</Form.Label>
-                <Form.Control as="textarea" rows={1} placeholder="Enter names of dance forms seperated by commas like salsa, foreign, couple" name="danceStyles" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter names of dance forms seperated by commas like salsa, foreign, couple" name="danceStyles" />
               </Form.Group>
  
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Address</Form.Label>
-                <Form.Control as="textarea" rows={1} placeholder="Enter address" name="address" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter address" name="address" />
               </Form.Group>
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Save exact Address</Form.Label>
@@ -112,23 +115,23 @@ function StudioAdd() {
               
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Contact Numer</Form.Label>
-                <Form.Control as="textarea" rows={1} placeholder="Enter contact number for calling and whatsapp" pattern="[0-9+]+"
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter contact number for calling and whatsapp" pattern="[0-9+]+"
     required name="contactNumber" />
               </Form.Group>
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Timing</Form.Label>
-                <Form.Control as="textarea" rows={1} placeholder="Enter Studio time eg 6 am to 1 pm" name="timing" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter Studio time eg 6 am to 1 pm" name="timing" />
               </Form.Group>
  
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Instructor(s)</Form.Label>
-                <Form.Control as="textarea" rows={1} placeholder="Enter names of instructors seperated by commas like John , Stephen" name="instructors" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter names of instructors seperated by commas like John , Stephen" name="instructors" />
               </Form.Group>
               
  
               <Form.Group controlId="formBasicStatus">
                 <Form.Label>Status</Form.Label>
-                <Form.Control as="select" name="status">
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="select" name="status">
                   <option value="active">Open</option>
                   <option value="inactive">Closed</option>
                 </Form.Control>
@@ -136,14 +139,14 @@ function StudioAdd() {
               <br></br>
               <Form.Group controlId="formBasicBody">
                 <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" rows={3} placeholder="Enter body" name="description" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={3} placeholder="Enter body" name="description" />
               </Form.Group>
               <br></br>
               <span>Time Table Of dance classes</span>
               <StudioTable tableData={tableData} setTableData={setTableData}/>
               <br></br>
               
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
                 Add Studio
               </Button>
             </Form>

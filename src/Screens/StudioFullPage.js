@@ -10,14 +10,10 @@ import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
 import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
 import Ratings from '../Components/Ratings';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
-const cardStyle = {
-  borderRadius: '5px',
-  margin: '2px',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-  animation: 'glowingAnimation 2s infinite',
-  height: '100%',
-};
+
 
 // Function to decode a Unicode (UTF-8) encoded string back to the original text
 const decodeUnicode = (unicodeString) => {
@@ -39,12 +35,23 @@ const gradientStyles = [
 function StudioFullPage() {
   const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const [studioData, setStudioData] = useState(null);
   const [studioDescription, setStudioDescription] = useState(null);
   const [studioTableData, setStudioTableData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
+
+  const cardStyle = {
+    borderRadius: '5px',
+    margin: '2px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+    animation: 'glowingAnimation 2s infinite',
+    height: '100%',
+    backgroundColor: isDarkModeOn ? '#333333' : 'white',
+    
+  };
 
 // Function to update the recently watched studios in Firebase
 const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
@@ -142,7 +149,8 @@ console.log("StudioData")
         <>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1>{studioData.studioName}</h1>
+          <h1 style={{ color: isDarkModeOn ? 'white' : 'black' }}>{studioData.studioName}</h1>
+
           <Ratings userID={JSON.parse(localStorage.getItem('userInfo'))? JSON.parse(localStorage.getItem('userInfo')).UserId: null} studioID={studioId}></Ratings>
           {studioData.geolocation ? (
               <a
@@ -150,10 +158,10 @@ console.log("StudioData")
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <PinMarker lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.address} />
+                <PinMarker lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.address} isDarkModeOn={isDarkModeOn} />
               </a>
             ) : (
-              <div style={{ color: 'blue', fontSize: '16px' }}>{studioData.address}</div>
+              <div style={{ color: 'blue', fontSize: '16px' }} >{studioData.address}</div>
             )}
           </div>
           <ButtonGroup>
@@ -195,9 +203,9 @@ console.log("StudioData")
         <Row>
           <Col md={8}>
             {studioData ? (
-              <Card style={{ ...cardStyle, ...gradientStyles[0] }}>
+              <Card style={cardStyle} key="dark1" text={isDarkModeOn ? 'white' : 'dark'}>
                 <Card.Body>
-                  <Card.Title  style={{ color: '#333', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>Description</Card.Title>
+                  <Card.Title  style={{ marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>Description</Card.Title>
                   <Card.Text>
                   {
                      decodeUnicode(studioData.description).split('\n').map((line, index) => (
@@ -216,9 +224,9 @@ console.log("StudioData")
           </Col>
           <Col md={4}>
             {studioData ? (
-              <Card style={{ ...cardStyle, ...gradientStyles[1] }}>
+              <Card style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
               <Card.Body>
-                <Card.Title style={{ color: '#333', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                <Card.Title style={{  marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2rem' }}>
                   Class Details
                 </Card.Title>
                 <Card.Text>
@@ -288,10 +296,10 @@ console.log("StudioData")
   );
 }
 
-const PinMarker = ({ text }) => (
+const PinMarker = ({ text, isDarkModeOn }) => (
   <div style={{ position: 'relative', textAlign: 'center' }}>
     <div style={{ color: 'blue', fontSize: '24px' }}>📍</div>
-    <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>{text}</div>
+    <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: isDarkModeOn?'black':'white' ,padding: '5px', borderRadius: '5px', color: isDarkModeOn?'white':'black' }}>{text}</div>
   </div>
 );
 export default StudioFullPage;

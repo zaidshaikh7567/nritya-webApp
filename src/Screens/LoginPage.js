@@ -8,10 +8,14 @@ import { STATUSES,COLLECTIONS } from "./../constants.js";
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+
 
 function LoginPage({onLogin,setIsLoggedIn}) {
   
   const [loginFailed, setLoginFailed] = useState(false);
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
 
   const navigate = useNavigate();
 
@@ -79,13 +83,19 @@ function LoginPage({onLogin,setIsLoggedIn}) {
       <Container>
       <Row className="justify-content-center">
         <Col xs={6}>
-          <div style={{ marginTop: '200px' }} className="justify-content-center">
-          <Button
-              variant="info"
-              onClick={signin}
+        <form
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom:'30%' }}
+            onSubmit={(e) => {
+              e.preventDefault(); // Prevent form submission
+              signin(); // Call your signin function on form submission
+            }}
+          >
+            
+            <Button
+              type="submit" // Add a type to the button to trigger form submission
               style={{
-                backgroundColor: '#000000',
-                color: '#ffffff',
+                backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+                color: 'white',
                 border: 'none',
                 boxShadow: 'none',
                 borderRadius: '0',
@@ -93,7 +103,6 @@ function LoginPage({onLogin,setIsLoggedIn}) {
                 alignItems: 'center',
                 textTransform: 'none',
               }}
-              
             >
               <img
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
@@ -102,8 +111,9 @@ function LoginPage({onLogin,setIsLoggedIn}) {
               />
               Sign In with Google
             </Button>
+          </form>
 
-          </div>
+
         </Col>
       </Row>
     </Container>

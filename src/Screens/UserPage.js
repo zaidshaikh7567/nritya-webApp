@@ -9,21 +9,20 @@ import NonCreator from '../Components/NonCreator';
 import ImageUpload from '../Components/ImageUpload';
 import { storage } from '../config'; // Import Firebase Storage
 import { STORAGES } from '../constants';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
 }
 
-
-
-
-
 function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }) {
 
   const [isCreator, setIsCreator] = useState(false);
   const [premiumTill, setPremiumTill] = useState(-1);
   const [profilePictureUrl,setProfilePictureUrl] = useState(null);
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const navigate = useNavigate();
   if(!JSON.parse(localStorage.getItem('isLoggedIn'))){
     navigate('#/login');
@@ -133,11 +132,11 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
       <div class="card-container">
       <Card  
           key="dark1"
-          text={'dark' === 'light' ? 'dark' : 'white'}
-          style={{ width: '100%',backgroundColor: "#000000" }}
+          text={isDarkModeOn ? 'white' : 'black'}
+          style={{ width: '100%',backgroundColor: isDarkModeOn ? '#333333' : 'white' }}
          
           >
-        <Card.Header>Profile</Card.Header>
+        <Card.Header >Profile</Card.Header>
 
         
           <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr"}}>
@@ -162,7 +161,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
               </label>
             </div>
             <div style={{borderLeft: "1px solid #00ed64" }}>
-            <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color:'#ffffff' ,marginBottom: "5px",marginTop: "5px" }}>{JSON.parse(localStorage.getItem('userInfoFull')).displayName}</Card.Title>
+            <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color: isDarkModeOn ? 'white' : 'black' ,marginBottom: "5px",marginTop: "5px" }}>{JSON.parse(localStorage.getItem('userInfoFull')).displayName}</Card.Title>
               {isCreator ? (
                 <>
                 <Card.Text style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}>Creator </Card.Text>

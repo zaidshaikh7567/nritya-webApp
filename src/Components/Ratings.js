@@ -148,7 +148,7 @@ function Ratings({ userID, studioID }) {
         )}
       </p>
       <StarRating rating={averageRating} viewMode={true} />
-      {userID ? <StarRating rating={rating} onRatingChange={handleRatingChange} viewMode={false}/> : null}
+      {userID ? <StarRating rating={rating>0?rating:""} onRatingChange={handleRatingChange} viewMode={false}/> : null}
     </div>
   );
 }

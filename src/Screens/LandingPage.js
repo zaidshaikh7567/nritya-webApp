@@ -15,7 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StudioCardIcon from "../Components/StudioCardIcon";
 import './LandingPage.css'
 import MapsInput from "../Components/MapsInput";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -46,6 +47,7 @@ function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
   const rowRef = useRef(null);
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const containerRef = useRef(null);
 
@@ -232,7 +234,7 @@ function LandingPage() {
           : subtitleStyle;
 
   const cardStyle = {
-    background: "rgba(255, 255, 255, 0.8)",
+    background: isDarkModeOn ? '#333333' : 'white',
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     borderRadius: "10px",
   };
@@ -288,7 +290,7 @@ function LandingPage() {
     const isSmallScreen = window.innerWidth <= 768;
 
   return (
-    <div className="landing-page">
+    <div className="landing-page" >
       <Container className="my-5">
         <Row>
           <Col>
@@ -313,7 +315,7 @@ function LandingPage() {
         <br />
     
         <Row>
-          {recentlyWatchedStudios.length > 0 && <h2> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Watched Studios</h2>}
+          {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Watched Studios</h3>}
           <div className="row-container">
           {recentlyWatchedStudios.map((studio, index) => (
             <div key={index} className="row-item" md={2}>
@@ -335,26 +337,19 @@ function LandingPage() {
         </Row>
         <br />
         
-        <Row>
-          <Col>
-            <Card className="h-100" style={cardStyle}>
-              <Card.Body>
-              <Card.Title className="text-primary" style={{ textAlign: 'center' }}>
-                Find exciting dance studios and workshops NEAR YOU
-              </Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+  
+        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>
+                  Find exciting dance studios and workshops NEAR YOU
+        </h2>
         <br></br>
         <Row>
           <Col>
-            <Card className="h-100" style={cardStyle}>
+            <Card className="h-100" style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
               <Card.Body>
-                <Card.Title className="text-primary">
+                <Card.Title>
                   <h3>Search for studios near you!</h3>
                 </Card.Title>
-                <Card.Text className="text-secondary">
+                <Card.Text>
                   Welcome to Nritya!
                   <br />
                   <br />
@@ -364,19 +359,19 @@ function LandingPage() {
                   Team Nritya
                 </Card.Text>
               </Card.Body>
-              <Button variant="primary" href="#/search/studios">
+              <Button style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/studios">
                 Search!
               </Button>
             </Card>
           </Col>
             <br></br>
           <Col>
-            <Card className="h-100" style={cardStyle}>
+            <Card className="h-100" style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
               <Card.Body>
-                <Card.Title className="text-primary">
+                <Card.Title >
                   <h3>Search for workshops near you!</h3>
                 </Card.Title>
-                <Card.Text className="text-secondary">
+                <Card.Text>
                   Welcome to Nritya!
                   <br />
                   <br />
@@ -387,7 +382,7 @@ function LandingPage() {
                   Team Nritya
                 </Card.Text>
               </Card.Body>
-              <Button variant="primary" href="#/search/workshop">
+              <Button style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/workshop">
                 Search!
               </Button>
             </Card>
@@ -493,7 +488,7 @@ function LandingPage() {
       ) : (
         // Code for larger screens
         <>
-          {exploreCards.length > 0 && <h2>People are viewing</h2>}
+          {exploreCards.length > 0 && <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>People are viewing</h2>}
       <div style={{ display: 'flex', alignItems: 'center' , overflowX: 'hidden'}}>
         <button
           onClick={(e) => {
@@ -540,7 +535,7 @@ function LandingPage() {
       )}
         
         </Row>
-        <h1>BROWSE BY GENRE</h1>
+        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>BROWSE BY GENRE</h2>
         <Row>
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>

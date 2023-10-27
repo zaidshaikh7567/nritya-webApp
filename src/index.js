@@ -4,7 +4,7 @@ import './index.css';
 import './bootstrap.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import store from './reduxStore/store';
+import store from './redux/store';
 import { Provider } from 'react-redux'
 //npm install @reduxjs/toolkit react-redux
 

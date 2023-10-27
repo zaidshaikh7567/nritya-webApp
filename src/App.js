@@ -15,8 +15,15 @@ import Cart from './Screens/Cart';
 import Transactions from './Components/Transactions';
 import AdminPage from './Screens/AdminPage';
 import Trail from './Components/Trail';
+import { connect } from 'react-redux';
+import { toggleDarkMode } from './redux/actions/darkModeAction'; 
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from './redux/selectors/darkModeSelector'; 
 
 function App() {
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
+  const dispatch = useDispatch(); 
+  console.log(isDarkModeOn,"From header")
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
@@ -53,14 +60,42 @@ function App() {
     localStorage.removeItem('userDetails');
     localStorage.removeItem('StudioCreated');
   };
+ 
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode()); // Dispatch the action using useDispatch
+  };
+
+
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
-    <HashRouter >
+    <HashRouter  >
     
-            <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
-     
+      <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+      <div style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}}>
+  <span
+    onClick={handleToggleDarkMode}
+    style={{
+      fontSize: '1.5rem', // Set font size to 1.5rem
+      backgroundColor: isDarkModeOn ? 'black' : 'yellow', // White for dark mode, yellow for light mode
+      color: isDarkModeOn ? 'yellow' : 'white', // Yellow text for dark mode, white for light mode
+      border: 'none', // Remove the button border
+      borderRadius: '50%', // Make the element round
+      width: '3rem', // Set a fixed width
+      height: '3rem', // Set a fixed height
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer', // Change cursor to a pointer to indicate it's clickable
+    }}
+  >
+    {isDarkModeOn ? '🌜' : '🌞'} {/* Moon for dark mode, Sun for light mode */}
+  </span>
+  {/* Your other components */}
+</div>
+
+
       
-      <main className='py-1'>
+      <main className='py-1' style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}}>
         <Container>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -79,9 +114,8 @@ function App() {
           </Routes>
         </Container>
       </main>
-      <br />
      
-            <Footer/>
+      <Footer />
       
     </HashRouter>
   );

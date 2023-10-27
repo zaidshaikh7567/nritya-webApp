@@ -7,20 +7,14 @@ import { storage } from '../config';
 import { STORAGES } from '../constants';
 import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
 import StarRating from './StarRating';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 
-function StudioCard({
-  studioName,
-  studioAddress,
-  studioTiming,
-  studioPrice,
-  studioInstructors,
-  studioDanceStyles,
-  studioContactNumber,
-  studioId,
-  averageRating,
-  forceSmallView,
-}) {
+function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioInstructors,studioDanceStyles,
+                    studioContactNumber,studioId,averageRating,forceSmallView,}) {
+
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
   const navigate = useNavigate();
   const [studioIconUrl, setStudioIconUrl] = useState(null);
   console.log(averageRating,studioName)
@@ -59,10 +53,11 @@ function StudioCard({
     return forceSmallView === 1;
   };
   
-
-  // Content for small screens
+  // 2f4f4f 333333
+  // Content for small screens  
   const smallScreenContent = (
-    <Card style={{ width: '275px', height: '340px', marginBottom: '20px' }}>
+    <Card style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white' ,width: '275px', height: '340px', marginBottom: '20px' }} 
+          text={isDarkModeOn ? 'white' : 'dark'}>
       <Card.Img
         variant="top"
         src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
@@ -100,7 +95,7 @@ function StudioCard({
 
   // Content for larger screens
   const autoMode = (
-    <Card style={{ backgroundColor: '#000000' }} key="dark1" text={'dark' === 'light' ? 'dark' : 'white'}>
+    <Card style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white'}} key="dark1" text={isDarkModeOn ? 'white' : 'dark'}>
     <div>
     
       {/* Display image on top for smaller screens */}

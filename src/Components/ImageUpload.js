@@ -2,11 +2,14 @@ import React, { useState,useEffect } from "react";
 import shortid from "shortid";
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { storage } from '../config';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 
 const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
 
   const filesizes = (bytes, decimals = 2) => {
@@ -126,18 +129,22 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
   };
 
   return (
-    <div className="fileupload-view">
-      <div className="row justify-content-center m-0">
+    <div className="fileupload-view" >
+      <div className="row justify-content-center m-0" >
         <div className="col-md-6">
           <div className="card mt-5">
-            <div className="card-body">
+            <div className="card-body" style={{ 
+        backgroundColor: isDarkModeOn ? '#333333' : 'white', 
+      }}>
               <div className="kb-data-box">
                 <div className="kb-modal-data-title">
                   <div className="kb-data-title">
                     <h6>Multiple Image Upload</h6>
                   </div>
                 </div>
-                <form onSubmit={handleUploadSubmit}>
+                <form onSubmit={handleUploadSubmit} style={{ 
+        backgroundColor: isDarkModeOn ? '#333333' : 'white', 
+      }}>
                   <div className="kb-file-upload">
                     <div className="file-upload-box">
                       <input
@@ -193,7 +200,9 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
                   <div className="kb-buttons-box">
                     <button
                       type="submit"
-                      className="btn btn-primary form-submit"
+                      className="btn form-submit"
+                      style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}
+                      
                     >
                       Upload
                     </button>
