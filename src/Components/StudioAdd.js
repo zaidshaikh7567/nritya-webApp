@@ -80,12 +80,12 @@ function StudioAdd() {
   
 
   return (
-    <div>
+    <div >
        <br></br>
-      <Accordion defaultActiveKey="0" >
+      <Accordion defaultActiveKey="0" className={isDarkModeOn ? 'dark-accordion' : 'light-accordion'}>
       <Accordion.Item eventKey="0" style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
-        <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
-          Add a new course or studio:
+        <Accordion.Header >
+          Add a new studio:
         </Accordion.Header> 
          
         <Accordion.Body >

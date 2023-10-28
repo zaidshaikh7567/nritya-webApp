@@ -57,7 +57,7 @@ function CreatorStudio() {
   return (
     <div>
        <br></br>
-        <StudioAdd/>
+        <StudioAdd style={{color: isDarkModeOn ? 'white' : 'black'}} />
          <StudioUpdate studio={studio} setStudio={setStudio} studioId={studioId} setStudioId={setStudioId}/>
       <br></br>
  

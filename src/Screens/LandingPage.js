@@ -315,7 +315,7 @@ function LandingPage() {
         <br />
     
         <Row>
-          {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Watched Studios</h3>}
+          {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> History</h3>}
           <div className="row-container">
           {recentlyWatchedStudios.map((studio, index) => (
             <div key={index} className="row-item" md={2}>
@@ -339,7 +339,7 @@ function LandingPage() {
         
   
         <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>
-                  Find exciting dance studios and workshops NEAR YOU
+                  Find studios & workshops
         </h2>
         <br></br>
         <Row>
@@ -347,7 +347,7 @@ function LandingPage() {
             <Card className="h-100" style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
               <Card.Body>
                 <Card.Title>
-                  <h3>Search for studios near you!</h3>
+                  <h3>Find studios near you!</h3>
                 </Card.Title>
                 <Card.Text>
                   Welcome to Nritya!
@@ -369,7 +369,7 @@ function LandingPage() {
             <Card className="h-100" style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
               <Card.Body>
                 <Card.Title >
-                  <h3>Search for workshops near you!</h3>
+                  <h3>Find workshops near you!</h3>
                 </Card.Title>
                 <Card.Text>
                   Welcome to Nritya!
@@ -465,7 +465,7 @@ function LandingPage() {
       {isSmallScreen ? (
         // Code for small screens
         <>
-          {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+          {exploreCards.length > 0 && <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>Explore Studios</h2>}
           <div className="row-container">
             {exploreCards.map((studio, index) => (
               <div key={index}  md={2}>

@@ -8,10 +8,12 @@ import { STATUSES, COLLECTIONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
-import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
+import { FaClock, FaMoneyBill, FaMapMarker, FaPhone, FaWhatsapp  } from 'react-icons/fa';
 import Ratings from '../Components/Ratings';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarker } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -165,20 +167,21 @@ console.log("StudioData")
             )}
           </div>
           <ButtonGroup>
-        <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
+        <Button  className="me-2 rounded-pill" size="sm"  style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
           <a href={"tel:" + studioData.contactNumber} style={{ textDecoration: 'none', color: 'inherit' }}>
-            Call
+          <FaPhone style={{ transform: 'scaleX(-1)' }} />  Call
           </a>
         </Button>
-        <Button variant="outline-info" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.6rem' }}>
+        <Button className="me-2 rounded-pill" style={{ textTransform: 'none', backgroundColor: 'green', color:'white' }}>
           <a href={"https://wa.me/" + studioData.contactNumber} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
-            WhatsApp
+          <FaWhatsapp />  WhatsApp
           </a>
         </Button>
       </ButtonGroup>
         </>
       )}
-<br></br>
+      
+      <p>  </p>
       <Container fluid>
         <Row>
         <Col >
