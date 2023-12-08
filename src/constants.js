@@ -14,12 +14,15 @@ export const COLLECTIONS ={
     ADMIN:"Admin",
     REVIEWS: "Reviews",
     TRANSACTIONS: "Transactions",
-    STUDIO: "Studio"
+    STUDIO: "Studio",
+    INSTRUCTORS: "Instructors"
 }
 
 export const STORAGES ={
     STUDIOIMAGES:'StudioImages',
     STUDIOICON:'StudioIcon',
-    USERIMAGE:'UserImage'
+    USERIMAGE:'UserImage',
+    INSTRUCTORIMAGES: 'InstructorImages'
+
 }
   

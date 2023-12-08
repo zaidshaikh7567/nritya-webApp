@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Row, Col, Form, Accordion, Table, Toast } from 'react-bootstrap';
+import { Card, Button, Row, Col, Form, Accordion, Table, Toast,Badge,Dropdown } from 'react-bootstrap';
 import { db } from '../config';
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
@@ -9,6 +9,13 @@ import { STORAGES } from '../constants';
 import MapsInput from './MapsInput';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+
+const colorCombinations = [
+  { background: 'success', text: 'white' },
+  { background: 'warning', text: 'black' },
+  { background: 'danger', text: 'white' },
+  { background: 'info', text: 'black' },
+];
 
 function isMapOfMaps(data) {
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
@@ -37,9 +44,23 @@ const decodeUnicode = (unicodeString) => {
   return textDecoder.decode(new Uint8Array(utf8Encoded));
 };
 
-function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
+function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors }) {
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedStudioId, setSelectedStudioId] = useState(null);
+  const [selectedInstructors, setSelectedInstructors] = useState([]);
+
+  const handleToggleInstructor = (instructor) => {
+    setSelectedInstructors((prevSelected) => {
+      // Check if the instructor is already selected
+      const isAlreadySelected = prevSelected.some((selected) => selected.id === instructor.id);
+
+      // If selected, remove the instructor; if not selected, add the instructor
+      return isAlreadySelected
+        ? prevSelected.filter((selected) => selected.id !== instructor.id)
+        : [...prevSelected, instructor];
+    });
+  };
+  
   const [tableData, setTableData] = useState({
     0:{
       className: '',
@@ -71,7 +92,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
   useEffect(() => {
     // Fetch data for the selected studio when studioId changes
     if (selectedStudio) {
-      console.log("Studio id changes",selectedStudio)
+      console.log("Studio id changes",selectedStudio.instructorsNames)
+      setSelectedInstructors((selectedStudio.instructorsNames));
+
+      //setSelectedInstructors()
     }
   }, [selectedStudio]);
 
@@ -82,6 +106,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
     console.log("&**&(*", selected, selectedId);
     setSelectedStudioId(selectedId);
     setSelectedLocation(selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : null);
+    //console.log("names",selectedStudio.instructorsNames)
+    //selectedInstructors(selectedStudio && selectedStudio.instructorsNames)
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.STUDIO, selectedId));
       if (studioDoc.exists) {
@@ -121,36 +147,47 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
       return;
     }
 
-    const studioName = event.target.studioName.value;
-    const price = event.target.price.value;
-    const danceStyles = event.target.danceStyles.value;
-    const address = event.target.address.value;
-    const timing = event.target.timing.value;
-    const instructors = event.target.instructors.value;
-    const status = event.target.status.value;
-    const contactNumber = event.target.contactNumber.value;
-    const description = encodeToUnicode(event.target.description.value);
-    const geolocation = selectedLocation;
+    //const description = encodeToUnicode(event.target.description.value);
+    //const geolocation = selectedLocation;
 
     try {
       // Update the studio document with the new values
-      console.log(description,geolocation)
+      //console.log(description,geolocation)
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
       await updateDoc(studioRef, {
-        studioName,
-        price,
-        danceStyles,
-        address,
-        timing,
-        instructors,
-        status,
-        contactNumber,
-        description,
-        tableData, // Save the tableData along with other fields
-        geolocation
+              studioName: event.target.studioName.value,
+              aboutStudio: event.target.aboutStudio.value,
+              founderName: event.target.founderName.value,
+              aboutFounder: event.target.aboutFounder.value,
+              mobileNumber: event.target.mobileNumber.value,
+              whatsappNumber: event.target.whatsappNumber.value,
+              mailAddress: event.target.mailAddress.value,
+              danceStyles: event.target.danceStyles.value,
+              numberOfHalls: event.target.numberOfHalls.value,
+              maximumOccupancy: event.target.maximumOccupancy.value,
+              instructorsNames: selectedInstructors,
+              status: 'OPEN',
+              tableData: tableData,
+              buildingName: event.target.buildingName.value,
+              street: event.target.street.value,
+              city: event.target.city.value,
+              landmark: event.target.landmark.value,
+              pincode: event.target.pincode.value,
+              state: event.target.state.value,
+              country: "India",
+              geolocation : selectedLocation,
+              aadharNumber: event.target.aadharNumber.value ,
+              gstNumber: event.target.gstNumber.value,
+              enrolledId:[],
+              reviews:[],
+              author: JSON.parse(localStorage.getItem('userInfo')).displayName,
+              UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
+              addAmenities: event.target.addAmenities.value,
+              enrollmentProcess: event.target.enrollmentProcess.value,
       });
 
       console.log("Studio updated successfully");
+      alert("Studio Update successfully")
       setShowUpdateSuccessAlert(true);
       setShowUpdateErrorAlert(false);
     } catch (error) {
@@ -209,7 +246,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
             <Form id="updateStudioForm" onSubmit={handleUpdateStudio}>
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Id</Form.Label>
-                <Form.Control as="select" name="nameId" style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }}  onChange={handleSelectStudio}>
+                <Form.Control as="select" name="nameId" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}  onChange={handleSelectStudio}>
                   <option value="">Select a studio...</option>
                   {studioId && studioId.length > 0 ? (
                     studioId.map((studioItem) => (
@@ -223,121 +260,164 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
                 </Form.Control>
               </Form.Group>
 
-              <Form.Group controlId="formBasicUpdate">
+                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
+                <Row>
+                <Col md={6}>
+
                 <Form.Label>Studio Name</Form.Label>
-                <Form.Control
-                  style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                  type="textarea"
-                  rows={1}
-                  placeholder="Enter studio name"
-                  name="studioName"
-                  defaultValue={selectedStudio ? selectedStudio.studioName : ''}
-                />
-              </Form.Group>
+                <Form.Control rows={1} defaultValue={selectedStudio ? selectedStudio.studioName : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="studioName" />
+                
+                <Form.Label>About Studio</Form.Label>
+                <Form.Control rows={6} defaultValue={selectedStudio ? selectedStudio.aboutStudio : ''} style={{  minHeight: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio details" name="aboutStudio" />
+                
+                </Col>
+                <Col md={6}>
+                <Form.Label>Founder's Name</Form.Label>
+                <Form.Control rows={1} defaultValue={selectedStudio ? selectedStudio.founderName : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="founderName" />
+                
+                <Form.Label>About Founder</Form.Label>
+                <Form.Control rows={6} defaultValue={selectedStudio ? selectedStudio.aboutFounder : ''} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio details" name="aboutFounder" />
+                
+                </Col>
+                </Row>
+                <hr></hr>
 
-              <Form.Group controlId="formBasicUpdate">
-                <Form.Label>Price Starts from</Form.Label>
-                <Form.Control
-                  style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                  as="textarea"
-                  rows={1}
-                  placeholder="Enter price"
-                  name="price"
-                  defaultValue={selectedStudio ? selectedStudio.price : ''}
-                />
-              </Form.Group>
+                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
+                <Row>
+                <Col md={6}>
 
-              <Form.Group controlId="formBasicUpdate">
+                <Form.Label>Mobile Number</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.mobileNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter studio details" name="mobileNumber" type="number"  />
+
+                <Form.Label>WhatsApp Number</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.whatsappNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter studio details" name="whatsappNumber" type="number"  />
+                </Col>
+                <Col md={6}>
+                <Form.Label>Mail Address</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.mailAddress : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter studio details" name="mailAddress" />
+                
+                  </Col>
+                </Row>
+                <hr></hr>
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
+                <Row>
+                  <Col md={6}>
                 <Form.Label>Dance Styles</Form.Label>
-                <Form.Control
-                  style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                  as="textarea"
-                  rows={1}
-                  placeholder="Enter names of dance forms separated by commas like salsa, foreign, couple"
-                  name="danceStyles"
-                  defaultValue={selectedStudio ? selectedStudio.danceStyles : ''}
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.danceStyles : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter dance forms seperated by commas Eg, salsa, hip hop" name="danceStyles" />
+                <Form.Label>Number of Halls</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.numberOfHalls : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
+                </Col>
+                <Col md={6}>
+                <Form.Label>Maximum Occupancy</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.maximumOccupancy : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}  rows={1} placeholder="Maximum Occupancy" name="maximumOccupancy" type="number"   />
+                </Col>
+                </Row>
+                <hr></hr>
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
+                <Form.Label>Names of Instructors</Form.Label>
+                <Row >
+      
+      <Col xs={6}>
+      <div style={{ backgroundColor: isDarkModeOn ? 'black' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+        <Dropdown className="d-inline mx-2">
+          <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
+            Add/Remove Instrcutors
+          </Dropdown.Toggle>
+          <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
+            {instructors.map((instructor) => (
+              <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'black' : 'white' }} key={instructor.id}>
+                <Form.Check
+                  type="checkbox"
+                  id={`checkbox-${instructor.id}`}
+                  label={`${instructor.name} - ${instructor.id.slice(-4)}`}
+                  checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
+                  onChange={() => handleToggleInstructor(instructor)}
+                  style={{ flex: 1 }} 
                 />
-              </Form.Group>
-              <Form.Group controlId="formBasicUpdate">
-              <Form.Label>Address</Form.Label>
-              <Form.Control
-                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                as="textarea"
-                rows={1}
-                placeholder="Enter address"
-                name="address"
-                defaultValue={selectedStudio ? selectedStudio.address : ''}
-              />
-            </Form.Group>
+              </div>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+      </Col>
+      <Col xs={12} md={6}>
+        {selectedInstructors.length > 0 ? (
+          <ul style={{ listStyleType: 'none', padding: 0 }}>
+            <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
+            {selectedInstructors.map((selected, index) => (
+              <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
+                <Badge
+                  bg={colorCombinations[index % colorCombinations.length].background}
+                  style={{
+                    color: colorCombinations[index % colorCombinations.length].text,
+                    marginLeft: '5px',
+                  }}
+                  pill
+                >
+                  {selected.name} - {selected.id.slice(-4)}{' '}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No instructors selected.</p>
+        )}
+      </Col>
+      </Row>  
+      <hr></hr>
+                   
+                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
+                <Row>
+                  <Col md={6}>
+                  <Form.Label>Building Name</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.buildingName : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter building name" name="buildingName" />
 
-            <Form.Group controlId="formBasicBody">
+                <Form.Label>Street</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.street : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
+
+                <Form.Label>City</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.city : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter city" name="city" />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Landmark</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.landmark : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter landmark" name="landmark" />
+
+                <Form.Label>Pincode</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.pincode : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
+               
+                <Form.Label>State</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.state : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter state" name="state" />
+               
+                </Col>
+                
                 <Form.Label>Save exact Address</Form.Label>
                 <MapsInput selectedLocation={selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : selectedLocation}
                             setSelectedLocation={setSelectedLocation} />
-            </Form.Group>
+
+                </Row>
+                <hr></hr>
+
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
+                <Row>
+                  <Col md={6}>
+                <Form.Label>Owner's Aadhar Number</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.aadharNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
+                <Form.Label>Add Amenities</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.addAmenities : ''} rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Add amenities" name="addAmenities" />
+               
+                  </Col>
+                  <Col md={6}>
+                <Form.Label>GST Number</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.gstNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="GST Number" name="gstNumber" />
+                <Form.Label>Enrollment Process</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.enrollmentProcess : ''} rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
           
-            <Form.Group controlId="formBasicUpdate">
-              <Form.Label>Contact Number</Form.Label>
-              <Form.Control
-                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                as="textarea"
-                rows={1}
-                placeholder="Enter contact number for calling and WhatsApp"
-                pattern="[0-9+]+"
-                required
-                name="contactNumber"
-                defaultValue={selectedStudio ? selectedStudio.contactNumber : ''}
-              />
-            </Form.Group>
-          
-            <Form.Group controlId="formBasicUpdate">
-              <Form.Label>Timing</Form.Label>
-              <Form.Control
-                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                as="textarea"
-                rows={1}
-                placeholder="Enter Studio time eg 6 am to 1 pm"
-                name="timing"
-                defaultValue={selectedStudio ? selectedStudio.timing : ''}
-              />
-            </Form.Group>
-          
-            <Form.Group controlId="formBasicUpdate">
-              <Form.Label>Instructors</Form.Label>
-              <Form.Control
-                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                as="textarea"
-                rows={1}
-                placeholder="Enter names of instructors separated by commas like John, Stephen"
-                name="instructors"
-                defaultValue={selectedStudio ? selectedStudio.instructors : ''}
-              />
-            </Form.Group>
-          
-            <Form.Group controlId="formBasicUpdate">
-              <Form.Label>Status</Form.Label>
-              <Form.Control
-                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                as="select"
-                name="status"
-                defaultValue={selectedStudio ? selectedStudio.status : 'active'}
-              >
-                <option value="active">Open</option>
-                <option value="inactive">Closed</option>
-              </Form.Control>
-            </Form.Group>
-          
-            <Form.Group controlId="formBasicUpdate">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} 
-                as="textarea"
-                rows={3}
-                placeholder="Enter body"
-                name="description"
-                defaultValue={selectedStudio ? decodeUnicode(selectedStudio.description) : ''}
-              />
-            </Form.Group>
+                  </Col>
+                </Row>
+
               <br></br>
             <span>Time Table Of dance classes</span>
             <Table striped bordered hover variant="dark">
@@ -416,12 +496,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId }) {
               </tbody>
 
             </Table>
-
-              <br></br>
-
-              <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }} type="submit">
-                Update Studio
-              </Button>
+            <br></br>
+            <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }} type="submit">
+              Update Studio
+            </Button>
             </Form>
             {studioId && studioId.length > 0 && selectedStudioId && (
               <>

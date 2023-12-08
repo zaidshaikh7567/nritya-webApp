@@ -1,5 +1,5 @@
 import React, { useState,useEffect,useRef  } from "react";
-import { Container, Row, Col, Card, Button, Carousel } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Carousel, ButtonGroup } from "react-bootstrap";
 import Dance1 from "../Components/DanceImg/Dance1.jpg";
 import Dance2 from "../Components/DanceImg/Dance2.jpg";
 import Dance3 from "../Components/DanceImg/Dance3.jpg";
@@ -343,50 +343,15 @@ function LandingPage() {
         </h2>
         <br></br>
         <Row>
-          <Col>
-            <Card className="h-100" style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
-              <Card.Body>
-                <Card.Title>
-                  <h3>Find studios near you!</h3>
-                </Card.Title>
-                <Card.Text>
-                  Welcome to Nritya!
-                  <br />
-                  <br />
-                  Are you looking for a fun and convenient way to learn new dance moves and build your dance community?
-                  <br />
-                  <br />
-                  Team Nritya
-                </Card.Text>
-              </Card.Body>
-              <Button style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/studios">
-                Search!
+          <ButtonGroup>
+          <Button size="lg" size-md="md" size-sm="sm" className="rounded-pill" style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/studios">
+                Search Studio!
+          </Button>
+          
+          <Button size="lg" size-md="md" size-sm="sm" className="rounded-pill"  style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/workshop" disabled>
+                Explore Workshop!
               </Button>
-            </Card>
-          </Col>
-            <br></br>
-          <Col>
-            <Card className="h-100" style={cardStyle} text={isDarkModeOn ? 'white' : 'dark'}>
-              <Card.Body>
-                <Card.Title >
-                  <h3>Find workshops near you!</h3>
-                </Card.Title>
-                <Card.Text>
-                  Welcome to Nritya!
-                  <br />
-                  <br />
-                  Are you looking for a fun and convenient way to learn new dance moves and build your dance community?
-                  <br />
-                  COMING SOON !
-                  <br />
-                  Team Nritya
-                </Card.Text>
-              </Card.Body>
-              <Button style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/workshop">
-                Search!
-              </Button>
-            </Card>
-          </Col>
+          </ButtonGroup>
         </Row>
         <br />
         <br />
@@ -535,8 +500,8 @@ function LandingPage() {
       )}
         
         </Row>
-        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>BROWSE BY GENRE</h2>
-        <Row>
+        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} hidden>BROWSE BY GENRE</h2>
+        <Row hidden>
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>
               <Card style={cardStyle}>

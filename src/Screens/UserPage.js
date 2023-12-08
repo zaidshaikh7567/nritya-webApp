@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, Button, Row, Col , Form,Accordion } from 'react-bootstrap';
+import { Card, Button, Row, Col , Form,Accordion,Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection } from "firebase/firestore";
@@ -24,6 +24,8 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
   const [profilePictureUrl,setProfilePictureUrl] = useState(null);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const navigate = useNavigate();
+  console.log("UserPage")
+  
   if(!JSON.parse(localStorage.getItem('isLoggedIn'))){
     navigate('#/login');
   }
@@ -133,7 +135,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
       <Card  
           key="dark1"
           text={isDarkModeOn ? 'white' : 'black'}
-          style={{ width: '100%',backgroundColor: isDarkModeOn ? '#333333' : 'white' }}
+          style={{ width: '100%',backgroundColor: isDarkModeOn ? '#333333' : '' }}
          
           >
         <Card.Header >Profile</Card.Header>
@@ -141,13 +143,8 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
         
           <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr"}}>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",backgroundColor: "#050A30", }}>
-              <div style={{ borderRadius: '50%', overflow: 'hidden', border: '1px solid #00ed64', marginBottom: "2px" }}>
-                <img
-                  className="d-block w-100"
-                  src={profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/' }
-                  style={{ maxHeight: '100%', maxWidth: '100%', borderRadius: '70%' }}
-                  alt="pic"
-                />
+              <div style={{width: '20rem',height: '20rem', borderRadius: '50%', overflow: 'hidden', border: '1px solid #00ed64', marginBottom: "2px" }}>
+                <Image style={{ width: '100%', height: '100%'}} src={ profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/' }/>
               </div>
               <label htmlFor="profilePictureInput" style={{ cursor: 'pointer', color: 'white', fontSize: '1.2rem', marginTop: '5px' }}>
                 +

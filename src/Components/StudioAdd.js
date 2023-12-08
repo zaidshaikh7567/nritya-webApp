@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Button, Row, Col , Form,Accordion,Table,Toast } from 'react-bootstrap';
+import { Card, Button, Row, Col , Form,Accordion,Table,Toast,Dropdown,Badge } from 'react-bootstrap';
 import { useState, useEffect, useMemo } from 'react';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } from "firebase/firestore";
@@ -10,9 +10,17 @@ import { STORAGES } from '../constants';
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import MapsInput from './MapsInput';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
-import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
-function StudioAdd() {
+const colorCombinations = [
+  { background: 'success', text: 'white' },
+  { background: 'warning', text: 'black' },
+  { background: 'danger', text: 'white' },
+  { background: 'info', text: 'black' },
+];
+
+
+function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
       { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' },
@@ -20,7 +28,22 @@ function StudioAdd() {
     const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
-      
+    const [selectedInstructors, setSelectedInstructors] = useState([]);
+    //const [dropdownVisible, setDropdownVisible] = useState(false);
+  
+    const handleToggleInstructor = (instructor) => {
+      setSelectedInstructors((prevSelected) => {
+        // Check if the instructor is already selected
+        const isAlreadySelected = prevSelected.some((selected) => selected.id === instructor.id);
+  
+        // If selected, remove the instructor; if not selected, add the instructor
+        return isAlreadySelected
+          ? prevSelected.filter((selected) => selected.id !== instructor.id)
+          : [...prevSelected, instructor];
+      });
+    };
+  
+      console.log("Studio Add",newStudioId)
       const handleAddStudio = async (event) => {
         event.preventDefault();
         const title = event.target.studioName.value;
@@ -34,24 +57,37 @@ function StudioAdd() {
             
         //body: event.target.body.value,
         try {
-            
             const studioRef = await addDoc(collection(db, COLLECTIONS.STUDIO), {
               studioName: event.target.studioName.value,
-              price: event.target.price.value,
+              aboutStudio: event.target.aboutStudio.value,
+              founderName: event.target.founderName.value,
+              aboutFounder: event.target.aboutFounder.value,
+              mobileNumber: event.target.mobileNumber.value,
+              whatsappNumber: event.target.whatsappNumber.value,
+              mailAddress: event.target.mailAddress.value,
               danceStyles: event.target.danceStyles.value,
-              address: event.target.address.value,
-              timing: event.target.timing.value,
-              instructors: event.target.instructors.value,
-              status: event.target.status.value,
-              contactNumber: event.target.contactNumber.value,
+              numberOfHalls: event.target.numberOfHalls.value,
+              maximumOccupancy: event.target.maximumOccupancy.value,
+              instructorsNames: selectedInstructors,
+              status: 'OPEN',
               tableData: tableData,
+              buildingName: event.target.buildingName.value,
+              street: event.target.street.value,
+              city: event.target.city.value,
+              landmark: event.target.landmark.value,
+              pincode: event.target.pincode.value,
+              state: event.target.state.value,
+              country: "India",
               geolocation : selectedLocation,
+              aadharNumber: event.target.aadharNumber.value ,
+              gstNumber: event.target.gstNumber.value,
               enrolledId:[],
               reviews:[],
               author: JSON.parse(localStorage.getItem('userInfo')).displayName,
               UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
-              description:  event.target.description.value,
               isPremium: isPremium,
+              addAmenities: event.target.addAmenities.value,
+              enrollmentProcess: event.target.enrollmentProcess.value,
             });
             console.log("Studio added successfully");
             setNewStudioId(studioRef.id)
@@ -77,95 +113,208 @@ function StudioAdd() {
         }
      
       };
-  
+      
 
   return (
     <div >
-       <br></br>
+       
       <Accordion defaultActiveKey="0" className={isDarkModeOn ? 'dark-accordion' : 'light-accordion'}>
-      <Accordion.Item eventKey="0" style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
+      <Accordion.Item eventKey="1" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
         <Accordion.Header >
           Add a new studio:
         </Accordion.Header> 
          
         <Accordion.Body >
-            <Form onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#1A120B' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
-              <Form.Group controlId="formBasicTitle">
+            <Form id="addStudioForm" onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+              <Form.Group controlId="formBasicAdd">
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
+                <Row>
+                <Col md={6}>
+
                 <Form.Label>Studio Name</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter studio name" name="studioName" />
-              </Form.Group>
- 
-              <Form.Group controlId="formBasicBody">
-                <Form.Label>Price Starts from</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter price" name="price" />
-              </Form.Group>
-              <Form.Group controlId="formBasicBody">
+                <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="studioName" />
+                
+                <Form.Label>About Studio</Form.Label>
+                <Form.Control rows={6} style={{  minHeight: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio details" name="aboutStudio" />
+                
+                </Col>
+                <Col md={6}>
+                <Form.Label>Founder's Name</Form.Label>
+                <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="founderName" />
+                
+                <Form.Label>About Founder</Form.Label>
+                <Form.Control rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio details" name="aboutFounder" />
+                
+                </Col>
+                </Row>
+                <hr></hr>
+
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
+                <Row>
+                <Col md={6}>
+
+                <Form.Label>Mobile Number</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter studio details" name="mobileNumber" type="number"  />
+
+                <Form.Label>WhatsApp Number</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter studio details" name="whatsappNumber" type="number"  />
+                </Col>
+                <Col md={6}>
+                <Form.Label>Mail Address</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter studio details" name="mailAddress" />
+                
+                  </Col>
+                </Row>
+                <hr></hr>
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
+                <Row>
+                  <Col md={6}>
                 <Form.Label>Dance Styles</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter names of dance forms seperated by commas like salsa, foreign, couple" name="danceStyles" />
-              </Form.Group>
- 
-              <Form.Group controlId="formBasicBody">
-                <Form.Label>Address</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter address" name="address" />
-              </Form.Group>
-              <Form.Group controlId="formBasicBody">
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter dance forms seperated by commas Eg, salsa, hip hop" name="danceStyles" />
+                <Form.Label>Number of Halls</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
+                </Col>
+                <Col md={6}>
+                <Form.Label>Maximum Occupancy</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}  rows={1} placeholder="Maximum Occupancy" name="maximumOccupancy" type="number"   />
+                </Col>
+                </Row>
+                <hr></hr>
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
+
+
+          <Form.Label>Names of Instructors</Form.Label>
+          <Row>
+      
+          <Col xs={6}>
+          <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+            <Dropdown className="d-inline mx-2">
+              <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
+                Add/Remove Instrcutors
+              </Dropdown.Toggle>
+              <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
+                {instructors.map((instructor) => (
+                  <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'black' : 'white' }} key={instructor.id}>
+                    <Form.Check
+                      type="checkbox"
+                      id={`checkbox-${instructor.id}`}
+                      label={`${instructor.name} - ${instructor.id.slice(-4)}`}
+                      checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
+                      onChange={() => handleToggleInstructor(instructor)}
+                      style={{ flex: 1 }} 
+                    />
+                  </div>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+          </Col>
+      <Col xs={12} md={6}>
+        {selectedInstructors.length > 0 ? (
+          <ul style={{ listStyleType: 'none', padding: 0 }}>
+            <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
+            {selectedInstructors.map((selected, index) => (
+              <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
+                <Badge
+                  bg={colorCombinations[index % colorCombinations.length].background}
+                  style={{
+                    color: colorCombinations[index % colorCombinations.length].text,
+                    marginLeft: '5px',
+                  }}
+                  pill
+                >
+                  {selected.name} - {selected.id.slice(-4)}{' '}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No instructors selected.</p>
+        )}
+      </Col>
+          </Row>
+
+
+                  
+                  <hr />
+                         
+                <hr></hr>   
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
+                <span>Time Table Of dance classes</span>
+                <StudioTable tableData={tableData} setTableData={setTableData}/>
+                
+                <hr></hr>   
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
+                <Row>
+                  <Col md={6}>
+                  <Form.Label>Building Name</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter building name" name="buildingName" />
+
+                <Form.Label>Street</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
+
+                <Form.Label>City</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter city" name="city" />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Landmark</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter landmark" name="landmark" />
+
+                <Form.Label>Pincode</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
+               
+                <Form.Label>State</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter state" name="state" />
+               
+                </Col>
+
                 <Form.Label>Save exact Address</Form.Label>
                 <MapsInput selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}></MapsInput>
-              </Form.Group>
-              
-              <Form.Group controlId="formBasicBody">
-                <Form.Label>Contact Numer</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter contact number for calling and whatsapp" pattern="[0-9+]+"
-    required name="contactNumber" />
-              </Form.Group>
-              <Form.Group controlId="formBasicBody">
-                <Form.Label>Timing</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter Studio time eg 6 am to 1 pm" name="timing" />
-              </Form.Group>
- 
-              <Form.Group controlId="formBasicBody">
-                <Form.Label>Instructor(s)</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter names of instructors seperated by commas like John , Stephen" name="instructors" />
-              </Form.Group>
-              
- 
-              <Form.Group controlId="formBasicStatus">
-                <Form.Label>Status</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="select" name="status">
-                  <option value="active">Open</option>
-                  <option value="inactive">Closed</option>
-                </Form.Control>
-              </Form.Group>
-              <br></br>
-              <Form.Group controlId="formBasicBody">
-                <Form.Label>Description</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={3} placeholder="Enter body" name="description" />
+                
+                </Row>
+                <hr></hr>
+
+                
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
+                <Row>
+                <Col md={6}>
+                  <Form.Label>Owner's Aadhar Number</Form.Label>
+                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
+                  
+                  <Form.Label>Add Amenities</Form.Label>
+                  <Form.Control rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Add amenities" name="addAmenities" />
+                </Col>
+                <Col md={6}>
+                  <Form.Label>GST Number</Form.Label>
+                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="GST Number" name="gstNumber" />
+                  
+                  <Form.Label>Enrollment Process</Form.Label>
+                  <Form.Control rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
+          
+                </Col>
+                </Row>
+                
               </Form.Group>
               <br></br>
-              <span>Time Table Of dance classes</span>
-              <StudioTable tableData={tableData} setTableData={setTableData}/>
-              <br></br>
-              
               <Button variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
                 Add Studio
               </Button>
             </Form>
-            
-            
             <>
             {
               newStudioId === ""?(""):(<p>New Studio Created with id {newStudioId}. Now u can upload images regarding them</p>)
             }
+            <hr></hr>   
             </>
- 
-          <span>Images</span>
+          <p>Images</p>
             <ImageUpload entityId={newStudioId} storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
-          <br></br>
+          <hr></hr>
           <span>Studio Icon</span>
             <ImageUpload entityId={newStudioId} storageFolder={STORAGES.STUDIOICON} maxImageCount={1}></ImageUpload>
-          <br></br>
- 
-          </Accordion.Body>
+        </Accordion.Body>
         </Accordion.Item>
       </Accordion>
       <br></br>
@@ -173,5 +322,6 @@ function StudioAdd() {
     </div>
   )
 }
+
 
 export default StudioAdd

@@ -1,8 +1,211 @@
-import React, { useState } from 'react';
-import { InstantSearch, SearchBox, Hits, Stats } from 'react-instantsearch-dom';
-import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
+import React, { useState,useEffect } from 'react';
 import StudioCard from "../Components/StudioCard";
+import { useSelector, useDispatch } from 'react-redux';
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+import { Form, Button, Col, Row, Image, Modal, FormControl,Badge } from 'react-bootstrap';
+import indianCities from '../cities.json';
+import {refreshLocation} from '../redux/actions/refreshLocationAction';
+const FILTER_LOCATION_KEY = 'filterLocation';
+const FILTER_DISTANCES_KEY = 'filterDistances';
+const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
+const danceForms = ['Ballet', 'Hip Hop', 'Salsa', 'Kathak'];
+const distances = [2,5,10,20,50]
 
+const SearchPage = () => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [selectedDistances, setSelectedDistances] = useState('');
+  const [selectedDanceForm, setSelectedDanceForm] = useState('');
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const [showFilters, setShowFilters] = useState(false);
+  const dispatch = useDispatch();
+  console.log("dark mode", isDarkModeOn)
+
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+  };
+
+  const handleSearch = () => {
+    // Perform the search and update the results
+    fetch(`http://localhost:5000/search?query=${query}`)
+      .then(response => response.json())
+      .then(data => setResults(data))
+      .catch(error => console.error('Error fetching search results:', error));
+  };
+
+  const handleSaveFilters = () => {
+
+    localStorage.setItem(FILTER_DISTANCES_KEY, selectedDistances);
+    localStorage.setItem(FILTER_DANCE_FORMS_KEY, selectedDanceForm);
+    console.log("Location change, redux operation")
+    //dispatch(refreshLocation())
+    setShowFilters(false);
+  };
+
+  // Retrieve selected filters from local storage on component mount
+  useEffect(() => {
+    const storedDistances = localStorage.getItem(FILTER_DISTANCES_KEY);
+    const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
+    
+    if (storedDistances) {
+      setSelectedDistances(storedDistances);
+    }
+    
+    if (storedDanceForm) {
+      setSelectedDanceForm(storedDanceForm);
+    }
+    
+  }, []);
+
+  return (
+    <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', padding: '10px' }}>
+      <header>
+        <p1 style={{ color: isDarkModeOn ? 'white' : 'black' }}>Search </p1>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <FormControl type="text" placeholder="Enter your search query" value={query} onChange={handleInputChange}
+            style={{ marginRight: '10px', padding: '8px' }}
+          />
+          <Button
+            variant="primary"
+            rounded
+            style={{
+              cursor: 'pointer',
+              textTransform: 'none',
+              backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+              color: 'white',
+              padding: '8px',
+            }}
+            onClick={handleSearch}
+          >
+            Search
+          </Button>
+          <div
+            onClick={toggleFilters}
+            style={{ marginLeft: '10px', cursor: 'pointer', fontSize: '20px' }}
+          >
+            &#9776;
+          </div>
+        </div>
+      </header>
+
+      <Modal  show={showFilters} onHide={toggleFilters} backdrop="static">
+          <Modal.Header closeButton >
+            <Modal.Title >Filters</Modal.Title>
+          </Modal.Header>
+          <Modal.Body >
+            <Row >
+              {/* Left side for filters list */}
+              <Col md={4}>
+                <h5 >Filter By:</h5>
+                <hr style={{ margin: '5px 0' }}></hr>
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                  
+                <li
+                  style={{ cursor: 'pointer', margin: '5px 0' }}
+                  onClick={() => setShowFilters('distances')}
+                >
+                  Distances
+                </li>
+                  
+                <hr style={{ margin: '5px 0' }}></hr>
+                <li
+                  style={{ cursor: 'pointer', margin: '5px 0' }}
+                  onClick={() => setShowFilters('danceForm')}
+                >
+                  Dance Forms
+                </li>
+                <hr style={{ margin: '5px 0' }}></hr>
+              </ul>
+              </Col>
+
+              {/* Right side for selection lists */}
+              <Col md={8}>
+              
+                {showFilters === 'distances' && (
+                  <Form.Group controlId="filterDistances">
+                    <Form.Label>Distances:</Form.Label>
+                    <Form.Control as="select" value={selectedDistances} onChange={(e) => setSelectedDistances(e.target.value)}>
+                      <option value="">Select distance</option>
+                      {distances.map((distance) => (
+                        <option key={distance} value={distance}>
+                          {distance } km
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
+                )}
+                  
+                
+                {showFilters === 'danceForm' && (
+                  <Form.Group controlId="filterDanceForms">
+                    <Form.Label>Dance Forms:</Form.Label>
+                    <Form.Control as="select" value={selectedDanceForm} onChange={(e) => setSelectedDanceForm(e.target.value)}>
+                      <option value="">Select Dance Form</option>
+                      {danceForms.map((danceForm) => (
+                        <option key={danceForm} value={danceForm}>
+                          {danceForm}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
+                )}
+                
+                      
+
+                {/* Add more selection lists for additional filters */}
+              </Col>
+            </Row>
+
+            <Button variant="primary" onClick={handleSaveFilters}>
+              Save
+            </Button>
+          </Modal.Body>
+        </Modal>
+
+        {/* Filters Badges */
+        selectedDistances || selectedDanceForm? (
+      <div style={{ marginTop: '10px' }}>
+        {selectedDistances && (
+          <Badge pill bg={isDarkModeOn?"warning":"dark"} style={{ marginRight: '5px' }}>
+            Distance: {selectedDistances} km
+          </Badge>
+        )}
+        {selectedDanceForm && (
+          <Badge pill bg={isDarkModeOn?"danger":"info"} style={{ marginRight: '5px' }}>
+            Dance Form: {selectedDanceForm}
+          </Badge>
+        )}
+        {/* Add more badges for additional filters */}
+        <hr></hr>
+      </div>
+        ):""}
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
+        {results.map((result, index) => (
+          <div key={index} style={{ width: '30%', margin: '10px' }}>
+            <h2 style={{ color: isDarkModeOn ? 'white' : 'black' }}>Search Results:</h2>
+            <StudioCard
+              studioName={result.studioName}
+              studioId={result.studioId}
+              description={result.description}
+            ></StudioCard>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default SearchPage;
+
+
+
+
+/*
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
     apiKey: 'tRp4jvJoUy1YAjgXNyxTRbe1YQjsXaBg', // Be sure to use a Search API Key

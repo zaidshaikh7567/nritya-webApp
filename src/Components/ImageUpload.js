@@ -6,12 +6,14 @@ import { useSelector, useDispatch } from 'react-redux'; // Import useSelector an
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 
-const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
+const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [newFiles, setNewFiles] = useState([]); // Track new files to be added
+  const [deletedFiles, setDeletedFiles] = useState([]); // Track deleted files
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
-
+  console.log("enitity id ",entityId)
   const filesizes = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -22,13 +24,21 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
   };
 
   useEffect(() => {
-    fetchStudioImages(entityId); // Fetch images when component mounts
+    console.log("Fetching image for",entityId)
+    if(entityId){
+      fetchStudioImages(entityId); // Fetch images when component mounts
+    }
   }, [entityId]);
 
+  useEffect(() => {
+    console.log("Selected files:", selectedFiles);
+  }, [selectedFiles]);
+
   const handleInputChange = (e) => {
+    console.log("handleInputChange")
     const files = Array.from(e.target.files);
     const updatedFiles = [];
-
+    console.log("file array ",files.length)
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -44,6 +54,8 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
 
         if (updatedFiles.length === files.length) {
           setSelectedFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
+          setNewFiles(updatedFiles);
+          console.log("New files in total",setNewFiles.length)
         }
       };
 
@@ -53,31 +65,52 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
 
   const handleDeleteSelectedFile = (id) => {
     if (window.confirm("Are you sure you want to delete this image?")) {
+      const fileToDelete = selectedFiles.find((file) => file.id === id);
+      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, fileToDelete]);
       setSelectedFiles((prevFiles) =>
         prevFiles.filter((file) => file.id !== id)
       );
     }
   };
 
-   const handleUploadSubmit = async (e) => {
+  const handleUploadSubmit = async (e) => {
     e.preventDefault();
-    console.log("inside handleUploadSubmit ")
-    if (selectedFiles.length > 0) {
-      const filesToUpload = selectedFiles.slice(0, maxImageCount);
-      for (const fileData of filesToUpload) {
+    console.log("inside handleUploadSubmit ",entityId)
+    if(!entityId){
+      alert("No studio selected");
+    }else if (selectedFiles.length > 0) {
+      
         try {
-          const folderPath = `${storageFolder}/${entityId}`; // Replace entityId with the actual user ID
-          console.log(folderPath)
-          const fileRef = ref(storage, `${folderPath}/${fileData.file.name}`);
-          console.log(fileRef)
-          await uploadBytes(fileRef, fileData.file);
+          if(deletedFiles.length>0){
+            console.log(deletedFiles," Deleting....")
+            for (const fileToDelete of deletedFiles) {
+              const fileRefToDelete = ref(storage, `${storageFolder}/${entityId}/${fileToDelete.filename}`);
+              await deleteObject(fileRefToDelete);
+            }
+          }
+          
+          if(newFiles.length>0){
+            console.log(newFiles.length,"New Files adding..")
+            for (const newFileData of newFiles) {
+              const folderPath = `${storageFolder}/${entityId}`;
+              const fileRef = ref(storage, `${folderPath}/${newFileData.file.name}`);
+              await uploadBytes(fileRef, newFileData.file);
+            }
+          }
+          alert("Images Uploaded/Deleted")
+          //setSelectedFiles([]);
+          //setNewFiles([]);
+          //setDeletedFiles([]);
+  
+          e.target.reset();
+  
           
         } catch (error) {
           console.error('Error uploading file:', error);
         }
-      }
+      
 
-      setSelectedFiles([]);
+      //setSelectedFiles([]);
     } else {
       alert("Please select a file.");
     }
@@ -104,6 +137,9 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
 
 
   const fetchStudioImages = async (entityId) => {
+    setSelectedFiles([]);
+    setNewFiles([]);
+    setDeletedFiles([]);
     try {
       const folderPath = `${storageFolder}/${entityId}`;
       console.log(folderPath)
@@ -121,30 +157,27 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
           };
         })
       );
-      console.error('File fetching');
+      console.log('File fetching',files);
       setUploadedFiles(files); // Update the uploadedFiles state with fetched data
+      setSelectedFiles(files);
     } catch (error) {
       console.error('Error fetching user images:', error);
     }
   };
 
   return (
-    <div className="fileupload-view" >
-      <div className="row justify-content-center m-0" >
-        <div className="col-md-6">
+    <div className="fileupload-view" style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+      <div className="row justify-content-center m-0" style={{ flex: '1',justifyContent: 'center' }}>
+        <div className="col-md-6" style={{ flex: '1' ,justifyContent: 'center'}}>
           <div className="card mt-5">
-            <div className="card-body" style={{ 
-        backgroundColor: isDarkModeOn ? '#333333' : 'white', 
-      }}>
+            <div className="card-body" style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white' }}>
               <div className="kb-data-box">
                 <div className="kb-modal-data-title">
-                  <div className="kb-data-title">
-                    <h6>Multiple Image Upload</h6>
+                  <div className="kb-data-title" style={{justifyContent:'center',flex: '1'}}>
+                    <h6>Image Upload</h6>
                   </div>
                 </div>
-                <form onSubmit={handleUploadSubmit} style={{ 
-        backgroundColor: isDarkModeOn ? '#333333' : 'white', 
-      }}>
+                <form onSubmit={handleUploadSubmit} style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>
                   <div className="kb-file-upload">
                     <div className="file-upload-box">
                       <input
@@ -154,49 +187,51 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
                         onChange={handleInputChange}
                         multiple
                       />
-                      <span>
-                        Drag and drop or{" "}
-                        <span className="file-link">Choose your files</span>
-                      </span>
+
                     </div>
                   </div>
                   <div className="kb-attach-box mb-3">
-                    {selectedFiles.map((file) => (
-                      <div className="file-atc-box" key={file.id}>
-                        {file.filename.match(/.(jpg|jpeg|png|gif|svg)$/i) ? (
-                          <div className="file-image">
-                            <img
-                              src={file.fileimage}
-                              alt={file.filename}
-                              className="preview-image"
-                              style={{maxHeight:"30%",maxWidth:"30%" }}
-                            />
-                            <br />
-                            <button
-                              type="button"
-                              className="file-delete-btn"
-                              onClick={() => handleDeleteSelectedFile(file.id)}
-                            >
-                              Delete
-                            </button>
+                  <div className="row">
+                    {selectedFiles.length > 0 ? (
+                      selectedFiles.map((file) => (
+                        <div key={file.id} className="col-6 col-md-3 mb-3">
+                          <div className="card">
+                            {file.filename.match(/\.(jpg|jpeg|png|gif|svg)$/i) ? (
+                              
+                              
+                              <img
+                                src={file.fileimage ? file.fileimage: file.fileURL}
+                                alt={file.filename}
+                                className="card-img-top"
+                                style={{ maxHeight: "150px", objectFit: "cover" }}
+                              />
+                            ) : (
+                              <div className="card-body">
+                                <i className="far fa-file-alt"></i>
+                              </div>
+                            )}
+                            <div className="card-footer">
+                              <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleDeleteSelectedFile(file.id)}
+                              >
+                                X
+                              </button>
+                            </div>
                           </div>
-                        ) : (
-                          <div className="file-image file-icon">
-                            <i className="far fa-file-alt"></i>
-                          </div>
-                        )}
-                        <div className="file-detail">
-                          <h6>{file.filename}</h6>
-                          <p>
-                            <span>Size: {file.filesize}</span>
-                            <span className="ml-2">
-                              Modified Time: {file.datetime}
-                            </span>
-                          </p>
                         </div>
+                      ))
+                    ) : (
+                      <div className="col-12 text-center">
+                        <p>No images selected</p>
                       </div>
-                    ))}
+                    )}
                   </div>
+
+                  </div>
+
+                  
                   <div className="kb-buttons-box">
                     <button
                       type="submit"
@@ -208,50 +243,29 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
                     </button>
                   </div>
                 </form>
-                {uploadedFiles.length > 0 && (
-                  <div className="kb-attach-box">
+                {selectedFiles.length > 0 && (
+                  <div className="kb-attach-box" hidden>
+                    <div className="row">
                     <hr />
-                    {uploadedFiles.map((file) => (
-                      <div className="file-atc-box" key={file.id}>
-                        {file.filename.match(/.(jpg|jpeg|png|gif|svg)$/i) ? (
-                          <div className="file-image">
-                            <img
-                              src={file.fileURL}
-                              alt={file.filename}
-                              className="preview-image"
-                            />
-                          </div>
+                    {selectedFiles.map((file) => (
+                      <div key={file.id} className="col-6 col-md-3 mb-3">
+                      <div className="card">
+                        {file.filename.match(/\.(jpg|jpeg|png|gif|svg)$/i) ? (
+                          <img
+                            src={file.fileimage}
+                            alt={file.filename}
+                            className="card-img-top"
+                            style={{ maxHeight: "150px", objectFit: "cover" }}
+                          />
                         ) : (
-                          <div className="file-image file-icon">
+                          <div className="card-body">
                             <i className="far fa-file-alt"></i>
                           </div>
                         )}
-                        <div className="file-detail">
-                          <h6>{file.filename}</h6>
-                          <p>
-                            <span>Size: {file.filesize}</span>
-                            <span className="ml-3">
-                              Modified Time: {file.datetime}
-                            </span>
-                          </p>
-                          <div className="file-actions">
-                            <button
-                              className="file-action-btn"
-                              onClick={() => handleDeleteFile(file.id, file.filename)}
-                            >
-                              Delete
-                            </button>
-                            <a
-                              href={file.fileURL}
-                              className="file-action-btn"
-                              download={file.filename}
-                            >
-                              Download
-                            </a>
-                          </div>
-                        </div>
                       </div>
+                    </div>
                     ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -266,6 +280,7 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount }) => {
 // Set default prop values
 ImageUpload.defaultProps = {
   maxImageCount: 5, // Default maximum image count
+  updateMode: false,
 };
 
 export default ImageUpload;

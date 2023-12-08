@@ -65,3 +65,19 @@
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
 }
+
+
+.filter-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.filter-list-item {
+  cursor: pointer;
+  padding: 8px;
+  transition: background-color 0.3s;
+}
+
+.filter-list-item:hover {
+  background-color: #f0f0f0; /* Add your desired hover background color */
+}

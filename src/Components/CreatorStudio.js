@@ -16,6 +16,43 @@ function CreatorStudio() {
   const [studio, setStudio] = useState([]);
   const [studioId, setStudioId] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
+  const [instructors, setInstructors] = useState([]);
+
+    // Fetch instructors for the current user
+  useEffect(() => {
+  const fetchInstructors = async () => {
+    let userId = null;
+    if (
+      JSON.parse(localStorage.getItem('userInfo')) &&
+      JSON.parse(localStorage.getItem('userInfo')).UserId
+    ) {
+      userId = JSON.parse(localStorage.getItem('userInfo')).UserId;
+    }
+    if (!userId) {
+      console.log('User not found');
+      alert('User not found');
+      return;
+    }
+
+    const instructorRef = collection(db, COLLECTIONS.INSTRUCTORS);
+    const q = query(instructorRef, where('createdBy', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    const instructorsList = [];
+    querySnapshot.forEach((doc) => {
+      instructorsList.push({
+        id: doc.id,
+        name: doc.data().name,
+        
+      });
+    });
+
+    setInstructors(instructorsList);
+  };
+
+  fetchInstructors();
+  }, []);
+
  
   useEffect(() => {
     const getStudioCreated = async ()=>{
@@ -57,8 +94,8 @@ function CreatorStudio() {
   return (
     <div>
        <br></br>
-        <StudioAdd style={{color: isDarkModeOn ? 'white' : 'black'}} />
-         <StudioUpdate studio={studio} setStudio={setStudio} studioId={studioId} setStudioId={setStudioId}/>
+         <StudioAdd instructors={instructors} style={{color: isDarkModeOn ? 'white' : 'black'}} />
+         <StudioUpdate studio={studio} setStudio={setStudio} instructors={instructors} studioId={studioId} setStudioId={setStudioId}/>
       <br></br>
  
       <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}>Your Studios:</h3>

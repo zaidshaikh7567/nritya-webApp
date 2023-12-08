@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+import localImage from '../Components/DanceImg/Dance1.jpg';
 
 
 function LoginPage({onLogin,setIsLoggedIn}) {
@@ -80,17 +81,36 @@ function LoginPage({onLogin,setIsLoggedIn}) {
     
       
     return (
-      <Container>
-      <Row className="justify-content-center">
-        <Col xs={6}>
-        <form
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom:'30%' }}
+      
+
+      <Container fluid>
+      <Row>
+        
+        <Col xs={12} md={6}>
+          <img
+                  src={localImage}
+                  alt="Your Local Image Alt Text"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+        </Col>
+        <Col xs={12} md={6}>
+        <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                  }}
+                >
+          
+          <form
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onSubmit={(e) => {
               e.preventDefault(); // Prevent form submission
               signin(); // Call your signin function on form submission
             }}
           >
-            
             <Button
               type="submit" // Add a type to the button to trigger form submission
               style={{
@@ -112,11 +132,11 @@ function LoginPage({onLogin,setIsLoggedIn}) {
               Sign In with Google
             </Button>
           </form>
-
-
+          </div>
         </Col>
       </Row>
-    </Container>
+      </Container>
+
 
     );
 }

@@ -71,27 +71,26 @@ function App() {
     <HashRouter  >
     
       <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
-      <div style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}}>
-  <span
-    onClick={handleToggleDarkMode}
-    style={{
-      fontSize: '1.5rem', // Set font size to 1.5rem
-      backgroundColor: isDarkModeOn ? 'black' : 'yellow', // White for dark mode, yellow for light mode
-      color: isDarkModeOn ? 'yellow' : 'white', // Yellow text for dark mode, white for light mode
-      border: 'none', // Remove the button border
-      borderRadius: '50%', // Make the element round
-      width: '3rem', // Set a fixed width
-      height: '3rem', // Set a fixed height
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer', // Change cursor to a pointer to indicate it's clickable
-    }}
-  >
-    {isDarkModeOn ? '🌜' : '🌞'} {/* Moon for dark mode, Sun for light mode */}
-  </span>
-  {/* Your other components */}
-</div>
+      <div style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}} hidden>
+        <span
+          onClick={handleToggleDarkMode}
+          style={{
+            fontSize: '1.5rem', // Set font size to 1.5rem
+            backgroundColor: isDarkModeOn ? 'black' : 'yellow', // White for dark mode, yellow for light mode
+            color: isDarkModeOn ? 'yellow' : 'white', // Yellow text for dark mode, white for light mode
+            border: 'none', // Remove the button border
+            borderRadius: '50%', // Make the element round
+            width: '3rem', // Set a fixed width
+            height: '3rem', // Set a fixed height
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer', // Change cursor to a pointer to indicate it's clickable
+          }}
+        >
+          {isDarkModeOn ? '🌜' : '🌞'} {/* Moon for dark mode, Sun for light mode */}
+        </span>
+      </div>
 
 
       

@@ -4,9 +4,12 @@ import { faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
+import { useNavigate } from 'react-router-dom';
 
 function Footer() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
+
 
   const adCardStyle = {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -31,7 +34,7 @@ function Footer() {
                   Showcase your dance studio or workshops to a wide audience of dance enthusiasts. Get started today and
                   reach out to your potential customers!
                 </p> 
-                <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} href="#/profile">List Now</Button>
+                <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} href={isLoggedIn ? '#/profile' : '#/login'}>List Now</Button>
               </Card.Body>
             </Card>
           </Col>
