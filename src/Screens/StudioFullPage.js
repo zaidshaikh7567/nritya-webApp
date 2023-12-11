@@ -150,39 +150,35 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'black':'white' ,color: isDarkModeOn?'white':'color' }}>
       {/* Row 1 */}
-      <Row  >
+      <Row>
   {/* Left-hand side column */}
-  <Col xs={8}>
+  <Col xs={12} md={8}>
     {/* Row-a */}
     <Row>
-        <Col xs={5}>
-        <h5 style={{color: isDarkModeOn?'white':'' }}>{studioData ? studioData.studioName : ""}</h5>
-        </Col>
-        <Col xs={4}>
-        {studioData && studioData.avgRating?  <StarRating rating={studioData.avgRating} viewMode={true} />:""}
-        </Col>
-        <Col>
-        <>
-        {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng  ? (
-              <a
-                href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <PinMarker lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.city} isDarkModeOn={isDarkModeOn} />
-              </a>
-            ) : (
-              <div style={{ color: 'blue', fontSize: '16px' }} >{ (studioData && studioData.city)? studioData.city:""}</div>
-            )}
-          </>
-        
-        </Col>
-      
+      <Col xs={5}>
+        <h5 style={{ color: isDarkModeOn ? 'white' : '' }}>{studioData ? studioData.studioName : ""}</h5>
+      </Col>
+      <Col xs={4}>
+        {studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}
+      </Col>
+      <Col xs={3}>
+        {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (
+          <a
+            href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <PinMarker lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.city} isDarkModeOn={isDarkModeOn} />
+          </a>
+        ) : (
+          <div style={{ color: 'blue', fontSize: '16px' }}>{studioData && studioData.city ? studioData.city : ""}</div>
+        )}
+      </Col>
     </Row>
 
     {/* Row-b */}
     <Row>
-      <Col>
+      <Col xs={12}>
         <i className="fab fa-youtube"></i>
         <i className="fab fa-facebook"></i>
         <i className="fab fa-instagram"></i>
@@ -192,37 +188,44 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
 
     {/* Row-c */}
     <Row>
-      <Col>
-        <p style={{color: isDarkModeOn?'white':'black',backgroundColor: isDarkModeOn?'black':'white'}}>{studioData ? studioData.aboutStudio : ""}</p>
+      <Col xs={12}>
+        <p style={{ color: isDarkModeOn ? 'white' : 'black', backgroundColor: isDarkModeOn ? 'black' : 'white' }}>
+          {studioData ? studioData.aboutStudio : ""}
+        </p>
       </Col>
     </Row>
   </Col>
 
   {/* Right-hand side column */}
-  
-  <Col >
-  <Paper elevation={5} style={{color: isDarkModeOn?'white':'',backgroundColor: isDarkModeOn?'#36454F':'white',display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '200px', // Adjust the minimum height as needed
-    padding: '16px', // Add padding for better visual appearance
- }} >
-    <Col>
-    {/* Row-a */}
-    <Row>
-      <h5 style={{color: isDarkModeOn?'white':'' }} >Founder</h5>
-    </Row>
+  <Col xs={12} md={4}>
+    <Paper
+      elevation={5}
+      style={{
+        color: isDarkModeOn ? 'white' : '',
+        backgroundColor: isDarkModeOn ? '#36454F' : 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '200px', // Adjust the minimum height as needed
+        padding: '16px', // Add padding for better visual appearance
+      }}
+    >
+      <Col>
+        {/* Row-a */}
+        <Row>
+          <h5 style={{ color: isDarkModeOn ? 'white' : '' }}>Founder</h5>
+        </Row>
 
-    {/* Row-b */}
-    <Row>
-      <h6 style={{color: isDarkModeOn?'white':'' }} >{studioData ? studioData.founderName : ""}</h6>
-    </Row>
+        {/* Row-b */}
+        <Row>
+          <h6 style={{ color: isDarkModeOn ? 'white' : '' }}>{studioData ? studioData.founderName : ""}</h6>
+        </Row>
 
-    {/* Row-c */}
-    <Row>
-      <p style={{color: isDarkModeOn?'white':'black' }} >{studioData ? studioData.aboutFounder : ""}</p>
-    </Row>
-    </Col>
+        {/* Row-c */}
+        <Row>
+          <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>{studioData ? studioData.aboutFounder : ""}</p>
+        </Row>
+      </Col>
     </Paper>
   </Col>
 </Row>
