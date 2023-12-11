@@ -250,48 +250,45 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       {/* Row 3 */}
       <Row>
-        <Col>
-          {isLoadingImages ? (
-            <>
-              <Row>
-              <Skeleton variant="rectangular" animation="wave"  width={275} height={340} />
-              <Skeleton variant="rectangular" animation="wave"  width={275} height={340} />
-              <Skeleton variant="rectangular" animation="wave"  width={275} height={340} />
-              </Row>
-              
-            </>
-              
-            ) : (
-              <Carousel>
-                {carouselImages.map((image, index) => (
-                  <Carousel.Item key={index}>
-                    <div className="d-flex justify-content-between">
-                        {[index, index + 1, index + 2].map((cardIndex) => {
-                          // Use modulo to loop through the cards in a circular fashion
-                          const circularIndex = cardIndex % carouselImages.length;
-                          const cardImage = carouselImages[circularIndex];
-                          return (
-                            <div
-                              key={circularIndex}
-                              
-                              style={{ flex: "1", padding: "0.2rem", marginRight: '0.1rem' }}
-                            >
-                            <div style={{ position: 'relative', width: '100%', paddingTop: '75%' }}>
-                              <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} variant="top" src={cardImage} alt={`Carousel Slide ${index}`} />
-                            </div>
-                            </div>
-                          );
-                          
-                        })}
-                      
-                    </div>
-                    
-                  </Carousel.Item>
-                ))}
-            </Carousel> 
-            )}
-        </Col>
+  <Col>
+    {isLoadingImages ? (
+      <Row>
+        {[1, 2, 3].map((index) => (
+          <Col key={index} lg={6} md={12} sm={12}>
+            <Skeleton variant="rectangular" animation="wave" width={275} height={340} />
+          </Col>
+        ))}
       </Row>
+    ) : (
+      <Carousel>
+        {carouselImages.map((image, index) => (
+          <Carousel.Item key={index}>
+            <div className="d-flex justify-content-between">
+              {[0, 1, 2].map((cardIndex) => {
+                const circularIndex = (index * 3 + cardIndex) % carouselImages.length;
+                const cardImage = carouselImages[circularIndex];
+                const colProps = {
+                  xl: 4,
+                  lg: 6,
+                  md: 12,
+                  sm: 12,
+                };
+
+                return (
+                  <Col key={circularIndex} {...colProps}>
+                    <div style={{ position: 'relative', width: '100%', paddingTop: '75%' }}>
+                      <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} variant="top" src={cardImage} alt={`Carousel Slide ${index}`} />
+                    </div>
+                  </Col>
+                );
+              })}
+            </div>
+          </Carousel.Item>
+        ))}
+      </Carousel>
+    )}
+  </Col>
+</Row>
 
 
       {/* Row 4 (You can add content for Row 4 here) */}
