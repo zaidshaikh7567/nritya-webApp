@@ -1,5 +1,5 @@
 import React, { useState,useEffect,useRef  } from "react";
-import { Container, Row, Col, Card, Button, Carousel, ButtonGroup } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Carousel, ButtonGroup,Image } from "react-bootstrap";
 import Dance1 from "../Components/DanceImg/Dance1.jpg";
 import Dance2 from "../Components/DanceImg/Dance2.jpg";
 import Dance3 from "../Components/DanceImg/Dance3.jpg";
@@ -305,8 +305,9 @@ function LandingPage() {
                     </p>
                   </div>
                 )}
-                <img src={image} alt={`Carousel Item ${index + 1}`} style={{ height: `${imageHeight}px`, width: "100%" }} />
-              </Carousel.Item>
+                <img src={image} alt={`Carousel Item ${index + 1}`} style={{ height: window.innerWidth > 768 ? '50vh' : `${imageHeight}px`, width: "100%",objectFit: "cover" }} />
+                
+                </Carousel.Item>
               
               ))}
             </Carousel>
@@ -338,21 +339,67 @@ function LandingPage() {
         <br />
         
   
-        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>
-                  Find studios & workshops
-        </h2>
-        <br></br>
-        <Row>
-          <ButtonGroup>
-          <Button size="lg" size-md="md" size-sm="sm" className="rounded-pill" style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/studios">
+        <p style={{
+              color: isDarkModeOn ? 'white' : 'black',
+              fontSize: '3rem', // Default font size for larger screens
+              textAlign: 'center',
+              margin: '20px 0', // Add margin for spacing
+
+              '@media (max-width: 1200px)': {
+                fontSize: '1.5rem', // Adjust font size for medium-sized screens
+              },
+
+              '@media (max-width: 992px)': {
+                fontSize: '1.25rem', // Adjust font size for small screens
+              },
+
+              '@media (max-width: 768px)': {
+                fontSize: '1rem', // Adjust font size for extra small screens
+              }
+            }}>
+              Find studios & workshops
+            </p>
+
+          <br />
+
+          <Row style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+            <ButtonGroup>
+              <Button
+                size="lg" size-md="md" size-sm="sm" className="rounded-pill"
+                style={{
+                  backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+                  color: 'white',
+                  // Add media query for smaller screens
+                  '@media (max-width: 768px)': {
+                    fontSize: '0.70rem', // Adjust font size for smaller screens
+                  }
+                }}
+                href="#/search/studios"
+              >
                 Search Studio!
-          </Button>
-          
-          <Button size="lg" size-md="md" size-sm="sm" className="rounded-pill"  style={{backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}} href="#/search/workshop" disabled>
+              </Button>
+
+              <Button
+                size="lg" size-md="md" size-sm="sm" className="rounded-pill"
+                style={{
+                  backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+                  color: 'white',
+                  // Add media query for smaller screens
+                  '@media (max-width: 768px)': {
+                    fontSize: '0.8rem', // Adjust font size for smaller screens
+                  }
+                }}
+                href="#/search/workshop"
+                disabled
+              >
                 Explore Workshop!
               </Button>
-          </ButtonGroup>
-        </Row>
+            </ButtonGroup>
+          </Row>
+
         <br />
         <br />
         <Row>

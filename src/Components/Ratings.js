@@ -138,17 +138,29 @@ function Ratings({ userID, studioID }) {
   
   return (
     <div>
-      <p>
+      <p >
         {userID ? (
           `${rating !== -1 ? "" : 'You have not rated this studio yet.'}`
         ) : (
           <a href="#/login">
-            <StarRating rating={rating} onRatingChange={handleRatingChange} />
+            <StarRating rating={rating} onRatingChange={handleRatingChange} 
+               starSize={
+                window.innerWidth > 992 ? 'large' : // for screens larger than 992px
+                window.innerWidth > 768 ? 'medium' : // for screens between 768px and 992px
+                'small' // for screens smaller than 768px
+              }/>
           </a>
         )}
       </p>
-      <StarRating rating={averageRating} viewMode={true} />
-      {userID ? <StarRating rating={rating>0?rating:""} onRatingChange={handleRatingChange} viewMode={false}/> : null}
+      
+      {userID ? <StarRating rating={rating>0?rating:""} onRatingChange={handleRatingChange} viewMode={false} 
+        starSize={
+          window.innerWidth > 992 ? 'large' : // for screens larger than 992px
+          window.innerWidth > 768 ? 'medium' : // for screens between 768px and 992px
+          'small' // for screens smaller than 768px
+        }
+    
+      /> : null}
     </div>
   );
 }

@@ -129,8 +129,6 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
 
   return (
     <div >
-        
-
       <div class="card-container">
       <Card  
           key="dark1"
@@ -139,9 +137,8 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
          
           >
         <Card.Header >Profile</Card.Header>
-
-        
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr"}}>
+            <Row>
+            <Col xs={12} md={4}>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",backgroundColor: "#050A30", }}>
               <div style={{width: '20rem',height: '20rem', borderRadius: '50%', overflow: 'hidden', border: '1px solid #00ed64', marginBottom: "2px" }}>
                 <Image style={{ width: '100%', height: '100%'}} src={ profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/' }/>
@@ -157,7 +154,9 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
                 />
               </label>
             </div>
-            <div style={{borderLeft: "1px solid #00ed64" }}>
+            </Col>
+            <Col xs={12} md={8} >
+            <div >
             <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color: isDarkModeOn ? 'white' : 'black' ,marginBottom: "5px",marginTop: "5px" }}>{JSON.parse(localStorage.getItem('userInfoFull')).displayName}</Card.Title>
               {isCreator ? (
                 <>
@@ -175,11 +174,13 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
               <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Last Login At : {new Date(JSON.parse(localStorage.getItem('userInfoFull')).lastLoginAt * 1).toLocaleString()}</Card.Text>
            
             </div>
+            </Col>
+            </Row>
+            </Card>
           </div>
         
 
-      </Card>
-      </div>
+      
       {isCreator ? <Creator/> : <NonCreator/>}
     </div>
   );
