@@ -21,7 +21,7 @@ const razorpayConfig = {
   key_secret : "wmMR51UhKWEJf1LeHKiJ24S5"
 };
 
-// Initialize Firebase
+//nitialize Firebase
 const app = initializeApp(firebaseConfig);
 
 const provider = new GoogleAuthProvider();
