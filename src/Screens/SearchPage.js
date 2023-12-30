@@ -31,9 +31,27 @@ const SearchPage = () => {
 
   const handleSearch = () => {
     // Perform the search and update the results
-    fetch(`http://localhost:5000/search?query=${query}`)
+    let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
+  
+    if (localStorage.getItem(FILTER_LOCATION_KEY)) {
+      apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
+    }
+  
+    if (selectedDanceForm) {
+      apiEndpoint += `&danceStyle=${encodeURIComponent(selectedDanceForm)}`;
+    }
+  
+    
+    const tryUrl1 = 'https://nrityaserver-2b241e0a97e5.herokuapp.com/api/get_all_data/'
+    const tryUrl12 = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna`
+    //console.log("https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna")
+    console.log(tryUrl12===apiEndpoint)
+    fetch(apiEndpoint)
       .then(response => response.json())
-      .then(data => setResults(data))
+      .then(data => {
+        console.log('Search results:', data); // Log the data received from the API
+        setResults(data);
+      })  
       .catch(error => console.error('Error fetching search results:', error));
   };
 
@@ -185,14 +203,22 @@ const SearchPage = () => {
         ):""}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
-        {results.map((result, index) => (
-          <div key={index} style={{ width: '30%', margin: '10px' }}>
-            <h2 style={{ color: isDarkModeOn ? 'white' : 'black' }}>Search Results:</h2>
+        {results.map((studio, index) => (
+          <div key={index}
+          className="studio-card-container"
+          style={{ padding: "0.2rem" }} md={2}>
+          <a href={`#/studio/${studio.id}`} >
             <StudioCard
-              studioName={result.studioName}
-              studioId={result.studioId}
-              description={result.description}
-            ></StudioCard>
+                    studioName={studio.studioName}
+                    studioAddress={studio.city}
+                    studioPrice={studio.price}
+                    studioTiming={studio.timing}
+                    studioDanceStyles={studio.danceStyles}
+                    studioId={studio.id}
+                    averageRating={studio.avgRating}
+                    forceSmallView={1}
+                  />
+          </a>
           </div>
         ))}
       </div>

@@ -80,14 +80,6 @@ function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioIns
           <FaMapMarker size={14} className="me-2" />
           <Card.Text style={{ fontSize: '0.8rem', marginBottom: '2px' }}>{studioAddress}</Card.Text>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-          <FaMoneyBill size={14} className="me-2" />
-          <Card.Text style={{ fontSize: '0.8rem', marginBottom: '2px' }}> {studioPrice}</Card.Text>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <FaClock size={14} className="me-2" />
-          <Card.Text style={{ fontSize: '0.8rem' }}> {studioTiming}</Card.Text>
-        </div>
       </Card.Body>
     </Card>
 
@@ -189,9 +181,7 @@ function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioIns
             <Card.Subtitle style={{ fontSize: '0.9rem', textAlign: "left", marginBottom: "10px", textTransform: "none", wordBreak: 'break-word' }}>4.2 <RenderRating rating="4.2" /> 350(ratings)</Card.Subtitle>
             <Card.Text style={{ fontSize: '1.0rem', color: '#E4A11B', textAlign: "left", wordBreak: 'break-word' }}>Instructor: {studioInstructors}</Card.Text>
             <Card.Text style={{ fontSize: '1.0rem', textAlign: "left" }}>{studioAddress}</Card.Text>
-            <Card.Text style={{ fontSize: '1.0rem', textAlign: "left" }}>Timing: {studioTiming}</Card.Text>
-            <Card.Text style={{ fontSize: '1.0rem', textAlign: "left" }}>Price: {studioPrice}</Card.Text>
-
+            
             {console.log(studioDanceStyles)}
             {studioDanceStyles && studioDanceStyles.split(",").map((form, index) => (
               <Badge

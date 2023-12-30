@@ -62,10 +62,14 @@ function LoginPage({onLogin,setIsLoggedIn}) {
       try {
         const result = await signInWithPopup(auth, provider);
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+        const accessToken = credential.accessToken;
+        const idToken = credential.idToken;
+        console.log("Access token",accessToken)
+        console.log("Id token",idToken)
         const user = result.user;
         console.log("Post login :",user);
         console.log("UserId",user.uid);
+        console.log("Result ", result)
         onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled},user);
         setIsLoggedIn(true);
         await addUserIfMissing(user);
