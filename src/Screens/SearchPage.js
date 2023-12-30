@@ -5,6 +5,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { Form, Button, Col, Row, Image, Modal, FormControl,Badge } from 'react-bootstrap';
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
+import SmallCard from '../Components/SmallCard';
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -207,8 +208,8 @@ const SearchPage = () => {
           <div key={index}
           className="studio-card-container"
           style={{ padding: "0.2rem" }} md={2}>
-          <a href={`#/studio/${studio.id}`} >
-            <StudioCard
+          <a href={`#/studio/${studio.id}`} style={{textDecoration: "none"}} >
+            <SmallCard
                     studioName={studio.studioName}
                     studioAddress={studio.city}
                     studioPrice={studio.price}

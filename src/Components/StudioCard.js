@@ -9,7 +9,7 @@ import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
 import StarRating from './StarRating';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-
+import './StudioCard.css'
 
 function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioInstructors,studioDanceStyles,
                     studioContactNumber,studioId,averageRating,forceSmallView,}) {
@@ -56,32 +56,31 @@ function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioIns
   // 2f4f4f 333333
   // Content for small screens  
   const smallScreenContent = (
-    <Card style={{ backgroundColor: isDarkModeOn ? '#333333' : 'white' ,width: '275px', height: '340px', marginBottom: '20px' }} 
-          text={isDarkModeOn ? 'white' : 'dark'}>
+    <Card className={`cardContainer ${isDarkModeOn ? 'darkMode' : ''}`}>
       <Card.Img
         variant="top"
         src={studioIconUrl ? studioIconUrl : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
-        style={{ height: '50%', objectFit: 'contain' }}
+        className="cardImg"
       />
       <Card.Body>
-        <Card.Text style={{ fontSize: '1rem', marginBottom: '1px' }}>{studioName}</Card.Text>
+        <Card.Text className="cardText">{studioName}</Card.Text>
         {studioDanceStyles && studioDanceStyles.split(",").slice(0, 3).map((form, index) => (
           <Badge
             key={index}
-            bg={index % 2 === 0 ? "danger" : "warning"} // Alternate badge colors
-            className="me-2 rounded-pill"
-            style={{ marginBottom: "1px", fontSize: '0.6rem' }}
+            bg={index % 2 === 0 ? "danger" : "warning"}
+            className="badge me-2 rounded-pill"
           >
             {form.trim()}
           </Badge>
         ))}
         <StarRating rating={averageRating} viewMode={true} />
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-          <FaMapMarker size={14} className="me-2" />
-          <Card.Text style={{ fontSize: '0.8rem', marginBottom: '2px' }}>{studioAddress}</Card.Text>
+        <div className="starRatingContainer">
+          <FaMapMarker size={14} className="mapMarkerIcon me-2" />
+          <Card.Text>{studioAddress}</Card.Text>
         </div>
       </Card.Body>
     </Card>
+
 
   );
 

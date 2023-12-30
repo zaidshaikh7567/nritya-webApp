@@ -323,7 +323,7 @@ function LandingPage() {
               <a href={`#/studio/${studio.id}`} style={{ textDecoration: 'none' }}>
               <StudioCard
                     studioName={studio.studioName}
-                    studioAddress={studio.address}
+                    studioAddress={studio.city}
                     studioPrice={studio.price}
                     studioTiming={studio.timing}
                     studioDanceStyles={studio.danceStyles}
@@ -427,7 +427,7 @@ function LandingPage() {
                     >
                       <StudioCard
                         studioName={card.studioName}
-                        studioAddress={card.address}
+                        studioAddress={card.city}
                         studioInstructors={card.instructors}
                         studioPrice={card.price}
                         studioTiming={card.timing}
@@ -521,7 +521,7 @@ function LandingPage() {
               <a href={`#/studio/${studio.id}`}  style={{ textDecoration: 'none' }}>
                 <StudioCard
                   studioName={studio.studioName}
-                  studioAddress={studio.address}
+                  studioAddress={studio.city}
                   studioPrice={studio.price}
                   studioTiming={studio.timing}
                   studioDanceStyles={studio.danceStyles}

@@ -1,1 +1,4 @@
-u
+sudo npm install -g n
+sudo n lts
+hash -r
+node version

@@ -1,0 +1,76 @@
+/* styles.css */
+
+.cardContainer {
+    width: 17rem;
+    height: 20rem;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+    border-radius: 1rem;
+    transition: box-shadow 0.3s ease; /* Add a smooth transition effect for the box-shadow */
+}
+
+.cardContainer:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a subtle shadow on hover */
+    transform: translateX(1rem); 
+    transform: translateY(-0.5rem); 
+}
+
+.cardContainer:hover .card {
+    background-color: rgb(73, 70, 70); /* Change the background color on hover */
+}
+
+
+.cardContainer.darkMode:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Adjust shadow color in dark mode */
+    transform: translateX(1rem); 
+    transform: translateY(-0.5rem); 
+}
+
+
+
+.card {
+    background-color: white;
+    transition: background-color 0.3s ease; /* Add a smooth transition effect */
+}
+
+
+.card.darkMode {
+    background-color: #333333;
+    color: white;
+}
+
+
+.card.darkMode .cardText {
+    color: white; /* Adjust text color in dark mode */
+}
+
+.cardImg {
+    height: 75%;
+    object-fit: contain;
+}
+
+.cardText {
+    font-size: 1rem;
+    margin-bottom: 1px;
+    transition: color 0.3s ease; /* Add a smooth transition effect for text color */
+    text-decoration: none; 
+}
+  
+  .badge {
+    margin-bottom: 1px;
+    font-size: 0.6rem;
+  }
+  
+  .starRatingContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+  
+  .mapMarkerIcon {
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+  }
+  
