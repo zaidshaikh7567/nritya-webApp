@@ -88,6 +88,7 @@ function StudioAdd({instructors}) {
               isPremium: isPremium,
               addAmenities: event.target.addAmenities.value,
               enrollmentProcess: event.target.enrollmentProcess.value,
+              creatorEmail: JSON.parse(localStorage.getItem('userInfo')).email,
             });
             console.log("Studio added successfully");
             setNewStudioId(studioRef.id)
