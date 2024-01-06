@@ -14,13 +14,13 @@ const firebaseConfig = {
   measurementId: "G-YSM4JX078D"
 };
 const gMapApiKey ={
-  key: "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ"
+  key: process.env.REACT_APP_GMAP_API_KEY
 };
 const razorpayConfig = {
   key_id: "rzp_test_KGN4elrXhQOG65",
   key_secret : "wmMR51UhKWEJf1LeHKiJ24S5"
 };
-
+console.log(process.env.REACT_APP_GMAP_API_KEY,"yo")
 //nitialize Firebase
 const app = initializeApp(firebaseConfig);
 

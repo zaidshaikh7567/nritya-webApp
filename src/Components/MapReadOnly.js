@@ -1,31 +1,23 @@
 import React, { useState } from 'react';
 import GoogleMapReact from 'google-map-react';
+import { gMapApiKey } from '../config';
 
 const MapReadOnly = ({selectedLocationParam}) => {
-  const initialCenter = { lat: 28.6139, lng: 77.2090 }; // Coordinates for Delhi
-  const [center, setCenter] = useState(selectedLocationParam?selectedLocationParam:initialCenter); // State to store the map center
-  const [selectedLocation, setSelectedLocation] = useState(selectedLocationParam?selectedLocationParam:null); // State to store selected location
- 
-  const apiKey = "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ"; // Replace with your API Key
-
-  // Function to handle map click and update selected location
-  const handleMapClick = ({ x, y, lat, lng, event }) => {
-    setSelectedLocation({ lat, lng });
-  };
-
-
+  const initialCenter = { lat: 28.6139, lng: 77.2090 };
+  const [center, setCenter] = useState(selectedLocationParam?selectedLocationParam:initialCenter); 
+  const [selectedLocation, setSelectedLocation] = useState(selectedLocationParam?selectedLocationParam:null); 
+  
   return (
     <div style={{ height: '500px', width: '100%' }}>
         <div>
         
       </div>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: apiKey }}
+        bootstrapURLKeys={{ key: gMapApiKey.key }}
         center={center}
         defaultZoom={15}
         
       >
-        {/* Add markers or other map elements here */}
         {selectedLocation && (
           <PinMarker
             lat={selectedLocation.lat}
