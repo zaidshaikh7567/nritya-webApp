@@ -189,14 +189,14 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         )}
       </div>
           <br></br>
-      </Col>
-    </Row>
+        </Col>
+      </Row>
       <Row>
-        <Col xs={16} md={8}>
+        <Col xs={24} md={8}>
           {studioData&&studioData.aboutStudio? <NrityaCard data={studioData.aboutStudio} title={"About Studio"}/>:""} 
         </Col>
 
-        <Col xs={8} md={4}>
+        <Col xs={24} md={4}>
           {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} title={"About fOUNDER"}/>:""} 
         </Col>
       </Row>
