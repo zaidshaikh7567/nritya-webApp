@@ -231,41 +231,29 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
                 </Col>
               ))}
             </Row>
-          ) : (
+          ) : (                
             <Carousel>
               {carouselImages.map((image, index) => (
                 <Carousel.Item key={index}>
-                  <div className="d-flex justify-content-between">
-                    {[0, 1, 2].map((cardIndex) => {
-                      const circularIndex = (index * 3 + cardIndex) % carouselImages.length;
-                      const cardImage = carouselImages[circularIndex];
-                      const colProps = {
-                        xl: 4,
-                        lg: 6,
-                        md: 12,
-                        sm: 12,
-                      };
-
-                      return (
-                        <Col key={circularIndex} {...colProps}>
-                          <div style={{ position: 'relative', width: '100%', paddingTop: '75%' }}>
-                            <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} variant="top" src={cardImage} alt={`Carousel Slide ${index}`} />
-                          </div>
-                        </Col>
-                      );
-                    })}
-                  </div>
+                  <img
+                    className="d-block w-100"
+                    src={image}
+                    alt={`Carousel Slide ${index}`}
+                    style={{ maxHeight: '20rem', objectFit: 'cover'  }} 
+                  />
                 </Carousel.Item>
               ))}
-            </Carousel>
+            </Carousel>         
           )}
         </Col>
       </Row>
+      <br></br>
       <Row>
         <Col>
         <h4 style={{color: isDarkModeOn?'white':'black' }} >Instructor list</h4>
         </Col>
       </Row>
+      <br></br>
       <Row>
         <Col>
         {studioData && studioData.tableData ? (
