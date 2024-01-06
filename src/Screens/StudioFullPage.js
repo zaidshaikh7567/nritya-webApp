@@ -18,7 +18,7 @@ import Skeleton from '@mui/material/Skeleton';
 import '../Components/NrityaCard.css'
 import NrityaCard from '../Components/NrityaCard.js';
 import TableView from './TableView.js';
-
+import '../Common.css'
 
 // Function to decode a Unicode (UTF-8) encoded string back to the original text
 const decodeUnicode = (unicodeString) => {
@@ -144,7 +144,6 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
     fetchData();
    
   }, []);
-  //console.log("StudioData",studioData.geolocation)
 
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'black':'white' ,color: isDarkModeOn?'white':'color' }}>
@@ -155,14 +154,15 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         <Col xs={3}>
           {studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}
         </Col>
-        <Col xs={2}>
+        <Col xs={2} >
           {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (
             <a
               href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
               target="_blank"
               rel="noopener noreferrer"
+              
             >
-              <PinMarker lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.city} isDarkModeOn={isDarkModeOn} />
+              <PinMarker  lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.city} isDarkModeOn={isDarkModeOn} />
             </a>
           ) : (
             <div style={{ color: 'blue', fontSize: '2rem' }}>{studioData && studioData.city ? studioData.city : ""}</div>
@@ -174,17 +174,17 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         <div style={{ display: 'flex', justifyContent: 'left' }}>
         {isDarkModeOn ? (
           <>
-            <FaYoutube style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
-            <FaFacebook style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
-            <FaInstagram style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
-            <FaTwitter style={{ color: '#fff', fontSize: '24px' }} />
+            <FaYoutube className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
+            <FaFacebook className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
+            <FaInstagram className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
+            <FaTwitter className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px' }} />
           </>
         ) : (
           <>
-            <FaYoutube style={{ color: '#ff0000', fontSize: '24px', marginRight: '10px' }} />
-            <FaFacebook style={{ color: '#3b5998', fontSize: '24px', marginRight: '10px' }} />
-            <FaInstagram style={{ color: '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
-            <FaTwitter style={{ color: '#00aced', fontSize: '24px' }} />
+            <FaYoutube className='genericHoverEffect' style={{ color: '#ff0000', fontSize: '24px', marginRight: '10px' }} />
+            <FaFacebook className='genericHoverEffect' style={{ color: '#3b5998', fontSize: '24px', marginRight: '10px' }} />
+            <FaInstagram className='genericHoverEffect' style={{ color: '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
+            <FaTwitter className='genericHoverEffect' style={{ color: '#00aced', fontSize: '24px' }} />
           </>
         )}
       </div>
@@ -203,10 +203,10 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       <Row>
         <Col>
-          <h4 style={{color: isDarkModeOn?'white':'black' }} >Dance Forms</h4>
+          <h3 style={{color: isDarkModeOn?'white':'black' }} >Dance Forms</h3>
           {studioData && studioData.danceStyles ? (
             studioData.danceStyles.split(',').map((style, index) => (
-        <Badge pill
+        <Badge pill className='genericHoverEffect'
           key={index}
           bg={index % 4 === 0 ? 'danger' : index % 4 === 1 ? 'warning' : index % 4 === 2 ? 'success' : 'info'}
           style={{ marginRight: '1rem', fontSize: '0.8rem' }}
@@ -263,7 +263,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Row>
       <Row>
         <Col>
-          Instructor list
+        <h4 style={{color: isDarkModeOn?'white':'black' }} >Instructor list</h4>
         </Col>
       </Row>
       <Row>

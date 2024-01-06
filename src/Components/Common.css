@@ -1,0 +1,8 @@
+
+.genericHoverEffect {
+    transition: transform 0.3s ease; 
+  }
+  
+  .genericHoverEffect:hover {
+    transform: translate(5px, 5px); 
+  }

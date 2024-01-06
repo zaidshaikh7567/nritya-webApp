@@ -73,3 +73,11 @@
 .filter-list-item:hover {
   background-color: #f0f0f0; /* Add your desired hover background color */
 }
+
+.genericHoverEffect {
+  transition: transform 0.3s ease; 
+}
+
+.genericHoverEffect:hover {
+  transform: translate(5px, 5px); 
+}

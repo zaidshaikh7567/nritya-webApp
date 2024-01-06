@@ -42,9 +42,21 @@
   }
   
   .custom-table.dark-mode tr:nth-child(even) {
-    /* Alternate row color in dark mode */
     background-color: #444;
   }
+
+  .custom-table.dark-mode tr:nth-child(odd) {
+    background-color: #212121;
+  }
+
+
+  .custom-table.dark-mode tr:nth-child(even):hover  {
+    background-color: #36454F;
+  }
+
+  .custom-table.dark-mode tr:nth-child(odd):hover  {
+    background-color: #36454F;
+  } 
   
   .custom-table.dark-mode th,
   .custom-table.dark-mode td {

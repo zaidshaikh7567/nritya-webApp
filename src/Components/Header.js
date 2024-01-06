@@ -37,14 +37,23 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
     }
   }, []);
   
-  //console.log("Redux fetch first time", useSelector(selectRefreshLocation))
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const styleObj = {
     fontSize: 10,
     textAlign: "center",
-    background: isDarkModeOn ? '#292929' : '#cccccc', // Gradient from black to white
+    background: isDarkModeOn ? '#292929' : '#cccccc',
     }
-  
+    
+    function getUserNameInitials() {
+      const displayName = JSON.parse(localStorage.getItem('userInfo')).displayName;
+      const nameParts = displayName.split(" ");
+      let buttonContent = nameParts[0].charAt(0);
+      if (nameParts.length === 1) {
+        buttonContent += nameParts[0].charAt(1);
+      }
+      return buttonContent;
+    }
+    
   
   const handleToggleDarkMode = () => {
     dispatch(toggleDarkMode()); // Dispatch the action using useDispatch
@@ -122,20 +131,20 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
             <span
             onClick={handleToggleDarkMode}
             style={{
-              fontSize: '1.5rem', // Set font size to 1.5rem
-              backgroundColor: isDarkModeOn ? 'black' : 'yellow', // White for dark mode, yellow for light mode
-              color: isDarkModeOn ? 'yellow' : 'white', // Yellow text for dark mode, white for light mode
-              border: 'none', // Remove the button border
-              borderRadius: '50%', // Make the element round
-              width: '3rem', // Set a fixed width
-              height: '3rem', // Set a fixed height
+              fontSize: '1.5rem', 
+              backgroundColor: isDarkModeOn ? 'black' : 'yellow',  
+              color: isDarkModeOn ? 'yellow' : 'white',  
+              border: 'none',   
+              borderRadius: '50%',   
+              width: '3rem',  
+              height: '3rem',   
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer', // Change cursor to a pointer to indicate it's clickable
+              cursor: 'pointer',    
             }}
           >
-            {isDarkModeOn ? '🌜' : '🌞'} {/* Moon for dark mode, Sun for light mode */}
+            {isDarkModeOn ? '🌜' : '🌞'} {   }
             </span>
           </div>
           
@@ -195,9 +204,14 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
 
          {JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).displayName ? (
             <Nav>
-              <a onClick={openProfileModal}>
-                <Navbar.Text style={{ color: isDarkModeOn ? 'white' : 'black',fontSize:'1.5 rem',fontFamily:'Times Roman'}}>{JSON.parse(localStorage.getItem('userInfo')).displayName}</Navbar.Text>
-              </a>
+              <Button onClick={openProfileModal} variant="outline-warning" className=" rounded-pill"
+                style={{fontSize: '1rem', backgroundColor: isDarkModeOn?'#892CDC' : 'black',  
+                  color: isDarkModeOn ? 'white' : 'white', borderRadius: '50%',   
+                  width: '3rem',  height: '3rem',   display: 'flex',
+                  alignItems: 'center',justifyContent: 'center',cursor: 'pointer',  marginRight: '0.5rem'  
+                }}>
+                  {getUserNameInitials()} 
+              </Button>
               <Modal show={showProfileModal} onHide={closeProfileModal}>
               <Modal.Header closeButton>
                 
