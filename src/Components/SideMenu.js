@@ -47,7 +47,7 @@ function SideMenu({showProfileOffcanvas,closeProfileOffcanvas}) {
                   color: isDarkModeOn ? 'white' : 'black'}} show={showProfileOffcanvas} onHide={closeProfileOffcanvas}>
               <Offcanvas.Header closeButton>
                 
-              <img style={{width: '3rem',  height: '3rem',borderRadius:'50%'}}src={logo} alt="Logo"/> 
+              <img style={{width: '6rem',  height: '6rem',borderRadius:'50%'}}src={logo} alt="Logo"/> 
 
               </Offcanvas.Header>
                 <Offcanvas.Body>

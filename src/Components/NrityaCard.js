@@ -21,7 +21,8 @@ function NrityaCard({data,title,bubble=false}) {
     return(
         <Card className={nrityaCardClass}  style={{display: 'flex',alignItems: 'center',justifyContent: 'center',}} >   
         <Card.Title style={{ position: 'relative', padding: '0.1rem' }} >
-          <h4 style={{color: isDarkModeOn?'white':'black' }}>{title}</h4>
+          
+          {bubble? <Card.Text>{title}</Card.Text>:<h4 style={{color: isDarkModeOn?'white':'black' }}>{title}</h4>}
         </Card.Title>
         <Card.Body style={{ padding: '1rem' }}>
         {bubble?<CircularBubble number={data} />:data}
