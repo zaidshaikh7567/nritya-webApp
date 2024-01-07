@@ -119,13 +119,7 @@ function StudioAdd({instructors}) {
   return (
     <div >
        
-      <Accordion defaultActiveKey="0" className={isDarkModeOn ? 'dark-accordion' : 'light-accordion'}>
-      <Accordion.Item eventKey="1" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-        <Accordion.Header >
-          Add a new studio:
-        </Accordion.Header> 
-         
-        <Accordion.Body >
+      
             <Form id="addStudioForm" onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
               <Form.Group controlId="formBasicAdd">
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
@@ -210,6 +204,10 @@ function StudioAdd({instructors}) {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
+            <br></br>
+            <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
+              Go to Instrcutors' Add/update Page? 
+            </a>
           </div>
           </Col>
       <Col xs={12} md={6}>
@@ -235,10 +233,7 @@ function StudioAdd({instructors}) {
           <p>No instructors selected.</p>
         )}
       </Col>
-          </Row>
-
-
-                  
+          </Row>              
                   <hr />
                          
                 <hr></hr>   
@@ -315,9 +310,6 @@ function StudioAdd({instructors}) {
           <hr></hr>
           <span>Studio Icon</span>
             <ImageUpload entityId={newStudioId} storageFolder={STORAGES.STUDIOICON} maxImageCount={1}></ImageUpload>
-        </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
       <br></br>
       
     </div>

@@ -66,7 +66,7 @@ function Instructors() {
                 <InstructorUpdate instructors={instructors} setInstructors={setInstructors} />
                 </Accordion.Body>
             </Accordion.Item>
-            </Accordion>
+        </Accordion>
             <br></br>
             
             {instructors.length > 0 && (

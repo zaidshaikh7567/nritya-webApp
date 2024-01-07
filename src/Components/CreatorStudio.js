@@ -14,6 +14,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useAuth } from '../context/AuthContext';
 import Instructors from './Instructors';
 import NrityaCard from './NrityaCard';
+import { queryDocumentsCount } from '../utils/firebaseUtils';
 
 function CreatorStudio() {
   const [studio, setStudio] = useState([]);
@@ -36,7 +37,7 @@ function CreatorStudio() {
           
           setIsCreator(userSnap.data().CreatorMode)
           setPremiumTill(userSnap.data().isPremium)
-          console.log("Premium Till",premiumTill)
+          console.log("Premium Till",premiumTill,userSnap.data())
         }else{
           console.log("userSnap.data() null")
         }
@@ -70,16 +71,15 @@ function CreatorStudio() {
     const instructorRef = collection(db, COLLECTIONS.INSTRUCTORS);
     const q = query(instructorRef, where('createdBy', '==', userId));
     const querySnapshot = await getDocs(q);
-
+    
     const instructorsList = [];
     querySnapshot.forEach((doc) => {
       instructorsList.push({
         id: doc.id,
-        name: doc.data().name,
-        
+        name: doc.data().name,      
       });
     });
-
+    console.log("Hiii", instructorsList)
     setInstructors(instructorsList);
   };
 
@@ -126,20 +126,35 @@ function CreatorStudio() {
   console.log("studio :",studio)
   return (
     <div>
-      <Row>
-        <Col>
-          <NrityaCard title={"Total Studios"} data={studio.length?studio.length:0} bubble={true}></NrityaCard>
-        </Col>
-        <Col>
-          <NrityaCard title={"Total Instructors"} data={instructors.length?instructors.length:0} bubble={true}></NrityaCard>
-        </Col>
-      </Row>
       <br></br>
       {isCreator?(
+        
        <>
-         <StudioAdd instructors={instructors} style={{color: isDarkModeOn ? 'white' : 'black'}} />
-         <StudioUpdate studio={studio} setStudio={setStudio} instructors={instructors} studioId={studioId} setStudioId={setStudioId}/>
-         <Instructors/>
+        <Accordion defaultActiveKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+            <Accordion.Item eventKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                    Add Studio
+                </Accordion.Header>
+                <Accordion.Body>
+                <StudioAdd instructors={instructors} />
+                </Accordion.Body>
+            </Accordion.Item>
+
+            <Accordion.Item eventKey="1" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                Update Studio
+                </Accordion.Header>
+                <Accordion.Body>
+                <StudioUpdate
+                  studio={studio}
+                  setStudio={setStudio}
+                  instructors={instructors}
+                  studioId={studioId}
+                  setStudioId={setStudioId}
+                />
+                </Accordion.Body>
+            </Accordion.Item>
+        </Accordion>
       </>
       ):""}
  

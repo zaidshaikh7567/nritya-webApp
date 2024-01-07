@@ -22,6 +22,8 @@ import { selectDarkModeStatus } from './redux/selectors/darkModeSelector';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './utils/ProtectedRoute';
 import CreatorStudio from './Components/CreatorStudio';
+import CreatorDashboard from './Components/CreatorDashboard';
+import Instructors from './Components/Instructors';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -118,7 +120,9 @@ function App() {
               <Route path='/orders' element={<Order/>}/>
               <Route path='/cart' element={<Cart/>}/>
               <Route path='/transactions' element={<Transactions/>}/>
-              <Route path='studioDashboard' element={<CreatorStudio/>}/>
+              <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
+              <Route path='/modifyStudios' element={<CreatorStudio/>}/>
+              <Route path='/modifyInstructors' element={<Instructors/>}/>
             </Route>
             <Route path='/n-admin' element={<AdminPage/>}/>
             <Route path='/n-trail' element={<Trail/>}/>

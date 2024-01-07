@@ -239,10 +239,6 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   return (
     <div>
       <br></br>
-      <Accordion defaultActiveKey="1">
-        <Accordion.Item eventKey="1" style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
-          <Accordion.Header style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Update studio</Accordion.Header>
-          <Accordion.Body>
             <Form id="updateStudioForm" onSubmit={handleUpdateStudio}>
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Id</Form.Label>
@@ -340,6 +336,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
             ))}
           </Dropdown.Menu>
         </Dropdown>
+        <br></br>
+        <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
+          Go to Instrcutors' Add/update Page? 
+        </a>
       </div>
       </Col>
       <Col xs={12} md={6}>
@@ -515,13 +515,6 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 <br />
               </>
             )}
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
-      
-      
-
-     
       {showUpdateSuccessAlert && (
         <AlertPopup
           type="info"

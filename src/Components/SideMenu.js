@@ -32,7 +32,7 @@ function SideMenu({showProfileOffcanvas,closeProfileOffcanvas}) {
         { action: handleLogout, name: 'Sign Out' },
         { action: () => window.location.hash = '#/orders', name: 'Orders' },
         { action: () => window.location.hash = '#/transactions', name: 'Transactions' },
-        { action: () => window.location.hash = '#/studioDashboard', name: 'List Studio'}
+        { action: () => window.location.hash = '#/creatorDashboard', name: 'Dashboard'}
       ];
       
     
