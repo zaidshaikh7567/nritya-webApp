@@ -11,27 +11,31 @@ import { storage } from '../config'; // Import Firebase Storage
 import { STORAGES } from '../constants';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-
+import { useAuth } from '../context/AuthContext';
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
 }
 
-function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }) {
+function UserPage() {
 
   const [isCreator, setIsCreator] = useState(false);
   const [premiumTill, setPremiumTill] = useState(-1);
   const [profilePictureUrl,setProfilePictureUrl] = useState(null);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   console.log("UserPage")
   
-  if(!JSON.parse(localStorage.getItem('isLoggedIn'))){
+  if(currentUser && currentUser.displayName ){
+    
     navigate('#/login');
   }
 
   useEffect(() => {
-    const userId=JSON.parse(localStorage.getItem('userInfo')).UserId
+    console.log()
+    const userId= currentUser.uid;
+    console.log(userId)
     // Fetch and set the studio icon URL using studioId
     if (userId) {
       const storagePath = `${STORAGES.USERIMAGE}/${userId}`;
@@ -66,7 +70,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
     
     const getCreatorMode = async (event) => {
       try{
-      const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
+      const userRef = doc(db, "User", currentUser.uid);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         console.log("User there",userSnap.data(),userSnap.data().CreatorMode,JSON.parse(localStorage.getItem('userInfoFull')));
@@ -89,7 +93,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
     getCreatorMode();
   }, [isCreator]); // Run once on mount
 
-  console.log("hi",JSON.parse(localStorage.getItem('userInfoFull')))
+  console.log("hi",currentUser)
 
 
   const handleProfilePictureChange = async (e) => {
@@ -98,7 +102,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
     if (file) {
       try {
         // Delete old files in the storage folder
-        const userId = JSON.parse(localStorage.getItem('userInfo')).UserId;
+        const userId = currentUser.uuid
         const storageFolder = 'UserImage'; // Replace with your desired storage folder name
         const folderPath = `${storageFolder}/${userId}`;
         const storageRef = ref(storage, folderPath);
@@ -157,7 +161,7 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
             </Col>
             <Col xs={12} md={8} >
             <div >
-            <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color: isDarkModeOn ? 'white' : 'black' ,marginBottom: "5px",marginTop: "5px" }}>{JSON.parse(localStorage.getItem('userInfoFull')).displayName}</Card.Title>
+            <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color: isDarkModeOn ? 'white' : 'black' ,marginBottom: "5px",marginTop: "5px" }}>{currentUser.displayName}</Card.Title>
               {isCreator ? (
                 <>
                 <Card.Text style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}>Creator </Card.Text>
@@ -169,9 +173,9 @@ function UserPage({ onLogout, username, isLoggedIn, setUsername, setIsLoggedIn }
               ) : (
                 <Card.Text style={{ fontSize: '0.8rem', textAlign: "center" }}><Button variant="outline-warning" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.8rem' }} href="#/kyc">Apply for Creator</Button> </Card.Text>
               )}
-              <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Email: {JSON.parse(localStorage.getItem('userInfoFull')).email}</Card.Text>
-              <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Account Created : {new Date(JSON.parse(localStorage.getItem('userInfoFull')).createdAt * 1).toLocaleString()}</Card.Text>
-              <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Last Login At : {new Date(JSON.parse(localStorage.getItem('userInfoFull')).lastLoginAt * 1).toLocaleString()}</Card.Text>
+              <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Email: {currentUser.email}</Card.Text>
+              <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Account Created : {(currentUser.metadata.creationTime).toLocaleString()}</Card.Text>
+              <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Last Login At : {(currentUser.metadata.lastSignInTime).toLocaleString()}</Card.Text>
            
             </div>
             </Col>

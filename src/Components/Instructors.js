@@ -9,21 +9,17 @@ import {doc,getDoc,updateDoc,collection,where,query,getDocs} from 'firebase/fire
 import { COLLECTIONS } from '../constants';
 import { db } from '../config';
 import InstructorCard from './InstructorCard';
+import { useAuth } from '../context/AuthContext';
 
 function Instructors() {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
     const [instructors, setInstructors] = useState([]);
-
+    const { currentUser } = useAuth();
       // Fetch instructors for the current user
     useEffect(() => {
     const fetchInstructors = async () => {
-      let userId = null;
-      if (
-        JSON.parse(localStorage.getItem('userInfo')) &&
-        JSON.parse(localStorage.getItem('userInfo')).UserId
-      ) {
-        userId = JSON.parse(localStorage.getItem('userInfo')).UserId;
-      }
+      let userId = (currentUser && currentUser.uid)?currentUser.uid:null;
+      
       if (!userId) {
         console.log('User not found');
         alert('User not found');

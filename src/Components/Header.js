@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Button, Modal, Dropdown } from 'react-bootstrap';
+import { Nav, Navbar, Button, Offcanvas, Dropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
 
@@ -14,6 +14,8 @@ import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelecto
 import { Typeahead } from 'react-bootstrap-typeahead';
 import indianCities from '../cities.json';
 import { toggleDarkMode } from '../redux/actions/darkModeAction'; 
+import { useAuth } from '../context/AuthContext';
+import SideMenu from './SideMenu';
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 
@@ -22,7 +24,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
-
+  const { currentUser } = useAuth();
   const dispatch = useDispatch();
   const adminLogin = useSelector((state) => state.adminLogin);
 
@@ -45,11 +47,12 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
     }
     
     function getUserNameInitials() {
-      const displayName = JSON.parse(localStorage.getItem('userInfo')).displayName;
+      const displayName = currentUser.displayName;
       const nameParts = displayName.split(" ");
+      console.log("hii",nameParts)
       let buttonContent = nameParts[0].charAt(0);
-      if (nameParts.length === 1) {
-        buttonContent += nameParts[0].charAt(1);
+      if (nameParts.length > 1) {
+        buttonContent += nameParts[1].charAt(0);
       }
       return buttonContent;
     }
@@ -58,16 +61,16 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
   const handleToggleDarkMode = () => {
     dispatch(toggleDarkMode()); // Dispatch the action using useDispatch
   };
-  const [showProfileModal, setShowProfileModal] = React.useState(false);
+  const [showProfileOffcanvas, setShowProfileOffcanvas] = React.useState(false);
 
-    // Function to open the profile modal
-    const openProfileModal = () => {
-      setShowProfileModal(true);
+    // Function to open the profile Offcanvas
+    const openProfileOffcanvas = () => {
+      setShowProfileOffcanvas(true);
     };
   
-    // Function to close the profile modal
-    const closeProfileModal = () => {
-      setShowProfileModal(false);
+    // Function to close the profile Offcanvas
+    const closeProfileOffcanvas = () => {
+      setShowProfileOffcanvas(false);
     };
 
   const handleButtonClick = () => {
@@ -148,18 +151,18 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
             </span>
           </div>
           
-          {JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).displayName ? (
-             <> <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} disabled >
+          {currentUser ? (
+             <> <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
               <FontAwesomeIcon icon={faShoppingCart} />
               </Button>
               <Button   className="me-2 rounded-pill"  href="#/profile" style={{textTransform: 'none' , backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}>List Studios</Button>
             </>
           ) : (
             <>
-              <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} disabled >
+              <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
               <FontAwesomeIcon icon={faShoppingCart} />
             </Button>
-              <Button   className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}> List Studios</Button>
+              <Button   className="me-2 rounded-pill" href="#/profile" style={{textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}> List Studios</Button>
             </>
           )}
           <div className="position-relative location-dropdown-container">
@@ -202,9 +205,9 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
           </div>
           </Nav>
 
-         {JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).displayName ? (
+         {currentUser ? (
             <Nav>
-              <Button onClick={openProfileModal} variant="outline-warning" className=" rounded-pill"
+              <Button onClick={openProfileOffcanvas} variant="outline-warning" className=" rounded-pill"
                 style={{fontSize: '1rem', backgroundColor: isDarkModeOn?'#892CDC' : 'black',  
                   color: isDarkModeOn ? 'white' : 'white', borderRadius: '50%',   
                   width: '3rem',  height: '3rem',   display: 'flex',
@@ -212,19 +215,8 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
                 }}>
                   {getUserNameInitials()} 
               </Button>
-              <Modal show={showProfileModal} onHide={closeProfileModal}>
-              <Modal.Header closeButton>
-                
-                <Modal.Title>Action</Modal.Title> 
-
-              </Modal.Header>
-              <Modal.Body>
-                 <Button variant="outline-warning" className=" rounded-pill"  href="#/profile">Profile</Button>
-       
-                <Button variant="outline-warning" className=" rounded-pill" onClick={handleLogout} href="/nritya-webApp">Sign Out</Button>
-                <Button variant="outline-warning" className=" rounded-pill" href="#/orders">Orders</Button>
-              </Modal.Body>
-            </Modal>
+              
+            <SideMenu handleLogout={handleLogout} showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
               </Nav>
           ) : (
             <Nav>

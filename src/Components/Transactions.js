@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../config';
 import { doc, getDoc } from "firebase/firestore";
 import Card from 'react-bootstrap/Card';
+import { useAuth } from '../context/AuthContext';
 
 const cardStyle = {
   borderRadius: '10px',
@@ -20,11 +21,11 @@ const gradientStyles = [
 
 function Transactions() {
   const [transactions, setTransactions] = useState([]);
-
+  const { currentUser } = useAuth();
   useEffect(() => {
     const getTransactions = async () => {
       try {
-        const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
+        const userRef = doc(db, "User", currentUser.uid);
         const userSnap = await getDoc(userRef);
         
         if (userSnap.exists()) {
@@ -54,7 +55,7 @@ function Transactions() {
 
   return (
     <div>
-      {transactions.length > 0 ? (
+      {currentUser && transactions.length > 0 ? (
         transactions
           .sort((a, b) => b.date - a.date) // Sort transactions in descending order based on date
           .map((transaction,index) => (

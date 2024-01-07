@@ -19,12 +19,20 @@ import { connect } from 'react-redux';
 import { toggleDarkMode } from './redux/actions/darkModeAction'; 
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from './redux/selectors/darkModeSelector'; 
+import { useAuth } from './context/AuthContext';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const dispatch = useDispatch(); 
-  console.log(isDarkModeOn,"From header")
+  const { currentUser } = useAuth();
+  
 
+  console.log(isDarkModeOn,"From header")
+  if(currentUser ){
+    const { displayName, email  } = currentUser;
+    console.log("Hii",displayName,email)
+  }
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
   const [userID, setUserID] = useState(null);
@@ -65,7 +73,7 @@ function App() {
     dispatch(toggleDarkMode()); // Dispatch the action using useDispatch
   };
 
-
+  // console.log(currentUser)
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
     <HashRouter  >
@@ -99,15 +107,17 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
-            <Route path='/profile' element={<UserPage onLogout={handleLogout} username={username} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />}/>
-            <Route path='/kyc' element={<Kyc/>}/>
             <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
             <Route path='/st' element={<StudioFullPage/>}/>
             <Route path='/search/:entity' element={<SearchPage/>}/>
-            <Route path='/cplans' element={<CreatorPlans/>}/>
-            <Route path='/orders' element={<Order/>}/>
-            <Route path='/cart' element={<Cart/>}/>
-            <Route path='/transactions' element={<Transactions/>}/>
+            <Route element={<ProtectedRoute/>}>
+              <Route path='/profile' element={<UserPage/>}/>
+              <Route path='/kyc' element={<Kyc/>}/>
+              <Route path='/cplans' element={<CreatorPlans/>}/>
+              <Route path='/orders' element={<Order/>}/>
+              <Route path='/cart' element={<Cart/>}/>
+              <Route path='/transactions' element={<Transactions/>}/>
+            </Route>
             <Route path='/n-admin' element={<AdminPage/>}/>
             <Route path='/n-trail' element={<Trail/>}/>
           </Routes>

@@ -6,12 +6,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import store from './redux/store';
 import { Provider } from 'react-redux'
+import { AuthProvider } from './context/AuthContext';
 //npm install @reduxjs/toolkit react-redux
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </Provider>
 );
 
