@@ -11,12 +11,45 @@ import StudioAdd from './StudioAdd';
 import StudioUpdate from './StudioUpdate';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+import { useAuth } from '../context/AuthContext';
+import Instructors from './Instructors';
+import NrityaCard from './NrityaCard';
 
 function CreatorStudio() {
   const [studio, setStudio] = useState([]);
   const [studioId, setStudioId] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const [instructors, setInstructors] = useState([]);
+  const [isCreator, setIsCreator] = useState(false);
+  const [premiumTill, setPremiumTill] = useState(-1);
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    
+    const getCreatorMode = async (event) => {
+      try{
+      const userRef = doc(db, "User", currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        console.log("User there",userSnap.data(),userSnap.data().CreatorMode,JSON.parse(localStorage.getItem('userInfoFull')));
+        if(userSnap.data() != null){
+          
+          setIsCreator(userSnap.data().CreatorMode)
+          setPremiumTill(userSnap.data().isPremium)
+          console.log("Premium Till",premiumTill)
+        }else{
+          console.log("userSnap.data() null")
+        }
+      } else {
+        console.log("User not found but workshop created... error");
+      }
+      }catch(error){
+        console.log(" error");
+      }
+    }
+  
+    getCreatorMode();
+  }, [isCreator]); // Run once on mount
 
     // Fetch instructors for the current user
   useEffect(() => {
@@ -93,10 +126,22 @@ function CreatorStudio() {
   console.log("studio :",studio)
   return (
     <div>
-       <br></br>
+      <Row>
+        <Col>
+          <NrityaCard title={"Total Studios"} data={studio.length?studio.length:0} bubble={true}></NrityaCard>
+        </Col>
+        <Col>
+          <NrityaCard title={"Total Instructors"} data={instructors.length?instructors.length:0} bubble={true}></NrityaCard>
+        </Col>
+      </Row>
+      <br></br>
+      {isCreator?(
+       <>
          <StudioAdd instructors={instructors} style={{color: isDarkModeOn ? 'white' : 'black'}} />
          <StudioUpdate studio={studio} setStudio={setStudio} instructors={instructors} studioId={studioId} setStudioId={setStudioId}/>
-      <br></br>
+         <Instructors/>
+      </>
+      ):""}
  
       <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}>Your Studios:</h3>
        <ul>

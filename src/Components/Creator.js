@@ -28,10 +28,6 @@ function Creator() {
       <Tab eventKey="studio"  title={<span style={{  color: isDarkModeOn ? '#892CDC' : '' }}>Studio</span>} >
          <CreatorStudio />
       </Tab>
-
-      <Tab eventKey="transactions" title={<span style={{ color: isDarkModeOn ? '#892CDC' : '' }}>Transaction</span>} >
-         <Transactions />
-      </Tab>
       <Tab eventKey="instructors" title={<span style={{ color: isDarkModeOn ? '#892CDC' : '' }}>Instructor</span>} >
           <Instructors />
       </Tab>

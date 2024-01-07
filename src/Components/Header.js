@@ -155,14 +155,14 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
              <> <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
               <FontAwesomeIcon icon={faShoppingCart} />
               </Button>
-              <Button   className="me-2 rounded-pill"  href="#/profile" style={{textTransform: 'none' , backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}>List Studios</Button>
+              <Button   className="me-2 rounded-pill"  href="#/studioDashboard" style={{textTransform: 'none' , backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}>List Studios</Button>
             </>
           ) : (
             <>
               <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
               <FontAwesomeIcon icon={faShoppingCart} />
             </Button>
-              <Button   className="me-2 rounded-pill" href="#/profile" style={{textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}> List Studios</Button>
+              <Button   className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}> List Studios</Button>
             </>
           )}
           <div className="position-relative location-dropdown-container">
@@ -216,7 +216,7 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
                   {getUserNameInitials()} 
               </Button>
               
-            <SideMenu handleLogout={handleLogout} showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+            <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
               </Nav>
           ) : (
             <Nav>

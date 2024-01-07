@@ -127,9 +127,6 @@ function UserPage() {
       }
     }
   };
-  
-  
-  
 
   return (
     <div >
@@ -182,10 +179,6 @@ function UserPage() {
             </Row>
             </Card>
           </div>
-        
-
-      
-      {isCreator ? <Creator/> : <NonCreator/>}
     </div>
   );
 }

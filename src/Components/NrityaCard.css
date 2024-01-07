@@ -31,3 +31,20 @@
   .nritya-card-light:hover {
     box-shadow: 0 1.5em 3em rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
   }
+
+
+  .circular-bubble {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  .circular-bubble-dark {
+    background-color: #007bff;
+    color: white;
+  }

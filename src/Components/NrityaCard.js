@@ -4,7 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import '../Components/NrityaCard.css'
 
-function NrityaCard({data,title}) {
+function CircularBubble({ number }) {
+  return (
+    <div className="circular-bubble">
+      {number}
+    </div>
+  );
+}
+
+function NrityaCard({data,title,bubble=false}) {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
     const nrityaCardClass = `mb-2 ${isDarkModeOn ? 'nritya-card nritya-card-dark' : 'nritya-card nritya-card-light'}`;
 
@@ -16,8 +24,8 @@ function NrityaCard({data,title}) {
           <h4 style={{color: isDarkModeOn?'white':'black' }}>{title}</h4>
         </Card.Title>
         <Card.Body style={{ padding: '1rem' }}>
+        {bubble?<CircularBubble number={data} />:data}
         
-        {data}
         
         </Card.Body>
         </Card>
