@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { ButtonGroup, Button,Tab,Tabs } from 'react-bootstrap';
-import CreatorStudio from './CreatorStudio';
+import CreatorStudio from '../Screens/CreatorStudio';
 import CreatorWorkshop from './CreatorWorkshop';
 import { Transaction } from 'firebase/firestore';
 import Transactions from './Transactions';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-import Instructors from './Instructors';
+import Instructors from '../Screens/CreatorInstructor';
 
 function Creator() {
     const [key, setKey] = useState('home');

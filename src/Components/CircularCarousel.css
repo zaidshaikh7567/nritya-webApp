@@ -1,0 +1,42 @@
+/* CircularCarousel.css */
+
+.carousel-container {
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+    max-width: '180rem';
+    position: relative;
+  }
+  
+  .carousel-button {
+    background-color: #F5F5DC;
+    border: 2px;
+    cursor: pointer;
+    border-radius: 1.25rem;
+    font-size: 1.5rem;
+  }
+
+  .carousel-button:hover {
+    transform: scale(1.02);
+  }
+  
+  
+  .row-container {
+    display: flex;
+    overflow-x: hidden;
+    white-space: nowrap;
+    width: 100%;
+  }
+  
+  .row-container > div {
+    flex: 0 0 auto;
+    max-width: 30rem;
+    margin-right: 10px;
+    padding: 1px;
+    text-decoration: none;
+  }
+
+  .carousel-card:hover {
+    transform: scale(1.02);
+  }
+  

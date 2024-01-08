@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image } from 'react-bootstrap';
 import { db,storage } from '../config';
@@ -19,6 +19,7 @@ import '../Components/NrityaCard.css'
 import NrityaCard from '../Components/NrityaCard.js';
 import TableView from './TableView.js';
 import '../Common.css'
+import CircularCarousel from '../Components/CircularCarousel.js';
 
 // Function to decode a Unicode (UTF-8) encoded string back to the original text
 const decodeUnicode = (unicodeString) => {
@@ -41,7 +42,7 @@ function StudioFullPage() {
   const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-
+  const containerRef = useRef(null);
   const [studioData, setStudioData] = useState(null);
   const [studioDescription, setStudioDescription] = useState(null);
   const [studioTableData, setStudioTableData] = useState(null);
@@ -182,7 +183,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         ) : (
           <>
             <FaYoutube className='genericHoverEffect' style={{ color: '#ff0000', fontSize: '24px', marginRight: '10px' }} />
-            <FaFacebook className='genericHoverEffect' style={{ color: '#3b5998', fontSize: '24px', marginRight: '10px' }} />
+            <FaFacebook className='genericHoverEffect' style={{ color: '#39998', fontSize: '24px', marginRight: '10px' }} />
             <FaInstagram className='genericHoverEffect' style={{ color: '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
             <FaTwitter className='genericHoverEffect' style={{ color: '#00aced', fontSize: '24px' }} />
           </>
@@ -221,7 +222,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </Col>
       </Row>
       <br></br>
-      <Row>
+      <Row hidden>
         <Col>
           {isLoadingImages ? (
             <Row>
@@ -233,24 +234,36 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
             </Row>
           ) : (                
             <Carousel>
-              {carouselImages.map((image, index) => (
-                <Carousel.Item key={index}>
-                  <img
-                    className="d-block w-100"
-                    src={image}
-                    alt={`Carousel Slide ${index}`}
-                    style={{ maxHeight: '20rem', objectFit: 'cover'  }} 
-                  />
-                </Carousel.Item>
-              ))}
-            </Carousel>         
+              {carouselImages &&
+                carouselImages.map((image, index) => (
+                  <Carousel.Item key={index}>
+                    <div className="d-flex justify-content-between">
+                    {[index, index + 1, index + 2].map((cardIndex) => {
+                      const circularIndex = cardIndex % carouselImages.length;
+                      const card = carouselImages[circularIndex];
+                      return (
+                        <div key={index} md={2} style={{ maxWidth: '20rem', margin: '10px' }}>
+                        <Card style={{ width: '100%', height: '100%' }}>
+                          <Card.Img src={image} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                        </Card>
+                      </div>  
+                      );
+                    })}
+                    </div>
+                  </Carousel.Item>
+                ))}
+            </Carousel>       
           )}
         </Col>
       </Row>
+      
+      {carouselImages.length? <CircularCarousel carouselImages={carouselImages} containerRef={containerRef}/>:""}
+        
+      
       <br></br>
       <Row>
         <Col>
-        <h4 style={{color: isDarkModeOn?'white':'black' }} >Instructor list</h4>
+        <h4 style={{color: isDarkModeOn?'white':'black' }} >Class Schedule</h4>
         </Col>
       </Row>
       <br></br>

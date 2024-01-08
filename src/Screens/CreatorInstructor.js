@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Accordion, Card, Button } from 'react-bootstrap';
-import InstructorAdd from './InstructorAdd';
-import InstructorUpdate from './InstructorUpdate';
+import InstructorAdd from '../Components/InstructorAdd';
+import InstructorUpdate from '../Components/InstructorUpdate';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import {doc,getDoc,updateDoc,collection,where,query,getDocs} from 'firebase/firestore';
 import { COLLECTIONS } from '../constants';
 import { db } from '../config';
-import InstructorCard from './InstructorCard';
+import InstructorCard from '../Components/InstructorCard';
 import { useAuth } from '../context/AuthContext';
 
 function Instructors() {

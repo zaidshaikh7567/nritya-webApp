@@ -21,9 +21,9 @@ import { useSelector, useDispatch } from 'react-redux'; // Import useSelector an
 import { selectDarkModeStatus } from './redux/selectors/darkModeSelector'; 
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './utils/ProtectedRoute';
-import CreatorStudio from './Components/CreatorStudio';
-import CreatorDashboard from './Components/CreatorDashboard';
-import Instructors from './Components/Instructors';
+import CreatorStudio from './Screens/CreatorStudio';
+import CreatorDashboard from './Screens/CreatorDashboard';
+import CreatorInstructor from './Screens/CreatorInstructor';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -122,7 +122,7 @@ function App() {
               <Route path='/transactions' element={<Transactions/>}/>
               <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
               <Route path='/modifyStudios' element={<CreatorStudio/>}/>
-              <Route path='/modifyInstructors' element={<Instructors/>}/>
+              <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
             </Route>
             <Route path='/n-admin' element={<AdminPage/>}/>
             <Route path='/n-trail' element={<Trail/>}/>
