@@ -20,6 +20,7 @@ import NrityaCard from '../Components/NrityaCard.js';
 import TableView from './TableView.js';
 import '../Common.css'
 import CircularCarousel from '../Components/CircularCarousel.js';
+import CardSlider from '../Components/CardSlider.js';
 
 // Function to decode a Unicode (UTF-8) encoded string back to the original text
 const decodeUnicode = (unicodeString) => {
@@ -257,8 +258,9 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </Col>
       </Row>
       
-      {carouselImages.length? <CircularCarousel carouselImages={carouselImages} containerRef={containerRef}/>:""}
-        
+      <Row>
+      {carouselImages.length? <CardSlider imgList={carouselImages} />:""}
+      </Row>
       
       <br></br>
       <Row>

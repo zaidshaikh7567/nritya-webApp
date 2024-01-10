@@ -1,0 +1,47 @@
+h2 {
+  color: 'white';
+}
+
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  
+  .cardSlider {
+    display: inline-block;
+  }
+}
+
+.scrolling-wrapper-flexbox {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  
+  .cardSlider {
+    flex: 0 0 auto;
+    margin-right: 3px;
+  }
+}
+
+.cardSlider {
+  border: 2px solid rgb(255, 255, 255);
+  max-width: 25rem;
+  height: auto;
+  cursor: pointer;
+  background: black;
+}
+
+.cardSlider:hover {
+  transform: translateX(0.3rem);
+  transform: translateY(-0.2rem);
+}
+
+.scrolling-wrapper, .scrolling-wrapper-flexbox {
+  max-height: 30 rem;
+  margin-bottom: 5px;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
