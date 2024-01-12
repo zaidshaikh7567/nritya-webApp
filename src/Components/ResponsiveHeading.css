@@ -1,0 +1,28 @@
+.responsive-heading {
+    font-size: 2rem;
+    text-align: center;
+    margin: 20px 0;
+
+    
+  
+    &.dark {
+      color: white;
+    }
+  
+    &.light {
+      color: black;
+    }
+  
+    @media (max-width: 1200px) {
+      font-size: 1.75rem;
+    }
+  
+    @media (max-width: 992px) {
+      font-size: 1.55rem;
+    }
+  
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+    }
+  }
+  

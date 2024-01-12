@@ -5,7 +5,7 @@ import { storage } from '../config';
 
 // Read operation with image URL
 export const readDocumentWithImageUrl = async (collectionName, productId) => {
-    console.log("Hii ",`${collectionName}/${productId}`)
+    console.log("Debug ",`${collectionName}/${productId}`)
     const storagePath = `${collectionName}/${productId}`;
     const folderRef = ref(storage,storagePath);
     try {
@@ -13,10 +13,10 @@ export const readDocumentWithImageUrl = async (collectionName, productId) => {
         if (result.items.length > 0) {
             const firstFileRef = result.items[0];
             const url = await getDownloadURL(firstFileRef);
-            console.log('URL:', url);
+            console.log('Debug URL:', url);
             return url;
           } else {
-            console.log('No files found in the folder.');
+            console.log('Debug No files found in the folder.');
             return null;
           }
     } catch (error) {

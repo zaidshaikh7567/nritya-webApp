@@ -18,9 +18,6 @@ import MapsInput from "../Components/MapsInput";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import CardSlider from "../Components/CardSlider";
-import ResponsiveText from "../Components/ResponsiveText";
-import { FaSearch } from 'react-icons/fa';
-
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -46,9 +43,45 @@ const overlayCards = [
 
 
 function LandingPage() {
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [overlayCard, setOverlayCard] = useState({ title: "", text: "" });
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
+  const rowRef = useRef(null);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const containerRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const scrollDistance = container.clientWidth; // Scroll by one screen width
+  
+      // Calculate the new scroll position and ensure it doesn't go beyond the content boundaries
+      const newScrollLeft = Math.max(container.scrollLeft - scrollDistance, 0);
+  
+      // Set the new scroll position
+      container.scrollLeft = newScrollLeft;
+    }
+  };
+  
+  const scrollRight = () => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const scrollDistance = container.clientWidth; // Scroll by one screen width
+  
+      // Calculate the new scroll position and ensure it doesn't go beyond the content boundaries
+      const newScrollLeft = Math.min(
+        container.scrollLeft + scrollDistance,
+        container.scrollWidth - container.clientWidth
+      );
+  
+      // Set the new scroll position
+      container.scrollLeft = newScrollLeft;
+    }
+  };
+  
+  
 
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
@@ -90,6 +123,14 @@ function LandingPage() {
       console.error("Error fetching recently watched studios:", error);
     }
   };
+  
+
+
+
+  const handleCarouselSelect = (selectedIndex) => {
+    setShowOverlay(true);
+    setOverlayCard(overlayCards[selectedIndex]);
+  };
 
   const overlayStyle = {
     position: "absolute",
@@ -112,6 +153,12 @@ function LandingPage() {
     textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
     padding: "2px",
   };
+
+  // Adjust the styles for smaller screens using media queries
+  // For example, on screens with a maximum width of 768px (sm), set a smaller font size
+  // and adjust the top position of the overlay.
+  // You can modify these values as needed to achieve the desired responsive behavior.
+  // Note: Make sure to use values appropriate for your design and screen sizes.
 
   // For smaller screens (sm)
   const smallScreenMediaQuery = "@media (max-width: 768px)";
@@ -241,12 +288,14 @@ function LandingPage() {
       };
     }, []);
 
+    const isSmallScreen = window.innerWidth <= 768;
+
   return (
     <div className="landing-page" >
       <Container className="my-5">
         <Row>
           <Col>
-            <Carousel >
+            <Carousel onSelect={handleCarouselSelect}>
               {danceImages.map((image, index) => (
                 <Carousel.Item key={index}>
                 {window.innerWidth > 768 && ( // Show the overlay only when the screen is larger than 768 pixels
@@ -269,12 +318,48 @@ function LandingPage() {
     
         <Row>
           {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> History</h3>}
-          <CardSlider dataList={recentlyWatchedStudios} imgOnly={false}/>
+          <div className="row-container">
+          {recentlyWatchedStudios.map((studio, index) => (
+            <div key={index} className="row-item" md={2}>
+              <a href={`#/studio/${studio.id}`} style={{ textDecoration: 'none' }}>
+              <StudioCard
+                    studioName={studio.studioName}
+                    studioAddress={studio.city}
+                    studioPrice={studio.price}
+                    studioTiming={studio.timing}
+                    studioDanceStyles={studio.danceStyles}
+                    studioId={studio.id}
+                    averageRating={studio.avgRating}
+                    forceSmallView={1}
+                  />
+              </a>
+            </div>
+          ))}
+        </div>
         </Row>
         <br />
+        
   
-        <ResponsiveText isDarkModeOn={isDarkModeOn} text={"Studios & workshops"} />
+        <p style={{
+              color: isDarkModeOn ? 'white' : 'black',
+              fontSize: '3rem', // Default font size for larger screens
+              textAlign: 'center',
+              margin: '20px 0', // Add margin for spacing
 
+              '@media (max-width: 1200px)': {
+                fontSize: '1.5rem', // Adjust font size for medium-sized screens
+              },
+
+              '@media (max-width: 992px)': {
+                fontSize: '1.25rem', // Adjust font size for small screens
+              },
+
+              '@media (max-width: 768px)': {
+                fontSize: '1rem', // Adjust font size for extra small screens
+              }
+            }}>
+              Find studios & workshops
+            </p>
 
           <br />
 
@@ -287,33 +372,185 @@ function LandingPage() {
                 size="lg" size-md="md" size-sm="sm" className="rounded-pill"
                 style={{
                   backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                  color: isDarkModeOn ? 'black' : 'white',
+                  color: 'white',
+                  // Add media query for smaller screens
+                  '@media (max-width: 768px)': {
+                    fontSize: '0.70rem', // Adjust font size for smaller screens
+                  }
                 }}
                 href="#/search/studios"
               >
-                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"Search Studios"} heading={false} />
+                Search Studio!
               </Button>
 
               <Button
                 size="lg" size-md="md" size-sm="sm" className="rounded-pill"
                 style={{
                   backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                  color: isDarkModeOn ? 'black' : 'black',
+                  color: 'white',
+                  // Add media query for smaller screens
+                  '@media (max-width: 768px)': {
+                    fontSize: '0.8rem', // Adjust font size for smaller screens
+                  }
                 }}
                 href="#/search/workshop"
                 disabled
               >
-                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"Search Workshops"} heading={false} />
-            
+                Explore Workshop!
               </Button>
             </ButtonGroup>
           </Row>
 
+        <br />
+        <br />
+        <Row>
+          <Col style={{ display: 'none'}}>
+          {exploreCards.length > 0 && <h2>Explore</h2>}
+          <Carousel
+          onSelect={handleCarouselSelect}
+          style={{ height: "100%", overflow: "hidden" }}
+          interval={5000} // Adjust interval as needed
+          wrap={false} // Prevent wrapping when reaching the beginning or end
+        >
+          {exploreCards.map((exploreCard, index) => (
+            <Carousel.Item key={index}>
+              <div className="d-flex justify-content-between">
+                {[index, index + 1, index + 2].map((cardIndex) => {
+                  // Use modulo to loop through the cards in a circular fashion
+                  const circularIndex = cardIndex % exploreCards.length;
+                  const card = exploreCards[circularIndex];
+                  console.log(card.avgRating)
+                  return (
+                    <div
+                      key={circularIndex}
+                      className="studio-card-container"
+                      style={{ flex: "1", padding: "10px" }}
+                    >
+                      <StudioCard
+                        studioName={card.studioName}
+                        studioAddress={card.city}
+                        studioInstructors={card.instructors}
+                        studioPrice={card.price}
+                        studioTiming={card.timing}
+                        studioDanceStyles={card.danceStyles}
+                        studioContactNumber={card.contactNumber}
+                        studioId={card.id}
+                        averageRating={card.avgRating}
+                        forceSmallView={1}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+
+
+
+          </Col>
+        </Row>
+        
+        <br></br>
+        <Row style={{ display: 'none'}}>
+          {exploreCards.length > 0 && <h2>Explore Studios</h2>}
+          <div className="row-container">
+            {exploreCards.map((studio, index) => (
+              <div key={index} style={{ padding: '1px' }}>
+                <a href={`#/studio/${studio.id}`}>
+                  <StudioCard
+                    studioName={studio.studioName}
+                    studioAddress={studio.address}
+                    studioPrice={studio.price}
+                    studioTiming={studio.timing}
+                    studioDanceStyles={studio.danceStyles}
+                    studioId={studio.id}
+                    forceSmallView={1}
+                  />
+                </a>
+              </div>
+            ))}
+          </div>
+        </Row>
         <br/>
         <Row>
             <CardSlider dataList={exploreCards} imgOnly={false}/>
         </Row>
         <br/>
+        <Row>
+      {isSmallScreen ? (
+        // Code for small screens
+        <>
+          {exploreCards.length > 0 && <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>Explore Studios</h2>}
+          <div className="row-container">
+            {exploreCards.map((studio, index) => (
+              <div key={index}  md={2}>
+                <a href={`#/studio/${studio.id}`}>
+                  <StudioCard
+                     studioName={studio.studioName}
+                     studioAddress={studio.address}
+                     studioPrice={studio.price}
+                     studioTiming={studio.timing}
+                     studioDanceStyles={studio.danceStyles}
+                     studioId={studio.id}
+                     averageRating={studio.avgRating}
+                     forceSmallView={1}
+                  />
+                </a>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        // Code for larger screens
+        <>
+          {exploreCards.length > 0 && <h2 style={{color: isDarkModeOn ? 'white' : 'black'}}>People are viewing</h2>}
+      <div style={{ display: 'flex', alignItems: 'center' , overflowX: 'hidden'}}>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            scrollLeft();
+          }}
+          style={{ backgroundColor: '#F5F5DC', border: '2px', cursor: 'pointer',borderRadius:'50px' ,fontSize: '24px' }}
+        >
+          <FaChevronLeft />
+        </button>
+        <div
+          ref={containerRef}
+          className="row-container"
+          style={{ overflowX: 'hidden', whiteSpace: 'nowrap', display: 'flex' }}
+        >
+          {exploreCards.map((studio, index) => (
+            <div key={index} style={{ marginRight: '10px', padding: '1px' , textDecoration: 'none' }}>
+              <a href={`#/studio/${studio.id}`}  style={{ textDecoration: 'none' }}>
+                <StudioCard
+                  studioName={studio.studioName}
+                  studioAddress={studio.city}
+                  studioPrice={studio.price}
+                  studioTiming={studio.timing}
+                  studioDanceStyles={studio.danceStyles}
+                  studioId={studio.id}
+                  averageRating={studio.avgRating}
+                  forceSmallView={1}
+                />
+              </a>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            scrollRight();
+          }}
+          style={{ backgroundColor: '#F5F5DC', border: '2px', cursor: 'pointer',borderRadius:'50px' ,fontSize: '24px' }}
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+        </>
+      )}
+        
+        </Row>
         <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} hidden>BROWSE BY GENRE</h2>
         <Row hidden>
           {danceForms.map((danceForm, index) => (

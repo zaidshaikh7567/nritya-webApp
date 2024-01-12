@@ -259,7 +259,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Row>
       
       <Row>
-      {carouselImages.length? <CardSlider imgList={carouselImages} />:""}
+      {carouselImages.length? <CardSlider dataList={carouselImages} imgOnly={true}/>:""}
       </Row>
       
       <br></br>

@@ -17,7 +17,7 @@ function StudioCard({studioName,studioAddress,studioTiming,studioPrice,studioIns
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const navigate = useNavigate();
   const [studioIconUrl, setStudioIconUrl] = useState(null);
-  console.log(averageRating,studioName)
+  //console.log(averageRating,studioName)
   useEffect(() => {
     // Fetch and set the studio icon URL using studioId
     if (studioId) {
