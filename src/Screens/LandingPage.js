@@ -27,11 +27,10 @@ const danceForms = [
   { name: "Bollywood", icon: faMusic },
   { name: "Salsa", icon: faGlassCheers },
   { name: "Hip Hop", icon: faBolt },
-  { name: "Party", icon: faTrophy },
-  { name: "Ballroom", icon: faHiking },
-  { name: "Bollywood", icon: faMusic },
-  { name: "Salsa", icon: faGlassCheers },
-  { name: "Hip Hop", icon: faBolt },
+  { name: "Ballet", icon: faHiking },
+  { name: "Bharatnatyam", icon: faMusic },
+  { name: "Odisi", icon: faGlassCheers },
+  { name: "Kathak", icon: faBolt },
   // Add more dance forms as needed
 ];
 
@@ -314,7 +313,7 @@ function LandingPage() {
             <CardSlider dataList={exploreCards} imgOnly={false}/>
         </Row>
         <br/>
-        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} hidden>BROWSE BY GENRE</h2>
+        <h2 hidden style={{color: isDarkModeOn ? 'white' : 'black'}} >BROWSE BY GENRE</h2>
         <Row hidden>
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>
