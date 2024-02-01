@@ -26,5 +26,6 @@ export const STORAGES ={
 
 }
 
-export const BASEURLS = "http://127.0.0.1:8000/"
+export const BASEURL_DEV = "http://127.0.0.1:8000/"
+export const BASEURL_PROD= "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
   

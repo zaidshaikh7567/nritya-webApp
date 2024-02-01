@@ -6,16 +6,23 @@ import { useAuth } from '../context/AuthContext';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import axios from 'axios';
+import { BASEURL_PROD } from '../constants';
 
 
 const TableView = ({ studioData, studioId }) => {
   const { currentUser } = useAuth();
-  const userId = currentUser.uid;
+  const userId = currentUser? currentUser.uid: null;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   console.log(studioData,  currentUser)
 
   const bookFreeTrial = (classIndex) => {
-    axios.post("http://127.0.0.1:8000/bookings/freeTrial/", {
+    const endpoint_url = BASEURL_PROD+"bookings/freeTrial/"
+    console.log(endpoint_url)
+    if(!userId){
+      alert("Please Login")
+      return
+    }
+    axios.post(endpoint_url, {
       studioId: studioId,
       classIndex: classIndex,
       userId: userId,  // Make sure userId is defined
