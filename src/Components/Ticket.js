@@ -64,7 +64,6 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
         </div>
         <br />
       </div>
-
       <Button variant="primary" onClick={downloadTicket}>
         Download Ticket
       </Button>

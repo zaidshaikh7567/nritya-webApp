@@ -123,7 +123,9 @@ function MyBookings() {
                     <Col md={4}>
                       <p>{bookingData.name_learner}</p>
                       <p>Admit One for Once</p>
-                      {bookingData.used?" Free class Availed":""}
+                      <h5 style={{ color: bookingData.used ? 'green' : 'inherit' }}>
+                        {bookingData.used && 'Free class Availed'}
+                      </h5>
                     </Col>
                   </Row>
     
