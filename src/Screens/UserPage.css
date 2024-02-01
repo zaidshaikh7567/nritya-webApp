@@ -1,0 +1,52 @@
+.upc{
+    width:100%;
+    padding-top: 6rem; 
+
+}
+
+.upc-inner{
+    width:100%;
+    border-radius: 0.5rem;
+    padding-bottom: 2px;
+    background: rgb(85, 84, 84);
+}
+
+.profile-down {
+    text-align: center;
+}
+
+
+.profile-down img{
+    width: 12rem;  /* Set a specific width */
+    height: 12rem; /* Set a specific height */
+    border-radius: 50%;
+    margin-top: -6rem;
+    padding: 0.2rem;
+    background: white;
+    
+}
+
+.profile-title{
+    font-size: 3rem;
+    font-weight: 200;
+}
+
+.profile-description{
+    padding: 1rem,1rem;
+    font-size: 1rem;
+    color: antiquewhite;
+}
+
+.profile-button{
+    font-size: 1rem;
+    background-color: coral;
+    margin: 1rem 12rem;
+    padding-top: 1rem;
+    padding-bottom: 5rem;
+
+}
+
+a{
+    text-decoration: none;
+    color: rgb(254, 253, 253);
+}

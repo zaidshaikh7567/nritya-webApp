@@ -26,7 +26,7 @@ function CreatorStudio() {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    
+    console.log("Creator Studio getCreatorMode")
     const getCreatorMode = async (event) => {
       try{
       const userRef = doc(db, "User", currentUser.uid);
@@ -54,6 +54,7 @@ function CreatorStudio() {
 
     // Fetch instructors for the current user
   useEffect(() => {
+    console.log("Creator Studio fetchInstructors")
   const fetchInstructors = async () => {
     let userId = null;
     if (
@@ -88,6 +89,7 @@ function CreatorStudio() {
 
  
   useEffect(() => {
+    console.log("Creator Studio getStudioCreated")
     const getStudioCreated = async ()=>{
       const q = query(collection(db, COLLECTIONS.STUDIO), where("UserId", "==", JSON.parse(localStorage.getItem('userInfo')).UserId)    );
       console.log("Hiiii",JSON.parse(localStorage.getItem('userInfo')).UserId)
@@ -111,6 +113,7 @@ function CreatorStudio() {
     },[setStudio]);
  
   useEffect(() => {
+    console.log("Creator Studio setStudioId")
     // Fetch the list of studios created by the user from localStorage
     const studiosOfUser = JSON.parse(localStorage.getItem('StudioCreated')) || [];
     setStudio(studiosOfUser);
