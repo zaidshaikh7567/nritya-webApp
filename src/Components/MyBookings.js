@@ -107,8 +107,6 @@ function MyBookings() {
                       <p>{bookingData.name_class}</p>
                       <p>{bookingData.name_studio}</p>
                       <p>{bookingData.studio_address}</p>
-                      <p>{bookingData.studio_address}</p>
-                      {bookingData.used?" Free class Availed":""}
                     </Col>
                     <Col md={2} className="text-center">
                       <div style={{ justifyContent: "center",
@@ -118,6 +116,7 @@ function MyBookings() {
                             }}>
                         <QRCode value={(endpoint_url+bookingData.id)} size={100} />
                       </div>
+                      {bookingData.used?" Free class Availed":""}
                     </Col>
                     <Col md={4}>
                       <p>{bookingData.name_learner}</p>
