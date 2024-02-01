@@ -147,7 +147,7 @@ function UserPage() {
       <div className='upc d-block d-sm-none'>
         <div className='upc-inner'>
           <div className='profile-down'>
-            <img src={profilePictureUrl} alt='Profile Pic'></img>
+            <img src={profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/'} alt='Profile Pic'></img>
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
                   <label htmlFor="profilePictureInput" style={{ cursor: 'pointer', color: 'white', fontSize: '1.2rem', marginTop: '5px' }}>
                     +
