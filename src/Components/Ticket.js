@@ -47,8 +47,8 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
                 style={{ width: '5rem', height: '5rem', objectFit: 'cover', borderRadius: '50%' }}
               />
             </div>
-            <br />
           </div>
+          <br />
           <h4 className="text">{className}</h4>
           <p className="text">{studioName}</p>
           <p className="text">{address}</p>

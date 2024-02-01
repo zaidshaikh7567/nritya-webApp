@@ -6,7 +6,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { db } from '../config';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Modal, Button, Row, Col, Column,Card } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Column, Card, Container } from 'react-bootstrap';
 import Ticket from './Ticket';
 import QRCode from 'react-qr-code';
 import { BASEURL_PROD } from '../constants';
@@ -67,21 +67,23 @@ function MyBookings() {
           {
             bookings.map((bookingData) => (
               <div key={bookingData.id}>
+                <Container fluid>
+
                 <Card
                   style={{
                     backgroundColor: isDarkModeOn ? "black" : "white",
                     color: isDarkModeOn ? "white" : "black",
                     borderBlockColor: isDarkModeOn ? "white" : "black",
                   }}
+                  onClick={() => handleOpenModal(bookingData)}
                 >
                   <Row className="row-3 text-center">
-                    <Col md={2} className="d-none d-md-block">
-                    <div style={{
+                    <Col md={2} className="text-center">
+                      <div style={{
                         background: "#E60023",
                         color: "white",
-                        
                         alignItems: "center", // corrected syntax
-                        width: "10rem", // corrected syntax
+                        width: "100%", // corrected syntax
                         height: "100%",
                       }}>
     
@@ -97,6 +99,7 @@ function MyBookings() {
                           {new Date(bookingData.timestamp * 1000).toLocaleDateString('en-US', {
                             month: 'short',
                             year: 'numeric',
+                            timeZone: 'Asia/Kolkata', 
                           })}
                         </span>
                       </p>
@@ -116,22 +119,16 @@ function MyBookings() {
                             }}>
                         <QRCode value={(endpoint_url+bookingData.id)} size={100} />
                       </div>
-                      {bookingData.used?" Free class Availed":""}
                     </Col>
                     <Col md={4}>
                       <p>{bookingData.name_learner}</p>
                       <p>Admit One for Once</p>
-                      <Button
-                        variant="warning"
-                        onClick={() => handleOpenModal(bookingData)}
-                      >
-                        Expand
-                      </Button>
-                      
+                      {bookingData.used?" Free class Availed":""}
                     </Col>
                   </Row>
     
                 </Card>
+                </Container>
                 <br></br>
               </div>
             ))
