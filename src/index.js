@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import store from './redux/store';
 import { Provider } from 'react-redux'
 import { AuthProvider } from './context/AuthContext';
+import LocationComponent from './Components/LocationComponent';
 //npm install @reduxjs/toolkit react-redux
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

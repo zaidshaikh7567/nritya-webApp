@@ -50,15 +50,7 @@ function StudioFullPage() {
   const [carouselImages, setCarouselImages] = useState([]);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
 
-  const cardStyle = {
-    borderRadius: '5px',
-    margin: '2px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-    animation: 'glowingAnimation 2s infinite',
-    height: '100%',
-    backgroundColor: isDarkModeOn ? '#333333' : 'white',
-    
-  };
+  
 
 // Function to update the recently watched studios in Firebase
 const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
@@ -272,7 +264,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <Row>
         <Col>
         {studioData && studioData.tableData ? (
-            <TableView studioData={studioData} isDarkModeOn={isDarkModeOn}/>
+            <TableView studioData={studioData} studioId={studioId} />
           ) : (
             <>
               <Row>

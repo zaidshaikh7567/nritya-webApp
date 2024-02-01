@@ -6,6 +6,7 @@ import { Form, Button, Col, Row, Image, Modal, FormControl,Badge } from 'react-b
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
+
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -24,7 +25,7 @@ const SearchPage = () => {
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
-  };
+  }
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
@@ -33,7 +34,7 @@ const SearchPage = () => {
   const handleSearch = () => {
     // Perform the search and update the results
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
-    //apiEndpoint = `http://127.0.0.1:8000/api/search/?query=${query}`;
+    apiEndpoint = `http://127.0.0.1:8000/api/search/?query=${query}`;
 
     if (localStorage.getItem(FILTER_LOCATION_KEY)) {
       apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
@@ -47,6 +48,7 @@ const SearchPage = () => {
     const tryUrl1 = 'https://nrityaserver-2b241e0a97e5.herokuapp.com/api/get_all_data/'
     const tryUrl12 = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna`
     //console.log("https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna")
+    //apiEndpoint = `http://127.0.0.1:8000/api/help/`;
     console.log(tryUrl12===apiEndpoint)
     fetch(apiEndpoint)
       .then(response => response.json())
@@ -209,14 +211,13 @@ const SearchPage = () => {
           <div key={index}
           className="studio-card-container"
           style={{ padding: "0.2rem" }} md={2}>
-          <a href={`#/studio/${studio.id}`} style={{textDecoration: "none"}} >
+          <a href={`#/studio/${studio.studioId}`} style={{textDecoration: "none"}} >
             <SmallCard
                     studioName={studio.studioName}
                     studioAddress={studio.city}
                     studioPrice={studio.price}
-                    studioTiming={studio.timing}
                     studioDanceStyles={studio.danceStyles}
-                    studioId={studio.id}
+                    studioId={studio.studioId}
                     averageRating={studio.avgRating}
                     forceSmallView={1}
                   />

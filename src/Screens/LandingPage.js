@@ -20,7 +20,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import CardSlider from "../Components/CardSlider";
 import ResponsiveText from "../Components/ResponsiveText";
 import { FaSearch } from 'react-icons/fa';
-
+import LocationComponent from "../Components/LocationComponent";
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -48,7 +48,6 @@ function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
       const userRef = doc(db, COLLECTIONS.USER, userId);
@@ -265,7 +264,6 @@ function LandingPage() {
           </Col>
         </Row>
         <br />
-    
         <Row>
           {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> History</h3>}
           <CardSlider dataList={recentlyWatchedStudios} imgOnly={false}/>
@@ -276,6 +274,7 @@ function LandingPage() {
 
 
           <br />
+          <LocationComponent/>
 
           <Row style={{
             display: 'flex',

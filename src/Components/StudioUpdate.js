@@ -48,6 +48,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedStudioId, setSelectedStudioId] = useState(null);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
+  const [selectedStudioFrozenClassRows, setSelectedStudioFrozenClassRows] = useState(-1);
 
   const handleToggleInstructor = (instructor) => {
     setSelectedInstructors((prevSelected) => {
@@ -94,8 +95,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     if (selectedStudio) {
       console.log("Studio id changes",selectedStudio.instructorsNames)
       setSelectedInstructors((selectedStudio.instructorsNames));
-
-      //setSelectedInstructors()
+      if(selectedStudio && selectedStudio.tableData){
+        const maxIndex = Math.max(...Object.keys(tableData).map(Number));
+        setSelectedStudioFrozenClassRows(maxIndex);
+      }
     }
   }, [selectedStudio]);
 
@@ -103,7 +106,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     event.preventDefault();
     const selected = event.target.value;
     const selectedId = selected.split(":").pop().trim();
-    console.log("&**&(*", selected, selectedId);
+    //console.log("&**&(*", selected, selectedId);
     setSelectedStudioId(selectedId);
     setSelectedLocation(selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : null);
     //console.log("names",selectedStudio.instructorsNames)
@@ -114,7 +117,11 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
         setSelectedStudio(studioDoc.data());
         if (studioDoc.data().tableData) {
           setTableData(studioDoc.data().tableData);
-          console.log("We got...",tableData,Array.isArray(tableData),isMapOfMaps(tableData))
+          //selectedStudioFrozenClassRows()
+          const maxIndex = Math.max(...Object.keys(tableData).map(Number));
+          selectedStudioFrozenClassRows(maxIndex)
+          console.log("Yo We got...",tableData,Array.isArray(tableData),isMapOfMaps(tableData),maxIndex)
+
         } else {
           setTableData({
             0:{
@@ -486,9 +493,13 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                           Add Row
                         </Button>
                       ) : (
-                        <Button variant="danger" onClick={() => handleRemoveRow(rowKey)}>
+                        <>
+                        {console.log('Yo',rowKey <= selectedStudioFrozenClassRows, rowKey,selectedStudioFrozenClassRows)}
+                        
+                        <Button variant="danger" onClick={() => handleRemoveRow(rowKey)} disabled={rowKey <= selectedStudioFrozenClassRows} >
                           Remove Row
                         </Button>
+                        </>
                       )}
                     </td>
                   </tr>

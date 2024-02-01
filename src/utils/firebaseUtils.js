@@ -1,8 +1,8 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, where, getCountFromServer } from 'firebase/firestore';
 import { db } from '../config';
 import { getStorage,ref,listAll,getDownloadURL } from "firebase/storage";
-import { storage } from '../config';
-
+import { storage,gMapApiKey } from '../config';
+  
 // Read operation with image URL
 export const readDocumentWithImageUrl = async (collectionName, productId) => {
     console.log("Debug ",`${collectionName}/${productId}`)

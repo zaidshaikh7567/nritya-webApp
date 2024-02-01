@@ -1,6 +1,7 @@
-export const refreshLocation = () => {
+export const refreshLocation = (city) => {
   console.log("Location changed refresh");
   return{
-    type: 'REFRESH_LOCATION_COUNTER',
+    type: 'REFRESH_LOCATION',
+    city: city,
   }
 };

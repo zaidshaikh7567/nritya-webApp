@@ -1,0 +1,76 @@
+.nritya-ticket-card {
+    width: 300px;
+    border-radius: 10px;
+    margin: 70px;
+    background: #17181D;
+    overflow: hidden;
+    text-align: center;
+}
+
+.nritya-ticket-card-header {
+    height: 55%; 
+    border: 2px solid #836602;
+    border-bottom: 2px dotted #836602;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    text-align: center;
+
+}
+
+.nritya-ticket-card-header:before,
+.nritya-ticket-card-header:after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: #fff;
+    border-radius: 100%;
+    bottom: -12px;
+    border: 2px solid #836602;
+    box-sizing: border-box;
+}
+
+.nritya-ticket-card-header:before {
+    left: -13px;
+}
+
+.nritya-ticket-card-header:after {
+    right: -13px;
+}
+
+.nritya-ticket-card-body {
+    height: auto; 
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #836602;
+    border-top: none;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 2px;
+}
+.logo {
+    width: 3.0rem;
+    height: 3.0rem;
+    border: 2px solid black;
+    border-radius: 50%;
+}
+
+.qr-code {
+margin-top: 10px; 
+text-align: center;
+}
+.qr-code img {
+width: 25% !important;
+height: auto !important;
+border: 2px solid black !important;
+border-radius: 5px !important;
+}
+.text{
+color: #E09145;
+}

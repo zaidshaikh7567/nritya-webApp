@@ -12,6 +12,7 @@ import { STORAGES } from '../constants';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { useAuth } from '../context/AuthContext';
+import MyBookings from '../Components/MyBookings';
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
@@ -179,6 +180,8 @@ function UserPage() {
             </Row>
             </Card>
           </div>
+          <MyBookings/>
+      
     </div>
   );
 }

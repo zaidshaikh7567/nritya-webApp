@@ -1,13 +1,15 @@
 const initialState = {
-    count: 0,
-  };
+  filterLocation: localStorage.getItem('filterLocation') || 'New Delhi',
+};
   
   const refreshLocationReducer = (state = initialState, action) => {
     switch (action.type) {
-      case 'REFRESH_LOCATION_COUNTER' :
+      case 'REFRESH_LOCATION' :
+        const newFilterLocation = action.city
+        console.log("New Filter Location", newFilterLocation)
+        localStorage.setItem('filterLocation',newFilterLocation)
         return {
-          ...state,
-          count: (state.count + 1)%1000,
+          filterLocation : newFilterLocation
         };
       default:
         return state;

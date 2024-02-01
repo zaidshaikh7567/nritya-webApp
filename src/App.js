@@ -24,6 +24,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import CreatorStudio from './Screens/CreatorStudio';
 import CreatorDashboard from './Screens/CreatorDashboard';
 import CreatorInstructor from './Screens/CreatorInstructor';
+import LocationComponent from './Components/LocationComponent';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -103,8 +104,6 @@ function App() {
         </span>
       </div>
 
-
-      
       <main className='py-1' style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}}>
         <Container>
           <Routes>

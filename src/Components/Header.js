@@ -16,10 +16,12 @@ import indianCities from '../cities.json';
 import { toggleDarkMode } from '../redux/actions/darkModeAction'; 
 import { useAuth } from '../context/AuthContext';
 import SideMenu from './SideMenu';
+import { refreshLocation } from '../redux/actions/refreshLocationAction';
+
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 
-function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn }) {
+function Header() {
   const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(FILTER_LOCATION_KEY) ? localStorage.getItem(FILTER_LOCATION_KEY): 'New Delhi');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -27,6 +29,16 @@ function Header({ handleLogout, username, isLoggedIn, setUsername, setIsLoggedIn
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
   const adminLogin = useSelector((state) => state.adminLogin);
+  const reduxLocation =  useSelector(selectRefreshLocation);
+  console.log("Redux loc",reduxLocation.city)
+
+  useEffect(() => {
+    console.log("Redux Location changed:", reduxLocation.city);
+    if (reduxLocation.city) {
+      setSelectedLocation(reduxLocation.city);
+    }
+  }, [reduxLocation.city]);
+  
 
   useEffect(() => {
     localStorage.setItem(FILTER_LOCATION_KEY, selectedLocation);
