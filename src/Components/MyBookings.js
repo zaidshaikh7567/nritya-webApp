@@ -9,6 +9,7 @@ import jsPDF from 'jspdf';
 import { Modal, Button, Row, Col, Column,Card } from 'react-bootstrap';
 import Ticket from './Ticket';
 import QRCode from 'react-qr-code';
+import { BASEURL_PROD } from '../constants';
 
 function MyBookings() {
   console.log("Bookings")
@@ -48,7 +49,7 @@ function MyBookings() {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
+  const endpoint_url = BASEURL_PROD+"bookings/availFreeTrial/"
   
 
   return (
@@ -65,7 +66,7 @@ function MyBookings() {
 
           {
             bookings.map((bookingData) => (
-              <div key={bookingData.bookingId}>
+              <div key={bookingData.id}>
                 <Card
                   style={{
                     backgroundColor: isDarkModeOn ? "black" : "white",
@@ -106,14 +107,16 @@ function MyBookings() {
                       <p>{bookingData.name_class}</p>
                       <p>{bookingData.name_studio}</p>
                       <p>{bookingData.studio_address}</p>
+                      <p>{bookingData.studio_address}</p>
+                      {bookingData.used?" Free class Availed":""}
                     </Col>
                     <Col md={2} className="text-center">
                       <div style={{ justifyContent: "center",
-                  alignItems: "center",
-                  display: "flex",
-                  paddingTop: "1rem"
-              }}>
-                        <QRCode value={'https://google.com'} size={100} />
+                        alignItems: "center",
+                        display: "flex",
+                        paddingTop: "1rem"
+                            }}>
+                        <QRCode value={(endpoint_url+bookingData.id)} size={100} />
                       </div>
                     </Col>
                     <Col md={4}>

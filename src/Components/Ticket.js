@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import QRCode from 'react-qr-code';
 import { Button } from 'react-bootstrap';
-
+import { BASEURL_PROD } from '../constants';
 const TimeZone = { "IST": 'Asia/Kolkata' };
 
 function Ticket({ studioName, className, address, timing, days, customerName, timestamp, bookingId }) {
@@ -20,7 +20,7 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
     timestamp,
     bookingId,
   });
-
+  const endpoint_url = BASEURL_PROD+"bookings/availFreeTrial/"+bookingId
   const convertToLocal = (unixUtcTimestamp, local = 'IST') => {
     return moment.unix(unixUtcTimestamp).tz(TimeZone[local]).format('DD-MM-YYYY HH:mm:ss');
   };
@@ -56,7 +56,7 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
         <div className="nritya-ticket-card-body">
           <p className="text">Booked by: {customerName}</p>
           <div>
-            <QRCode value={'https://google.com'} style={{ height: 'auto', maxWidth: '70%', width: '40%' }} />
+            <QRCode value={endpoint_url} style={{ height: 'auto', maxWidth: '70%', width: '40%' }} />
           </div>
           <p className="text">Booking ID: {bookingId}</p>
           <p className="text">Valid till 3 days from {convertToLocal(timestamp)}</p>
