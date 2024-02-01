@@ -74,12 +74,11 @@ function MyBookings() {
                   }}
                 >
                   <Row className="row-3 text-center">
-                    <Col md={2} >
+                    <Col md={2} className="d-none d-md-block">
                     <div style={{
                         background: "#E60023",
                         color: "white",
-                        display: "flex",
-                        justifyContent: "center", // corrected syntax
+                        
                         alignItems: "center", // corrected syntax
                         width: "10rem", // corrected syntax
                         height: "100%",
@@ -110,10 +109,10 @@ function MyBookings() {
                     </Col>
                     <Col md={2} className="text-center">
                       <div style={{ justifyContent: "center",
-                            alignItems: "center",
-                            display: "flex",
-                            paddingTop: "1rem"
-                        }}>
+                  alignItems: "center",
+                  display: "flex",
+                  paddingTop: "1rem"
+              }}>
                         <QRCode value={'https://google.com'} size={100} />
                       </div>
                     </Col>
