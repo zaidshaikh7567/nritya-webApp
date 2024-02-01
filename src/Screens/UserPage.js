@@ -144,7 +144,7 @@ function UserPage() {
 
   return (
     <div >
-      <div className='upc d-block d-sm-none'>
+      <div className='upc'>
         <div className='upc-inner'>
           <div className='profile-down'>
             <img src={profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/'} alt='Profile Pic'></img>
@@ -183,7 +183,7 @@ function UserPage() {
           </div>
         </div>
       </div>
-      <div class="card-container d-none d-sm-block">
+      <div class="card-container" hidden>
           <Card  
               key="dark1"
               text={isDarkModeOn ? 'white' : 'black'}
