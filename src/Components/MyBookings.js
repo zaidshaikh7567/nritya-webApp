@@ -6,7 +6,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { db } from '../config';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Modal, Button, Row, Column,Card } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Column,Card } from 'react-bootstrap';
 import Ticket from './Ticket';
 import QRCode from 'react-qr-code';
 
@@ -31,7 +31,9 @@ function MyBookings() {
         console.log(doc.id, ' => ', bookingData);
         bookingDataArray.push({ ...bookingData, 'id': doc.id });
       });
+      bookingDataArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
+      //bookingDataArray.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
       setBookings(bookingDataArray);
     };
 
@@ -47,39 +49,97 @@ function MyBookings() {
     setShowModal(false);
   };
 
-  const generateTicket = (bookingData) => {
-    const ticketTemplate = document.getElementById('ticket-template');
-
-    html2canvas(ticketTemplate).then((canvas) => {
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
-      pdf.save(`booking_ticket_${bookingData.bookingId}.pdf`);
-    });
-  };
+  
 
   return (
     <div style={{ backgroundColor: isDarkModeOn ? "black" : "white" }}>
-      {bookings.map((bookingData) => (
-        <div key={bookingData.bookingId}>
-          <Card className="row-3">
-              <div className="col-3">
-                <QRCode value={"https://google.com"} size={80} />
-              </div>
-              <div className="col-6">
-                {/* Content for the second row */}
-                <p><strong>Class Name:</strong> {bookingData.name_class}</p>
-                <p><strong>Studio Name:</strong> {bookingData.name_studio}</p>
-                <p><strong>Address:</strong> {bookingData.studio_address}</p>
-              </div>
-              <div className="col-3">
-                {/* Content for the third row */}
-                <Button variant="primary" onClick={() => handleOpenModal(bookingData)}>
-                  Open Ticket
-                </Button>
-              </div>
-            </Card>
+      {bookings.length === 0 ? (
+
+        <div>
+           <h2 style={{color: isDarkModeOn ? "white" : "black"}}>My Bookings</h2>
+          <p style={{color: isDarkModeOn ? "white" : "black" }}>No bookings till now.</p>
         </div>
-      ))}
+      ) : (
+        <div>
+          <h2 style={{color: isDarkModeOn ? "white" : "black"}}>My Bookings</h2>
+
+          {
+            bookings.map((bookingData) => (
+              <div key={bookingData.bookingId}>
+                <Card
+                  style={{
+                    backgroundColor: isDarkModeOn ? "black" : "white",
+                    color: isDarkModeOn ? "white" : "black",
+                    borderBlockColor: isDarkModeOn ? "white" : "black",
+                  }}
+                >
+                  <Row className="row-3 text-center">
+                    <Col md={2} >
+                    <div style={{
+                        background: "#E60023",
+                        color: "white",
+                        display: "flex",
+                        justifyContent: "center", // corrected syntax
+                        alignItems: "center", // corrected syntax
+                        width: "10rem", // corrected syntax
+                        height: "100%",
+                      }}>
+    
+    
+                      <p style={{ fontSize: 'small' }}>
+                        Booked On
+                        <br />
+                        <span style={{ fontSize: '3rem' }}>
+                          {new Date(bookingData.timestamp * 1000).getDate()}
+                        </span>
+                        <br/>
+                        <span style={{ fontSize: 'small' }}>
+                          {new Date(bookingData.timestamp * 1000).toLocaleDateString('en-US', {
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </p>
+                      </div>
+                    </Col>
+    
+                    <Col md={4} className="text-center">
+                      <p>{bookingData.name_class}</p>
+                      <p>{bookingData.name_studio}</p>
+                      <p>{bookingData.studio_address}</p>
+                    </Col>
+                    <Col md={2} className="text-center">
+                      <div style={{ justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                            paddingTop: "1rem"
+                        }}>
+                        <QRCode value={'https://google.com'} size={100} />
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <p>{bookingData.name_learner}</p>
+                      <p>Admit One for Once</p>
+                      <Button
+                        variant="warning"
+                        onClick={() => handleOpenModal(bookingData)}
+                      >
+                        Expand
+                      </Button>
+                      
+                    </Col>
+                  </Row>
+    
+                </Card>
+                <br></br>
+              </div>
+            ))
+          }
+
+        </div>
+        
+      )}
+
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -100,12 +160,7 @@ function MyBookings() {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={() => generateTicket(selectedBooking)}>
-            Generate Ticket
-          </Button>
+          
         </Modal.Footer>
       </Modal>
     </div>
