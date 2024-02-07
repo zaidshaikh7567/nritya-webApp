@@ -75,7 +75,7 @@ export  const deleteAllImagesInFolder = async (storageFolder, entityId) => {
 
     Args:
       storageFolder <string>: The folder path in the storage where the images are stored.
-      entityId <string>: The unique identifier of the entity whose images are to be deleted.
+      entityId <string>: The unique identifier of the entity whose images are to be deleted eg UserId,StudioId like thing.
     */
     const folderPath = `${storageFolder}/${entityId}`;
     const folderRef = ref(storage, folderPath);
@@ -94,7 +94,7 @@ export const deleteImages = async (storageFolder,imagesToDelete,entityId) => {
     Args:
       imagesToDelete <array>: An array of image objects to be deleted.
       storageFolder <string>: The folder path in the storage where the images are stored.
-      entityId <string>: The unique identifier of the entity whose images are to be deleted.
+      entityId <string>: UserId,StudioId like thing.
     */
     await Promise.all(imagesToDelete.map(async (file) => {
       const fileRefToDelete = ref(storage, `${storageFolder}/${entityId}/${file.filename}`);
@@ -110,11 +110,30 @@ export const uploadImages = async (storageFolder, newImages, entityId) => {
     Args:
       newImages <array>: An array of new image objects to be uploaded.
       storageFolder <string>: The folder path in the storage where the images are stored.
-      entityId <string>: The unique identifier of the entity to which the new images belong.
+      entityId <string>: UserId,StudioId like thing.
     */
+   console.log(storageFolder,entityId)
     await Promise.all(newImages.map(async (newFileData) => {
       const folderPath = `${storageFolder}/${entityId}`;
       const fileRef = ref(storage, `${folderPath}/${newFileData.file.name}`);
       await uploadBytes(fileRef, newFileData.file);
     }));
   };
+
+ export const uploadOneImageAndGetURL = async (storageFolder, file, entityId) => {
+    try {
+      const folderPath = `${storageFolder}/${entityId}/${file.name}`;
+      console.log(folderPath)
+      const fileRef = ref(storage, folderPath);
+      
+      await uploadBytes(fileRef, file);
+  
+      const imageUrl = await getDownloadURL(fileRef);
+      console.log(imageUrl)
+      return imageUrl;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error; 
+    }
+  };
+  

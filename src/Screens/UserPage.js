@@ -8,10 +8,11 @@ import Creator from '../Components/Creator';
 import NonCreator from '../Components/NonCreator';
 import ImageUpload from '../Components/ImageUpload';
 import { storage } from '../config'; // Import Firebase Storage
-import { STORAGES } from '../constants';
+import { STORAGES, COLLECTIONS } from '../constants';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { useAuth } from '../context/AuthContext';
+import { deleteAllImagesInFolder, uploadOneImageAndGetURL } from '../utils/firebaseUtils';
 import MyBookings from '../Components/MyBookings';
 import './UserPage.css';
 
@@ -78,21 +79,21 @@ function UserPage() {
         console.error('Error fetching studio icon:', error);
       }
     }
-  }, [profilePictureUrl]);
+  }, []);
 
   useEffect(() => {
     console.log("UserPage getCreatorMode")
     const getCreatorMode = async () => {
       try{
-      const userRef = doc(db, "User", currentUser.uid);
+      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        console.log("User there",userSnap.data(),userSnap.data().CreatorMode,JSON.parse(localStorage.getItem('userInfoFull')));
+        //console.log("User there",userSnap.data(),userSnap.data().CreatorMode,JSON.parse(localStorage.getItem('userInfoFull')));
         if(userSnap.data() != null){
           
           setIsCreator(userSnap.data().CreatorMode)
           setPremiumTill(userSnap.data().isPremium)
-          console.log("Premium Till",premiumTill)
+          //console.log("Premium Till",premiumTill)
         }else{
           console.log("userSnap.data() null")
         }
@@ -116,24 +117,12 @@ function UserPage() {
     if (file) {
       try {
         // Delete old files in the storage folder
-        const userId = currentUser.uuid
-        const storageFolder = 'UserImage'; // Replace with your desired storage folder name
-        const folderPath = `${storageFolder}/${userId}`;
-        const storageRef = ref(storage, folderPath);
+        console.log("currentUser ",currentUser)
+        const userId = currentUser.uid
+        await deleteAllImagesInFolder(STORAGES.USERIMAGE,userId)
   
-        const itemsToDelete = await listAll(storageRef);
-        itemsToDelete.items.forEach(async (itemRef) => {
-          await deleteObject(itemRef);
-        });
-  
-        // Upload the new file
-        const fileRef = ref(storage, `${folderPath}/${file.name}`);
-        await uploadBytes(fileRef, file);
-  
-        // Get the updated download URL for the uploaded image
-        const imageUrl = await getDownloadURL(fileRef);
-  
-        // Update the profile picture URL in the state
+        const imageUrl= await uploadOneImageAndGetURL(STORAGES.USERIMAGE, file, userId);
+
         setProfilePictureUrl(imageUrl);
   
       } catch (error) {
