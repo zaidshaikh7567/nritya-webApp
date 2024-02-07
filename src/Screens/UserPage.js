@@ -50,7 +50,7 @@ function UserPage() {
     console.log()
     const userId= currentUser.uid;
     console.log(userId)
-    // Fetch and set the studio icon URL using studioId
+  
     if (userId) {
       const storagePath = `${STORAGES.USERIMAGE}/${userId}`;
       const folderRef = ref(storage, storagePath);

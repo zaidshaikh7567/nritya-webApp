@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Table, Button } from 'react-bootstrap';
+import { Form, Table, Button, Modal, Row, Col } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import './StudioTable.css'; // Import the CSS file for styling
+import  TimeRangePicker from './TimeRangePicker';
 
 function StudioTable({ tableData, setTableData }) {
-  // Convert the state to an array of objects
   const [tableDataReplace, setTableDataReplace] = useState([tableData]);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [defaultTime, setDefaultTime] =  useState("00:00-00:00")
 
   const handleAddRow = () => {
-    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' }]);
-    console.log(tableDataReplace,"AFter adding")
+    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: '', status: '' }]);
+    console.log(tableDataReplace, "After adding");
   };
-
-
 
   const handleRemoveRow = (index) => {
     setTableDataReplace((prevData) => {
@@ -30,7 +32,45 @@ function StudioTable({ tableData, setTableData }) {
     });
   };
 
-  // Convert the array of objects back to an object whenever the 'tableDataReplace' state changes
+  const handleTimePickerOpen = (index,time) => {
+    console.log("handleTimePickerOpen",time)
+    setDefaultTime(time)
+    setSelectedRowIndex(index);
+    setShowTimePicker(true);
+  };
+
+  const handleTimePickerClose = () => {
+    setShowTimePicker(false);
+    setSelectedRowIndex(null); // Reset selected row index when closing time picker
+    console.log("---------")
+  };
+
+  const handleTimeSelect = (startTime, endTime) => {
+    setTableDataReplace((prevData) => {
+      const newData = [...prevData];
+      
+      if (selectedRowIndex !== null && newData[selectedRowIndex]) {
+        const currentTime = newData[selectedRowIndex].time;
+    
+        if (currentTime !== undefined) {
+          const [currentStartTime, currentEndTime] = currentTime.split(' - ');
+    
+          if (startTime !== null) {
+            newData[selectedRowIndex].time = `${startTime} - ${currentEndTime}`;
+          }
+          if (endTime !== null) {
+            newData[selectedRowIndex].time = `${currentStartTime} - ${endTime}`;
+          }
+        }
+      }
+      
+      return newData;
+    });
+  
+    setSelectedRow(selectedRowIndex);
+
+  };
+
   useEffect(() => {
     const newData = tableDataReplace.reduce((accumulator, current, index) => {
       accumulator[index] = current;
@@ -55,7 +95,7 @@ function StudioTable({ tableData, setTableData }) {
         </thead>
         <tbody>
           {tableDataReplace.map((row, index) => (
-            <tr key={index}>
+            <tr key={index} className={selectedRow === index ? 'selected-row' : ''}>
               <td>
                 <Form.Control
                   type="text"
@@ -81,8 +121,18 @@ function StudioTable({ tableData, setTableData }) {
                 <Form.Control
                   type="text"
                   value={row.time}
-                  onChange={(e) => handleTableChange(index, 'time', e.target.value)}
+                  //onClick={() => handleTimePickerOpen(index,row.time)}
+                  onClick={() => handleTimePickerOpen(index,row.time)}
                 />
+                {showTimePicker && (
+                <TimeRangePicker
+                  show={showTimePicker}
+                  handleClose={handleTimePickerClose}
+                  handleSelect={handleTimeSelect}
+                  defaultTime={tableDataReplace[selectedRowIndex]?.time || "00:00-00:00"}
+                />
+              )}
+
               </td>
               <td>
                 <Form.Control
@@ -112,8 +162,7 @@ function StudioTable({ tableData, setTableData }) {
             </tr>
           ))}
         </tbody>
-      </Table>
-
+      </Table>      
     </>
   );
 }

@@ -34,7 +34,7 @@ function Footer() {
                   Showcase your dance studio or workshops to a wide audience of dance enthusiasts. Get started today and
                   reach out to your potential customers!
                 </p> 
-                <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} href={isLoggedIn ? '#/profile' : '#/login'}>List Now</Button>
+                <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} href={isLoggedIn ? '#/modifyStudios' : '#/login'}>List Now</Button>
               </Card.Body>
             </Card>
           </Col>

@@ -4,7 +4,6 @@ import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebas
 import { storage } from '../config';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-import { deleteAllImagesInFolder,deleteImages,uploadImages} from '../utils/firebaseUtils'
 
 
 const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
@@ -76,50 +75,64 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
 
   const handleUploadSubmit = async (e) => {
     e.preventDefault();
-
-    if (!entityId) {
+    console.log("inside handleUploadSubmit ",entityId)
+    if(!entityId){
       alert("No studio selected");
-      return;
+    }else if (selectedFiles.length > 0) {
+      
+        try {
+          if(deletedFiles.length>0){
+            console.log(deletedFiles," Deleting....")
+            for (const fileToDelete of deletedFiles) {
+              const fileRefToDelete = ref(storage, `${storageFolder}/${entityId}/${fileToDelete.filename}`);
+              await deleteObject(fileRefToDelete);
+            }
+          }
+          
+          if(newFiles.length>0){
+            console.log(newFiles.length,"New Files adding..")
+            for (const newFileData of newFiles) {
+              const folderPath = `${storageFolder}/${entityId}`;
+              const fileRef = ref(storage, `${folderPath}/${newFileData.file.name}`);
+              await uploadBytes(fileRef, newFileData.file);
+            }
+          }
+          alert("Images Uploaded/Deleted")
+          //setSelectedFiles([]);
+          //setNewFiles([]);
+          //setDeletedFiles([]);
+  
+          e.target.reset();
+  
+          
+        } catch (error) {
+          console.error('Error uploading file:', error);
+        }
+      
+
+      //setSelectedFiles([]);
+    } else {
+      alert("Please select a file.");
     }
 
-    try {
-      if (maxImageCount === 1) {
-        // Delete all previous images in the folder
-        await deleteAllImagesInFolder(storageFolder, entityId);
-        await uploadImages(storageFolder,newFiles, entityId);
-      } else {
-        // Calculate images to delete and add
-        const { imagesToDelete, newImages } = calculateDelta(selectedFiles, uploadedFiles);
-
-        // Delete images if there are any
-        if (imagesToDelete.length > 0) {
-          await deleteImages(storageFolder, imagesToDelete, entityId);
-        }
-
-        // Upload new images if there are any
-        if (newImages.length > 0) {
-          await uploadImages(storageFolder, newImages, entityId);
-        }
-
-      }
-
-      alert("Images Uploaded/Deleted");
-
-      e.target.reset();
-    } catch (error) {
-      console.error("Error uploading/deleting images:", error);
-    }
+    e.target.reset();
   };
 
-  // Function to calculate images to delete and new images to upload
-  const calculateDelta = (selectedFiles, uploadedFiles) => {
-    const selectedFileIds = selectedFiles.map(file => file.id);
-    const uploadedFileIds = uploadedFiles.map(file => file.id);
+  const handleDeleteFile = async (id, filename) => {
+    if (window.confirm("Are you sure you want to delete this image?")) {
+      try {
+        const folderPath = `${storageFolder}/${entityId}`; // Replace entityId with the actual user ID
 
-    const imagesToDelete = uploadedFiles.filter(file => !selectedFileIds.includes(file.id));
-    const newImages = selectedFiles.filter(file => !uploadedFileIds.includes(file.id));
+        const fileRef = ref(storage, `${folderPath}/${filename}`);
+        await deleteObject(fileRef);
 
-    return { imagesToDelete, newImages };
+        setUploadedFiles((prevFiles) =>
+          prevFiles.filter((file) => file.id !== id)
+        );
+      } catch (error) {
+        console.error('Error deleting file:', error);
+      }
+    }
   };
 
 

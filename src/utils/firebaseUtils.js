@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, where, getCountFromServer } from 'firebase/firestore';
 import { db } from '../config';
-import { getStorage,ref,listAll,getDownloadURL } from "firebase/storage";
-import { storage,gMapApiKey } from '../config';
+import { getStorage,ref,listAll,getDownloadURL,uploadBytes, deleteObject  } from "firebase/storage";
+import { storage } from '../config';
   
 // Read operation with image URL
 export const readDocumentWithImageUrl = async (collectionName, productId) => {
@@ -66,3 +66,55 @@ export const queryDocumentsCount = async (collectionName,field,operation,value) 
     const snapshot = await getCountFromServer(q);
     return snapshot.data().count;
 };
+
+
+  // Function to delete all images in a folder
+export  const deleteAllImagesInFolder = async (storageFolder, entityId) => {
+    /*
+    Description: Deletes all images in the specified folder associated with the given entityId.
+
+    Args:
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: The unique identifier of the entity whose images are to be deleted.
+    */
+    const folderPath = `${storageFolder}/${entityId}`;
+    const folderRef = ref(storage, folderPath);
+    const fileList = await listAll(folderRef);
+
+    await Promise.all(fileList.items.map(async (fileRef) => {
+      await deleteObject(fileRef);
+    }));
+  };
+
+  // Function to delete images
+export const deleteImages = async (storageFolder,imagesToDelete,entityId) => {
+    /*
+    Description: Deletes specific images associated with the given entityId.
+
+    Args:
+      imagesToDelete <array>: An array of image objects to be deleted.
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: The unique identifier of the entity whose images are to be deleted.
+    */
+    await Promise.all(imagesToDelete.map(async (file) => {
+      const fileRefToDelete = ref(storage, `${storageFolder}/${entityId}/${file.filename}`);
+      await deleteObject(fileRefToDelete);
+    }));
+  };
+
+  // Function to upload new images
+export const uploadImages = async (storageFolder, newImages, entityId) => {
+    /*
+    Description: Uploads new images associated with the given entityId.
+
+    Args:
+      newImages <array>: An array of new image objects to be uploaded.
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: The unique identifier of the entity to which the new images belong.
+    */
+    await Promise.all(newImages.map(async (newFileData) => {
+      const folderPath = `${storageFolder}/${entityId}`;
+      const fileRef = ref(storage, `${folderPath}/${newFileData.file.name}`);
+      await uploadBytes(fileRef, newFileData.file);
+    }));
+  };
