@@ -4,7 +4,11 @@ import { db } from '../config';
 import { doc, getDoc, setDoc, addDoc, collection, getDocs } from "firebase/firestore";
 import logo from '../logo.png';
 import SubscriptionAdd from '../utils/SubscriptionAdd';
+import './CreatorPlans.css';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
+const planIcons = {0:"fa-solid fa-paper-plane",1:"fa-solid fa-rocket",2:"fa-solid fa-satellite"}
 
 const handlePayment = async (price, item, duration) => {
   // Load Razorpay script dynamically
@@ -72,6 +76,7 @@ const handlePayment = async (price, item, duration) => {
 };
 
 function CreatorPlans() {
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [cplans, setCplans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
@@ -121,46 +126,49 @@ function CreatorPlans() {
   };
 
   return (
-    <div className="creator-plans-container" >
-      <h1>Plans:</h1>
+    <div className={isDarkModeOn ? 'dark-theme' : 'light-theme'} >
+      <section className="pricing-section">
+      <div  className={`container ${isDarkModeOn ? 'dark-mode' : ''}`}>
+        <div className="sec-title text-center">
+          <span className="title">Get plan</span>
+          <h2>Choose a Plan</h2>
+        </div>
 
-      {loading ? (
-        <Spinner animation="border" variant="primary" />
-      ) : (
-        cplans.map((plan, index) => (
-          <Card key={index} style={{ height: '100%', margin: '20px', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)' }}>
-            <div striped bordered hover>
-              <h1 style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>{plan.title}</h1>
-              <Table striped bordered hover style={{ height: '100%', alignItems: 'center' }}>
-                <tbody>
-                  <tr>
-                    <td>Price:</td>
-                    <td>₹ {plan.money}</td>
-                  </tr>
-                  <tr>
-                    <td>Duration:</td>
-                    <td>{plan.duration}</td>
-                  </tr>
-                  <tr>
-                    <td>Post Visibility:</td>
-                    <td>{plan.postVisibility}</td>
-                  </tr>
-                  <tr>
-                    <td>Discount:</td>
-                    <td>{plan.discount} %</td>
-                  </tr>
-                  <tr>
-                    <td>Net Price:</td>
-                    <td>₹ {plan.netPrice}</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
+        <div className="outer-box">
+          <div className="row">
+            {loading ? (
+              <Spinner animation="border" variant="danger" />
+            ) : (
+              cplans.sort((a, b) => a.level - b.level).map((plan, index) => (
+                <div key={index} className={`pricing-block ${isDarkModeOn ? 'dark-mode' : ''} col-lg-4 col-md-6 col-sm-12 wow fadeInUp `}
+                data-wow-delay={`${index * 400}ms`}>
+                  <div className="inner-box">
+                    <div className="icon-box">
+                      <div className="icon-outer"><i className={`${planIcons[index]}`}></i></div>
+                    </div>
+                    <div className="price-box">
+                      <div className='title'>{plan.title}</div>
+                      <h4 className="price">₹ {plan.money}</h4>
+                    </div>
+                    <ul className="features">
+                      <li className={plan.studioVisibility ? 'true' : 'false'}>Studio Visibility</li>
+                      <li className={plan.duration ? 'true' : 'false'}>Plan for {plan.duration ? plan.duration : ""} days</li>
+                      <li className={plan['workShops-pm'] ? 'true' : 'false'}> {plan['workShops-pm']? plan['workShops-pm'] : ""} workshops monthly</li>
+                      <li className={plan['dedicatedSupport'] ? 'true' : 'false'}> Dedicated Support</li>
+                    </ul>
+                    <div className="btn-box">
+                      {plan.netPrice>0? <Button variant="danger" onClick={() => handleBuyClick(plan.netPrice, plan.title, plan.duration)}>Buy plan</Button>: <Button variant="danger" onClick={() => handleBuyClick(plan.netPrice, plan.title, plan.duration)}>Try plan</Button>}
+                    </div>
+                  </div>
+                </div>
+              ))
+              
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <Button variant="primary" onClick={() => handleBuyClick(plan.netPrice, plan.title, plan.duration)}>Buy</Button>
-          </Card>
-        ))
-      )}
 
     {paymentProcessing && (
       <Alert variant="info" className="toast-alert">
@@ -188,7 +196,6 @@ function CreatorPlans() {
         </button>
       </Alert>
     )}
-
       
     </div>
   );
