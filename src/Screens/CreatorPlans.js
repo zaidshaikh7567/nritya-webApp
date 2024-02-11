@@ -92,7 +92,7 @@ function CreatorPlans() {
       getDocs(plansRef)
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            arr.push(doc.data()); // Push document data into the array
+            arr.push(doc.data());
           });
           setCplans(arr);
           setLoading(false);
@@ -105,6 +105,10 @@ function CreatorPlans() {
 
     getCplans();
   }, []);
+
+  const handleTryClick = (duration) => {
+    console.log(duration)
+  }
 
   const handleBuyClick = (price, item, duration) => {
     setPaymentProcessing(true);
@@ -157,7 +161,7 @@ function CreatorPlans() {
                       <li className={plan['dedicatedSupport'] ? 'true' : 'false'}> Dedicated Support</li>
                     </ul>
                     <div className="btn-box">
-                      {plan.netPrice>0? <Button variant="danger" onClick={() => handleBuyClick(plan.netPrice, plan.title, plan.duration)}>Buy plan</Button>: <Button variant="danger" onClick={() => handleBuyClick(plan.netPrice, plan.title, plan.duration)}>Try plan</Button>}
+                      {plan.netPrice>0? <Button variant="danger" onClick={() => handleBuyClick(plan.netPrice, plan.title, plan.duration)}>Buy plan</Button>: <Button variant="danger" onClick={() => handleTryClick(plan.duration)}>Try plan</Button>}
                     </div>
                   </div>
                 </div>

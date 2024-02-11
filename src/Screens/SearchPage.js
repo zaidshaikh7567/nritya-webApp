@@ -34,7 +34,7 @@ const SearchPage = () => {
   const handleSearch = () => {
     // Perform the search and update the results
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
-    apiEndpoint = `http://127.0.0.1:8000/api/search/?query=${query}`;
+    //apiEndpoint = `http://127.0.0.1:8000/api/search/?query=${query}`;
 
     if (localStorage.getItem(FILTER_LOCATION_KEY)) {
       apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
