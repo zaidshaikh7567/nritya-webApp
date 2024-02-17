@@ -9,6 +9,7 @@ import { STORAGES } from '../constants';
 import MapsInput from './MapsInput';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
+import TimeRangePicker from './TimeRangePicker';
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -50,6 +51,62 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedStudioFrozenClassRows, setSelectedStudioFrozenClassRows] = useState(-1);
 
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [defaultTime, setDefaultTime] =  useState("00:00-00:00");
+
+  const [tableData, setTableData] = useState({
+    0:{
+      className: '',
+      danceForms: '',
+      days: '',
+      time: '',
+      instructors: '',
+      status: ''
+    }
+});
+
+  const handleTimePickerOpen = (index,time) => {
+    console.log("handleTimePickerOpen",time,index)
+    setDefaultTime(time)
+    setSelectedRowIndex(index);
+    setShowTimePicker(true);
+  };
+
+  const handleTimePickerClose = () => {
+    setShowTimePicker(false);
+    setSelectedRowIndex(null); // Reset selected row index when closing time picker
+    console.log("---------")
+  };
+
+  const handleTimeSelect = (startTime, endTime) => {
+    setTableData((prevData) => {
+      const newData = { ...prevData };
+  
+      if (selectedRowIndex !== null && newData[selectedRowIndex]) {
+        const currentTime = newData[selectedRowIndex].time;
+  
+        if (currentTime !== undefined) {
+          const [currentStartTime, currentEndTime] = currentTime.split(' - ');
+  
+          if (startTime !== null) {
+            newData[selectedRowIndex].time = `${startTime} - ${currentEndTime}`;
+          }
+          if (endTime !== null) {
+            newData[selectedRowIndex].time = `${currentStartTime} - ${endTime}`;
+          }
+        }
+      }
+  
+      return newData;
+    });
+  
+    setSelectedRow(selectedRowIndex);
+  };
+  
+
+
   const handleToggleInstructor = (instructor) => {
     setSelectedInstructors((prevSelected) => {
       // Check if the instructor is already selected
@@ -62,16 +119,6 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     });
   };
   
-  const [tableData, setTableData] = useState({
-    0:{
-      className: '',
-      danceForms: '',
-      days: '',
-      time: '',
-      instructors: '',
-      status: ''
-    }
-});
   const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
   const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -470,8 +517,17 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                       <Form.Control
                         type="text"
                         value={tableData[rowKey].time}
-                        onChange={(e) => handleTableChange(rowKey, 'time', e.target.value)}
+                        //onChange={(e) => handleTableChange(rowKey, 'time', e.target.value)}
+                        onClick={() => handleTimePickerOpen(rowKey,tableData[rowKey].time)}
                       />
+                      {showTimePicker && (
+                      <TimeRangePicker
+                        show={showTimePicker}
+                        handleClose={handleTimePickerClose}
+                        handleSelect={handleTimeSelect}
+                        defaultTime={tableData[selectedRowIndex]?.time || "00:00-00:00"} // selectedRowIndex
+                      />
+                    )}
                     </td>
                     <td>
                       <Form.Control
@@ -482,10 +538,14 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                     </td>
                     <td>
                       <Form.Control
-                        type="text"
+                        as="select"
                         value={tableData[rowKey].status}
                         onChange={(e) => handleTableChange(rowKey, 'status', e.target.value)}
-                      />
+                      >
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                      </Form.Control>
+
                     </td>
                     <td>
                       {index === 0 ? (

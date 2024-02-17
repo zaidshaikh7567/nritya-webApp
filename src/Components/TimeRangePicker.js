@@ -7,7 +7,7 @@ const TimeRangePicker = ({ show, handleClose, handleSelect, defaultTime }) => {
   const endTime_i = defaultTime.split('-')[1]?.trim();
 
   console.log(startTime_i,endTime_i,defaultTime)
-  const generateTimeOptions = () => {
+  const generateTimeOptions1 = () => {
     const options = [];
 
     for (let hours = 0; hours < 24; hours++) {
@@ -20,6 +20,40 @@ const TimeRangePicker = ({ show, handleClose, handleSelect, defaultTime }) => {
 
     return options;
   };
+
+  const generateTimeOptions = () => {
+    const options = [];
+    let option_AM = [];
+    let option_PM = [];
+    for (let hours = 0; hours < 24; hours++) {
+      for (let minutes = 0; minutes < 60; minutes += 30) {
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const timeString = `${formattedHours}:${formattedMinutes}`;
+  
+        if (hours < 12) {
+          option_AM.push(`${timeString} AM`);
+        } else {
+          const formattedHours12 = (hours - 12).toString().padStart(2, '0');
+          option_PM.push(`${formattedHours12}:${formattedMinutes} PM`);
+        }
+      }
+    }
+
+    for (let i = 0; i < option_AM.length || i < option_PM.length; i++) {
+      if (i < option_AM.length) {
+        options.push(option_AM[i]);
+      }
+      if (i < option_PM.length) {
+        options.push(option_PM[i]);
+      }
+    }
+    
+
+  
+    return options;
+  };
+  
 
   const renderTimeOptions = (defaultValue) => {
     console.log(defaultValue);

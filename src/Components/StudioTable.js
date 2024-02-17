@@ -143,10 +143,13 @@ function StudioTable({ tableData, setTableData }) {
               </td>
               <td>
                 <Form.Control
-                  type="text"
-                  value={row.status}
-                  onChange={(e) => handleTableChange(index, 'status', e.target.value)}
-                />
+                        as="select"
+                        value={row.status}
+                        onChange={(e) => handleTableChange(index, 'status', e.target.value)}
+                      >
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                      </Form.Control>
               </td>
               <td>
                 {index === 0 ? (
