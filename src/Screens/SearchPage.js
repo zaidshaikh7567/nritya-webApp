@@ -10,8 +10,9 @@ import SmallCard from '../Components/SmallCard';
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
+const FILTER_USER_GEO_LOC = "browserGeoLoc";
 const danceForms = ['Ballet', 'Hip Hop', 'Salsa', 'Kathak'];
-const distances = [2,5,10,20,50]
+const distances = [2,5,10,20]
 
 const SearchPage = () => {
   const [query, setQuery] = useState('');
@@ -42,6 +43,12 @@ const SearchPage = () => {
   
     if (selectedDanceForm) {
       apiEndpoint += `&danceStyle=${encodeURIComponent(selectedDanceForm)}`;
+    }
+    var geoLocation = getGeoLocationFromLocalStorage();
+
+    
+    if (selectedDistances && geoLocation) {
+      apiEndpoint += `&distance=${encodeURIComponent(localStorage.getItem(FILTER_DISTANCES_KEY))}&user_lat=${encodeURIComponent(geoLocation.latitude)}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
     }
   
     
@@ -229,139 +236,37 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+function getGeoLocationFromLocalStorage() {
+  // Retrieve the stored JSON string from localStorage
+  var geoLocString = localStorage.getItem(FILTER_USER_GEO_LOC);
 
-
-
-
-/*
-const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
-  server: {
-    apiKey: 'tRp4jvJoUy1YAjgXNyxTRbe1YQjsXaBg', // Be sure to use a Search API Key
-    nodes: [
-      {
-        host: '2ojni54h1zxeg0dyp-1.a1.typesense.net', // where xxx is the ClusterID of your Typesense Cloud cluster
-        port: '443',
-        protocol: 'https',
-      },
-    ],
-  },
-  // The following parameters are directly passed to Typesense's search API endpoint.
-  // So you can pass any parameters supported by the search endpoint below.
-  // queryBy is required.
-  additionalSearchParameters: {
-    query_by: 'studioName,danceStyles,description',
-  },
-});
-
-const searchClient = typesenseInstantsearchAdapter.searchClient;
-const SearchPage = () => {
-  
-  const Hit = ({ hit }) => (
-   
-   <div>
-      <StudioCard studioName={hit.studioName} studioDanceStyles={hit.danceStyles}/>
-      <br></br>
-      </div>
-
-    
-  );
-
-  return (
-    <>
-    <InstantSearch searchClient={searchClient} indexName="companies">
-      <SearchBox autoFocus />
-      <Stats />
-      <Hits hitComponent={Hit} />
-    </InstantSearch>
-    </>
-  );
-};
-
-export default SearchPage;
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-function SearchPage() {
-  const [searchResults, setSearchResults] = useState([]);
-  const [showNoResults, setShowNoResults] = useState(false);
-  const { entity } = useParams();
-
-  const handleSearch = (event) => {
-    event.preventDefault();
-    const searchValue = event.target.elements.search.value.trim();
-
-    if (searchValue) {
-      searchStudios(searchValue)
-        .then((results) => {
-          setSearchResults(results);
-          console.log("Results",results)
-          setShowNoResults(results.length === 0);
-        })
-        .catch((error) => {
-          console.error('Error searching studios:', error);
-          setSearchResults([]);
-          setShowNoResults(true);
-        });
-    }
-  };
-
-  // Function to search for strings across specified fields of studios in Firebase Firestore
-  const searchStudios = async (searchQuery) => {
+  // Check if the data exists in localStorage
+  if (geoLocString !== null) {
     try {
-      // Perform search with Typesense InstantSearch
-      const searchResponse = await searchClient.search(searchQuery);
-      const results = searchResponse.hits.map((hit) => hit._highlightResult);
-      return results;
+      // Parse the JSON string to get an object
+      var geoLocObject = JSON.parse(geoLocString);
+      console.log(geoLocObject)
+      // Check if the latitude and longitude properties exist in the parsed object
+      if (geoLocObject && geoLocObject["latitude"] && geoLocObject["longitude"]) {
+        // Extract latitude and longitude from the object
+        var latitude = geoLocObject.latitude;
+        var longitude = geoLocObject.longitude;
+
+        // Return an object with latitude and longitude
+        return { latitude: latitude, longitude: longitude };
+      } else {
+        console.log('Incomplete data found in localStorage for FILTER_USER_GEO_LOC');
+      }
     } catch (error) {
-      console.error('Error searching studios:', error);
-      return [];
+      console.error('Error parsing JSON:', error);
     }
-  };
+  } else {
+    console.log('No data found in localStorage for FILTER_USER_GEO_LOC');
+  }
 
-  return (
-    <div>
-      <h1>Search {entity}</h1>
-
-      <Form onSubmit={handleSearch}>
-        <Form.Group>
-          <div className="input-group rounded">
-            <Form.Control type="text" name="search" className="rounded" placeholder="Enter your search query" />
-            <div className="input-group-append">
-              <Button variant="primary" type="submit">
-                <FontAwesomeIcon icon={faSearch} />
-              </Button>
-            </div>
-          </div>
-        </Form.Group>
-      </Form>
-
-      {showNoResults && <Alert variant="info">No results found.</Alert>}
-      {searchResults.length > 0 && (
-        <div>
-          <h2>Search Results for {entity}</h2>
-          <ul>
-            {searchResults.map((result, index) => (
-              <li key={index}>
-                <Link to={`/studios/${result.id}`}>{result.studioName}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+  // Return null if there's no valid data or an error occurred
+  return null;
 }
 
+
 export default SearchPage;
-*/
