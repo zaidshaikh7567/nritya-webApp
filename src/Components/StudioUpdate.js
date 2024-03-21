@@ -10,6 +10,7 @@ import MapsInput from './MapsInput';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import TimeRangePicker from './TimeRangePicker';
+import indianCities from '../cities.json';
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -55,6 +56,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00");
+  const locationOptions = indianCities.cities;
 
   const [tableData, setTableData] = useState({
     0:{
@@ -430,9 +432,27 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
                 <Form.Label>Street</Form.Label>
                 <Form.Control defaultValue={selectedStudio ? selectedStudio.street : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
-
                 <Form.Label>City</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.city : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter city" name="city" />
+                  <Form.Control
+                      as="select"
+                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                      name="city"
+                      value={selectedStudio ? selectedStudio.city : ''}
+                      onChange={(e) => {
+                          const newCity = e.target.value;
+                          setSelectedStudio(prevState => ({
+                              ...prevState,
+                              city: newCity
+                          }));
+                      }}
+                  >
+                      <option value="">Select a city</option>
+                      {locationOptions.map((city, index) => (
+                          <option key={index} value={city}>
+                              {city}
+                          </option>
+                      ))}
+                  </Form.Control>
                 </Col>
                 <Col md={6}>
                   <Form.Label>Landmark</Form.Label>

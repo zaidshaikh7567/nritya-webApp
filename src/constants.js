@@ -22,8 +22,9 @@ export const STORAGES ={
     STUDIOIMAGES:'StudioImages',
     STUDIOICON:'StudioIcon',
     USERIMAGE:'UserImage',
-    INSTRUCTORIMAGES: 'InstructorImages'
-
+    INSTRUCTORIMAGES: 'InstructorImages',
+    WORKSHOPICON :"WorkshopIcon",
+    WORKSHOPIMAGES :"WorkshopImages",
 }
 
 export const BASEURL_DEV = "http://127.0.0.1:8000/"

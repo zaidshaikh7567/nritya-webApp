@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { FaStar, FaStarHalf } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
 const sizeMapping = {
   small: 16,
@@ -9,7 +11,8 @@ const sizeMapping = {
 
 const StarRating = ({ rating, onRatingChange, viewMode,  starSize = 'small' }) => {
   const [hoverRating, setHoverRating] = useState(0);
-
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+  
   const handleClick = (index) => {
     if (!viewMode) {
       onRatingChange(index); // Update the rating only in edit mode
@@ -65,7 +68,11 @@ const StarRating = ({ rating, onRatingChange, viewMode,  starSize = 'small' }) =
     return stars;
   };
 
-  return <div>{renderStars()}{rating}</div>;
+  return (
+    <div style={{ color: isDarkModeOn?"white":"black" }}>
+      {renderStars()} {rating}
+    </div>
+  );
 };
 
 export default StarRating;

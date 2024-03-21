@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Button, Offcanvas, Dropdown } from 'react-bootstrap';
+import { Nav, Navbar, Button, Offcanvas, Dropdown,Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
 
@@ -124,9 +124,10 @@ function Header() {
     <Navbar style={styleObj} expand="lg" collapseOnSelect >
       <Container fluid>
         <Navbar.Brand href="/nritya-webApp" style={{textTransform: 'none'}}  >
-          <img style={{ width: 60, height: 60}}
+          <Image style={{ width: 60, height: 60}}
             src={logo}
-            alt="Logo"       
+            alt="Logo" 
+            roundedCircle={true}      
          />        
         </Navbar.Brand>
         <div>

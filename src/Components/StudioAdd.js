@@ -11,6 +11,8 @@ import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import MapsInput from './MapsInput';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
+import indianCities from '../cities.json';
+import danceStyles from '../danceStyles.json'
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -30,7 +32,7 @@ function StudioAdd({instructors}) {
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
     const [selectedInstructors, setSelectedInstructors] = useState([]);
     //const [dropdownVisible, setDropdownVisible] = useState(false);
-  
+    const locationOptions = indianCities.cities;
     const handleToggleInstructor = (instructor) => {
       setSelectedInstructors((prevSelected) => {
         // Check if the instructor is already selected
@@ -166,7 +168,7 @@ function StudioAdd({instructors}) {
                 <Row>
                   <Col md={6}>
                 <Form.Label>Dance Styles</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter dance forms seperated by commas Eg, salsa, hip hop" name="danceStyles" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter dance forms seperated by commas Eg, salsa, hip hop" name="danceStyles" />                                
                 <Form.Label>Number of Halls</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
                 </Col>
@@ -251,9 +253,16 @@ function StudioAdd({instructors}) {
 
                 <Form.Label>Street</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
-
                 <Form.Label>City</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter city" name="city" />
+                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} name="city">
+                    <option value="">Select a city</option>
+                    {locationOptions.map((city, index) => (
+                        <option key={index} value={city}>
+                            {city}
+                        </option>
+                    ))}
+                </Form.Control>
+
                 </Col>
                 <Col md={6}>
                   <Form.Label>Landmark</Form.Label>
