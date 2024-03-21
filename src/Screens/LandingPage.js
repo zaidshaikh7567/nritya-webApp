@@ -286,10 +286,12 @@ function LandingPage() {
                 style={{
                   backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
                   color: isDarkModeOn ? 'black' : 'white',
+                  padding: '5px 10px', // Adjust padding
+                  fontSize: '14px', // Adjust font size
                 }}
                 href="#/search/studios"
               >
-                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"Search Studios"} heading={false} />
+                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"🔎 Search Studios"} heading={false} />
               </Button>
 
               <Button
@@ -297,14 +299,16 @@ function LandingPage() {
                 style={{
                   backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
                   color: isDarkModeOn ? 'black' : 'black',
+                  padding: '5px 10px', // Adjust padding
+                  fontSize: '14px', // Adjust font size
                 }}
                 href="#/search/workshop"
                 disabled
               >
-                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"Search Workshops"} heading={false} />
-            
+                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"🔎 Search Workshops"} heading={false} />
               </Button>
             </ButtonGroup>
+
           </Row>
 
         <br/>
