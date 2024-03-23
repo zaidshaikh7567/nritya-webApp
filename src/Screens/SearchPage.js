@@ -2,7 +2,9 @@ import React, { useState,useEffect } from 'react';
 import StudioCard from "../Components/StudioCard";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-import { Form, Button, Col, Row, Image, Modal, FormControl,Badge } from 'react-bootstrap';
+import { Form, Button, Col, Row, Image, Modal, FormControl,Badge, ButtonGroup } from 'react-bootstrap';
+import {Badge as Mui_Badge,Chip as Mui_Chip} from '@mui/material';
+
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
@@ -21,6 +23,7 @@ const SearchPage = () => {
   const [selectedDanceForm, setSelectedDanceForm] = useState('');
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
+  const [activeFilters, setActiveFilters] = useState(0);
   const dispatch = useDispatch();
   console.log("dark mode", isDarkModeOn)
 
@@ -30,6 +33,12 @@ const SearchPage = () => {
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
+  };
+  const countActiveFilters = () => {
+    let count = 0;
+    if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
+    if (localStorage.getItem(FILTER_DANCE_FORMS_KEY)) count++;
+    return count;
   };
 
   const handleSearch = () => {
@@ -41,16 +50,19 @@ const SearchPage = () => {
       apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
     }
   
-    if (selectedDanceForm) {
-      apiEndpoint += `&danceStyle=${encodeURIComponent(selectedDanceForm)}`;
+    if (selectedDanceForm && localStorage.getItem(FILTER_DANCE_FORMS_KEY)) {
+      console.log(selectedDanceForm)
+      apiEndpoint += `&danceStyle=${encodeURIComponent(localStorage.getItem(FILTER_DANCE_FORMS_KEY))}`;
     }
     var geoLocation = getGeoLocationFromLocalStorage();
 
     
-    if (selectedDistances && geoLocation) {
+    if (selectedDistances && geoLocation && localStorage.getItem(FILTER_DISTANCES_KEY)) {
+      console.log(selectedDistances,geoLocation)
       apiEndpoint += `&distance=${encodeURIComponent(localStorage.getItem(FILTER_DISTANCES_KEY))}&user_lat=${encodeURIComponent(geoLocation.latitude)}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
     }
   
+
     
     const tryUrl1 = 'https://nrityaserver-2b241e0a97e5.herokuapp.com/api/get_all_data/'
     const tryUrl12 = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna`
@@ -71,10 +83,27 @@ const SearchPage = () => {
     localStorage.setItem(FILTER_DISTANCES_KEY, selectedDistances);
     localStorage.setItem(FILTER_DANCE_FORMS_KEY, selectedDanceForm);
     console.log("Location change, redux operation")
+    setActiveFilters(countActiveFilters());
     //dispatch(refreshLocation())
     setShowFilters(false);
     handleSearch()
+    
   };
+
+  const handleClearFilters = () => {
+    setSelectedDistances('');
+    setSelectedDanceForm('');
+    console.log("handleClearFilters",selectedDistances,selectedDanceForm)
+    localStorage.removeItem(FILTER_DISTANCES_KEY);
+    localStorage.removeItem(FILTER_DANCE_FORMS_KEY);
+    setActiveFilters(0);
+
+    console.log("handleClearFilters",selectedDistances,selectedDanceForm)
+    setShowFilters(false);
+    handleSearch();
+    console.log(results)
+  };
+
 
   // Retrieve selected filters from local storage on component mount
   useEffect(() => {
@@ -113,13 +142,8 @@ const SearchPage = () => {
           >
             Search
           </Button>
-          <div
-            onClick={toggleFilters}
-            style={{ marginLeft: '10px', cursor: 'pointer', fontSize: '20px' }}
-          >
-            &#9776;
-          </div>
         </div>
+        
       </header>
 
       <Modal  show={showFilters} onHide={toggleFilters} backdrop="static">
@@ -183,19 +207,30 @@ const SearchPage = () => {
                     </Form.Control>
                   </Form.Group>
                 )}
-                
-                      
-
-                {/* Add more selection lists for additional filters */}
               </Col>
             </Row>
-
+            <ButtonGroup>
             <Button variant="primary" onClick={handleApplyFilters}>
               Apply
             </Button>
+            <Button variant="danger" onClick={handleClearFilters} style={{ marginLeft: '10px' }}>
+            Clear All Filters
+          </Button>
+            </ButtonGroup>
           </Modal.Body>
-        </Modal>
+      </Modal>
 
+        <Mui_Badge
+            onClick={toggleFilters}
+            badgeContent={activeFilters}
+            color="warning"
+          >
+            <Mui_Chip
+              color={isDarkModeOn ? 'secondary' : 'primary'}
+              label="&#9776; filters"
+            />
+
+        </Mui_Badge>
         {/* Filters Badges */
         selectedDistances || selectedDanceForm? (
       <div style={{ marginTop: '10px' }}>
@@ -209,7 +244,10 @@ const SearchPage = () => {
             Dance Form: {selectedDanceForm}
           </Badge>
         )}
-        {/* Add more badges for additional filters */}
+        <Badge pill bg={isDarkModeOn?"danger":"success"} onClick={handleClearFilters} style={{ marginRight: '5px' }}>
+             Clear All
+          </Badge>
+        
         <hr></hr>
       </div>
         ):""}
