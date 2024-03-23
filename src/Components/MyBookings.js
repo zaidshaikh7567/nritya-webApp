@@ -141,7 +141,7 @@ function MyBookings() {
       )}
 
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal} >
         <Modal.Header closeButton>
           <Modal.Title>Ticket Details</Modal.Title>
         </Modal.Header>

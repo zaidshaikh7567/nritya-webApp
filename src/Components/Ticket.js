@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import QRCode from 'react-qr-code';
-import { Button } from 'react-bootstrap';
+import { Button,Image } from 'react-bootstrap';
 import { BASEURL_PROD } from '../constants';
 const TimeZone = { "IST": 'Asia/Kolkata' };
 
@@ -27,7 +27,6 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
 
   const downloadTicket = () => {
     const ticketContainer = document.getElementById('nritya-ticket-container');
-
     html2canvas(ticketContainer).then((canvas) => {
       const pdf = new jsPDF();
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
@@ -39,15 +38,11 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
     <div>
       <div id="nritya-ticket-container" className="nritya-ticket-card">
         <div className="nritya-ticket-card-header">
-          <div className="logo-container">
-            <div className="logo">
-              <img
-                src={logo}
-                alt="Organization Logo"
-                style={{ width: '5rem', height: '5rem', objectFit: 'cover', borderRadius: '50%' }}
-              />
-            </div>
-          </div>
+        <Image style={{ width: 60, height: 60}}
+            src={logo}
+            alt="Logo" 
+            roundedCircle={true}      
+            />
           <br />
           <h4 className="text">{className}</h4>
           <p className="text">{studioName}</p>
@@ -59,7 +54,7 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
             <QRCode value={endpoint_url} style={{ height: 'auto', maxWidth: '70%', width: '40%' }} />
           </div>
           <p className="text">Booking ID: {bookingId}</p>
-          <p className="text">Valid till 3 days from {convertToLocal(timestamp)}</p>
+          <p className="text">Valid till 30 days from {convertToLocal(timestamp)}</p>
           <p className="text">Admit One for Once</p>
         </div>
         <br />
