@@ -13,6 +13,10 @@ import { useSelector, useDispatch } from 'react-redux'; // Import useSelector an
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import indianCities from '../cities.json';
 import danceStyles from '../danceStyles.json'
+import {Autocomplete,TextField} from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -31,8 +35,20 @@ function StudioAdd({instructors}) {
     const [selectedLocation, setSelectedLocation] = useState(null);
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
     const [selectedInstructors, setSelectedInstructors] = useState([]);
+    const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
+
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
+    const danceStylesOptions = danceStyles.danceStyles;
+    //console.log("danceStyles ",danceStylesOptions)
+
+    const darkTheme = createTheme({
+      palette: {
+        mode: isDarkModeOn?'dark':'light',
+      },
+    });
+    
+
     const handleToggleInstructor = (instructor) => {
       setSelectedInstructors((prevSelected) => {
         // Check if the instructor is already selected
@@ -44,6 +60,10 @@ function StudioAdd({instructors}) {
           : [...prevSelected, instructor];
       });
     };
+
+    const handleDanceStylesChange = (event, value) => {
+      setSelectedDanceStyles(value);
+    };  
   
       console.log("Studio Add",newStudioId)
       const handleAddStudio = async (event) => {
@@ -67,7 +87,7 @@ function StudioAdd({instructors}) {
               mobileNumber: event.target.mobileNumber.value,
               whatsappNumber: event.target.whatsappNumber.value,
               mailAddress: event.target.mailAddress.value,
-              danceStyles: event.target.danceStyles.value,
+              danceStyles: selectedDanceStyles.join(","),
               numberOfHalls: event.target.numberOfHalls.value,
               maximumOccupancy: event.target.maximumOccupancy.value,
               instructorsNames: selectedInstructors,
@@ -120,8 +140,6 @@ function StudioAdd({instructors}) {
 
   return (
     <div >
-       
-      
             <Form id="addStudioForm" onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
               <Form.Group controlId="formBasicAdd">
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
@@ -167,8 +185,27 @@ function StudioAdd({instructors}) {
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
                 <Row>
                   <Col md={6}>
-                <Form.Label>Dance Styles</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter dance forms seperated by commas Eg, salsa, hip hop" name="danceStyles" />                                
+                <Form.Label >Dance Styles</Form.Label>
+                <ThemeProvider theme={darkTheme}>
+                  <CssBaseline />
+
+                 <Autocomplete
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                  multiple
+                  id="tags-standard"
+                  options={danceStylesOptions}
+                  value={selectedDanceStyles}
+                  onChange={handleDanceStylesChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder="Select Dance Styles"
+                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                    />
+                  )}
+                />
+                </ThemeProvider>
                 <Form.Label>Number of Halls</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
                 </Col>
@@ -184,58 +221,65 @@ function StudioAdd({instructors}) {
 
           <Form.Label>Names of Instructors</Form.Label>
           <Row>
-      
-          <Col xs={6}>
-          <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-            <Dropdown className="d-inline mx-2">
-              <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
-                Add/Remove Instrcutors
-              </Dropdown.Toggle>
-              <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
-                {instructors.map((instructor) => (
-                  <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'black' : 'white' }} key={instructor.id}>
-                    <Form.Check
-                      type="checkbox"
-                      id={`checkbox-${instructor.id}`}
-                      label={`${instructor.name} - ${instructor.id.slice(-4)}`}
-                      checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
-                      onChange={() => handleToggleInstructor(instructor)}
-                      style={{ flex: 1 }} 
-                    />
-                  </div>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-            <br></br>
-            <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
-              Go to Instrcutors' Add/update Page? 
-            </a>
-          </div>
-          </Col>
-      <Col xs={12} md={6}>
-        {selectedInstructors.length > 0 ? (
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
-            <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
-            {selectedInstructors.map((selected, index) => (
-              <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
-                <Badge
-                  bg={colorCombinations[index % colorCombinations.length].background}
-                  style={{
-                    color: colorCombinations[index % colorCombinations.length].text,
-                    marginLeft: '5px',
-                  }}
-                  pill
-                >
-                  {selected.name} - {selected.id.slice(-4)}{' '}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No instructors selected.</p>
-        )}
-      </Col>
-          </Row>              
+            
+                <Col xs={6}>
+                <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                  <Dropdown className="d-inline mx-2">
+                    <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
+                      Add/Remove Instrcutors
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
+                      {instructors.map((instructor) => (
+                        <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'black' : 'white' }} key={instructor.id}>
+                          <Form.Check
+                            type="checkbox"
+                            id={`checkbox-${instructor.id}`}
+                            label={`${instructor.name} - ${instructor.id.slice(-4)}`}
+                            checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
+                            onChange={() => handleToggleInstructor(instructor)}
+                            style={{ flex: 1 }} 
+                          />
+                        </div>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  <br></br>
+                  <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
+                    Go to Instrcutors' Add/update Page? 
+                  </a>
+                </div>
+                </Col>
+            <Col xs={12} md={6}>
+              {selectedInstructors.length > 0 ? (
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                  <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
+                  {selectedInstructors.map((selected, index) => (
+                    <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
+                      <Badge
+                        bg={colorCombinations[index % colorCombinations.length].background}
+                        style={{
+                          color: colorCombinations[index % colorCombinations.length].text,
+                          marginLeft: '5px',
+                        }}
+                        pill
+                      >
+                        {selected.name} - {selected.id.slice(-4)}{' '}
+                      </Badge>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No instructors selected.</p>
+              )}
+            </Col>
+                </Row> 
+
+                <Col xs={6}>
+
+          <br />
+        </Col>
+
+              
                   <hr />
                          
                 <hr></hr>   

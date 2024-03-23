@@ -11,6 +11,10 @@ import { useSelector, useDispatch } from 'react-redux'; // Import useSelector an
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import TimeRangePicker from './TimeRangePicker';
 import indianCities from '../cities.json';
+import danceStyles from '../danceStyles.json'
+import {Autocomplete,TextField} from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -57,6 +61,24 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedRow, setSelectedRow] = useState(null);
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00");
   const locationOptions = indianCities.cities;
+  const danceStylesOptions = danceStyles.danceStyles;
+
+  const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
+  const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
+  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
+
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: isDarkModeOn?'dark':'light',
+    },
+  });
+
+  const handleDanceStylesChange = (event, value) => {
+    setSelectedDanceStyles(value);
+  };  
 
   const [tableData, setTableData] = useState({
     0:{
@@ -121,11 +143,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     });
   };
   
-  const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
-  const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
-
+  
   useEffect(() => {
     // Fetch the list of studios created by the user from localStorage
     const studiosOfUser = JSON.parse(localStorage.getItem('StudioCreated')) || [];
@@ -144,6 +162,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     if (selectedStudio) {
       console.log("Studio id changes",selectedStudio.instructorsNames)
       setSelectedInstructors((selectedStudio.instructorsNames));
+      if (selectedStudio && selectedStudio.danceStyles) {
+        setSelectedDanceStyles(selectedStudio.danceStyles.split(','));
+      }    
       if(selectedStudio && selectedStudio.tableData){
         const maxIndex = Math.max(...Object.keys(tableData).map(Number));
         setSelectedStudioFrozenClassRows(maxIndex);
@@ -218,7 +239,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               mobileNumber: event.target.mobileNumber.value,
               whatsappNumber: event.target.whatsappNumber.value,
               mailAddress: event.target.mailAddress.value,
-              danceStyles: event.target.danceStyles.value,
+              danceStyles: selectedDanceStyles.join(","),
               numberOfHalls: event.target.numberOfHalls.value,
               maximumOccupancy: event.target.maximumOccupancy.value,
               instructorsNames: selectedInstructors,
@@ -312,7 +333,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Form.Control>
               </Form.Group>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -334,7 +355,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>
                 <hr></hr>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -352,11 +373,41 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>
                 <hr></hr>
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
                 <Row>
                   <Col md={6}>
                 <Form.Label>Dance Styles</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.danceStyles : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" rows={1} placeholder="Enter dance forms seperated by commas Eg, salsa, hip hop" name="danceStyles" />
+                
+                <ThemeProvider theme={darkTheme}>
+                  <CssBaseline />
+
+                 <Autocomplete
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                  multiple
+                  id="tags-standard"
+                  options={danceStylesOptions}
+                  value={selectedDanceStyles}
+                  onChange={handleDanceStylesChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder="Select Dance Styles"
+                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                    />
+                  )}
+                />
+                </ThemeProvider>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 <Form.Label>Number of Halls</Form.Label>
                 <Form.Control defaultValue={selectedStudio ? selectedStudio.numberOfHalls : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
                 </Col>
@@ -367,19 +418,19 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>
                 <hr></hr>
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
                 <Form.Label>Names of Instructors</Form.Label>
                 <Row >
       
       <Col xs={6}>
-      <div style={{ backgroundColor: isDarkModeOn ? 'black' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+      <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
         <Dropdown className="d-inline mx-2">
           <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
             Add/Remove Instrcutors
           </Dropdown.Toggle>
           <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
             {instructors.map((instructor) => (
-              <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'black' : 'white' }} key={instructor.id}>
+              <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? '#181818' : '' }} key={instructor.id}>
                 <Form.Check
                   type="checkbox"
                   id={`checkbox-${instructor.id}`}
@@ -424,7 +475,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       </Row>  
       <hr></hr>
                    
-                <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
                 <Row>
                   <Col md={6}>
                   <Form.Label>Building Name</Form.Label>
