@@ -240,12 +240,12 @@ const SearchPage = () => {
           </Badge>
         )}
         {selectedDanceForm && (
-          <Badge pill bg={isDarkModeOn?"danger":"info"} style={{ marginRight: '5px' }}>
+          <Badge pill bg={isDarkModeOn?"success":"info"} style={{ marginRight: '5px' }}>
             Dance Form: {selectedDanceForm}
           </Badge>
         )}
-        <Badge pill bg={isDarkModeOn?"danger":"success"} onClick={handleClearFilters} style={{ marginRight: '5px' }}>
-             Clear All
+        <Badge pill bg={"danger"} onClick={handleClearFilters} style={{ marginRight: '5px' }}>
+             Clear All X
           </Badge>
         
         <hr></hr>
