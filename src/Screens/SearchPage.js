@@ -56,7 +56,7 @@ const SearchPage = () => {
     const tryUrl12 = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna`
     //console.log("https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna")
     //apiEndpoint = `http://127.0.0.1:8000/api/help/`;
-    console.log(tryUrl12===apiEndpoint)
+    //console.log(tryUrl12===apiEndpoint)
     fetch(apiEndpoint)
       .then(response => response.json())
       .then(data => {
@@ -95,7 +95,7 @@ const SearchPage = () => {
       <header>
         <p1 style={{ color: isDarkModeOn ? 'white' : 'black' }}>Search </p1>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <FormControl type="text" placeholder="Enter your search query" value={query} onChange={handleInputChange}
+          <FormControl type="text" placeholder="Enter any specific studio name or just click search" value={query} onChange={handleInputChange}
             style={{ marginRight: '10px', padding: '8px' }}
           />
           <Button
@@ -214,23 +214,28 @@ const SearchPage = () => {
         ):""}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
-        {results.map((studio, index) => (
-          <div key={index}
-          className="studio-card-container"
-          style={{ padding: "0.2rem" }} md={2}>
-          <a href={`#/studio/${studio.studioId}`} style={{textDecoration: "none"}} >
-            <SmallCard
-                    studioName={studio.studioName}
-                    studioAddress={studio.city}
-                    studioPrice={studio.price}
-                    studioDanceStyles={studio.danceStyles}
-                    studioId={studio.studioId}
-                    averageRating={studio.avgRating}
-                    forceSmallView={1}
-                  />
-          </a>
-          </div>
-        ))}
+      {results.length === 0 ? (
+      <div className="" style={{ minHeight:"30vh" }}>
+        
+      </div>
+        ) : (
+          results.map((studio, index) => (
+            <div key={index} className="studio-card-container" style={{ padding: "0.2rem" }} md={2}>
+              <a href={`#/studio/${studio.studioId}`} style={{ textDecoration: "none" }}>
+                <SmallCard
+                  studioName={studio.studioName}
+                  studioAddress={studio.city}
+                  studioPrice={studio.price}
+                  studioDanceStyles={studio.danceStyles}
+                  studioId={studio.studioId}
+                  averageRating={studio.avgRating}
+                  forceSmallView={1}
+                />
+              </a>
+            </div>
+          ))
+        )}
+
       </div>
     </div>
   );

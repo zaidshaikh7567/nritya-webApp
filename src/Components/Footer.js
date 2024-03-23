@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useNavigate } from 'react-router-dom';
+import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaLinkedin,FaEnvelope } from 'react-icons/fa';
 
 function Footer() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -40,14 +41,29 @@ function Footer() {
           </Col>
         </Row>
       </Container>
-      <footer style={{ backgroundColor: isDarkModeOn ? 'black' : '#2c1160', height: 1 }}>
-        <Row>
-          <Col className="text-center py-1" style={{ color: 'white', fontFamily: 'Times-Roman', fontSize: 12 }}>
-            &copy; Nritya@2023
-          </Col>
-        </Row>
+      <footer style={{ backgroundColor: isDarkModeOn ? '#292929' : '#2c1160', padding: '10px 0', color: 'white' }}>
+        <Container>
+          <Row className="justify-content-between align-items-center">
+            <Col xs="auto" className="text-center py-1">
+              
+              <a href="https://www.instagram.com/nritya.co.in/" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginRight: '10px' }}>
+                <FaInstagram className='genericHoverEffect' style={{ fontSize: '24px' }} />
+              </a>
+              
+              <a href="https://in.linkedin.com/company/nritya" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginRight: '10px' }}>
+                <FaLinkedin className='genericHoverEffect' style={{ fontSize: '24px' }} />
+              </a>
+              <a href="mailto:nritya.contact@gmail.com" style={{ color: 'white' }}>
+                <FaEnvelope style={{ fontSize: '24px' }} />
+              </a>
+
+            </Col>
+            <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12 }}>
+              &copy; Nritya@2023
+            </Col>
+          </Row>
+        </Container>
       </footer>
-      <br></br>
     </div>
   );
 }

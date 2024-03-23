@@ -81,8 +81,7 @@ function App() {
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
     <HashRouter  >
-    
-      <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+       <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
       <div style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}} hidden>
         <span
           onClick={handleToggleDarkMode}
@@ -130,7 +129,6 @@ function App() {
       </main>
      
       <Footer />
-      
     </HashRouter>
   );
 }
