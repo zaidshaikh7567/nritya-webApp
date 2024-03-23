@@ -41,24 +41,25 @@ function Footer() {
           </Col>
         </Row>
       </Container>
-      <footer style={{ backgroundColor: isDarkModeOn ? '#292929' : '#2c1160', padding: '10px 0', color: 'white' }}>
+      <hr></hr>
+      <footer style={{ background: isDarkModeOn ? 'black' : 'white', padding: '10px 0' }}>
         <Container>
           <Row className="justify-content-between align-items-center">
             <Col xs="auto" className="text-center py-1">
               
-              <a href="https://www.instagram.com/nritya.co.in/" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginRight: '10px' }}>
+              <a href="https://www.instagram.com/nritya.co.in/" target="_blank" rel="noopener noreferrer" style={{ color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' }}>
                 <FaInstagram className='genericHoverEffect' style={{ fontSize: '24px' }} />
               </a>
               
-              <a href="https://in.linkedin.com/company/nritya" target="_blank" rel="noopener noreferrer" style={{ color: 'white', marginRight: '10px' }}>
+              <a href="https://in.linkedin.com/company/nritya" target="_blank" rel="noopener noreferrer" style={{ color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' }}>
                 <FaLinkedin className='genericHoverEffect' style={{ fontSize: '24px' }} />
               </a>
-              <a href="mailto:nritya.contact@gmail.com" style={{ color: 'white' }}>
+              <a href="mailto:nritya.contact@gmail.com" style={{ color: isDarkModeOn ? 'white' : 'black'}}>
                 <FaEnvelope style={{ fontSize: '24px' }} />
               </a>
 
             </Col>
-            <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12 }}>
+            <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
               &copy; Nritya@2023
             </Col>
           </Row>

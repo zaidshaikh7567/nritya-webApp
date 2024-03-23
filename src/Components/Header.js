@@ -55,7 +55,8 @@ function Header() {
   const styleObj = {
     fontSize: 10,
     textAlign: "center",
-    background: isDarkModeOn ? '#292929' : '#cccccc',
+    //background: isDarkModeOn ? '#292929' : '#cccccc',
+    background: isDarkModeOn ? 'black' : 'white',
     }
     
     function getUserNameInitials() {
@@ -238,8 +239,7 @@ function Header() {
           )}
 
         </Navbar.Collapse>
-
-
+            
       </Container>
     </Navbar>
 

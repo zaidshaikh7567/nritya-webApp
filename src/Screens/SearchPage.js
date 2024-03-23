@@ -3,7 +3,7 @@ import StudioCard from "../Components/StudioCard";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Form, Button, Col, Row, Image, Modal, FormControl,Badge, ButtonGroup } from 'react-bootstrap';
-import {Badge as Mui_Badge,Chip as Mui_Chip} from '@mui/material';
+import {Badge as MuiBadge,Chip as MuiChip, Stack as MuiStack} from '@mui/material';
 
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
@@ -118,6 +118,8 @@ const SearchPage = () => {
       setSelectedDanceForm(storedDanceForm);
     }
     handleSearch();
+    handleClearFilters();
+    setActiveFilters(countActiveFilters());
   }, []);
   
   return (
@@ -145,7 +147,9 @@ const SearchPage = () => {
         </div>
         
       </header>
+      <body>
 
+      </body>
       <Modal  show={showFilters} onHide={toggleFilters} backdrop="static">
           <Modal.Header closeButton >
             <Modal.Title >Filters</Modal.Title>
@@ -219,39 +223,64 @@ const SearchPage = () => {
             </ButtonGroup>
           </Modal.Body>
       </Modal>
+      <br></br>
+      <MuiStack direction="horizontal" gap={2}>     
+        <MuiBadge
+          onClick={toggleFilters}
+          badgeContent={activeFilters}
+          color={isDarkModeOn?"warning":"secondary"}
+          pill
+        >
+          <MuiChip
+            color={isDarkModeOn?"warning":"secondary"}
+            label="&#9776; filters"
+            variant="outlined" 
+          />
+        </MuiBadge>
 
-        <Mui_Badge
-            onClick={toggleFilters}
-            badgeContent={activeFilters}
-            color="warning"
-          >
-            <Mui_Chip
-              color={isDarkModeOn ? 'secondary' : 'primary'}
-              label="&#9776; filters"
-            />
-
-        </Mui_Badge>
-        {/* Filters Badges */
-        selectedDistances || selectedDanceForm? (
-      <div style={{ marginTop: '10px' }}>
+        {/* Filter Badges */}
         {selectedDistances && (
-          <Badge pill bg={isDarkModeOn?"warning":"dark"} style={{ marginRight: '5px' }}>
-            Distance: {selectedDistances} km
-          </Badge>
+          <MuiBadge
+            color="success"
+            pill
+          >
+            <MuiChip
+              color="success"
+              label={`Distance: ${selectedDistances} km`}
+            />
+          </MuiBadge>
         )}
-        {selectedDanceForm && (
-          <Badge pill bg={isDarkModeOn?"success":"info"} style={{ marginRight: '5px' }}>
-            Dance Form: {selectedDanceForm}
-          </Badge>
-        )}
-        <Badge pill bg={"danger"} onClick={handleClearFilters} style={{ marginRight: '5px' }}>
-             Clear All X
-          </Badge>
         
-        <hr></hr>
-      </div>
-        ):""}
+        {selectedDanceForm && (
+          <MuiBadge
+            color="info"
+            
+            pill
+          >
+            <MuiChip
+              color="info"
+              label={`Dance Form: ${selectedDanceForm}`}
+            />
+          </MuiBadge>
+        )}
 
+        {(selectedDanceForm || selectedDistances) && (
+          <MuiBadge
+            color="error"
+            onClick={handleClearFilters}
+            style={{ cursor: 'pointer' }}
+            pill
+          >
+            <MuiChip
+              color="error"
+              label="Clear All X"
+              onClick={handleClearFilters}
+              style={{ cursor: 'pointer' }}
+            />
+          </MuiBadge>
+        )}
+      </MuiStack>
+      <hr></hr>
       <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
       {results.length === 0 ? (
       <div className="" style={{ minHeight:"30vh" }}>
