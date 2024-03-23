@@ -66,13 +66,14 @@ const SearchPage = () => {
       .catch(error => console.error('Error fetching search results:', error));
   };
 
-  const handleSaveFilters = () => {
+  const handleApplyFilters = () => {
 
     localStorage.setItem(FILTER_DISTANCES_KEY, selectedDistances);
     localStorage.setItem(FILTER_DANCE_FORMS_KEY, selectedDanceForm);
     console.log("Location change, redux operation")
     //dispatch(refreshLocation())
     setShowFilters(false);
+    handleSearch()
   };
 
   // Retrieve selected filters from local storage on component mount
@@ -87,9 +88,9 @@ const SearchPage = () => {
     if (storedDanceForm) {
       setSelectedDanceForm(storedDanceForm);
     }
-    
+    handleSearch();
   }, []);
-
+  
   return (
     <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', padding: '10px' }}>
       <header>
@@ -189,8 +190,8 @@ const SearchPage = () => {
               </Col>
             </Row>
 
-            <Button variant="primary" onClick={handleSaveFilters}>
-              Save
+            <Button variant="primary" onClick={handleApplyFilters}>
+              Apply
             </Button>
           </Modal.Body>
         </Modal>
