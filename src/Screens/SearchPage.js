@@ -224,19 +224,25 @@ const SearchPage = () => {
           </Modal.Body>
       </Modal>
       <br></br>
-      <MuiStack direction="horizontal" gap={2}>     
-        <MuiBadge
+      <MuiStack direction={{ xs: 'column', sm: 'row' }}  gap={2}>     
+      <MuiBadge
           onClick={toggleFilters}
-          badgeContent={activeFilters}
-          color={isDarkModeOn?"warning":"secondary"}
-          pill
+          color={isDarkModeOn ? "warning" : "secondary"}
+          overlap="circular"
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+           // Adjust the padding as needed
+          
         >
           <MuiChip
-            color={isDarkModeOn?"warning":"secondary"}
+            color={isDarkModeOn ? "warning" : "secondary"}
             label="&#9776; filters"
             variant="outlined" 
           />
         </MuiBadge>
+
 
         {/* Filter Badges */}
         {selectedDistances && (
