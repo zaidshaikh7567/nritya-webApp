@@ -224,53 +224,49 @@ const SearchPage = () => {
           </Modal.Body>
       </Modal>
       <br></br>
-      <MuiStack direction={{ xs: 'column', sm: 'row' }}  gap={2}>     
-      <MuiBadge
-          onClick={toggleFilters}
-          color={isDarkModeOn ? "warning" : "secondary"}
-          overlap="circular"
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-           // Adjust the padding as needed
-          
-        >
-          <MuiChip
-            color={isDarkModeOn ? "warning" : "secondary"}
-            label="&#9776; filters"
-            variant="outlined" 
-          />
-        </MuiBadge>
-
-
-        {/* Filter Badges */}
-        {selectedDistances && (
+      <Row className="align-items-center">
+      <Col xs="auto">
+       
           <MuiBadge
-            color="success"
+            onClick={toggleFilters}
+            badgeContent={activeFilters}
+            color={isDarkModeOn ? "warning" : "secondary"}
             pill
           >
+            <MuiChip
+              color={isDarkModeOn ? "warning" : "secondary"}
+              label="&#9776; filters"
+              variant="outlined" 
+            />
+          </MuiBadge>
+        
+      </Col>
+
+      {/* Filter Badges */}
+      {selectedDistances && (
+        <Col xs="auto">
+          <MuiBadge color="success" pill>
             <MuiChip
               color="success"
               label={`Distance: ${selectedDistances} km`}
             />
           </MuiBadge>
-        )}
-        
-        {selectedDanceForm && (
-          <MuiBadge
-            color="info"
-            
-            pill
-          >
+        </Col>
+      )}
+      
+      {selectedDanceForm && (
+        <Col xs="auto">
+          <MuiBadge color="info" pill>
             <MuiChip
               color="info"
               label={`Dance Form: ${selectedDanceForm}`}
             />
           </MuiBadge>
-        )}
+        </Col>
+      )}
 
-        {(selectedDanceForm || selectedDistances) && (
+      {(selectedDanceForm || selectedDistances) && (
+        <Col xs="auto">
           <MuiBadge
             color="error"
             onClick={handleClearFilters}
@@ -284,8 +280,10 @@ const SearchPage = () => {
               style={{ cursor: 'pointer' }}
             />
           </MuiBadge>
-        )}
-      </MuiStack>
+        </Col>
+      )}
+    </Row>
+
       <hr></hr>
       <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
       {results.length === 0 ? (
