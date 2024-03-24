@@ -26,6 +26,8 @@ import CreatorDashboard from './Screens/CreatorDashboard';
 import CreatorInstructor from './Screens/CreatorInstructor';
 import LocationComponent from './Components/LocationComponent';
 import {Divider as MuiDivider} from '@mui/material';
+import AboutUs from './Screens/About';
+import ContactUs from './Screens/ContactUs';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -125,6 +127,8 @@ function App() {
             </Route>
             <Route path='/n-admin' element={<AdminPage/>}/>
             <Route path='/n-trail' element={<Trail/>}/>
+            <Route path='/aboutus' element={<AboutUs/>}/>
+            <Route path='/contactus' element={<ContactUs/>}/>
           </Routes>
         </Container>
       </main>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import {useEffect } from 'react';
 import TrackingDetails from './TrackingDetails';
 import { STATUSES,COLLECTIONS } from "./../constants.js";
+import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
 function Kyc() {
   const [formData, setFormData] = useState({
@@ -19,6 +21,7 @@ function Kyc() {
     country: '',
   });
   const [kycList, setKycList] = useState(null);
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,9 +97,12 @@ function Kyc() {
   const orderStatus ="dispatched"
 
   return (
-    <div>
-      <h1>Kyc Form</h1>
+    <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
+      
+      <Container style={{ maxWidth: '400px', margin: 'auto',border: isDarkModeOn ? '1px solid white' : '1px solid black', borderRadius: '5px', padding: '20px'  }}>
+
       <Form onSubmit={handleSubmit}>
+      <h1 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Kyc Form</h1>
         <Form.Group controlId="formBasicFirstName">
           <Form.Label>Name</Form.Label>
           <Form.Control
@@ -105,6 +111,7 @@ function Kyc() {
             name="name"
             onChange={handleChange}
             required
+            style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}
           />
         </Form.Group>
 
@@ -116,6 +123,7 @@ function Kyc() {
             name="uid"
             onChange={handleChange}
             required
+            style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}
           />
         </Form.Group>
 
@@ -128,6 +136,7 @@ function Kyc() {
             
             onChange={handleChange}
             required
+            style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}
           />
         </Form.Group>
 
@@ -140,6 +149,7 @@ function Kyc() {
             
             onChange={handleChange}
             required
+            style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}
           />
         </Form.Group>
 
@@ -152,6 +162,7 @@ function Kyc() {
             
             onChange={handleChange}
             required
+            style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}
           />
         </Form.Group>
 
@@ -164,15 +175,17 @@ function Kyc() {
             
             onChange={handleChange}
             required
+            style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button variant="success" type="submit">
           Submit
         </Button>
         <Button variant="info" href='#/profile'>
           Profile
         </Button>
       </Form>
+      </Container>
         <br/>
         <br/>
 

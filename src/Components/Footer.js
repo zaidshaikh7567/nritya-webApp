@@ -62,6 +62,11 @@ function Footer() {
             <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
               &copy; Nritya@2023
             </Col>
+            <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
+            <a href="#/aboutus" style={{ color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' }}>About Us</a>
+            <a href="#/contactus" style={{ color: isDarkModeOn ? 'white' : 'black' }}>Contact Us</a>
+          </Col>
+
           </Row>
         </Container>
       </footer>
