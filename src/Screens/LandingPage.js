@@ -26,12 +26,15 @@ import { useNavigate } from 'react-router-dom';
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
   { name: "Bollywood", icon: faMusic },
-  { name: "Salsa", icon: faGlassCheers },
-  { name: "Hip Hop", icon: faBolt },
-  { name: "Ballet", icon: faHiking },
   { name: "Bharatnatyam", icon: faMusic },
   { name: "Odisi", icon: faGlassCheers },
   { name: "Kathak", icon: faBolt },
+  { name: "Salsa", icon: faGlassCheers },
+  { name: "Hip Hop", icon: faBolt },
+  { name: "Ballet", icon: faHiking },
+  { name: "Jazz", icon: faHiking },
+  { name: "Tango", icon: faHiking },
+  { name: "Tap Dance", icon: faHiking },
 ];
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
