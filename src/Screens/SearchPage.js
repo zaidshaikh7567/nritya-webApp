@@ -21,7 +21,7 @@ const SearchPage = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selectedDistances, setSelectedDistances] = useState('');
-  const [selectedDanceForm, setSelectedDanceForm] = useState('-1');
+  const [selectedDanceForm, setSelectedDanceForm] = useState('');
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
