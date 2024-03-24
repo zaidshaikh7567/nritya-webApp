@@ -8,23 +8,25 @@ import {Badge as MuiBadge,Chip as MuiChip, Stack as MuiStack} from '@mui/materia
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
+import danceStyles from '../danceStyles.json'
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 const FILTER_USER_GEO_LOC = "browserGeoLoc";
-const danceForms = ['Ballet', 'Hip Hop', 'Salsa', 'Kathak'];
+//const danceForms = ['Ballet', 'Hip Hop', 'Salsa', 'Kathak'];
 const distances = [2,5,10,20]
 
 const SearchPage = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selectedDistances, setSelectedDistances] = useState('');
-  const [selectedDanceForm, setSelectedDanceForm] = useState('');
+  const [selectedDanceForm, setSelectedDanceForm] = useState('-1');
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
   const dispatch = useDispatch();
+  const danceForms = danceStyles.danceStyles;
   console.log("dark mode", isDarkModeOn)
 
   const toggleFilters = () => {
@@ -50,7 +52,7 @@ const SearchPage = () => {
       apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
     }
   
-    if (selectedDanceForm && localStorage.getItem(FILTER_DANCE_FORMS_KEY)) {
+    if (localStorage.getItem(FILTER_DANCE_FORMS_KEY)) {
       console.log(selectedDanceForm)
       apiEndpoint += `&danceStyle=${encodeURIComponent(localStorage.getItem(FILTER_DANCE_FORMS_KEY))}`;
     }
@@ -61,14 +63,7 @@ const SearchPage = () => {
       console.log(selectedDistances,geoLocation)
       apiEndpoint += `&distance=${encodeURIComponent(localStorage.getItem(FILTER_DISTANCES_KEY))}&user_lat=${encodeURIComponent(geoLocation.latitude)}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
     }
-  
-
-    
-    const tryUrl1 = 'https://nrityaserver-2b241e0a97e5.herokuapp.com/api/get_all_data/'
-    const tryUrl12 = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna`
-    //console.log("https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=adarsh&city=Patna")
-    //apiEndpoint = `http://127.0.0.1:8000/api/help/`;
-    //console.log(tryUrl12===apiEndpoint)
+    console.log("API SERACH",apiEndpoint)
     fetch(apiEndpoint)
       .then(response => response.json())
       .then(data => {
@@ -110,16 +105,21 @@ const SearchPage = () => {
     const storedDistances = localStorage.getItem(FILTER_DISTANCES_KEY);
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     
+      console.log("API SearchPage done",storedDanceForm)
+  
+    
     if (storedDistances) {
       setSelectedDistances(storedDistances);
     }
     
     if (storedDanceForm) {
+      console.log("API SearchPage Setting selectedDanceForm",storedDanceForm)
       setSelectedDanceForm(storedDanceForm);
+      console.log("API SearchPage done  selectedDanceForm",selectedDanceForm)
     }
-    handleSearch();
-    handleClearFilters();
+    console.log("API SearchPage done  selectedDanceForm",selectedDanceForm)
     setActiveFilters(countActiveFilters());
+    handleSearch();
   }, []);
   
   return (

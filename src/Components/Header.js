@@ -166,15 +166,15 @@ function Header() {
           </div>
           
           {currentUser ? (
-             <> <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
-              <FontAwesomeIcon icon={faShoppingCart} />
+             <> <Button   className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
+               🔎 Search Studios
               </Button>
               <Button   className="me-2 rounded-pill"  href="#/modifyStudios" style={{textTransform: 'none' , backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}>List Studios</Button>
             </>
           ) : (
             <>
-              <Button   className="me-2 rounded-pill" href="#/cart" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
-              <FontAwesomeIcon icon={faShoppingCart} />
+              <Button   className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
+              🔎 Search Studios
             </Button>
               <Button   className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}> List Studios</Button>
             </>

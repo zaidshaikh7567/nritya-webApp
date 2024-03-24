@@ -1,85 +1,111 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import './ContactUs.css';
-import { useSelector } from 'react-redux'; // Import useSelector
+import { useSelector } from 'react-redux';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
 const ContactUs = () => {
-    const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const [containerStyle, setContainerStyle] = useState({});
+  const [headingStyle, setHeadingStyle] = useState({});
+  const [textStyle, setTextStyle] = useState({});
+  const [formControl, setFormControl] = useState({});
+
+  useEffect(() => {
+    setContainerStyle({
+      backgroundColor: isDarkModeOn ? 'black' : 'white',
+      color: isDarkModeOn ? 'white' : 'black'
+    });
+    setHeadingStyle({
+      backgroundColor: isDarkModeOn ? 'black' : 'white',
+      color: "#00aeef"
+    });
+    setTextStyle({
+      color: isDarkModeOn ? 'white' : 'black'
+    });
+    setFormControl({
+      backgroundColor: isDarkModeOn ? '#181818' : 'white',
+      color: isDarkModeOn ? 'white' : 'black',
+      border: `1px solid ${isDarkModeOn ? 'white' : 'black'}`, // Add border style
+      borderRadius: '5px' // Add border radius
+    });
+  }, [isDarkModeOn]);
+
+  const handleSendEmail = () => {
+    const recipientEmail = 'nritya.contact@gmail.com';
+    const subject = 'Subject of the email';
+    const body = 'Content of the email';
+  
+    const mailtoUrl = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+  };
+  
+
   return (
     <section>
-      <div className="section-header">
-        <div className="container">
-          <h2 className={`text-big ${isDarkModeOn ? 'dark-mode-text-big' : ''}`}>Contact Us</h2>
-          <p className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+      <div>
+        <Container style={containerStyle}>
+          <h2 style={headingStyle}>Contact Us</h2>
+          <p style={textStyle}>
+            You may contact us via email, phone or post.
           </p>
-        </div>
+        </Container>
       </div>
 
-      <div className="container">
-        <div className="row">
-          <div className="contact-info">
-            <div className="contact-info-item">
-              <div className="contact-info-icon">
+      <Container style={containerStyle}>
+        <Row>
+          <Col>
+            <div>
+              <div>
                 <FontAwesomeIcon icon={faHome} />
+                <div>
+                  <h4 style={headingStyle}>Address</h4>
+                  <p style={textStyle}>116/969, Roshan Nagar, Near Ujageshwar Mandir,<br/> Rawatpur, Kanpur Nagar, Rawatpur Gaon, <br/> Uttar Pradesh, India, <br/> 208019</p>
+                </div>
               </div>
 
-              <div className="contact-info-content">
-                <h4 className={`text-big ${isDarkModeOn ? 'dark-mode-text-big' : ''}`}>Address</h4>
-                <p className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}> 4671 Sugar Camp Road,<br/> Owatonna, Minnesota, <br/>55060</p>
-              </div>
-            </div>
-
-            <div className="contact-info-item">
-              <div className="contact-info-icon">
+              <div>
                 <FontAwesomeIcon icon={faPhone} />
+                <div>
+                  <h4 style={headingStyle}>Phone</h4>
+                  <p style={textStyle}>571-457-2321</p>
+                </div>
               </div>
 
-              <div className="contact-info-content">
-                <h4 className={`text-big ${isDarkModeOn ? 'dark-mode-text-big' : ''}`}>Phone</h4>
-                <p className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>571-457-2321</p>
-              </div>
-            </div>
-
-            <div className="contact-info-item">
-              <div className="contact-info-icon">
+              <div>
                 <FontAwesomeIcon icon={faEnvelope} />
-              </div>
-
-              <div className="contact-info-content">
-                <h4 className={`text-big ${isDarkModeOn ? 'dark-mode-text-big' : ''}`}>Email</h4>
-                <p className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>nritya.contact@gmail.com</p>
+                <div>
+                  <h4 style={headingStyle}>Email</h4>
+                  <p style={textStyle}>nritya.contact@gmail.com</p>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="contact-form">
-            <form action="" id="contact-form">
-              <h2>Send Message</h2>
-              <div className="input-box">
-                <input type="text" required={true} name="fullname" />
-                <span >Full Name</span>
-              </div>
-
-              <div className="input-box">
-                <input type="email" required={true} name="email" />
-                <span>Email</span>
-              </div>
-
-              <div className="input-box">
-                <textarea required={true} name="message"></textarea>
-                <span>Type your Message...</span>
-              </div>
-
-              <div className="input-box">
-                <input type="submit" value="Send" />
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+          </Col>
+          <Col>
+            <div>
+              <Form style={containerStyle} onSubmit={handleSendEmail}>
+                <h2 style={headingStyle}>Send Message</h2>
+                <Form.Group controlId="fullname">
+                  <Form.Label style={textStyle}>Name</Form.Label>
+                  <Form.Control required type="text" placeholder="Full Name" style={formControl} />
+                </Form.Group>
+                <Form.Group controlId="email">
+                  <Form.Label style={textStyle}>Email</Form.Label>
+                  <Form.Control required type="email" placeholder="Email" style={formControl} />
+                </Form.Group>
+                <Form.Group controlId="message">
+                  <Form.Label style={textStyle}>Message</Form.Label>
+                  <Form.Control required as="textarea" placeholder="Type your Message..." rows={4} style={formControl} />
+                </Form.Group>
+                <Button type="submit" rounded className="me-2 rounded-pill" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }}>
+                  Send
+                </Button>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </section>
   );
 };

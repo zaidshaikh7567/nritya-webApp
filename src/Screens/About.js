@@ -37,7 +37,6 @@ const AboutUs = () => {
             <div className="inner-column">
               <div className="author-desc">
                 <h2>Nritya</h2>
-                <span style={{ fontSize: 'small' }}>Discover the beat in your city.</span>
               </div>
               <figure className="image-1">
                 <a href="#" className="lightbox-image" data-fancybox="images">

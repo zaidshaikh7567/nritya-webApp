@@ -21,6 +21,7 @@ import CardSlider from "../Components/CardSlider";
 import ResponsiveText from "../Components/ResponsiveText";
 import { FaSearch } from 'react-icons/fa';
 import LocationComponent from "../Components/LocationComponent";
+import { useNavigate } from 'react-router-dom';
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -31,9 +32,9 @@ const danceForms = [
   { name: "Bharatnatyam", icon: faMusic },
   { name: "Odisi", icon: faGlassCheers },
   { name: "Kathak", icon: faBolt },
-  // Add more dance forms as needed
 ];
-
+const FILTER_DISTANCES_KEY = 'filterDistances';
+const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 const danceImages = [Dance3, Dance4, Dance5, Dance1, Dance2];
 const overlayCards = [
   { title: "Group Style", text: "A synchronized dance performed by a group of dancers." },
@@ -48,6 +49,20 @@ function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const navigate = useNavigate(); 
+
+  const handleCardClick = (danceName) => {
+    localStorage.removeItem(FILTER_DISTANCES_KEY);
+    localStorage.setItem(FILTER_DANCE_FORMS_KEY, danceName);
+    if(localStorage.getItem(FILTER_DANCE_FORMS_KEY)==danceName){
+      console.log("API LandingPage done",danceName)
+    }
+    setTimeout(() => {
+      navigate('/search/studios');
+    }, 100); 
+  };
+
+
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
       const userRef = doc(db, COLLECTIONS.USER, userId);
@@ -189,6 +204,7 @@ function LandingPage() {
     background: isDarkModeOn ? '#333333' : 'white',
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     borderRadius: "10px",
+    cursor: 'pointer' ,
   };
 
   useEffect(() => {
@@ -268,62 +284,22 @@ function LandingPage() {
           {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> History</h3>}
           <CardSlider dataList={recentlyWatchedStudios} imgOnly={false}/>
         </Row>
-        <br />
-  
-        <ResponsiveText isDarkModeOn={isDarkModeOn} text={"Studios & workshops"} />
-
-
-          <br />
           <LocationComponent/>
 
-          <Row style={{
-            display: 'flex',
-            justifyContent: 'center',
-          }}>
-            <ButtonGroup>
-              <Button
-                size="lg" size-md="md" size-sm="sm" className="rounded-pill"
-                style={{
-                  backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                  color: isDarkModeOn ? 'black' : 'white',
-                  padding: '5px 10px', // Adjust padding
-                  fontSize: '14px', // Adjust font size
-                }}
-                href="#/search/studios"
-              >
-                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"🔎 Search Studios"} heading={false} />
-              </Button>
-
-              <Button
-                size="lg" size-md="md" size-sm="sm" className="rounded-pill"
-                style={{
-                  backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                  color: isDarkModeOn ? 'black' : 'black',
-                  padding: '5px 10px', // Adjust padding
-                  fontSize: '14px', // Adjust font size
-                }}
-                href="#/search/workshop"
-                disabled
-              >
-                <ResponsiveText isDarkModeOn={isDarkModeOn} text={"🔎 Search Workshops"} heading={false} />
-              </Button>
-            </ButtonGroup>
-
-          </Row>
 
         <br/>
+        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} >Explore Studios</h2>
         <Row>
             <CardSlider dataList={exploreCards} imgOnly={false}/>
         </Row>
         <br/>
-        <h2 hidden style={{color: isDarkModeOn ? 'white' : 'black'}} >BROWSE BY GENRE</h2>
-        <Row hidden>
+        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} >BROWSE BY GENRE</h2>
+        <Row >
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>
-              <Card style={cardStyle}>
+              <Card style={cardStyle} onClick={() => handleCardClick(danceForm.name)}>
                 <Card.Body>
-                  <FontAwesomeIcon icon={danceForm.icon} size="3x" />
-                  <h3>{danceForm.name}</h3>
+                  <h4>{danceForm.name}</h4>
                 </Card.Body>
               </Card>
               <br></br>
