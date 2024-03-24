@@ -17,6 +17,12 @@ import { toggleDarkMode } from '../redux/actions/darkModeAction';
 import { useAuth } from '../context/AuthContext';
 import SideMenu from './SideMenu';
 import { refreshLocation } from '../redux/actions/refreshLocationAction';
+import {TextField, Autocomplete, Chip} from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+import LocationComponent from './LocationComponent';
+import { getBrowserLocation } from '../utils/location';
+
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -28,9 +34,30 @@ function Header() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
   const adminLogin = useSelector((state) => state.adminLogin);
   const reduxLocation =  useSelector(selectRefreshLocation);
+  const theme = useTheme();
+
   console.log("Redux loc",reduxLocation.city)
+
+  const autocompleteTheme = createTheme({
+    components: {
+      MuiAutocomplete: {
+        styleOverrides: {
+          option: {
+            '&:hover': {
+              backgroundColor:  '#fce4ec', 
+            },
+          },
+        },
+      },
+    },
+    palette: {
+      mode: isDarkModeOn ? 'dark' : 'light', 
+    },
+  });
+
 
   useEffect(() => {
     console.log("Redux Location changed:", reduxLocation.city);
@@ -51,7 +78,6 @@ function Header() {
     }
   }, []);
   
-  const isDarkModeOn = useSelector(selectDarkModeStatus);
   const styleObj = {
     fontSize: 10,
     textAlign: "center",
@@ -91,7 +117,7 @@ function Header() {
     navigate('#/search/'+searchText);
   };
 
-  const handleLocationChange = (location) => {
+  const handleLocationChange = (event,location) => {
     setSelectedLocation(location);
     setShowLocationDropdown(false);
   };
@@ -104,6 +130,12 @@ function Header() {
   }
   
   const { entity } = useParams();
+
+  const getLocation = (event) => {
+    getBrowserLocation();
+    setSelectedLocation(localStorage.getItem('filterLocation'))
+  };
+
 
   useEffect(() => {
     const handleDocumentClick = (event) => {
@@ -203,17 +235,28 @@ function Header() {
                   }}
                 >
 
-                <Typeahead
-                    id="locationSearch"
-                    options={locationOptions}
-                    placeholder="🔍Search..."
-                    onChange={(selected) => handleLocationChange(selected[0])}
-                    style={{
-                      border: '1px solid ',
-                      borderRadius: '8px',
-                      backgroundColor: isDarkModeOn ? '#181818' : 'white',
-                    }}
-                  />
+              <ThemeProvider theme={autocompleteTheme}>
+                    <Autocomplete
+                      disablePortal
+                      id="locationSearch"
+                      options={locationOptions}
+                      value={selectedLocation}
+                      onChange={handleLocationChange}
+                      sx={{ width: "auto" }}
+                      renderInput={(params) => (
+                        <>
+                        <Chip label="🧭 Current City" style={{ cursor: 'pointer' }} onClick={getLocation}/>
+                        <TextField
+                          {...params}
+                          label="Location"
+                          placeholder="🔍Search..."
+                        />
+                        </>
+                        
+                      )}
+                    />
+                  </ThemeProvider>
+
                 </Dropdown.Menu>
               )}
           </div>

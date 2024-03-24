@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { refreshLocation } from '../redux/actions/refreshLocationAction.js';
 
 const LocationComponent = () => {
+  console.log("Loaction Componet")
   const dispatch = useDispatch();
   const selectedLocation = useSelector(selectRefreshLocation);
   useEffect(() => {
@@ -42,7 +43,7 @@ const LocationComponent = () => {
       const city = addressComponents.find((component) => component.types.includes('locality')).long_name;
       const state = addressComponents.find((component) => component.types.includes('administrative_area_level_1')).long_name;
       const country = addressComponents.find((component) => component.types.includes('country')).long_name;
-      
+      localStorage.setItem('filterLocation', city);
       console.log(`Your address is City: ${city}`);
       console.log(`Your address is State: ${state}`);
       console.log(`Your address is Country: ${country}`);

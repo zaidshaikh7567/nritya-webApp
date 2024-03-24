@@ -237,10 +237,10 @@ function LandingPage() {
     const [imageHeight, setImageHeight] = useState(400);
 
     useEffect(() => {
-      // Calculate the desired height based on the aspect ratio (16:9) and the available width
+      
       const calculateImageHeight = () => {
         const screenWidth = window.innerWidth;
-        // Define the aspect ratio (16:9)
+        
         const aspectRatioWidth = 16;
         const aspectRatioHeight = 9;
         // Calculate the height based on the aspect ratio and available width
@@ -249,7 +249,6 @@ function LandingPage() {
       };
   
       calculateImageHeight();
-      // Add event listener to handle resizing
       window.addEventListener("resize", calculateImageHeight);
   
       // Clean up the event listener when the component unmounts
@@ -302,7 +301,7 @@ function LandingPage() {
             <Col key={index} sm={6} md={4} lg={3}>
               <Card style={cardStyle} onClick={() => handleCardClick(danceForm.name)}>
                 <Card.Body>
-                  <h4>{danceForm.name}</h4>
+                  <h4 style={{color: isDarkModeOn ? 'white' : 'black'}}>{danceForm.name}</h4>
                 </Card.Body>
               </Card>
               <br></br>
