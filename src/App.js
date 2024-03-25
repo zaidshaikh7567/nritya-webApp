@@ -28,6 +28,7 @@ import LocationComponent from './Components/LocationComponent';
 import {Divider as MuiDivider} from '@mui/material';
 import AboutUs from './Screens/About';
 import ContactUs from './Screens/ContactUs';
+import MyBookings from './Components/MyBookings';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -120,6 +121,7 @@ function App() {
               <Route path='/cplans' element={<CreatorPlans/>}/>
               <Route path='/orders' element={<Order/>}/>
               <Route path='/cart' element={<Cart/>}/>
+              <Route path='/myBookings' element={<MyBookings/>}/>
               <Route path='/transactions' element={<Transactions/>}/>
               <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
               <Route path='/modifyStudios' element={<CreatorStudio/>}/>

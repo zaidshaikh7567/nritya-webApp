@@ -12,7 +12,6 @@ import QRCode from 'react-qr-code';
 import { BASEURL_PROD, COLLECTIONS } from '../constants';
 
 function MyBookings() {
-  console.log("Bookings")
   const { currentUser } = useAuth();
   const userId = currentUser.uid;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
