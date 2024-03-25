@@ -3,7 +3,7 @@ import StudioCard from "../Components/StudioCard";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Form, Button, Col, Row, Image, Modal, FormControl,Badge, ButtonGroup, Container } from 'react-bootstrap';
-import {Badge as MuiBadge,Chip as MuiChip, Stack as MuiStack,Autocomplete as MuiAutocomplete, TextField as MuiTextField,createTheme,ThemeProvider,Button as MuiButton} from '@mui/material';
+import {Badge as MuiBadge,Chip as MuiChip,Autocomplete as MuiAutocomplete, TextField as MuiTextField,createTheme,ThemeProvider,Button as MuiButton, Stack as MuiStack,Grid as MuiGrid} from '@mui/material';
 import axios from 'axios';
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
@@ -158,46 +158,111 @@ const SearchPage = () => {
   return (
     <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', padding: '10px' }}>
       <header>
-          <Container >
-            <Row>
-            <Col>
-              <Form.Group >
+      <Container style={{ width: '100%' }}>
+        <MuiGrid container spacing={1} alignItems="center">
+          <MuiGrid item xs={11}>
+            <MuiStack style={{ width: '100%' }}>
               <ThemeProvider theme={themeBar}>
-              <MuiAutocomplete
-                          value={query}
-                          onInputChange={handleChange}
-                          onChange={handleInputChange}
-                          options={suggestions}
-                          style={{
-                          height: '80%'}}
-                          getOptionLabel={(option) => option.toString()} 
-                          renderInput={(params) => (
-                            <MuiTextField {...params} label="Search" variant="outlined" />
-                          )}
-                        />
-              
+                <MuiAutocomplete
+                  value={query}
+                  onInputChange={handleChange}
+                  onChange={handleInputChange}
+                  options={suggestions}
+                  getOptionLabel={(option) => option.toString()} 
+                  renderInput={(params) => (
+                    <MuiTextField {...params} label="Search" variant="outlined" />
+                  )}
+                />
               </ThemeProvider>
-              </Form.Group>
-              </Col>
-              <Col>
-              <MuiButton
-                variant="primary"
-                rounded
-                style={{
-                  cursor: 'pointer',
-                  textTransform: 'none',
-                  backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                  color: 'white',
-                  height: '80%', 
-                }}
-                onClick={handleSearch}
-              >
-                Search
-              </MuiButton>
-              </Col>
-            </Row>
-        </Container>
-                
+            </MuiStack>
+          </MuiGrid>
+          <MuiGrid item xs={1}>
+            <MuiButton
+              variant="primary"
+              rounded
+              style={{
+                cursor: 'pointer',
+                textTransform: 'none',
+                backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+                color: 'white',
+                height: '100%', 
+                width: '100%',
+                padding: '10px', // Adjusted padding for the Button
+                fontSize: '1rem' // Adjusted font size for the Button
+
+              }}
+              onClick={handleSearch}
+            >
+              Search
+            </MuiButton>
+          </MuiGrid>
+        </MuiGrid>
+        <br></br>
+      <Row className="align-items-center">
+      <Col xs="auto">
+       
+          <MuiBadge
+            onClick={toggleFilters}
+            badgeContent={activeFilters}
+            color={isDarkModeOn ? "warning" : "secondary"}
+            pill
+          >
+            <MuiChip
+              color={isDarkModeOn ? "warning" : "secondary"}
+              label="&#9776; filters"
+              variant={isDarkModeOn ? "outlined" : "contained"}
+            />
+          </MuiBadge>
+        
+      </Col>
+
+      {/* Filter Badges */}
+      {selectedDistances && (
+        <Col xs="auto">
+          <MuiBadge color="success" pill>
+            <MuiChip
+              color="success"
+              label={`Distance: ${selectedDistances} km`}
+              variant={isDarkModeOn ? "outlined" : "contained"}
+            />
+          </MuiBadge>
+        </Col>
+      )}
+      
+      {selectedDanceForm && (
+        <Col xs="auto">
+          <MuiBadge color="info" pill>
+            <MuiChip
+              color="info"
+              label={`Dance Form: ${selectedDanceForm}`}
+              variant={isDarkModeOn ? "outlined" : "contained"}
+            />
+          </MuiBadge>
+        </Col>
+      )}
+
+      {(selectedDanceForm || selectedDistances) && (
+        <Col xs="auto">
+          <MuiBadge
+            color="error"
+            onClick={handleClearFilters}
+            style={{ cursor: 'pointer' }}
+            pill
+          >
+            <MuiChip
+              color="error"
+              label="Clear All X"
+              onClick={handleClearFilters}
+              style={{ cursor: 'pointer' }}
+              variant={isDarkModeOn ? "outlined" : "contained"}
+              
+            />
+          </MuiBadge>
+        </Col>
+      )}
+      </Row>
+      </Container>
+
       </header>
       <body>
 
@@ -275,66 +340,6 @@ const SearchPage = () => {
             </ButtonGroup>
           </Modal.Body>
       </Modal>
-      <br></br>
-      <Row className="align-items-center">
-      <Col xs="auto">
-       
-          <MuiBadge
-            onClick={toggleFilters}
-            badgeContent={activeFilters}
-            color={isDarkModeOn ? "warning" : "secondary"}
-            pill
-          >
-            <MuiChip
-              color={isDarkModeOn ? "warning" : "secondary"}
-              label="&#9776; filters"
-              variant="outlined" 
-            />
-          </MuiBadge>
-        
-      </Col>
-
-      {/* Filter Badges */}
-      {selectedDistances && (
-        <Col xs="auto">
-          <MuiBadge color="success" pill>
-            <MuiChip
-              color="success"
-              label={`Distance: ${selectedDistances} km`}
-            />
-          </MuiBadge>
-        </Col>
-      )}
-      
-      {selectedDanceForm && (
-        <Col xs="auto">
-          <MuiBadge color="info" pill>
-            <MuiChip
-              color="info"
-              label={`Dance Form: ${selectedDanceForm}`}
-            />
-          </MuiBadge>
-        </Col>
-      )}
-
-      {(selectedDanceForm || selectedDistances) && (
-        <Col xs="auto">
-          <MuiBadge
-            color="error"
-            onClick={handleClearFilters}
-            style={{ cursor: 'pointer' }}
-            pill
-          >
-            <MuiChip
-              color="error"
-              label="Clear All X"
-              onClick={handleClearFilters}
-              style={{ cursor: 'pointer' }}
-            />
-          </MuiBadge>
-        </Col>
-      )}
-    </Row>
 
       <hr></hr>
       <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
