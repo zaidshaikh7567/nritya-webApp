@@ -44,18 +44,18 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
             roundedCircle={true}      
             />
           <br />
-          <h4 className="text">{className}</h4>
-          <p className="text">{studioName}</p>
-          <p className="text">{address}</p>
+          <h4 className="ticket-text">{className}</h4>
+          <p className="ticket-text">{studioName}</p>
+          <p className="ticket-text">{address}</p>
         </div>
         <div className="nritya-ticket-card-body">
-          <p className="text">Booked by: {customerName}</p>
+          <p className="ticket-text">Booked by: {customerName}</p>
           <div>
             <QRCode value={endpoint_url} style={{ height: 'auto', maxWidth: '70%', width: '40%' }} />
           </div>
-          <p className="text">Booking ID: {bookingId}</p>
-          <p className="text">Valid till 30 days from {convertToLocal(timestamp)}</p>
-          <p className="text">Admit One for Once</p>
+          <p className="ticket-text">Booking ID: {bookingId}</p>
+          <p className="ticket-text">Valid till 30 days from {convertToLocal(timestamp)}</p>
+          <p className="ticket-text">Admit One for Once</p>
         </div>
         <br />
       </div>

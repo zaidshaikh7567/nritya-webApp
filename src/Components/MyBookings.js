@@ -9,7 +9,7 @@ import jsPDF from 'jspdf';
 import { Modal, Button, Row, Col, Column, Card, Container } from 'react-bootstrap';
 import Ticket from './Ticket';
 import QRCode from 'react-qr-code';
-import { BASEURL_PROD } from '../constants';
+import { BASEURL_PROD, COLLECTIONS } from '../constants';
 
 function MyBookings() {
   console.log("Bookings")
@@ -22,7 +22,7 @@ function MyBookings() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const query_ref = query(collection(db,'FreeTrialBookings'), where('user_id', '==', userId));
+      const query_ref = query(collection(db,COLLECTIONS.FREE_TRIAL_BOOKINGS), where('user_id', '==', userId));
       const querySnapshot = await getDocs(query_ref);
     
       const bookingDataArray = [];
@@ -35,6 +35,7 @@ function MyBookings() {
       bookingDataArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       //bookingDataArray.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
+      console.log(bookingDataArray)
       setBookings(bookingDataArray);
     };
 
@@ -42,6 +43,7 @@ function MyBookings() {
   }, [userId]);
 
   const handleOpenModal = (bookingData) => {
+    console.log(selectedBooking)
     setSelectedBooking(bookingData);
     setShowModal(true);
   };
@@ -130,6 +132,17 @@ function MyBookings() {
                   </Row>
     
                 </Card>
+                <p style={{ textDecoration: 'none' }}>
+                    <a 
+                      href={`https://nritya-official.github.io/nritya-webApp/#/studio/${bookingData.studio_id}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: 'none', color: isDarkModeOn? 'cyan':"black" }}
+                    >
+                      Check out the latest class timings?
+                    </a>
+                  </p>
+
                 </Container>
                 <br></br>
               </div>

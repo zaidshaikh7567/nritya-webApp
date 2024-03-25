@@ -2,9 +2,9 @@ import React, { useState,useEffect } from 'react';
 import StudioCard from "../Components/StudioCard";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-import { Form, Button, Col, Row, Image, Modal, FormControl,Badge, ButtonGroup } from 'react-bootstrap';
-import {Badge as MuiBadge,Chip as MuiChip, Stack as MuiStack} from '@mui/material';
-
+import { Form, Button, Col, Row, Image, Modal, FormControl,Badge, ButtonGroup, Container } from 'react-bootstrap';
+import {Badge as MuiBadge,Chip as MuiChip, Stack as MuiStack,Autocomplete as MuiAutocomplete, TextField as MuiTextField,createTheme,ThemeProvider,Button as MuiButton} from '@mui/material';
+import axios from 'axios';
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
@@ -25,6 +25,8 @@ const SearchPage = () => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
+  const [suggestions, setSuggestions] = useState([]);
+
   const dispatch = useDispatch();
   const danceForms = danceStyles.danceStyles;
   console.log("dark mode", isDarkModeOn)
@@ -33,8 +35,15 @@ const SearchPage = () => {
     setShowFilters(!showFilters);
   }
 
-  const handleInputChange = (event) => {
-    setQuery(event.target.value);
+  const themeBar = createTheme({
+    palette: {
+      mode: isDarkModeOn? 'dark' : 'light', // Dynamically set dark or light mode
+    },
+  });
+
+
+  const handleInputChange = (event,value) => {
+    setQuery(value);
   };
   const countActiveFilters = () => {
     let count = 0;
@@ -45,8 +54,10 @@ const SearchPage = () => {
 
   const handleSearch = () => {
     // Perform the search and update the results
+    if (query == null){
+        setQuery('')
+    }
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
-    //apiEndpoint = `http://127.0.0.1:8000/api/search/?query=${query}`;
 
     if (localStorage.getItem(FILTER_LOCATION_KEY)) {
       apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
@@ -72,6 +83,28 @@ const SearchPage = () => {
       })  
       .catch(error => console.error('Error fetching search results:', error));
   };
+
+  const handleChange = async (event, value) => {
+    const baseUrl = "https://nrityaserver-2b241e0a97e5.herokuapp.com/api"
+    //setQuery(event.target.value);
+    console.log(value)
+    setQuery(value);
+
+    if (value.length >= 3) {
+      try {
+        const endpoint = baseUrl + `/autocomplete?query=${value}&city=Patna`;
+        const response = await axios.get(endpoint);
+        setSuggestions(response.data);
+      } catch (error) {
+        console.error('Error fetching autocomplete suggestions:', error);
+      }
+    } else {
+      // Clear suggestions if the input length is less than 3 characters
+      setSuggestions([]);
+    }
+
+  };
+
 
   const handleApplyFilters = () => {
 
@@ -125,27 +158,46 @@ const SearchPage = () => {
   return (
     <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', padding: '10px' }}>
       <header>
-        <p1 style={{ color: isDarkModeOn ? 'white' : 'black' }}>Search </p1>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <FormControl type="text" placeholder="Enter any specific studio name or just click search" value={query} onChange={handleInputChange}
-            style={{ marginRight: '10px', padding: '8px' }}
-          />
-          <Button
-            variant="primary"
-            rounded
-            style={{
-              cursor: 'pointer',
-              textTransform: 'none',
-              backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-              color: 'white',
-              padding: '8px',
-            }}
-            onClick={handleSearch}
-          >
-            Search
-          </Button>
-        </div>
-        
+          <Container >
+            <Row>
+            <Col>
+              <Form.Group >
+              <ThemeProvider theme={themeBar}>
+              <MuiAutocomplete
+                          value={query}
+                          onInputChange={handleChange}
+                          onChange={handleInputChange}
+                          options={suggestions}
+                          style={{
+                          height: '80%'}}
+                          getOptionLabel={(option) => option.toString()} 
+                          renderInput={(params) => (
+                            <MuiTextField {...params} label="Search" variant="outlined" />
+                          )}
+                        />
+              
+              </ThemeProvider>
+              </Form.Group>
+              </Col>
+              <Col>
+              <MuiButton
+                variant="primary"
+                rounded
+                style={{
+                  cursor: 'pointer',
+                  textTransform: 'none',
+                  backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+                  color: 'white',
+                  height: '80%', 
+                }}
+                onClick={handleSearch}
+              >
+                Search
+              </MuiButton>
+              </Col>
+            </Row>
+        </Container>
+                
       </header>
       <body>
 

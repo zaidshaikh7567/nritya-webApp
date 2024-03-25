@@ -15,7 +15,8 @@ export const COLLECTIONS ={
     REVIEWS: "Reviews",
     TRANSACTIONS: "Transactions",
     STUDIO: "Studio",
-    INSTRUCTORS: "Instructors"
+    INSTRUCTORS: "Instructors",
+    FREE_TRIAL_BOOKINGS:"FreeTrialBookings",
 }
 
 export const STORAGES ={
