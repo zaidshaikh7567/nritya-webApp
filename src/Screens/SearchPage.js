@@ -9,6 +9,7 @@ import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
 import danceStyles from '../danceStyles.json'
+import CardSliderCard from '../Components/CardSliderCard';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DISTANCES_KEY = 'filterDistances';
@@ -351,15 +352,7 @@ const SearchPage = () => {
           results.map((studio, index) => (
             <div key={index} className="studio-card-container" style={{ padding: "0.2rem" }} md={2}>
               <a href={`#/studio/${studio.studioId}`} style={{ textDecoration: "none" }}>
-                <SmallCard
-                  studioName={studio.studioName}
-                  studioAddress={studio.city}
-                  studioPrice={studio.price}
-                  studioDanceStyles={studio.danceStyles}
-                  studioId={studio.studioId}
-                  averageRating={studio.avgRating}
-                  forceSmallView={1}
-                />
+                <CardSliderCard studio={studio}/>
               </a>
             </div>
           ))

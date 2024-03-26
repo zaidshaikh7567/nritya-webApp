@@ -13,7 +13,7 @@ const AboutUs = () => {
 
   return (
     <section className={sectionClassName}>
-      <Container className="container">
+      <Container >
       <Row>
       <Col lg={6} md={12} sm={12} className="image-column order-lg-1">
           <div className="inner-column">

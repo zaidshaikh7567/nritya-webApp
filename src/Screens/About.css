@@ -216,8 +216,8 @@ bottom: 16px;
 z-index: 1;
 background: #A90076;
 padding: 10px 15px;
-left: 96px;
-width: calc(100% - 152px);
+left: 25%;
+width: calc(100% - 10rem);
 border-radius: 50px;
 }
 .about-section .image-column .inner-column .author-desc h2{

@@ -88,7 +88,7 @@ function Header() {
     function getUserNameInitials() {
       const displayName = currentUser.displayName;
       const nameParts = displayName.split(" ");
-      console.log("hii",nameParts)
+      //console.log("hii",nameParts)
       let buttonContent = nameParts[0].charAt(0);
       if (nameParts.length > 1) {
         buttonContent += nameParts[1].charAt(0);
@@ -113,7 +113,7 @@ function Header() {
     };
 
   const handleButtonClick = () => {
-    console.log("Button clicked from Header.js");
+    //console.log("Button clicked from Header.js");
     navigate('#/search/'+searchText);
   };
 
@@ -167,7 +167,7 @@ function Header() {
         <meta charset="UTF-8" />
           <h1 style={{ color: isDarkModeOn ? 'white' : 'black',fontSize:25 , textAlign: 'center', textIndent:'right',textTransform: 'none',  fontFamily:'Times Roman', paddingRight:80}}>{'            नृtya'}</h1>
         </div>
-        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Toggle aria-controls="navbarScroll" className={isDarkModeOn ? "text-light" : "text-dark"} />
         <Navbar.Collapse id="navbarScroll">
          <Nav
             style={{ fontFamily:'Times Roman',fontSize:20, maxHeight: '90px' }}
