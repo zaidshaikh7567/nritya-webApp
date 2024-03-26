@@ -9,16 +9,22 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
   console.log("Debug from CardSlider", imgOnly)
 
   return (
-    <div className="horizontal-scroll-wrapper">
-      {
-        dataList.map((studio, index) => (
-          
-          <a href={`#/studio/${studio.id}`}>
-            <ProductCard data={studio} img_src={"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}/>
-          </a>
-        ))
-      }
+    <div className={imgOnly?"scrolling-wrapper":"horizontal-scroll-wrapper"}>
+      {dataList.map((studio, index) => (
+        <a key={index} href={`#/studio/${studio.id}`}>
+          {imgOnly ? (
+            dataList.map((img, index) => (
+              <Card className="cardSlider" key={index}>
+                <Card.Img className="card-img" variant="top" src={img} alt={`Card ${index + 1}`} />
+              </Card>
+            ))
+          ) : (
+            <ProductCard key={studio.id} data={studio} img_src={studio.imgSrc} />
+          )}
+        </a>
+      ))}
     </div>
+
     /*
     <div className="scrolling-wrapper">
       {imgOnly ? (

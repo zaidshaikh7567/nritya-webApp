@@ -22,12 +22,12 @@ import { STORAGES } from '../constants';
 export default function NStudioCard({img_src,data}) {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
     const [imageUrl, setImageUrl] = useState(null);
-
+    const studioId = data.id?data.id:data.studioId;
 
     useEffect(() => {
       const fetchImageUrl = async () => {
         try {
-          const url = await readDocumentWithImageUrl(STORAGES.STUDIOICON, data.id?data.id:data.studioId);
+          const url = await readDocumentWithImageUrl(STORAGES.STUDIOICON, studioId);
           
           setImageUrl(url);
         } catch (error) {
@@ -52,7 +52,7 @@ export default function NStudioCard({img_src,data}) {
       <CardContent>
         <Typography style={{color: isDarkModeOn?'white':'black'}} level="body-xs">{data.city?data.city:".  "}</Typography>
         <Link
-          href="#product-card"
+          href={`#/studio/${studioId}`}
           fontWeight="md"
           color="neutral"
           textColor="text.primary"

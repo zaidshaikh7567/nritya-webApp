@@ -5,7 +5,7 @@ import { STORAGES } from '../constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import StarRating from './StarRating';
-import ProductCard from './NStudioCard';
+import NStudioCard from './NStudioCard';
 //import './CardSliderCard.css'
 
 const CardSliderCard = ({ studio }) => {
@@ -17,7 +17,7 @@ const CardSliderCard = ({ studio }) => {
     const  cardSliderClass = isDarkModeOn? 'cardSliderData dark':'cardSliderData';
   return (
     <a href={`#/studio/${studio.id}`}>
-    <ProductCard data={studio} img_src={"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}/>
+    <NStudioCard data={studio} img_src={"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}/>
     </a>
     /*
     <a href={`#/studio/${studio.id}`}>
