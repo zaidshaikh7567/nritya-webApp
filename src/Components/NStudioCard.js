@@ -82,7 +82,7 @@ export default function NStudioCard({img_src,data}) {
         >
           {data && data.studioName?data.studioName:"    "}
         </Link>
-        <StarRating rating={data.avgRating} viewMode={true}/>
+        <Typography style={{color: isDarkModeOn?'white':'black'}}>⭐ {data && data.avgRating? data.avgRating.toFixed(1):" Not rated yet"}</Typography>
         
         <Stack hidden direction="row" spacing={2}>
 
