@@ -142,13 +142,15 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'black':'white' ,color: isDarkModeOn?'white':'color' }}>
       <Row>
-        <Col xs={7}>
+      <Col lg={8}  >
+      <Row>
+        <Col lg={7} md={7}>
           <h4 style={{ color: isDarkModeOn ? 'white' : '' }}>{studioData ? studioData.studioName : ""}</h4>
         </Col>
-        <Col xs={3}>
+        <Col lg={3} md={3}>
           {studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}
         </Col>
-        <Col xs={2} >
+        <Col lg={2} md={2} >
           {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (
             <a
               href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
@@ -164,7 +166,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </Col>
       </Row>
       <Row>
-        <Col xs={12}>
+      <Col xs={12}>
         <div style={{ display: 'flex', justifyContent: 'left' }}>
         {isDarkModeOn ? (
           <>
@@ -176,7 +178,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         ) : (
           <>
             <FaYoutube className='genericHoverEffect' style={{ color: '#ff0000', fontSize: '24px', marginRight: '10px' }} />
-            <FaFacebook className='genericHoverEffect' style={{ color: '#39998', fontSize: '24px', marginRight: '10px' }} />
+            <FaFacebook className='genericHoverEffect' style={{ color: '#00aced', fontSize: '24px', marginRight: '10px' }} />
             <FaInstagram className='genericHoverEffect' style={{ color: '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
             <FaTwitter className='genericHoverEffect' style={{ color: '#00aced', fontSize: '24px' }} />
           </>
@@ -186,14 +188,15 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </Col>
       </Row>
       <Row>
-        <Col xs={24} md={8}>
-          {studioData&&studioData.aboutStudio? <NrityaCard data={studioData.aboutStudio} title={"About Studio"}/>:""} 
-        </Col>
-
-        <Col xs={24} md={4}>
-          {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} title={"About fOUNDER"}/>:""} 
-        </Col>
+      {studioData&&studioData.aboutStudio? <NrityaCard data={studioData.aboutStudio} title={"About Studio"}/>:""} 
       </Row>
+        
+      </Col>
+      <Col lg={4} xs={12} >
+      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} extraDark={true} title={"About fOUNDER"}/>:""} 
+      </Col>
+    </Row>
+      
       <br></br>
       <Row>
         <Col>

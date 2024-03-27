@@ -80,7 +80,7 @@ export default function NStudioCard({img_src,data}) {
           endDecorator={<ArrowOutwardIcon />}
           style={{color: isDarkModeOn?'white':'black'}}
         >
-          {data.studioName?data.studioName:"    "}
+          {data && data.studioName?data.studioName:"    "}
         </Link>
         <StarRating rating={data.avgRating} viewMode={true}/>
         

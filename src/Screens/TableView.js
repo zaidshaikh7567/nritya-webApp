@@ -7,6 +7,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
+import { Chip } from '@mui/material';
 
 const TableView = ({ studioData, studioId }) => {
   const { currentUser } = useAuth();
@@ -108,7 +109,7 @@ const TableView = ({ studioData, studioId }) => {
                 <td>{classItem.time}</td>
                 <td>{classItem.instructors}</td>
                 <td>
-                  <Button style={{ backgroundColor: isDarkModeOn ? "#892CDC" : "#000" }} onClick={() => bookFreeTrial(index)}>Book Free Trial</Button>
+                  <Chip label="Book Free Trial" variant="filled" clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)}/>
                 </td>
               </tr>
             );

@@ -6,9 +6,10 @@ import '../Components/NrityaCard.css'
 
 
 
-function NrityaCard({data,title,bubble=false}) {
+function NrityaCard({data,title,bubble=false,extraDark=false}) {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
-    const nrityaCardClass = `mb-2 ${isDarkModeOn ? 'nritya-card nritya-card-dark' : 'nritya-card nritya-card-light'}`;
+    const nrityaCardClass1 = `mb-2 ${isDarkModeOn ? 'nritya-card nritya-card-dark' : 'nritya-card nritya-card-light'}`;
+    const nrityaCardClass = `mb-2 ${isDarkModeOn ? 'nritya-card nritya-card-dark' : (extraDark?'nritya-card nritya-card-extra-dark':'nritya-card nritya-card-light')}`;
     const nrityaBubbleClass = `mb-2 ${isDarkModeOn ? 'circular-bubble-dark' : 'circular-bubble '}`;
 
     function CircularBubble({ number }) {
@@ -29,7 +30,7 @@ function NrityaCard({data,title,bubble=false}) {
         <Card className={nrityaCardClass}  style={{display: 'flex',alignItems: 'center',justifyContent: 'center',}} >   
         <Card.Title style={{ position: 'relative', padding: '0.1rem' }} >
           
-          {bubble? <Card.Text>{title}</Card.Text>:<h4 style={{color: isDarkModeOn?'white':'black' }}>{title}</h4>}
+          {bubble? <Card.Text>{title}</Card.Text>:<h4 style={{color: isDarkModeOn?'white':(extraDark?'white':'black') , paddingTop:"2px"}}>{title}</h4>}
         </Card.Title>
         <Card.Body style={{ padding: '1rem' }}>
         {bubble?<CircularBubble number={data} />:data}
