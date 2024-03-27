@@ -40,7 +40,7 @@ export default function NStudioCard({img_src,data}) {
   return (
     <Card variant="solid" style={{backgroundColor: isDarkModeOn ? '#444' : 'white', padding: '10px',color: isDarkModeOn?'white':'black',marginRight:"10px"}} sx={{ width: 320,maxWidth: "100%", boxShadow: 'lg' }}>
       
-        <AspectRatio sx={{ minWidth: 200 }} style={{ position: 'relative' }}>
+        <AspectRatio ratio="1.78" style={{ position: 'relative'}}>
           <img
             src={imageUrl?imageUrl:"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
             loading="lazy"
@@ -68,9 +68,8 @@ export default function NStudioCard({img_src,data}) {
 
         </Stack>
         </AspectRatio>
-      
       <CardContent>
-        <Typography style={{color: isDarkModeOn?'white':'black'}} level="body-xs">{data.city?data.city:".  "}</Typography>
+        <Typography style={{color: isDarkModeOn?'white':'black'}} level="body-xs">{data.street?data.street:".  "}</Typography>
         <Link
           href={`#/studio/${studioId}`}
           fontWeight="md"
