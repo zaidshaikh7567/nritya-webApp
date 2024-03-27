@@ -290,7 +290,7 @@ function LandingPage() {
 
 
         <br/>
-        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} >Explore Studios</h2>
+        <h3 style={{color: isDarkModeOn ? 'white' : 'black'}} >Explore Studios</h3>
         <Row>
             <CardSlider dataList={exploreCards} imgOnly={false}/>
         </Row>

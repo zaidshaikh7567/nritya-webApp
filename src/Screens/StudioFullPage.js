@@ -143,7 +143,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   <Container fluid style={{backgroundColor: isDarkModeOn?'black':'white' ,color: isDarkModeOn?'white':'color' }}>
       <Row>
         <Col xs={7}>
-          <h3 style={{ color: isDarkModeOn ? 'white' : '' }}>{studioData ? studioData.studioName : ""}</h3>
+          <h4 style={{ color: isDarkModeOn ? 'white' : '' }}>{studioData ? studioData.studioName : ""}</h4>
         </Col>
         <Col xs={3}>
           {studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}

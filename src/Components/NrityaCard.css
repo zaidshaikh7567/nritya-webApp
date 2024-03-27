@@ -4,7 +4,7 @@
     color: #000;
     transition: box-shadow 0.3s;
     cursor: pointer;
-    border-color: #fff;
+    border: none;
     border-radius: 0.75rem;
   }
   
@@ -13,23 +13,23 @@
     box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.1);
     background: #36454F;
     color: #ffffff;
-    border-color: #36454F;
+    border: none;
   }
   
   .nritya-card-dark:hover {
-    box-shadow: 0 1.5em 3em 0 whitesmoke, 0 0 1em rgba(255, 255, 0, 0.7);
+    box-shadow: 0 0.1em 0.1em 0 whitesmoke, 0 0 1em rgba(255, 255, 0, 0.7);
     background: #36454F;
     color: #ffffff;
     border-color: #36454F;
   }
   
   .nritya-card-light {
-    border: 1px solid #6c757d;
+    border: none;
     box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.1);
   }
   
   .nritya-card-light:hover {
-    box-shadow: 0 1.5em 3em rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
+    box-shadow: 0 0.1em 0.1em 0 rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
   }
 
   .circular-bubble {
