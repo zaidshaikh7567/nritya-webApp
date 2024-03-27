@@ -283,8 +283,8 @@ function LandingPage() {
         </Row>
         <br />
         <Row>
-          {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> History</h3>}
-          <CardSlider dataList={recentlyWatchedStudios} imgOnly={false}/>
+          {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Viewed</h3>}
+          {recentlyWatchedStudios.length>0?(<CardSlider dataList={recentlyWatchedStudios} imgOnly={false}/>):""}
         </Row>
           <LocationComponent/>
 
@@ -295,7 +295,7 @@ function LandingPage() {
             <CardSlider dataList={exploreCards} imgOnly={false}/>
         </Row>
         <br/>
-        <h2 style={{color: isDarkModeOn ? 'white' : 'black'}} >BROWSE BY GENRE</h2>
+        <h3 style={{color: isDarkModeOn ? 'white' : 'black'}} >BROWSE BY DANCE FORMS</h3>
         <Row >
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>

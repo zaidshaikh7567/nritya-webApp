@@ -70,7 +70,7 @@ const StarRating = ({ rating, onRatingChange, viewMode,  starSize = 'small' }) =
 
   return (
     <div style={{ color: isDarkModeOn?"white":"black" }}>
-      {renderStars()} {rating}
+      {renderStars()} {rating?rating.toFixed(1):rating}
     </div>
   );
 };
