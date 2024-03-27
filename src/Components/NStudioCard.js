@@ -84,28 +84,6 @@ export default function NStudioCard({img_src,data}) {
         </Link>
         <Typography style={{color: isDarkModeOn?'white':'black'}}>⭐ {data && data.avgRating? data.avgRating.toFixed(1):" Not rated yet"}</Typography>
         
-        <Stack hidden direction="row" spacing={2}>
-
-        {data && data.danceStyles ? (data.danceStyles.split(",").slice(0, 3).map((form, index) => (
-        <Chip
-            key={index}
-            color={index % 2 === 0 ? "danger" : "success"}  
-            style={{ marginBottom: "10px", fontSize: '0.8rem' }}
-        >
-            {form.trim()}
-        </Chip>
-        ))):(
-            <Chip
-            key={10}
-            color={10 % 2 === 0 ? "danger" : "success"} 
-            style={{ marginBottom: "10px", fontSize: '0.8rem' }}
-        >
-            {"No danceforms"}
-        </Chip>
-        )}
-
-        </Stack>
-        
       </CardContent>
     </Card>
   );
