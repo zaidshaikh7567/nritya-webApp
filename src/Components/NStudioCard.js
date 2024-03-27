@@ -47,7 +47,7 @@ export default function NStudioCard({img_src,data}) {
             alt="Studio Image"
             style={{ maxWidth: '100%', height: 'auto', overflow: 'hidden' }}
           />
-          <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: 0, left: 0, padding: '2px' }}>
+          <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: 0, left: 0, padding: '1px' }}>
         {data && data.danceStyles ? (data.danceStyles.split(",").slice(0, 3).map((form, index) => (
         <Chip
             key={index}
