@@ -21,6 +21,11 @@ import TableView from './TableView.js';
 import '../Common.css'
 import CircularCarousel from '../Components/CircularCarousel.js';
 import CardSlider from '../Components/CardSlider.js';
+import {Card as MuiCard} from '@mui/joy/Card';
+import CardCover from '@mui/joy/CardCover';
+import CardContent from '@mui/joy/CardContent';
+import Typography from '@mui/joy/Typography';
+
 
 // Function to decode a Unicode (UTF-8) encoded string back to the original text
 const decodeUnicode = (unicodeString) => {
