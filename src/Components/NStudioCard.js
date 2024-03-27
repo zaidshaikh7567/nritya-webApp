@@ -38,7 +38,7 @@ export default function NStudioCard({img_src,data}) {
       fetchImageUrl();
     }, [data.id]);
   return (
-    <Card style={{backgroundColor: isDarkModeOn ? '#444' : 'white', padding: '10px',color: isDarkModeOn?'white':'black',marginRight:"10px"}} sx={{ width: 320,maxWidth: "100%", boxShadow: 'lg' }}>
+    <Card variant="solid" style={{backgroundColor: isDarkModeOn ? '#444' : 'white', padding: '10px',color: isDarkModeOn?'white':'black',marginRight:"10px"}} sx={{ width: 320,maxWidth: "100%", boxShadow: 'lg' }}>
       
         <AspectRatio sx={{ minWidth: 200 }}>
           <img

@@ -106,5 +106,5 @@ h2 {
   overflow-y: hidden;
   white-space: nowrap;
   padding: 10px 0; /* Add padding to the wrapper */
-  height: 330px; /* Set a fixed height for the wrapper */
+  height: 340px; /* Set a fixed height for the wrapper */
 }
