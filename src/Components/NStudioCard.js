@@ -38,15 +38,35 @@ export default function NStudioCard({img_src,data}) {
       fetchImageUrl();
     }, [data.id]);
   return (
-    <Card variant="solid" style={{backgroundColor: isDarkModeOn ? '#444' : 'white', padding: '10px',color: isDarkModeOn?'white':'black',marginRight:"10px"}} sx={{ width: 320,maxWidth: "100%", boxShadow: 'lg' }}>
+    <Card variant="solid" style={{backgroundColor: isDarkModeOn ? '#444' : 'white', padding: '10px',color: isDarkModeOn?'white':'black',marginRight:"10px"}} sx={{ width: 310,maxWidth: "100%", boxShadow: 'lg' }}>
       
-        <AspectRatio sx={{ minWidth: 200 }}>
+        <AspectRatio sx={{ minWidth: 200 }} style={{ position: 'relative' }}>
           <img
             src={imageUrl?imageUrl:"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
             loading="lazy"
             alt="Studio Image"
             style={{ maxWidth: '100%', height: 'auto', overflow: 'hidden' }}
           />
+          <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: 0, left: 0, padding: '2px' }}>
+        {data && data.danceStyles ? (data.danceStyles.split(",").slice(0, 3).map((form, index) => (
+        <Chip
+            key={index}
+            color={index % 2 === 0 ? "danger" : "success"}  
+            style={{ marginBottom: "10px", fontSize: '0.8rem' }}
+        >
+            {form.trim()}
+        </Chip>
+        ))):(
+            <Chip
+            key={10}
+            color={10 % 2 === 0 ? "danger" : "success"} 
+            style={{ marginBottom: "10px", fontSize: '0.8rem' }}
+        >
+            {"No danceforms"}
+        </Chip>
+        )}
+
+        </Stack>
         </AspectRatio>
       
       <CardContent>
@@ -63,7 +83,8 @@ export default function NStudioCard({img_src,data}) {
           {data.studioName?data.studioName:"    "}
         </Link>
         <StarRating rating={data.avgRating} viewMode={true}/>
-        <Stack direction="row" spacing={2}>
+        
+        <Stack hidden direction="row" spacing={2}>
 
         {data && data.danceStyles ? (data.danceStyles.split(",").slice(0, 3).map((form, index) => (
         <Chip
