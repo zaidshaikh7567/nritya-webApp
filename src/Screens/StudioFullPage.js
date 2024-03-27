@@ -198,7 +198,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         
       </Col>
       <Col lg={4} xs={12} >
-      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} extraDark={true} title={"About fOUNDER"}/>:""} 
+      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} aboutFounder={true} founderEmail={studioData.creatorEmail} founderWhatsAppNumber={studioData.whatsappNumber} title={"About fOUNDER"}/>:""} 
       </Col>
     </Row>
       
