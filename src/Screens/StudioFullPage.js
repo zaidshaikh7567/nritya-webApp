@@ -60,12 +60,11 @@ function StudioFullPage() {
 // Function to update the recently watched studios in Firebase
 const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   try {
-    // Fetch the current "recentlyWatched" map from Firebase
+
     const userRef = doc(db, COLLECTIONS.USER, userId);
     const userDoc = await getDoc(userRef);
     const recentlyWatchedMap = userDoc.exists() ? userDoc.data().recentlyWatched : {};
 
-    // Check if the studio ID is already present in the "recentlyWatched" map
     const isStudioWatched = Object.values(recentlyWatchedMap).includes(studioId);
 
     // If the studio ID is already present, remove its older occurrences and keep the new one at the 0th key
@@ -287,20 +286,46 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Row>
       <br></br>
       <Row>
-        <Col>
+        <Col lg={6}>
         {studioData&&studioData.addAmenities? <NrityaCard data={studioData.addAmenities} title={"AMENTIES"}/>:""}
        
         </Col>
-      </Row>
-      <br></br>
-      <Row>
-        <Col>
+    
+        <Col lg={6}>
         {studioData&&studioData.enrollmentProcess? <NrityaCard data={studioData.enrollmentProcess} title={"ENROLLMENT PROCESS"}/>:""} 
         </Col>
       </Row>
       <br></br>
       <Row>
-        <Col>
+      <Col md={2} lg={2} className="d-flex flex-column">
+      <p className={isDarkModeOn ? "dark-mode-simple-text-big mb-2" : "simple-text-big mb-2"}>
+              Visit Us at:
+            </p>
+        
+            {studioData && studioData.buildingName ? (
+              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
+                {studioData.buildingName},
+              </p>
+            ) : null}
+            {studioData && studioData.street ? (
+              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
+                {studioData.street},
+              </p>
+            ) : null}
+            {studioData && studioData.landmark ? (
+              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
+                {studioData.landmark},
+              </p>
+            ) : null}
+            {studioData && studioData.city ? (
+              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
+                {studioData.city}
+              </p>
+            ) : null}
+          
+      </Col>
+
+        <Col md={10} lg={10}>
         {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (<MapReadOnly selectedLocationParam={studioData.geolocation}></MapReadOnly>) :""}
         </Col>
       </Row>

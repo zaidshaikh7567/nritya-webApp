@@ -6,3 +6,25 @@
 .genericHoverEffect:hover {
   transform: translate(0.4rem, -0.2rem); 
 }
+
+
+.simple-text {
+  font-size: 16px;
+  color: #0c0c0c; 
+}
+
+.dark-mode-simple-text {
+  font-size: 16px;
+  color: #fff; 
+}
+
+.simple-text-big {
+  font-size: 24px;
+  color: #333;
+}
+
+.dark-mode-simple-text-big {
+  font-size: 24px;
+  color: #fff;
+}
+

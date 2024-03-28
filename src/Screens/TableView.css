@@ -1,17 +1,14 @@
-/* TableView.css */
 .custom-table {
     width: 100%;
     border-collapse: collapse;
-    border-radius: 8px; /* Adding border radius */
-    overflow: hidden; /* Ensure rounded corners are visible */
-    /* Add common table styles here */
-    transition: box-shadow 0.3s; /* Add transition for smoother effect */
+    border-radius: 8px; 
+    overflow: hidden; 
+    transition: box-shadow 0.3s;
     cursor: pointer;
   }
   
   .custom-table:hover {
-    box-shadow: 0 1.5em 3em rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
-    /* Adjust the box-shadow values to match your desired glow effect */
+    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
   }
   
   .custom-table th,
@@ -28,13 +25,11 @@
   }
   
   .custom-table.dark-mode {
-    /* Dark mode styles */
     background-color: black;
     color: white;
-    /* Modify styles as per your dark mode requirements */
   }
   .custom-table.dark-mode:hover {
-    box-shadow: 0 1.5em 3em 0 whitesmoke, 0 0 1em rgba(255, 255, 0, 0.7);
+    box-shadow: 0 0 1em 0 whitesmoke;
     border-color: #36454F
   }
 

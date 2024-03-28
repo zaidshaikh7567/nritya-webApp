@@ -11,18 +11,20 @@
   .nritya-card-dark {
     border: 1px solid whitesmoke;
     box-shadow: 1em 1em 1em 1em rgba(0, 0, 0, 0.1);
-    background: #36454F;
+    background: #121212;
     color: #ffffff;
     border: none;
   }
 
   .nritya-card-dark:hover {
-    box-shadow: 0 0.1em 0.1em 0 whitesmoke, 0 0 1em rgba(255, 255, 0, 0.7);
-    background: #36454F;
+    box-shadow: 0 0.1em 0.1em 0 rgb(95, 94, 94);
+    background: #121212;
     color: #ffffff;
     border-color: #36454F;
   }
-  
+  .charcoal{
+    color: #36454F;
+  }
   
   .nritya-card-extra-dark {
     border: 1px solid whitesmoke;
