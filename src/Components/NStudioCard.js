@@ -87,6 +87,7 @@ export default function NStudioCard({img_src,data}) {
           {data && data.studioName?data.studioName:"    "}
         </Link>
         <IconButton
+          hidden
           aria-label="Like minimal photography"
           size="md"
           variant="solid"

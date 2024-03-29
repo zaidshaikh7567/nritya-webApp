@@ -226,7 +226,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         <Col>
           {isLoadingImages ? (
             <Row>
-              {[1, 2, 3].map((index) => (
+              {[100, 101, 102].map((index) => (
                 <Col key={index} lg={6} md={12} sm={12}>
                   <Skeleton variant="rectangular" animation="wave" width={275} height={340} />
                 </Col>
@@ -242,7 +242,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
                       const circularIndex = cardIndex % carouselImages.length;
                       const card = carouselImages[circularIndex];
                       return (
-                        <div key={index} md={2} style={{ maxWidth: '20rem', margin: '10px' }}>
+                        <div key={`${index}-${cardIndex}-${Math.floor(cardIndex / carouselImages.length)}`} md={2} style={{ maxWidth: '20rem', margin: '10px' }}>
                         <Card style={{ width: '100%', height: '100%' }}>
                           <Card.Img src={image} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                         </Card>

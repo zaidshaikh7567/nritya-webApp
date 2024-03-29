@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './TableView.css';
-import { Button, Table, Modal, Spinner } from 'react-bootstrap';
+import { Button, Table, Modal, Spinner, Card } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
@@ -8,8 +8,11 @@ import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
 import { Chip } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
+
 
 const TableView = ({ studioData, studioId }) => {
+  console.log("TableView",studioData,studioId)
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -17,6 +20,10 @@ const TableView = ({ studioData, studioId }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalVariant, setModalVariant] = useState('success'); // or 'danger' for error
   const [loading, setLoading] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width:800px)');
+
+  console.log("Small Screen Check",isSmallScreen)
+  console.log(studioData)
 
   const bookFreeTrial = (classIndex) => {
     const endpoint_url = BASEURL_PROD + "bookings/freeTrial/";
@@ -86,36 +93,68 @@ const TableView = ({ studioData, studioId }) => {
           
         </Modal.Body>
       </Modal>
+        {
+          isSmallScreen?(
+            <div className='horizontal-scroll-wrapper-table' >
+              {Object.keys(studioData.tableData).map((key, index) => {
+                const classItem = studioData.tableData[key];
+                return (
+                  <Card key={index} style={{ minWidth: "400px", border:'none',backgroundColor: isDarkModeOn?'black':'white' ,paddingRight:"1rem" }}>
+                  <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
+                    <tbody>
+                      {[
+                        { label: 'Class Name', value: classItem.className },
+                        { label: 'Dance Forms', value: classItem.danceForms },
+                        { label: 'Days', value: classItem.days },
+                        { label: 'Time', value: classItem.time },
+                        { label: 'Instructors', value: classItem.instructors },
+                        { label: 'Wanna Try?', value: <Chip label="Book Free Trial"  clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)} /> }
+                      ].map((item, i) => (
+                        <tr key={i}>
+                          <td style={{ color: "white", backgroundColor: isDarkModeOn ? "#121212" : "black" }}>{item.label}</td>
+                          <td style={{ backgroundColor: isDarkModeOn ? "#444" : "white", color: isDarkModeOn ? "white" : "black" }}>{item.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card>
 
-      <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`}>
-        <thead>
-          <tr>
-            <th>Class Name</th>
-            <th>Dance Forms</th>
-            <th>Days</th>
-            <th>Time</th>
-            <th>Instructors</th>
-            <th>Book Free Trial</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(studioData.tableData).map((key, index) => {
-            const classItem = studioData.tableData[key];
-            return (
-              <tr key={index}>
-                <td>{classItem.className}</td>
-                <td>{classItem.danceForms}</td>
-                <td>{classItem.days}</td>
-                <td>{classItem.time}</td>
-                <td>{classItem.instructors}</td>
-                <td>
-                  <Chip label="Book Free Trial" variant="filled" clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)}/>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+                );
+              })};
+            </div>
+
+          ):(
+          <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`}>
+          <thead>
+            <tr>
+              <th>Class Name</th>
+              <th>Dance Forms</th>
+              <th>Days</th>
+              <th>Time</th>
+              <th>Instructors</th>
+              <th>Book Free Trial</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(studioData.tableData).map((key, index) => {
+              const classItem = studioData.tableData[key];
+              return (
+                <tr key={index}>
+                  <td>{classItem.className}</td>
+                  <td>{classItem.danceForms}</td>
+                  <td>{classItem.days}</td>
+                  <td>{classItem.time}</td>
+                  <td>{classItem.instructors}</td>
+                  <td>
+                    <Chip label="Book Free Trial"  clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)}/>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>)
+        }
+      
     </>
   );
 };
