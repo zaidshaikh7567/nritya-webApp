@@ -1,4 +1,4 @@
-// constants.js
+import { FaSnowflake, FaWifi, FaTint, FaToilet, FaPlug, FaFireExtinguisher, FaFirstAid, FaVideo, FaCreditCard, FaParking  } from 'react-icons/fa';
 
 export const STATUSES = {
     SUBMITTED: "Submitted",
@@ -30,4 +30,17 @@ export const STORAGES ={
 
 export const BASEURL_DEV = "http://127.0.0.1:8000/"
 export const BASEURL_PROD= "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
-  
+
+export const AMENITIES_ICONS = {
+    "AC": <FaSnowflake />,
+    "Free Wifi": <FaWifi />,
+    "RO Water": <FaTint />,
+    "Toilet": <FaToilet />,
+    "Power Backup": <FaPlug />,
+    "Fire Extinguisher": <FaFireExtinguisher />,
+    "First Aid Kit": <FaFirstAid />,
+    "CCTV Camera": <FaVideo />,
+    "Card Payment": <FaCreditCard />,
+    "Parking Space": <FaParking />,
+};
+

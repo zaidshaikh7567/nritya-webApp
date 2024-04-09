@@ -22,7 +22,7 @@ const TableView = ({ studioData, studioId }) => {
   const [loading, setLoading] = useState(false);
   const isSmallScreen = useMediaQuery('(max-width:800px)');
 
-  console.log("Small Screen Check",isSmallScreen)
+  //console.log("Small Screen Check",isSmallScreen)
   console.log(studioData)
 
   const bookFreeTrial = (classIndex) => {

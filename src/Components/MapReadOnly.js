@@ -8,7 +8,7 @@ const MapReadOnly = ({selectedLocationParam}) => {
   const [selectedLocation, setSelectedLocation] = useState(selectedLocationParam?selectedLocationParam:null); 
   
   return (
-    <div style={{ height: '500px', width: '100%' }}>
+    <div style={{ height: '300px', width: '100%' }}>
         <div>
         
       </div>

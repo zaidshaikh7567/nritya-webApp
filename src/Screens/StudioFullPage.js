@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image } from 'react-bootstrap';
+import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image, Form } from 'react-bootstrap';
 import { db,storage } from '../config';
 import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, setDoc, getDocs, collection , updateDoc} from "firebase/firestore";
-import { STATUSES, COLLECTIONS } from "./../constants.js";
+import { STATUSES, COLLECTIONS, AMENITIES_ICONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
-import { FaYoutube, FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections } from 'react-icons/fa';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
 import { FaClock, FaMoneyBill, FaMapMarker, FaPhone, FaWhatsapp  } from 'react-icons/fa';
@@ -25,6 +25,9 @@ import {Card as MuiCard} from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import CardContent from '@mui/joy/CardContent';
 import Typography from '@mui/joy/Typography';
+import { Paper, List, ListItem, Chip, Grid } from '@mui/material';
+import { FaShare } from 'react-icons/fa';
+
 
 
 // Function to decode a Unicode (UTF-8) encoded string back to the original text
@@ -33,6 +36,12 @@ const decodeUnicode = (unicodeString) => {
   const textDecoder = new TextDecoder();
   return textDecoder.decode(new Uint8Array(utf8Encoded));
 };
+
+function convertToHtmlEntities(text) {
+  return text.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+      return '&#' + i.charCodeAt(0) + ';';
+  });
+}
 
 const gradientStyles = [
   { background: 'linear-gradient(to bottom right, #FFD700, #FFA500)', color: 'black' },
@@ -55,7 +64,21 @@ function StudioFullPage() {
   const [carouselImages, setCarouselImages] = useState([]);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
 
-  
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: studioData && studioData.studioName? studioData.studioName:" ",
+        text: 'Check out this studio!',
+        url: window.location.href
+      })
+        .then(() => console.log('Shared successfully'))
+        .catch((error) => console.error('Error sharing:', error));
+    } else {
+      console.log('Web Share API not supported');
+    }
+  };  
+
 
 // Function to update the recently watched studios in Firebase
 const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
@@ -148,51 +171,48 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <Row>
       <Col lg={8}  >
       <Row>
-        <Col lg={7} md={7}>
-          <h4 style={{ color: isDarkModeOn ? 'white' : '' }}>{studioData ? studioData.studioName : ""}</h4>
+        <Col lg={9} md={9}>
+        <Typography variant="h1" component="h1" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '24px' }}>
+        {studioData ? studioData.studioName : ""}
+        </Typography>
         </Col>
         <Col lg={3} md={3}>
           {studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}
         </Col>
-        <Col lg={2} md={2} >
-          {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (
-            <a
-              href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              
-            >
-              <PinMarker  lat={studioData.geolocation.lat} lng={studioData.geolocation.lng} text={studioData.city} isDarkModeOn={isDarkModeOn} />
-            </a>
-          ) : (
-            <div style={{ color: 'blue', fontSize: '2rem' }}>{studioData && studioData.city ? studioData.city : ""}</div>
-          )}
-        </Col>
       </Row>
       <Row>
       <Col xs={12}>
-        <div style={{ display: 'flex', justifyContent: 'left' }}>
-        {isDarkModeOn ? (
-          <>
-            <FaYoutube className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
-            <FaFacebook className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
-            <FaInstagram className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px', marginRight: '10px' }} />
-            <FaTwitter className='genericHoverEffect' style={{ color: '#fff', fontSize: '24px' }} />
-          </>
-        ) : (
-          <>
-            <FaYoutube className='genericHoverEffect' style={{ color: '#ff0000', fontSize: '24px', marginRight: '10px' }} />
-            <FaFacebook className='genericHoverEffect' style={{ color: '#00aced', fontSize: '24px', marginRight: '10px' }} />
-            <FaInstagram className='genericHoverEffect' style={{ color: '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
-            <FaTwitter className='genericHoverEffect' style={{ color: '#00aced', fontSize: '24px' }} />
-          </>
+      {studioData && (studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
+      <div style={{ display: 'flex', justifyContent: 'left' }}>
+        {studioData.youtube && (
+          <a href={studioData.youtube} target="_blank" rel="noopener noreferrer">
+            <FaYoutube className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#ff0000', fontSize: '24px', marginRight: '10px' }} />
+          </a>
+        )}
+        {studioData.facebook && (
+          <a href={studioData.facebook} target="_blank" rel="noopener noreferrer">
+            <FaFacebook className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#00aced', fontSize: '24px', marginRight: '10px' }} />
+          </a>
+        )}
+        {studioData.instagram && (
+          <a href={studioData.instagram} target="_blank" rel="noopener noreferrer">
+            <FaInstagram className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
+          </a>
+        )}
+        {studioData.twitter && (
+          <a href={studioData.twitter} target="_blank" rel="noopener noreferrer">
+            <FaTwitter className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#00aced', fontSize: '24px' }} />
+          </a>
         )}
       </div>
-          <br></br>
-        </Col>
+        )}
+      </Col>
+
       </Row>
       <Row>
-      {studioData&&studioData.aboutStudio? <NrityaCard data={studioData.aboutStudio} title={"About Studio"}/>:""} 
+      {studioData&&studioData.aboutStudio?
+      
+      <NrityaCard data={studioData.aboutStudio} title={"About Studio"}/>:""} 
       </Row>
         
       </Col>
@@ -204,7 +224,9 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       <Row>
         <Col>
-          <h3 style={{color: isDarkModeOn?'white':'black' }} >Dance Forms</h3>
+        <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px' }}>
+          Dance Styles
+        </Typography>
           {studioData && studioData.danceStyles ? (
             studioData.danceStyles.split(',').map((style, index) => (
         <Badge pill className='genericHoverEffect'
@@ -264,7 +286,9 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       <Row>
         <Col>
-        <h4 style={{color: isDarkModeOn?'white':'black' }} >Class Schedule</h4>
+        <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px' }}>
+          Class Schedule
+        </Typography>
         </Col>
       </Row>
       <br></br>
@@ -286,46 +310,94 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Row>
       <br></br>
       <Row>
-        <Col lg={6}>
-        {studioData&&studioData.addAmenities? <NrityaCard data={studioData.addAmenities} title={"AMENTIES"}/>:""}
-       
-        </Col>
-    
-        <Col lg={6}>
-        {studioData&&studioData.enrollmentProcess? <NrityaCard data={studioData.enrollmentProcess} title={"ENROLLMENT PROCESS"}/>:""} 
+      <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',color: isDarkModeOn ? 'white' : 'black',fontSize: '18px' }}>
+          Amenities
+        </Typography>
+        <Col lg={12}>
+        
+                {studioData &&
+                          studioData.addAmenities &&
+                          studioData.addAmenities.split(',').map((amenity, index) => {
+                            const trimmedAmenity = amenity.trim();
+                            let icon = AMENITIES_ICONS[trimmedAmenity];
+
+              return (
+               
+                  <Chip key={index}
+                    icon={icon && React.cloneElement(icon, { style: { color: isDarkModeOn ? 'white' : 'black' } })}
+                    label={trimmedAmenity}
+                    
+                    style={{ marginRight: '3rem', marginBottom: '0.5rem' }}
+                    
+                    sx={{ 
+                      color: isDarkModeOn ? 'white' : 'black',
+                      marginRight: '0.5rem', 
+                      marginBottom: '0.5rem',
+                      paddingRight: '0.5rem',
+                                       
+                    }}
+        
+                  /> 
+              );
+            })}
+        
+
+
         </Col>
       </Row>
       <br></br>
       <Row>
-      <Col md={2} lg={2} className="d-flex flex-column">
-      <p className={isDarkModeOn ? "dark-mode-simple-text-big mb-2" : "simple-text-big mb-2"}>
-              Visit Us at:
-            </p>
-        
-            {studioData && studioData.buildingName ? (
-              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
-                {studioData.buildingName},
-              </p>
-            ) : null}
-            {studioData && studioData.street ? (
-              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
-                {studioData.street},
-              </p>
-            ) : null}
-            {studioData && studioData.landmark ? (
-              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
-                {studioData.landmark},
-              </p>
-            ) : null}
-            {studioData && studioData.city ? (
-              <p className={isDarkModeOn ? "dark-mode-simple-text mb-1" : "simple-text mb-1"}>
-                {studioData.city}
-              </p>
-            ) : null}
-          
-      </Col>
+        <Col lg={12}>
+        {studioData && studioData.enrollmentProcess && (
+            <>
+              <Typography variant="h1" component="h2"  style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px'  }}>
+          Enrollment Process
+        </Typography>
+              <Typography  variant="body1" style={{ color: isDarkModeOn ? "white" : "black" }} whiteSpace="pre-wrap">
+                {studioData.enrollmentProcess}
+              </Typography>
+            </>
+          )}
 
-        <Col md={10} lg={10}>
+        </Col>
+      </Row>
+      <br></br>
+      <br></br>
+      <Row>
+      <Col md={3} lg={3} className="d-flex flex-column">
+          <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px'  }}>
+            <Grid container alignItems="center" spacing={1}>
+              {studioData && studioData.geolocation && (
+                <Grid item>
+                  <a
+                    href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaDirections style={{ color: isDarkModeOn ? 'white' : 'black'}} />
+                  </a>
+                </Grid>
+              )}
+              <Grid item>
+                Visit Us at:
+              </Grid>
+            </Grid>
+          </Typography>
+                <br></br>
+          <Grid container alignItems="center" spacing={1}>
+          {studioData && (
+          
+            <Typography style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px'  }}>
+              {`${studioData.buildingName ? studioData.buildingName + (studioData.buildingName.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.street ? studioData.street + (studioData.street.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.landmark ? studioData.landmark + (studioData.landmark.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.city ? studioData.city : ''}`}
+            </Typography>
+          
+            )}
+
+          </Grid>
+        </Col>
+
+
+        <Col md={9} lg={9}>
         {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (<MapReadOnly selectedLocationParam={studioData.geolocation}></MapReadOnly>) :""}
         </Col>
       </Row>
@@ -342,7 +414,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
 };
 
 const PinMarker = ({ text, isDarkModeOn }) => (
-  <Badge pill bg={isDarkModeOn ? 'dark' : 'light'} style={{ position: 'relative', border: '0.1rem solid #ccc',fontSize: '1rem', }} text={ isDarkModeOn?'white':'black'}>
+  <Badge pill bg={isDarkModeOn ? 'red' : 'blue'} style={{ position: 'relative', border: '0.1rem solid #ccc',fontSize: '1rem', }} text={ isDarkModeOn?'white':'black'}>
      <FaMapMarker/>{text}
   </Badge>
 );

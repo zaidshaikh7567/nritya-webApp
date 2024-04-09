@@ -12,11 +12,18 @@ import MapsInput from './MapsInput';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import indianCities from '../cities.json';
-import danceStyles from '../danceStyles.json'
+import danceStyles from '../danceStyles.json';
+import { AMENITIES_ICONS } from '../constants';
 import {Autocomplete,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
+
+const encodeToUnicode = (text) => {
+  const textEncoder = new TextEncoder();
+  const utf8Encoded = textEncoder.encode(text);
+  return String.fromCharCode(...utf8Encoded);
+};
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -36,10 +43,13 @@ function StudioAdd({instructors}) {
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
     const [selectedInstructors, setSelectedInstructors] = useState([]);
     const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
+    const [selectedAmenities, setSelectedAmenities] = useState([]);
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
     const danceStylesOptions = danceStyles.danceStyles;
+    const amenityKeys = Object.keys(AMENITIES_ICONS).map(String);
+
     //console.log("danceStyles ",danceStylesOptions)
 
     const darkTheme = createTheme({
@@ -64,6 +74,10 @@ function StudioAdd({instructors}) {
     const handleDanceStylesChange = (event, value) => {
       setSelectedDanceStyles(value);
     };  
+
+    const handleAmentiesChange = (event, value) => {
+      setSelectedAmenities(value);
+    };
   
       console.log("Studio Add",newStudioId)
       const handleAddStudio = async (event) => {
@@ -108,9 +122,14 @@ function StudioAdd({instructors}) {
               author: JSON.parse(localStorage.getItem('userInfo')).displayName,
               UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
               isPremium: isPremium,
-              addAmenities: event.target.addAmenities.value,
-              enrollmentProcess: event.target.enrollmentProcess.value,
+              addAmenities: selectedAmenities.join(","),
+              enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
               creatorEmail: JSON.parse(localStorage.getItem('userInfo')).email,
+              instagram: event.target.instagram.value,
+              facebook: event.target.facebook.value,
+              youtube: event.target.youtube.value,
+              twitter: event.target.twitter.value,
+
             });
             console.log("Studio added successfully");
             setNewStudioId(studioRef.id)
@@ -329,22 +348,70 @@ function StudioAdd({instructors}) {
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
-                <Col md={6}>
+                <Col md={4}>
                   <Form.Label>Owner's Aadhar Number</Form.Label>
                   <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
                   
-                  <Form.Label>Add Amenities</Form.Label>
-                  <Form.Control rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Add amenities" name="addAmenities" />
+                
                 </Col>
-                <Col md={6}>
+                <Col md={4}>
                   <Form.Label>GST Number</Form.Label>
                   <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="GST Number" name="gstNumber" />
                   
-                  <Form.Label>Enrollment Process</Form.Label>
-                  <Form.Control rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
-          
+                  
+                </Col>
+                <Col md={4}>
+                <Form.Label>Add Amenities</Form.Label>
+                  
+                  <ThemeProvider theme={darkTheme}>
+                  <CssBaseline />
+
+                 <Autocomplete
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                  multiple
+                  id="tags-standard"
+                  options={amenityKeys}
+                  value={selectedAmenities}
+                  onChange={handleAmentiesChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder="Select Dance Styles"
+                      style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                    />
+                  )}
+                />
+                </ThemeProvider>
                 </Col>
                 </Row>
+                <Row>
+                <Form.Label>Enrollment Process</Form.Label>
+                  <Form.Control rows={12} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
+          
+                </Row>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
+               <Row>
+               <Col md={4}>
+                  <Form.Label>Instagram</Form.Label>
+                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="Instagram Link" name="instagram" />
+                </Col>
+                <Col md={4}>
+                  <Form.Label>Facebook</Form.Label>
+                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="Facebook Link" name="facebook" />
+                </Col>
+                <Col md={4}>
+                  <Form.Label>YouTube</Form.Label>
+                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="YouTube Link" name="youtube" />
+                </Col>
+                <Col md={4}>
+                  <Form.Label>Twitter</Form.Label>
+                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="Twitter Link" name="twitter" />
+                </Col>
+
+               </Row>
+                
+
                 
               </Form.Group>
               <br></br>

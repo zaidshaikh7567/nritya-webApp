@@ -17,7 +17,6 @@
   }
 
   .nritya-card-dark:hover {
-    box-shadow: 0 0.1em 0.1em 0 rgb(95, 94, 94);
     background: #121212;
     color: #ffffff;
     border-color: #36454F;
@@ -35,7 +34,6 @@
   }
 
   .nritya-card-extra-dark:hover {
-    box-shadow: 0 0.1em 0.1em 0 whitesmoke, 0 0 1em rgba(15, 15, 15, 0.7);
     background: #000000;
     color: #ffffff;
     border-color: #36454F;
@@ -44,10 +42,6 @@
   .nritya-card-light {
     border: none;
     box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.1);
-  }
-  
-  .nritya-card-light:hover {
-    box-shadow: 0 0.1em 0.1em 0 rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
   }
 
   .circular-bubble {

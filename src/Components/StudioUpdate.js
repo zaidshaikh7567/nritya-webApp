@@ -11,7 +11,8 @@ import { useSelector, useDispatch } from 'react-redux'; // Import useSelector an
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import TimeRangePicker from './TimeRangePicker';
 import indianCities from '../cities.json';
-import danceStyles from '../danceStyles.json'
+import danceStyles from '../danceStyles.json';
+import { AMENITIES_ICONS } from '../constants';
 import {Autocomplete,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -43,7 +44,6 @@ const encodeToUnicode = (text) => {
   return String.fromCharCode(...utf8Encoded);
 };
 
-// Function to decode a Unicode (UTF-8) encoded string back to the original text
 const decodeUnicode = (unicodeString) => {
   const utf8Encoded = unicodeString.split('').map((c) => c.charCodeAt(0));
   const textDecoder = new TextDecoder();
@@ -55,14 +55,15 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedStudioId, setSelectedStudioId] = useState(null);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedStudioFrozenClassRows, setSelectedStudioFrozenClassRows] = useState(-1);
-
+  const [selectedAmenities,setSelectedAmenities] = useState([]);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00");
+
   const locationOptions = indianCities.cities;
   const danceStylesOptions = danceStyles.danceStyles;
-
+  const amenityKeys = Object.keys(AMENITIES_ICONS).map(String);
   const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
   const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -78,7 +79,12 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
   const handleDanceStylesChange = (event, value) => {
     setSelectedDanceStyles(value);
-  };  
+  };
+  
+  
+  const handleAmenitiesChange = (event, value) => {
+    setSelectedAmenities(value);
+  };
 
   const [tableData, setTableData] = useState({
     0:{
@@ -100,7 +106,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
   const handleTimePickerClose = () => {
     setShowTimePicker(false);
-    setSelectedRowIndex(null); // Reset selected row index when closing time picker
+    setSelectedRowIndex(null); 
     console.log("---------")
   };
 
@@ -164,6 +170,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       setSelectedInstructors((selectedStudio.instructorsNames));
       if (selectedStudio && selectedStudio.danceStyles) {
         setSelectedDanceStyles(selectedStudio.danceStyles.split(','));
+      }
+      if (selectedStudio && selectedStudio.addAmenities) {
+        setSelectedAmenities(selectedStudio.addAmenities.split(','));
       }    
       if(selectedStudio && selectedStudio.tableData){
         const maxIndex = Math.max(...Object.keys(tableData).map(Number));
@@ -176,11 +185,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     event.preventDefault();
     const selected = event.target.value;
     const selectedId = selected.split(":").pop().trim();
-    //console.log("&**&(*", selected, selectedId);
     setSelectedStudioId(selectedId);
     setSelectedLocation(selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : null);
-    //console.log("names",selectedStudio.instructorsNames)
-    //selectedInstructors(selectedStudio && selectedStudio.instructorsNames)
+    console.log("Selected location",selectedLocation)
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.STUDIO, selectedId));
       if (studioDoc.exists) {
@@ -259,8 +266,12 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               reviews:[],
               author: JSON.parse(localStorage.getItem('userInfo')).displayName,
               UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
-              addAmenities: event.target.addAmenities.value,
-              enrollmentProcess: event.target.enrollmentProcess.value,
+              addAmenities: selectedAmenities.join(","),
+              enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
+              instagram: event.target.instagram.value,
+              facebook: event.target.facebook.value,
+              youtube: event.target.youtube.value,
+              twitter: event.target.twitter.value,
       });
 
       console.log("Studio updated successfully");
@@ -397,16 +408,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                     />
                   )}
                 />
-                </ThemeProvider>
-                
-                
-                
-                
-                
-                
-                
-                
-                
+                </ThemeProvider>      
                 
                 <Form.Label>Number of Halls</Form.Label>
                 <Form.Control defaultValue={selectedStudio ? selectedStudio.numberOfHalls : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
@@ -527,19 +529,45 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
-                  <Col md={6}>
-                <Form.Label>Owner's Aadhar Number</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.aadharNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
-                <Form.Label>Add Amenities</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.addAmenities : ''} rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Add amenities" name="addAmenities" />
-               
+                  <Col md={4}>
+                    <Form.Label>Owner's Aadhar Number</Form.Label>
+                    <Form.Control defaultValue={selectedStudio ? selectedStudio.aadharNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
                   </Col>
-                  <Col md={6}>
-                <Form.Label>GST Number</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.gstNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="GST Number" name="gstNumber" />
-                <Form.Label>Enrollment Process</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.enrollmentProcess : ''} rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
-          
+                  <Col md={4}>
+                      <Form.Label>GST Number</Form.Label>
+                      <Form.Control defaultValue={selectedStudio ? selectedStudio.gstNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="GST Number" name="gstNumber" />
+                  </Col>
+                  <Col md={4}>
+                      <Form.Label>Add Amenities</Form.Label>
+                  
+                      <ThemeProvider theme={darkTheme}>
+                      <CssBaseline />
+
+                    <Autocomplete
+                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                      multiple
+                      id="tags-standard"
+                      options={amenityKeys}
+                      value={selectedAmenities}
+                      onChange={handleAmenitiesChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          placeholder="Select Dance Styles"
+                          style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                        />
+                      )}
+                    />
+                      </ThemeProvider>
+                </Col>
+                </Row>
+                <Row>
+                  
+                  <Col>
+                    <Form.Label>Enrollment Process</Form.Label>
+                    <Form.Control defaultValue={selectedStudio ? decodeUnicode(selectedStudio.enrollmentProcess) : ''} rows={6} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
+              
                   </Col>
                 </Row>
 
@@ -638,6 +666,27 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               </tbody>
 
             </Table>
+            <br></br>
+            <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
+               <Row>
+            <Col md={4}>
+                          <Form.Label>Instagram</Form.Label>
+                          <Form.Control defaultValue={selectedStudio ? selectedStudio.instagram : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="Instagram Link" name="instagram" />
+                        </Col>
+                        <Col md={4}>
+                          <Form.Label>Facebook</Form.Label>
+                          <Form.Control defaultValue={selectedStudio ? selectedStudio.facebook : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="Facebook Link" name="facebook" />
+                        </Col>
+                        <Col md={4}>
+                          <Form.Label>YouTube</Form.Label>
+                          <Form.Control defaultValue={selectedStudio ? selectedStudio.youtube : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="YouTube Link" name="youtube" />
+                        </Col>
+                        <Col md={4}>
+                          <Form.Label>Twitter</Form.Label>
+                          <Form.Control defaultValue={selectedStudio ? selectedStudio.twitter : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="Twitter Link" name="twitter" />
+                        </Col>
+                        </Row>
+
             <br></br>
             <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }} type="submit">
               Update Studio
