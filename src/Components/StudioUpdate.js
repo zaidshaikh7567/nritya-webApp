@@ -16,6 +16,7 @@ import { AMENITIES_ICONS } from '../constants';
 import {Autocomplete,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -591,28 +592,28 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 {Object.keys(tableData).map((rowKey, index) => (
                   <tr key={rowKey}
                   >
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       <Form.Control
                         type="text"
                         value={tableData[rowKey].className}
                         onChange={(e) => handleTableChange(rowKey, 'className', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       <Form.Control
                         type="text"
                         value={tableData[rowKey].danceForms}
                         onChange={(e) => handleTableChange(rowKey, 'danceForms', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       <Form.Control
                         type="text"
                         value={tableData[rowKey].days}
                         onChange={(e) => handleTableChange(rowKey, 'days', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       <Form.Control
                         type="text"
                         value={tableData[rowKey].time}
@@ -628,14 +629,14 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                       />
                     )}
                     </td>
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       <Form.Control
                         type="text"
                         value={tableData[rowKey].instructors}
                         onChange={(e) => handleTableChange(rowKey, 'instructors', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       <Form.Control
                         as="select"
                         value={tableData[rowKey].status}
@@ -646,17 +647,17 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                       </Form.Control>
 
                     </td>
-                    <td>
+                    <td style={{padding:'0rem'}}>
                       {index === 0 ? (
                         <Button variant="primary" onClick={handleAddRow}>
-                          Add Row
+                          <FaPlus/>
                         </Button>
                       ) : (
                         <>
                         {console.log('Yo',rowKey <= selectedStudioFrozenClassRows, rowKey,selectedStudioFrozenClassRows)}
                         
                         <Button variant="danger" onClick={() => handleRemoveRow(rowKey)} disabled={rowKey <= selectedStudioFrozenClassRows} >
-                          Remove Row
+                         <FaMinus/>
                         </Button>
                         </>
                       )}

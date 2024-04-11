@@ -83,8 +83,8 @@ function StudioTable({ tableData, setTableData }) {
     <>
       <Table striped bordered hover variant="dark">
         <thead>
-          <tr>
-            <th>Class Name</th>
+          <tr >
+            <th >Class Name</th>
             <th>Dance Forms</th>
             <th>Days</th>
             <th>Time</th>
@@ -96,33 +96,36 @@ function StudioTable({ tableData, setTableData }) {
         <tbody>
           {tableDataReplace.map((row, index) => (
             <tr key={index} className={selectedRow === index ? 'selected-row' : ''}>
-              <td>
+              <td style={{padding:'0rem'}}>
                 <Form.Control
                   type="text"
                   value={row.className}
                   onChange={(e) => handleTableChange(index, 'className', e.target.value)}
+                  
                 />
               </td>
-              <td>
+              <td style={{padding:'0rem'}}>
                 <Form.Control
                   type="text"
                   value={row.danceForms}
-                  onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}
+                  onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}             
                 />
               </td>
-              <td>
+              <td style={{padding:'0rem'}}>
                 <Form.Control
                   type="text"
                   value={row.days}
                   onChange={(e) => handleTableChange(index, 'days', e.target.value)}
+                  
                 />
               </td>
-              <td>
+              <td style={{padding:'0rem'}}>
                 <Form.Control
                   type="text"
                   value={row.time}
                   //onClick={() => handleTimePickerOpen(index,row.time)}
                   onClick={() => handleTimePickerOpen(index,row.time)}
+                  
                 />
                 {showTimePicker && (
                 <TimeRangePicker
@@ -134,14 +137,14 @@ function StudioTable({ tableData, setTableData }) {
               )}
 
               </td>
-              <td>
+              <td style={{padding:'0rem'}}>
                 <Form.Control
                   type="text"
                   value={row.instructors}
                   onChange={(e) => handleTableChange(index, 'instructors', e.target.value)}
                 />
               </td>
-              <td>
+              <td style={{padding:'0rem'}}>
                 <Form.Control
                         as="select"
                         value={row.status}
@@ -151,7 +154,7 @@ function StudioTable({ tableData, setTableData }) {
                         <option value="Closed">Closed</option>
                       </Form.Control>
               </td>
-              <td>
+              <td style={{padding:'0rem'}}>
                 {index === 0 ? (
                   <Button variant="primary" onClick={handleAddRow}>
                     <FaPlus />

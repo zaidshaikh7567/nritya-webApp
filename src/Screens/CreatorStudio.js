@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Row, Col , Form,Accordion,Table,Toast } from 'react-bootstrap';
+import { Card, Button, Row, Col , Form,Table,Toast } from 'react-bootstrap';
  
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -15,6 +15,11 @@ import { useAuth } from '../context/AuthContext';
 import Instructors from './CreatorInstructor';
 import NrityaCard from '../Components/NrityaCard';
 import { queryDocumentsCount } from '../utils/firebaseUtils';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Typography from '@mui/joy/Typography';
+import { FaPlus } from 'react-icons/fa';
 
 function CreatorStudio() {
   const [studio, setStudio] = useState([]);
@@ -133,30 +138,32 @@ function CreatorStudio() {
       {isCreator?(
         
        <>
-        <Accordion defaultActiveKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-            <Accordion.Item eventKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-                <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-                    Add Studio
-                </Accordion.Header>
-                <Accordion.Body>
-                <StudioAdd instructors={instructors} />
-                </Accordion.Body>
-            </Accordion.Item>
-
-            <Accordion.Item eventKey="1" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-                <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-                Update Studio
-                </Accordion.Header>
-                <Accordion.Body>
-                <StudioUpdate
+        <Accordion style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+            <AccordionSummary style={{ backgroundColor: isDarkModeOn ? '#181818' : '#FAF9F6', 
+              color: isDarkModeOn ? 'white' : 'black', padding:'2px' }} 
+               expandIcon={<FaPlus style={{color: isDarkModeOn ? 'white' : 'black' }}/>}
+               >
+                     <Typography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px'}}>Add Studio</Typography>
+            </AccordionSummary>
+            <AccordionDetails style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+              <StudioAdd instructors={instructors} />
+            </AccordionDetails>
+        </Accordion>
+        <Accordion  style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+            <AccordionSummary  style={{ backgroundColor: isDarkModeOn ? '#181818' : '#FAF9F6', color: isDarkModeOn ? 'white' : 'black',padding:'2px' }}
+              expandIcon={<FaPlus style={{color: isDarkModeOn ? 'white' : 'black' }}/>}
+             >
+              <Typography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px'}}>Update Studio</Typography>
+            </AccordionSummary>
+            <AccordionDetails style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+            <StudioUpdate
                   studio={studio}
                   setStudio={setStudio}
                   instructors={instructors}
                   studioId={studioId}
                   setStudioId={setStudioId}
                 />
-                </Accordion.Body>
-            </Accordion.Item>
+            </AccordionDetails>
         </Accordion>
       </>
       ):""}

@@ -7,4 +7,9 @@
     background-color: rgb(240, 240, 141);
     color: black;
   }
+
+  .Form.Control {
+    padding: 0.02rem; /* Adjust the padding as needed */
+  }
+  
   
