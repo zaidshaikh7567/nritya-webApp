@@ -94,7 +94,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       days: '',
       time: '',
       instructors: '',
-      status: ''
+      fee:'',
+      level:''
     }
 });
 
@@ -208,7 +209,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               days: '',
               time: '',
               instructors: '',
-              status: ''
+              fee: '',
+              level:'',
             }
         });
         }
@@ -582,10 +584,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                   <th>Days</th>
                   <th>Time</th>
                   <th>Instructors</th>
-                  <th>Status</th>
-                  <th>
-                    
-                  </th>
+                  <th>Fee</th>
+                  <th>Level</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -601,10 +602,16 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                     </td>
                     <td style={{padding:'0rem'}}>
                       <Form.Control
-                        type="text"
+                        as="select"
                         value={tableData[rowKey].danceForms}
                         onChange={(e) => handleTableChange(rowKey, 'danceForms', e.target.value)}
-                      />
+                      >
+                        {danceStylesOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                        </Form.Control>
                     </td>
                     <td style={{padding:'0rem'}}>
                       <Form.Control
@@ -632,20 +639,29 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                     <td style={{padding:'0rem'}}>
                       <Form.Control
                         type="text"
-                        value={tableData[rowKey].instructors}
+                        value={tableData[rowKey].instructors?tableData[rowKey].instructors:""}
                         onChange={(e) => handleTableChange(rowKey, 'instructors', e.target.value)}
                       />
                     </td>
                     <td style={{padding:'0rem'}}>
                       <Form.Control
+                        type="text"
+                        value={tableData[rowKey].fee?tableData[rowKey].fee:""}
+                        onChange={(e) => handleTableChange(rowKey, 'fee', e.target.value)}
+                      />
+                    </td>
+                    <td style={{padding:'0rem'}}>
+                      <Form.Control
                         as="select"
-                        value={tableData[rowKey].status}
-                        onChange={(e) => handleTableChange(rowKey, 'status', e.target.value)}
+                        value={tableData[rowKey].level?tableData[rowKey].level:""}
+                        onChange={(e) => handleTableChange(rowKey, 'level', e.target.value)}
                       >
-                        <option value="Open">Open</option>
-                        <option value="Closed">Closed</option>
-                      </Form.Control>
+                         <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                      <option value="Misc">Misc</option>
 
+                        </Form.Control>
                     </td>
                     <td style={{padding:'0rem'}}>
                       {index === 0 ? (

@@ -3,16 +3,29 @@ import { Form, Table, Button, Modal, Row, Col } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import './StudioTable.css'; // Import the CSS file for styling
 import  TimeRangePicker from './TimeRangePicker';
+import danceStyles from '../danceStyles.json';
+
+const daysOfWeekOptions = [
+  { value: 'M', label: 'Monday' },
+  { value: 'T', label: 'Tuesday' },
+  { value: 'W', label: 'Wednesday' },
+  { value: 'Th', label: 'Thursday' },
+  { value: 'F', label: 'Friday' },
+  { value: 'Sat', label: 'Saturday' },
+  { value: 'Sun', label: 'Sunday' },
+];
+
 
 function StudioTable({ tableData, setTableData }) {
   const [tableDataReplace, setTableDataReplace] = useState([tableData]);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
+  const danceStylesOptions = danceStyles.danceStyles;
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00")
 
   const handleAddRow = () => {
-    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: '', status: '' }]);
+    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: '', fee:'',level:'' ,status: '' }]);
     console.log(tableDataReplace, "After adding");
   };
 
@@ -89,7 +102,8 @@ function StudioTable({ tableData, setTableData }) {
             <th>Days</th>
             <th>Time</th>
             <th>Instructors</th>
-            <th>Status</th>
+            <th>Fee</th>
+            <th>Level</th>
             <th></th>
           </tr>
         </thead>
@@ -105,20 +119,30 @@ function StudioTable({ tableData, setTableData }) {
                 />
               </td>
               <td style={{padding:'0rem'}}>
-                <Form.Control
-                  type="text"
+              <Form.Control
+                  as="select"
                   value={row.danceForms}
-                  onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}             
-                />
+                  onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}
+                >
+                  {danceStylesOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Form.Control>
+
               </td>
-              <td style={{padding:'0rem'}}>
-                <Form.Control
-                  type="text"
-                  value={row.days}
-                  onChange={(e) => handleTableChange(index, 'days', e.target.value)}
-                  
-                />
-              </td>
+              
+              <td style={{ padding: '0rem' }}>
+                  <Form.Control
+                    type="text"
+                    value={row.days}
+                    onChange={(e) => handleTableChange(index, 'days', e.target.value)}
+                  >
+                    
+                  </Form.Control>
+                </td>
+
               <td style={{padding:'0rem'}}>
                 <Form.Control
                   type="text"
@@ -146,14 +170,25 @@ function StudioTable({ tableData, setTableData }) {
               </td>
               <td style={{padding:'0rem'}}>
                 <Form.Control
-                        as="select"
-                        value={row.status}
-                        onChange={(e) => handleTableChange(index, 'status', e.target.value)}
-                      >
-                        <option value="Open">Open</option>
-                        <option value="Closed">Closed</option>
-                      </Form.Control>
+                  type="text"
+                  value={row.fee}
+                  onChange={(e) => handleTableChange(index, 'fee', e.target.value)}
+                />
               </td>
+              <td style={{padding:'0rem'}}>
+                <Form.Control
+                  as="select"
+                  value={row.level}
+                  onChange={(e) => handleTableChange(index, 'level', e.target.value)}
+                >
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                      <option value="Misc">Misc</option>
+
+                  </Form.Control>
+              </td>
+              
               <td style={{padding:'0rem'}}>
                 {index === 0 ? (
                   <Button variant="primary" onClick={handleAddRow}>

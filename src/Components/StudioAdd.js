@@ -36,7 +36,7 @@ const colorCombinations = [
 function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
-      { className: '', danceForms: '', days: '', time: '', instructors: '', status: '' },
+      { className: '', danceForms: '', days: '', time: '', instructors: '', fee:'',level:'' ,status: '' },
     );
     const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);

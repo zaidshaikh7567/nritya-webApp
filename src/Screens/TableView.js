@@ -103,13 +103,26 @@ const TableView = ({ studioData, studioId }) => {
                   <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
                     <tbody>
                       {[
-                        { label: 'Class Name', value: classItem.className },
-                        { label: 'Dance Forms', value: classItem.danceForms },
-                        { label: 'Days', value: classItem.days },
-                        { label: 'Time', value: classItem.time },
-                        { label: 'Instructors', value: classItem.instructors },
-                        { label: 'Wanna Try?', value: <Chip label="Book Free Trial"  clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)} /> }
-                      ].map((item, i) => (
+                        { label: 'Class Name', value: classItem.className || "" },
+                        { label: 'Dance Forms', value: classItem.danceForms || "" },
+                        { label: 'Days', value: classItem.days || "" },
+                        { label: 'Time', value: classItem.time || "" },
+                        { label: 'Instructors', value: classItem.instructors || "" },
+                        { label: 'Level', value: classItem.level || "N/A" },
+                        { label: 'Fee', value: classItem.fee || "N/A" },
+                        { 
+                          label: 'Book Free Trial',
+                          value: (
+                            <Chip 
+                              label="Book"  
+                              clickable={true} 
+                              color={isDarkModeOn ? "primary" : "secondary"} 
+                              onClick={() => bookFreeTrial(index)} 
+                            />
+                          ) 
+                        }
+                      ]
+                      .map((item, i) => (
                         <tr key={i}>
                           <td style={{ color: "white", backgroundColor: isDarkModeOn ? "#121212" : "black" }}>{item.label}</td>
                           <td style={{ backgroundColor: isDarkModeOn ? "#444" : "white", color: isDarkModeOn ? "white" : "black" }}>{item.value}</td>
@@ -132,6 +145,8 @@ const TableView = ({ studioData, studioId }) => {
               <th>Days</th>
               <th>Time</th>
               <th>Instructors</th>
+              <th>Level</th>
+              <th>Fee</th>
               <th>Book Free Trial</th>
             </tr>
           </thead>
@@ -140,13 +155,15 @@ const TableView = ({ studioData, studioId }) => {
               const classItem = studioData.tableData[key];
               return (
                 <tr key={index}>
-                  <td>{classItem.className}</td>
-                  <td>{classItem.danceForms}</td>
-                  <td>{classItem.days}</td>
-                  <td>{classItem.time}</td>
-                  <td>{classItem.instructors}</td>
+                  <td>{classItem.className ? classItem.className : ""}</td>
+                  <td>{classItem.danceForms ? classItem.danceForms : ""}</td>
+                  <td>{classItem.days ? classItem.days : ""}</td>
+                  <td>{classItem.time ? classItem.time : ""}</td>
+                  <td>{classItem.instructors ? classItem.instructors : ""}</td>
+                  <td>{classItem.level ? classItem.level : "N/A"}</td>
+                  <td>{classItem.fee ? classItem.fee : "N/A"}</td>
                   <td>
-                    <Chip label="Book Free Trial"  clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)}/>
+                    <Chip label="Book"  clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)}/>
                   </td>
                 </tr>
               );

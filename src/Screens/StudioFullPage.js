@@ -327,7 +327,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
                     icon={icon && React.cloneElement(icon, { style: { color: isDarkModeOn ? 'white' : 'black' } })}
                     label={trimmedAmenity}
                     
-                    style={{ marginRight: '3rem', marginBottom: '0.5rem' }}
+                    style={{ marginRight: '1rem', marginBottom: '0.5rem' }}
                     
                     sx={{ 
                       color: isDarkModeOn ? 'white' : 'black',
