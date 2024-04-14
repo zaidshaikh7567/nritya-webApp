@@ -74,18 +74,18 @@ export default function NStudioCard({img_src,data}) {
 
         </AspectRatio>
       <CardContent style={{padding:'10px'}}>
-        <Typography style={{color: isDarkModeOn?'white':'black'}} level="body-xs">{data.street?data.street:".  "}</Typography>
         <Link
           href={`#/studio/${studioId}`}
           fontWeight="md"
           color="neutral"
           textColor="text.primary"
+          underline='none'
           overlay
-          endDecorator={<ArrowOutwardIcon />}
-          style={{color: isDarkModeOn?'white':'black'}}
+          style={{color: isDarkModeOn?'white':'black',extDecoder:"one"}}
         >
           {data && data.studioName?data.studioName:"    "}
         </Link>
+        <Typography style={{color: isDarkModeOn?'white':'black'}} level="body-xs">{data.street?data.street:".  "}</Typography>
         <IconButton
           hidden
           aria-label="Like minimal photography"
