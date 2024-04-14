@@ -117,18 +117,20 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
 };
 
 
-  const BASEURL_STUDIO="https://nrityaserver-2b241e0a97e5.herokuapp.com/api/studioFullPage/"
+  const BASEURL_STUDIO="https://nrityaserver-2b241e0a97e5.herokuapp.com/api/studio/"
   useEffect(() => {
     const fetchData = async () => {
       if(JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId){
         const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
         updateRecentlyWatchedInFirebase(UserId,studioId);
       }
-      const response = await axios.get(`${BASEURL_STUDIO}${studioId}`);
-      const data = response.data;
-      setStudioData(data);
-      if(data && data.studioImages){
-        setCarouselImages(data.studioImages)
+      const responseText = await axios.get(`${BASEURL_STUDIO}${studioId}/text/`);
+      const dataText = responseText.data;
+      setStudioData(dataText);
+      const responseImages = await axios.get(`${BASEURL_STUDIO}${studioId}/images/`);
+      const dataImages = responseImages.data;
+      if(dataImages && dataImages.studioImages){
+        setCarouselImages(dataImages.studioImages)
       }
       console.log(studioData);
 
