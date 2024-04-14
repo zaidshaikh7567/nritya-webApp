@@ -6,10 +6,7 @@
     transition: box-shadow 0.3s;
     cursor: pointer;
   }
-  
-  .custom-table:hover {
-    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.2), 0 0 1em rgba(91, 91, 84, 0.7);
-  }
+
   
   .custom-table th,
   .custom-table td {
@@ -29,7 +26,6 @@
     color: white;
   }
   .custom-table.dark-mode:hover {
-    box-shadow: 0 0 1em 0 whitesmoke;
     border-color: #36454F
   }
 

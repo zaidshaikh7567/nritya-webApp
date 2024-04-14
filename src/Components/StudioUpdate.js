@@ -606,6 +606,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         value={tableData[rowKey].danceForms}
                         onChange={(e) => handleTableChange(rowKey, 'danceForms', e.target.value)}
                       >
+                        <option value="">Select a dance form</option>
                         {danceStylesOptions.map((option) => (
                     <option key={option} value={option}>
                       {option}
@@ -656,6 +657,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         value={tableData[rowKey].level?tableData[rowKey].level:""}
                         onChange={(e) => handleTableChange(rowKey, 'level', e.target.value)}
                       >
+                        <option value="">Select a Level</option>
                          <option value="Beginner">Beginner</option>
                       <option value="Intermediate">Intermediate</option>
                       <option value="Advanced">Advanced</option>

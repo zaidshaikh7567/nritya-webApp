@@ -27,6 +27,8 @@ import CardContent from '@mui/joy/CardContent';
 import Typography from '@mui/joy/Typography';
 import { Paper, List, ListItem, Chip, Grid } from '@mui/material';
 import { FaShare } from 'react-icons/fa';
+import axios from 'axios';
+
 
 
 
@@ -59,25 +61,7 @@ function StudioFullPage() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const containerRef = useRef(null);
   const [studioData, setStudioData] = useState(null);
-  const [studioDescription, setStudioDescription] = useState(null);
-  const [studioTableData, setStudioTableData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
-  const [isLoadingImages, setIsLoadingImages] = useState(true);
-
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: studioData && studioData.studioName? studioData.studioName:" ",
-        text: 'Check out this studio!',
-        url: window.location.href
-      })
-        .then(() => console.log('Shared successfully'))
-        .catch((error) => console.error('Error sharing:', error));
-    } else {
-      console.log('Web Share API not supported');
-    }
-  };  
 
 
 // Function to update the recently watched studios in Firebase
@@ -133,33 +117,21 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
 };
 
 
-
+  const BASEURL_STUDIO="https://nrityaserver-2b241e0a97e5.herokuapp.com/api/studioFullPage/"
   useEffect(() => {
     const fetchData = async () => {
       if(JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId){
         const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
         updateRecentlyWatchedInFirebase(UserId,studioId);
       }
-      const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
-      const studioSnap = await getDoc(studioRef);
-      if (studioSnap) {
-        if (studioSnap.data() != null) {
-          const data = studioSnap.data();
-          setStudioData(data);
-          console.log(studioData);
-    
-          const storageRef = ref(storage, `StudioImages/${studioId}`);
-          const result = await listAll(storageRef);
-
-          const urlPromises = result.items.map((imageRef) => getDownloadURL(imageRef));
-
-          const imageUrls = await Promise.all(urlPromises);
-          setCarouselImages(imageUrls);
-          setIsLoadingImages(false);
-        
-        }
-
+      const response = await axios.get(`${BASEURL_STUDIO}${studioId}`);
+      const data = response.data;
+      setStudioData(data);
+      if(data && data.studioImages){
+        setCarouselImages(data.studioImages)
       }
+      console.log(studioData);
+
     };
 
     fetchData();
@@ -244,40 +216,6 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </Col>
       </Row>
       <br></br>
-      <Row hidden>
-        <Col>
-          {isLoadingImages ? (
-            <Row>
-              {[100, 101, 102].map((index) => (
-                <Col key={index} lg={6} md={12} sm={12}>
-                  <Skeleton variant="rectangular" animation="wave" width={275} height={340} />
-                </Col>
-              ))}
-            </Row>
-          ) : (                
-            <Carousel>
-              {carouselImages &&
-                carouselImages.map((image, index) => (
-                  <Carousel.Item key={index}>
-                    <div className="d-flex justify-content-between">
-                    {[index, index + 1, index + 2].map((cardIndex) => {
-                      const circularIndex = cardIndex % carouselImages.length;
-                      const card = carouselImages[circularIndex];
-                      return (
-                        <div key={`${index}-${cardIndex}-${Math.floor(cardIndex / carouselImages.length)}`} md={2} style={{ maxWidth: '20rem', margin: '10px' }}>
-                        <Card style={{ width: '100%', height: '100%' }}>
-                          <Card.Img src={image} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
-                        </Card>
-                      </div>  
-                      );
-                    })}
-                    </div>
-                  </Carousel.Item>
-                ))}
-            </Carousel>       
-          )}
-        </Col>
-      </Row>
       
       <Row>
       {carouselImages.length? <CardSlider dataList={carouselImages} imgOnly={true}/>:""}

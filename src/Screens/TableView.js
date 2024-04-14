@@ -12,7 +12,7 @@ import { useMediaQuery } from '@mui/material';
 
 
 const TableView = ({ studioData, studioId }) => {
-  console.log("TableView",studioData,studioId)
+  //console.log("TableView",studioData,studioId)
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
