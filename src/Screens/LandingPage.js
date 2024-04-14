@@ -299,8 +299,8 @@ function LandingPage() {
         <Row >
           {danceForms.map((danceForm, index) => (
             <Col key={index} sm={6} md={4} lg={3}>
-              <Card style={cardStyle} onClick={() => handleCardClick(danceForm.name)}>
-                <Card.Body>
+              <Card className="card-hover"style={cardStyle} onClick={() => handleCardClick(danceForm.name)}>
+                <Card.Body style={{textAlign:"center"}}>
                   <h4 style={{color: isDarkModeOn ? 'white' : 'black'}}>{danceForm.name}</h4>
                 </Card.Body>
               </Card>

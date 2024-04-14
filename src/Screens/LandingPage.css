@@ -26,4 +26,16 @@
   /* .row-container {
     scroll-behavior: smooth;
   } */
+
+ /* Define a class to reduce opacity */
+.card-hover {
+  transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+
+/* When hovering over the card, reduce the opacity and scale */
+.card-hover:hover {
+  transform: scale(1.02); /* Adjust as needed */
+}
+
+
   
