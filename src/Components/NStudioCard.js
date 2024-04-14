@@ -40,8 +40,27 @@ export default function NStudioCard({img_src,data}) {
   
       fetchImageUrl();
     }, [data.id]);
+
+    const cardStyle = {
+      backgroundColor: isDarkModeOn ? '#444' : 'white',
+      padding: '0px',
+      color: isDarkModeOn ? 'white' : 'black',
+      marginRight: "10px",
+      width: 320,
+      maxWidth: "100%",
+      boxShadow: 'lg',
+      transition: 'opacity 0.3s ease',
+    };
+  
+    const cardHoverStyle = {
+      transform: 'scale(1.01)',
+    };
+  
   return (
-    <Card variant="solid" style={{backgroundColor: isDarkModeOn ? '#444' : 'white', padding: '0px',color: isDarkModeOn?'white':'black',marginRight:"10px"}} sx={{ width: 320,maxWidth: "100%", boxShadow: 'lg' }}>
+    <Card variant="solid" sx={{
+      ...cardStyle,
+      '&:hover': cardHoverStyle,
+    }}>
       
         <AspectRatio ratio="1.78" style={{ position: 'relative'}}>
           <img

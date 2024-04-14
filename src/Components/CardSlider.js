@@ -12,12 +12,20 @@ import CardContent from '@mui/joy/CardContent';
 const CardSlider = ({ dataList, imgOnly = false }) => {
   console.log("Debug from CardSlider", imgOnly)
 
+  const cardHoverStyle = {
+    transform: 'scale(1.01)', // Scale up slightly on hover
+  };
+
+
   return (
     <div className={"horizontal-scroll-wrapper"}>
       {dataList.map((studio, index) => (
         <a key={index} href={`#/studio/${studio.id}`}>
           {imgOnly ? (
-              <MuiCard style={{paddingRight:"1px"}} component="li" sx={{height:300, width: 534}} >
+              <MuiCard style={{marginRight: "0.5rem"}} component="li" sx={{height:300, width: 534,'&:hover': {
+                ...cardHoverStyle,
+              },
+            }} >
                 <CardCover>
                   <img
                     src={studio}

@@ -7,7 +7,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
-import { Chip } from '@mui/material';
+import { Chip, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
 
@@ -59,6 +59,17 @@ const TableView = ({ studioData, studioId }) => {
       setShowModal(false);
     }, 20000); // 20 seconds timeout
   };
+  const commonCellStyle = {
+    backgroundColor: isDarkModeOn ? "#444" : "white",
+    color: isDarkModeOn ? "white" : "black",
+    textAlign: "center",
+  };
+
+  const commonHeaderStyle = {
+    textAlign: "center",
+  };
+
+
 
   return (
     <>
@@ -109,23 +120,35 @@ const TableView = ({ studioData, studioId }) => {
                         { label: 'Time', value: classItem.time || "" },
                         { label: 'Instructors', value: classItem.instructors || "" },
                         { label: 'Level', value: classItem.level || "N/A" },
-                        { label: 'Fee', value: classItem.fee || "N/A" },
+                        { label: 'Fee (₹) ', value: classItem.fee || "N/A" },
                         { 
                           label: 'Book Free Trial',
                           value: (
-                            <Chip 
-                              label="Book"  
-                              clickable={true} 
-                              color={isDarkModeOn ? "primary" : "secondary"} 
-                              onClick={() => bookFreeTrial(index)} 
-                            />
+                            
+                    <Button
+                      style={{
+                        border: 'none',
+                        borderColor: "none",
+                        background: 'transparent',
+                        padding:  "0",
+
+                      }}
+                      onClick={() => bookFreeTrial(index)}
+                    >
+                      <Typography sx={{color: isDarkModeOn ? 'white' : 'black'}} fontWeight="bold">
+                        BOOK 
+                      </Typography>
+
+                    </Button>
+
+                  
                           ) 
                         }
                       ]
                       .map((item, i) => (
                         <tr key={i}>
                           <td style={{ color: "white", backgroundColor: isDarkModeOn ? "#121212" : "black" }}>{item.label}</td>
-                          <td style={{ backgroundColor: isDarkModeOn ? "#444" : "white", color: isDarkModeOn ? "white" : "black" }}>{item.value}</td>
+                          <td style={{ backgroundColor: isDarkModeOn ? "#444" : "white", color: isDarkModeOn ? "white" : "black" }} >{item.value}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -140,14 +163,14 @@ const TableView = ({ studioData, studioId }) => {
           <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`}>
           <thead>
             <tr>
-              <th>Class Name</th>
-              <th>Dance Forms</th>
-              <th>Days</th>
-              <th>Time</th>
-              <th>Instructors</th>
-              <th>Level</th>
-              <th>Fee</th>
-              <th>Book Free Trial</th>
+              <th style={commonHeaderStyle}>Class Name</th>
+              <th style={commonHeaderStyle}>Dance Forms</th>
+              <th style={commonHeaderStyle}>Days</th>
+              <th style={commonHeaderStyle}>Time</th>
+              <th style={commonHeaderStyle}>Instructors</th>
+              <th style={commonHeaderStyle}>Level</th>
+              <th style={commonHeaderStyle}>Fee (₹) </th>
+              <th style={commonHeaderStyle}>Book Free Trial</th>
             </tr>
           </thead>
           <tbody>
@@ -155,15 +178,29 @@ const TableView = ({ studioData, studioId }) => {
               const classItem = studioData.tableData[key];
               return (
                 <tr key={index}>
-                  <td>{classItem.className ? classItem.className : ""}</td>
-                  <td>{classItem.danceForms ? classItem.danceForms : ""}</td>
-                  <td>{classItem.days ? classItem.days : ""}</td>
-                  <td>{classItem.time ? classItem.time : ""}</td>
-                  <td>{classItem.instructors ? classItem.instructors : ""}</td>
-                  <td>{classItem.level ? classItem.level : "N/A"}</td>
-                  <td>{classItem.fee ? classItem.fee : "N/A"}</td>
-                  <td>
-                    <Chip label="Book"  clickable={true} color={isDarkModeOn?"primary":"secondary"} onClick={() => bookFreeTrial(index)}/>
+                  <td style={commonCellStyle}>{classItem.className ? classItem.className : ""}</td>
+                  <td style={commonCellStyle}>{classItem.danceForms ? classItem.danceForms : ""}</td>
+                  <td style={commonCellStyle}>{classItem.days ? classItem.days : ""}</td>
+                  <td style={commonCellStyle}>{classItem.time ? classItem.time : ""}</td>
+                  <td style={commonCellStyle}>{classItem.instructors ? classItem.instructors : "N/A"}</td>
+                  <td style={commonCellStyle}>{classItem.level ? classItem.level : "N/A"}</td>
+                  <td style={commonCellStyle} >{classItem.fee ? classItem.fee : "N/A"}</td>
+                  <td  className='custom-btn-cell' style={commonCellStyle}  onClick={() => bookFreeTrial(index)}>
+                  <Button 
+                      style={{
+                        border: 'none',
+                        borderColor: "none",
+                        background: 'transparent',
+                        padding:  "0",
+                      }}
+                      
+                    >
+                      <Typography sx={{color: isDarkModeOn ? 'white' : 'black'}} fontWeight="bold">
+                        BOOK 
+                      </Typography>
+
+                    </Button>
+
                   </td>
                 </tr>
               );

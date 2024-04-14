@@ -220,7 +220,16 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       
       <Row>
-      {carouselImages.length? <CardSlider dataList={carouselImages} imgOnly={true}/>:""}
+      {carouselImages.length? 
+      <CardSlider dataList={carouselImages} imgOnly={true}/>
+      :
+      <>
+      <Row>
+              <Skeleton variant="rectangular" animation="wave"  sx={{paddingRight:"0.5rem"}} width={"240"} height={300} />
+              <Skeleton variant="rectangular" animation="wave"  sx={{paddingRight:"0.5rem"}} width={"240"} height={300} />
+      </Row>
+      </>
+      }
       </Row>
       
       <br></br>
@@ -239,9 +248,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
           ) : (
             <>
               <Row>
-              <Skeleton variant="rectangular" animation="wave"  width={275} height={340} />
-              <Skeleton variant="rectangular" animation="wave"  width={275} height={340} />
-              <Skeleton variant="rectangular" animation="wave"  width={275} height={340} />
+              <Skeleton variant="rectangular" animation="wave"  width={"100%"} height={340} />
               </Row>
               
             </>
@@ -267,13 +274,14 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
                     icon={icon && React.cloneElement(icon, { style: { color: isDarkModeOn ? 'white' : 'black' } })}
                     label={trimmedAmenity}
                     
-                    style={{ marginRight: '1rem', marginBottom: '0.5rem' }}
+                    style={{ marginRight: '1rem', marginBottom: '0.5rem' , alignItems:'center'}}
                     
                     sx={{ 
                       color: isDarkModeOn ? 'white' : 'black',
                       marginRight: '0.5rem', 
                       marginBottom: '0.5rem',
                       paddingRight: '0.5rem',
+                      paddingLeft: '0.5rem',
                                        
                     }}
         
