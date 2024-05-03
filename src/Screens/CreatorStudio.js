@@ -20,6 +20,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from '@mui/joy/Typography';
 import { FaPlus } from 'react-icons/fa';
+import CardSliderCard from '../Components/CardSliderCard';
 
 function CreatorStudio() {
   const [studio, setStudio] = useState([]);
@@ -143,7 +144,7 @@ function CreatorStudio() {
               color: isDarkModeOn ? 'white' : 'black', padding:'2px' }} 
                expandIcon={<FaPlus style={{color: isDarkModeOn ? 'white' : 'black' }}/>}
                >
-                     <Typography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px'}}>Add Studio</Typography>
+                     <Typography variant="h2" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px',fontWeight: 'bold' }}>Add Studio</Typography>
             </AccordionSummary>
             <AccordionDetails style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
               <StudioAdd instructors={instructors} />
@@ -153,7 +154,7 @@ function CreatorStudio() {
             <AccordionSummary  style={{ backgroundColor: isDarkModeOn ? '#181818' : '#FAF9F6', color: isDarkModeOn ? 'white' : 'black',padding:'2px' }}
               expandIcon={<FaPlus style={{color: isDarkModeOn ? 'white' : 'black' }}/>}
              >
-              <Typography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px'}}>Update Studio</Typography>
+              <Typography variant="h2" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px',fontWeight: 'bold' }}>Update Studio</Typography>
             </AccordionSummary>
             <AccordionDetails style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
             <StudioUpdate
@@ -170,19 +171,20 @@ function CreatorStudio() {
  
       <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}>Your Studios:</h3>
        <ul>
-      <br/>
-      <Row xs={1} md={2} lg={2} className="g-4">
+      <Row xs={1} md={3} lg={4} className="g-4">
         {studio.length > 0 ? (
           studio.map((studio, index) => (
             <Col key={index}>
-              {console.log("creator studio ",studio)}
-              <StudioCard studioName={studio.studioName} studioAddress={studio.address} studioInstructors={studio.instructors} studioPrice={studio.price} studioTiming={studio.timing} studioDanceStyles={studio.danceStyles} studioContactNumber={studio.contactNumber} studioId={studio.id}/>
-            </Col>
+              <a href={`#/studio/${studio.studioId}`} style={{ textDecoration: "none" }}>
+                <CardSliderCard studio={studio}/>
+              </a>
+          </Col>
           ))
         ) : (
           <p style={{color: isDarkModeOn ? 'white' : 'black'}}>No studio yet!</p>
         )}
       </Row>
+      <br/>
       </ul>
     </div>
   )

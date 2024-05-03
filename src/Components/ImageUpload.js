@@ -5,16 +5,18 @@ import { storage } from '../config';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { deleteAllImagesInFolder,deleteImages,uploadImages} from '../utils/firebaseUtils'
+import { Card, CardContent, CardMedia, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
-const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
+const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]); // Track new files to be added
   const [deletedFiles, setDeletedFiles] = useState([]); // Track deleted files
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
-  console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
-  console.log("enitity id ",entityId)
+  //console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
+  // console.log("enitity id ",entityId)
   const filesizes = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -25,21 +27,27 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
   };
 
   useEffect(() => {
-    console.log("Fetching image for",entityId)
+   // console.log("Fetching image for",entityId)
     if(entityId){
       fetchStudioImages(entityId); // Fetch images when component mounts
     }
   }, [entityId]);
 
   useEffect(() => {
-    console.log("Selected files:", selectedFiles);
-  }, [selectedFiles]);
+   // console.log("Selected files:", selectedFiles);
+    if (maxImageCount && selectedFiles.length > maxImageCount) {
+      const truncatedFiles = selectedFiles.slice(0, maxImageCount);
+      alert(`Exceeded maxImageCount, keeping first ${maxImageCount} files.`);
+      setSelectedFiles(truncatedFiles);
+    }
+  }, [selectedFiles, maxImageCount]);
+  
 
   const handleInputChange = (e) => {
-    console.log("handleInputChange")
+    // console.log("handleInputChange")
     const files = Array.from(e.target.files);
     const updatedFiles = [];
-    console.log("file array ",files.length)
+    // console.log("file array ",files.length)
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -56,7 +64,7 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
         if (updatedFiles.length === files.length) {
           setSelectedFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
           setNewFiles(updatedFiles);
-          console.log("New files in total",setNewFiles.length)
+          // console.log("New files in total",setNewFiles.length)
         }
       };
 
@@ -144,7 +152,7 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
           };
         })
       );
-      console.log('File fetching',files);
+      // console.log('File fetching',files);
       setUploadedFiles(files); // Update the uploadedFiles state with fetched data
       setSelectedFiles(files);
     } catch (error) {
@@ -161,7 +169,8 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
               <div className="kb-data-box">
                 <div className="kb-modal-data-title">
                   <div className="kb-data-title" style={{justifyContent:'center',flex: '1'}}>
-                    <h6>Image Upload</h6>
+                    <h5>{title}</h5>
+                    
                   </div>
                 </div>
                 <form onSubmit={handleUploadSubmit} style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>
@@ -177,37 +186,39 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
 
                     </div>
                   </div>
+                  <br></br>
                   <div className="kb-attach-box mb-3">
                   <div className="row">
                     {selectedFiles.length > 0 ? (
                       selectedFiles.map((file) => (
-                        <div key={file.id} className="col-6 col-md-3 mb-3">
-                          <div className="card">
+                        
+                        <div key={file.id} className="col-6 col-md-3 mb-3" style={{ position: 'relative' }}>
+                          
+                          <Card sx={{ maxWidth: 345 }}>
                             {file.filename.match(/\.(jpg|jpeg|png|gif|svg)$/i) ? (
-                              
-                              
-                              <img
-                                src={file.fileimage ? file.fileimage: file.fileURL}
-                                alt={file.filename}
-                                className="card-img-top"
-                                style={{ maxHeight: "150px", objectFit: "cover" }}
-                              />
-                            ) : (
-                              <div className="card-body">
-                                <i className="far fa-file-alt"></i>
+                              <div style={{ position: 'relative' }}>
+                                <img
+                                  src={file.fileimage ? file.fileimage : file.fileURL}
+                                  alt={file.filename}
+                                  className="card-img-top"
+                                  style={{ maxHeight: "150px", objectFit: "cover" }}
+                                />
+                                <IconButton
+                                  aria-label="delete"
+                                  onClick={() => handleDeleteSelectedFile(file.id)}
+                                  style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
+                                >
+                                  <DeleteIcon style={{color:"ff0000"}}/>
+                                </IconButton>
                               </div>
+                            ) : (
+                              <CardContent>
+                                <i className="far fa-file-alt"></i>
+                              </CardContent>
                             )}
-                            <div className="card-footer">
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleDeleteSelectedFile(file.id)}
-                              >
-                                X
-                              </button>
-                            </div>
-                          </div>
+                          </Card>
                         </div>
+                        
                       ))
                     ) : (
                       <div className="col-12 text-center">
@@ -226,7 +237,7 @@ const ImageUpload = ({entityId,storageFolder, maxImageCount, updateMode }) => {
                       style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}
                       
                     >
-                      Upload
+                      Image Upload
                     </button>
                   </div>
                 </form>

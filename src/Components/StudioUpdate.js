@@ -188,12 +188,16 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     const selected = event.target.value;
     const selectedId = selected.split(":").pop().trim();
     setSelectedStudioId(selectedId);
-    setSelectedLocation(selectedStudio && selectedStudio.geolocation ? selectedStudio.geolocation : null);
-    console.log("Selected location",selectedLocation)
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.STUDIO, selectedId));
       if (studioDoc.exists) {
         setSelectedStudio(studioDoc.data());
+        if(studioDoc.data().geolocation){
+          const  loc = studioDoc.data().geolocation;
+          setSelectedLocation(loc);
+          console.log("StudioUpdate Selected location",selectedLocation,loc)
+        }
+        
         if (studioDoc.data().tableData) {
           setTableData(studioDoc.data().tableData);
           //selectedStudioFrozenClassRows()
@@ -509,6 +513,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                           </option>
                       ))}
                   </Form.Control>
+                  
+
                 </Col>
                 <Col md={6}>
                   <Form.Label>Landmark</Form.Label>
@@ -714,13 +720,16 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
             {studioId && studioId.length > 0 && selectedStudioId && (
               <>
                 <div>
-                  <span>Images</span>
-                  <ImageUpload entityId={selectedStudioId} storageFolder={STORAGES.STUDIOIMAGES} />
+                  <ImageUpload entityId={selectedStudioId} title={"Studio Images"} storageFolder={STORAGES.STUDIOIMAGES} />
                 </div>
                 <br />
+                <button onClick={() => {
+                            console.log("selectedLocation ",selectedLocation);
+                          }}>
+                          Click me
+                        </button>
                 <div>
-                  <span>Studio Icon</span>
-                  <ImageUpload entityId={selectedStudioId} storageFolder={STORAGES.STUDIOICON} maxImageCount={1} />
+                  <ImageUpload entityId={selectedStudioId} title={"Studio Icon"} storageFolder={STORAGES.STUDIOICON} maxImageCount={1} />
                 </div>
                 <br />
               </>

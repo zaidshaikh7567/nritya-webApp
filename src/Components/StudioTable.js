@@ -124,6 +124,7 @@ function StudioTable({ tableData, setTableData }) {
                   value={row.danceForms}
                   onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}
                 >
+                  <option value="">Select a dance form</option>
                   {danceStylesOptions.map((option) => (
                     <option key={option} value={option}>
                       {option}
@@ -180,7 +181,7 @@ function StudioTable({ tableData, setTableData }) {
                   as="select"
                   value={row.level}
                   onChange={(e) => handleTableChange(index, 'level', e.target.value)}
-                >
+                >     <option value="">Select a value</option>
                       <option value="Beginner">Beginner</option>
                       <option value="Intermediate">Intermediate</option>
                       <option value="Advanced">Advanced</option>

@@ -17,8 +17,6 @@ import { AMENITIES_ICONS } from '../constants';
 import {Autocomplete,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Stepper,Step,StepLabel,Box} from '@mui/material';
-import SuccessMessage from './SucessPage';
 
 
 const encodeToUnicode = (text) => {
@@ -62,22 +60,6 @@ function StudioAdd({instructors}) {
     const locationOptions = indianCities.cities;
     const danceStylesOptions = danceStyles.danceStyles;
     const amenityKeys = Object.keys(AMENITIES_ICONS).map(String);
-    const [activeStep, setActiveStep] = useState(0);
-
-    const handleNext = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleRestart = () => {
-      setActiveStep(0);
-      setNewStudioId("");
-    };
-
-
 
     //console.log("danceStyles ",danceStylesOptions)
 
@@ -179,8 +161,6 @@ function StudioAdd({instructors}) {
             } else {
               console.log("User not found but studio created... error");
             }
-
-            handleNext()
           
         } catch (error) {
           console.error("Error adding studio: ", error);
@@ -191,20 +171,9 @@ function StudioAdd({instructors}) {
 
   return (
     <div >
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {['Basic Studio & Owner details', 'Instructors, Classes & Social Media', 'Address & Registration', 'Studio Icon', 'Studio & Class Images'].map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          
-            < div hidden={activeStep > 2} >
             <Form id="addStudioForm" onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
               <Form.Group controlId="formBasicAdd">
-             
-                  <div hidden={activeStep !== 0}>
-                  <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -276,32 +245,13 @@ function StudioAdd({instructors}) {
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}  rows={1} placeholder="Maximum Occupancy" name="maximumOccupancy" type="number"   />
                 </Col>
                 </Row>
-                <br></br>
-                <Row>
-                  <Col xs={6}>
-                    <Button disabled onClick={() => handleBack()}>
-                      Prev
-                    </Button>
-                  </Col>
-                  <Col xs={6} className="d-flex justify-content-end">
-                    <Button onClick={() => handleNext()}>
-                      Next
-                    </Button>
-                  </Col>
-                </Row>
-                  
-                  </div>
-
-
-               
-              
-                <div hidden={activeStep !== 1}>
-
-
+                <hr></hr>
                 
-            <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
-                <Form.Label>Names of Instructors</Form.Label>
-                <Row>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
+
+
+          <Form.Label>Names of Instructors</Form.Label>
+          <Row>
             
                 <Col xs={6}>
                 <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
@@ -355,12 +305,59 @@ function StudioAdd({instructors}) {
             </Col>
                 </Row> 
 
+                <Col xs={6}>
+
+          <br />
+        </Col>
+
+              
+                  <hr />
+                         
                 <hr></hr>   
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
                 <span>Time Table Of dance classes</span>
                 <StudioTable tableData={tableData} setTableData={setTableData}/>
+                
+                <hr></hr>   
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
+                <Row>
+                  <Col md={6}>
+                  <Form.Label>Building Name</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter building name" name="buildingName" />
 
+                <Form.Label>Street</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
+                <Form.Label>City</Form.Label>
+                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} name="city">
+                    <option value="">Select a city</option>
+                    {locationOptions.map((city, index) => (
+                        <option key={index} value={city}>
+                            {city}
+                        </option>
+                    ))}
+                </Form.Control>
+
+                </Col>
+                <Col md={6}>
+                  <Form.Label>Landmark</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter landmark" name="landmark" />
+
+                <Form.Label>Pincode</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
+               
+                <Form.Label>State</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state" />
+               
+                </Col>
+
+                <Form.Label>Save exact Address</Form.Label>
+                <MapsInput selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}></MapsInput>
+                
+                </Row>
+                <hr></hr>
+
+                
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
                 <Col md={4}>
@@ -425,126 +422,26 @@ function StudioAdd({instructors}) {
                 </Col>
 
                </Row>
-
-               <Row>
-                  <Col xs={6}>
-                    <Button onClick={() => handleBack()}>
-                      Prev
-                    </Button>
-                  </Col>
-                  <Col xs={6} className="d-flex justify-content-end">
-                    <Button onClick={() => handleNext()}>
-                      Next
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
-
-               
-                <div hidden={activeStep !== 2}>
-
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
-                <Row>
-                  <Col md={6}>
-                  <Form.Label>Building Name</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter building name" name="buildingName" />
-
-                <Form.Label>Street</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
-                <Form.Label>City</Form.Label>
-                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} name="city">
-                    <option value="">Select a city</option>
-                    {locationOptions.map((city, index) => (
-                        <option key={index} value={city}>
-                            {city}
-                        </option>
-                    ))}
-                </Form.Control>
-
-                </Col>
-                <Col md={6}>
-                  <Form.Label>Landmark</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter landmark" name="landmark" />
-
-                <Form.Label>Pincode</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
-               
-                <Form.Label>State</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state" />
-               
-                </Col>
-
-                <Form.Label>Save exact Address</Form.Label>
-                <MapsInput selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}></MapsInput>
-                
-                </Row>
                 
 
                 
+              </Form.Group>
               <br></br>
-
-              <Row>
-                  <Col xs={6}>
-                    <Button onClick={() => handleBack()}>
-                      Prev
-                    </Button>
-                  </Col>
-                  <Col xs={6} className="d-flex justify-content-end">
-                    
-                    <Button variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
-                      Add Studio & Next
-                    </Button>
-                  </Col>
-                </Row>
-                
-                </div>
-
-                
-                </Form.Group>
+              <Button variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
+                Add Studio
+              </Button>
             </Form>
-            
+            <>
             {
               newStudioId === ""?(""):(<p>New Studio Created with id {newStudioId}. Now u can upload images regarding them</p>)
             }
-            
-            </div>
-          
-             
-             
-            <div hidden={activeStep !== 3}>
-              
+            <hr></hr>   
+            </>
+
               <ImageUpload entityId={newStudioId} title={"Studio Icon"} storageFolder={STORAGES.STUDIOICON} maxImageCount={1}></ImageUpload>
-              <Row>
-                
-                <Col xs={12} className="d-flex justify-content-end">
-                  <Button onClick={() => handleNext()}>
-                    Next
-                  </Button>
-                </Col>
-              </Row>
 
-              </div>
-             
-            
-             <div hidden={activeStep !== 4}>
               <ImageUpload entityId={newStudioId} title={"Studio Images"}  storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
-              <Row>
-                
-                <Col xs={12} className="d-flex justify-content-end">
-                  <Button onClick={() => handleNext()}>
-                    Next
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-
-            <div  hidden={activeStep !== 5} style={{ display: 'flex',  alignItems: 'center', height: 'auto'}}>
-          
-                <SuccessMessage StudioId={newStudioId} />
-                <br></br>
-              
-            </div>
-        
+          <hr></hr>
       <br></br>
       
     </div>

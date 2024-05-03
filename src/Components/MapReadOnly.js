@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { gMapApiKey } from '../config';
+import { FaMapMarker, FaMapMarkerAlt } from 'react-icons/fa';
 
 const MapReadOnly = ({selectedLocationParam}) => {
   const initialCenter = { lat: 28.6139, lng: 77.2090 };
@@ -8,7 +9,7 @@ const MapReadOnly = ({selectedLocationParam}) => {
   const [selectedLocation, setSelectedLocation] = useState(selectedLocationParam?selectedLocationParam:null); 
   
   return (
-    <div style={{ height: '300px', width: '100%' }}>
+    <div style={{ height: '200px', width: '100%' }}>
         <div>
         
       </div>
@@ -33,7 +34,7 @@ const MapReadOnly = ({selectedLocationParam}) => {
 // Custom marker component
 const PinMarker = ({ text }) => (
   <div style={{ position: 'relative', textAlign: 'center' }}>
-    <div style={{ color: 'red', fontSize: '24px' }}>📍</div>
+    <FaMapMarkerAlt style={{ color: 'green',  fontSize: '44px' }} />
     <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>{text}</div>
   </div>
 );

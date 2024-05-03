@@ -160,22 +160,22 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <div style={{ display: 'flex', justifyContent: 'left' }}>
         {studioData.youtube && (
           <a href={studioData.youtube} target="_blank" rel="noopener noreferrer">
-            <FaYoutube className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#ff0000', fontSize: '24px', marginRight: '10px' }} />
+            <FaYoutube className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px', marginRight: '10px' }} />
           </a>
         )}
         {studioData.facebook && (
           <a href={studioData.facebook} target="_blank" rel="noopener noreferrer">
-            <FaFacebook className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#00aced', fontSize: '24px', marginRight: '10px' }} />
+            <FaFacebook className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px', marginRight: '10px' }} />
           </a>
         )}
         {studioData.instagram && (
           <a href={studioData.instagram} target="_blank" rel="noopener noreferrer">
-            <FaInstagram className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#bc2a8d', fontSize: '24px', marginRight: '10px' }} />
+            <FaInstagram className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px', marginRight: '10px' }} />
           </a>
         )}
         {studioData.twitter && (
           <a href={studioData.twitter} target="_blank" rel="noopener noreferrer">
-            <FaTwitter className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#00aced', fontSize: '24px' }} />
+            <FaTwitter className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px' }} />
           </a>
         )}
       </div>
@@ -186,12 +186,12 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <Row>
       {studioData&&studioData.aboutStudio?
       
-      <NrityaCard data={studioData.aboutStudio} title={"About Studio"}/>:""} 
+      <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} studioContactNumber={studioData.mobileNumber} studioWhatsAppNumber={studioData.whatsappNumber}/>:""} 
       </Row>
         
       </Col>
       <Col lg={4} xs={12} >
-      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} aboutFounder={true} founderEmail={studioData.creatorEmail} founderWhatsAppNumber={studioData.whatsappNumber} title={"About fOUNDER"}/>:""} 
+      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About fOUNDER"}/>:""} 
       </Col>
     </Row>
       

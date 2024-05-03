@@ -2,18 +2,16 @@ import React, { useState, useEffect }from 'react';
 import GoogleMapReact from 'google-map-react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { LoadScript } from '@react-google-maps/api';
+import { FaMapMarker, FaMapMarkerAlt } from 'react-icons/fa';
 
 const libraries = ['places'];
 
 function MapsInput({selectedLocation, setSelectedLocation}) {
-    const [center, setCenter] = useState(selectedLocation? selectedLocation:{ lat: 28.6139, lng: 77.2090 }); // Default center: Delhi
-    //const [selectedLocation, setSelectedLocation] = useState(null);
+    const [center, setCenter] = useState(selectedLocation? selectedLocation:{ lat: 0, lng: 0 });
     const [address, setAddress] = useState('');
-    //const libraries = ['places']; //
   
     const apiKey = "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ"; // Replace with your API Key
-    // const apiKey = process.env.REACT_GOOGLE_MAPS_API_KEY;
-    // console.log(apiKey)
+   console.log("selectedLocation got in MapsInput",selectedLocation,"----",center)
     const handleSelect = async (selectedAddress) => {
       const results = await geocodeByAddress(selectedAddress);
       const latLng = await getLatLng(results[0]);
@@ -21,20 +19,21 @@ function MapsInput({selectedLocation, setSelectedLocation}) {
       setAddress(selectedAddress);
       setCenter(latLng);
       setSelectedLocation(latLng);
-      console.log(latLng)
+      console.log(latLng,"---",selectedLocation,'---',center,'---',address)
     };
 
     useEffect(() => {
       // Check if selectedLocation is null and set it to Delhi's coordinates
       console.log(selectedLocation)
       if (!selectedLocation) {
-        setCenter({ lat: 28.6139, lng: 77.2090 });
-        setAddress('');
-        setSelectedLocation({ lat: 28.6139, lng: 77.2090 });
+        console.log("Location changing !selectedLocation",selectedLocation)
       }else{
+        console.log("Location changing",selectedLocation)
         setCenter(selectedLocation)
+        //setSelectedLocation()
       }
-    }, [selectedLocation, setSelectedLocation]);
+      console.log(center,address,selectedLocation)
+    }, [selectedLocation]);
   
     return (
         <LoadScript
@@ -85,7 +84,7 @@ function MapsInput({selectedLocation, setSelectedLocation}) {
         </PlacesAutocomplete>
           <br></br>
         </div>
-        <div style={{ height: '500px', width: '100%' }}>
+        <div style={{ height: '400px', width: '100%' }}>
           <GoogleMapReact
             bootstrapURLKeys={{ key: apiKey }}
             defaultCenter={center}
@@ -95,10 +94,10 @@ function MapsInput({selectedLocation, setSelectedLocation}) {
               setSelectedLocation({ lat, lng });
             }}
           >
-            {selectedLocation && (
+            { (
               <PinMarker
-              lat={selectedLocation.lat}
-              lng={selectedLocation.lng}
+              lat={selectedLocation && selectedLocation.lat ? selectedLocation.lat: 0}
+              lng={selectedLocation && selectedLocation.lng ? selectedLocation.lng: 0}
               text="Selected Location"
             />
             )}
@@ -117,7 +116,7 @@ const Marker = ({ text }) => (
 
 const PinMarker = ({ text }) => (
     <div style={{ position: 'relative', textAlign: 'center' }}>
-      <div style={{ color: 'red', fontSize: '24px' }}>📍</div>
+      <FaMapMarkerAlt style={{ color: 'green', fontSize: '24px' }} />
       <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>{text}</div>
     </div>
   );
