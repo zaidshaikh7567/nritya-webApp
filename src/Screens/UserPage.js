@@ -152,7 +152,7 @@ function UserPage() {
             
                 {isCreator ? (
                     <>
-                    <div className='profile-description' style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}>Creator </div>
+                    <div className='profile-description' style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}><a href="#/kyc" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Creator</a> </div>
                     <div className='profile-description' style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}> {getCurrentUnixTimestamp() > parseInt(premiumTill) ?
                                                     ( <Button variant="outline-warning" className="me-2 rounded-pill" size="sm" href="#/cplans" >Subscribe</Button>) 
                                                     : ( <a href="#/cplans" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Premium</a>

@@ -21,6 +21,13 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from '@mui/joy/Typography';
 import { FaPlus } from 'react-icons/fa';
 import CardSliderCard from '../Components/CardSliderCard';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import { Box } from '@mui/material';
+
+
 
 function CreatorStudio() {
   const [studio, setStudio] = useState([]);
@@ -30,6 +37,12 @@ function CreatorStudio() {
   const [isCreator, setIsCreator] = useState(false);
   const [premiumTill, setPremiumTill] = useState(-1);
   const { currentUser } = useAuth();
+  const [value, setValue] = React.useState('1');
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
 
   useEffect(() => {
     console.log("Creator Studio getCreatorMode")
@@ -139,33 +152,34 @@ function CreatorStudio() {
       {isCreator?(
         
        <>
-        <Accordion style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-            <AccordionSummary style={{ backgroundColor: isDarkModeOn ? '#181818' : '#FAF9F6', 
-              color: isDarkModeOn ? 'white' : 'black', padding:'2px' }} 
-               expandIcon={<FaPlus style={{color: isDarkModeOn ? 'white' : 'black' }}/>}
-               >
-                     <Typography variant="h2" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px',fontWeight: 'bold' }}>Add Studio</Typography>
-            </AccordionSummary>
-            <AccordionDetails style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-              <StudioAdd instructors={instructors} />
-            </AccordionDetails>
-        </Accordion>
-        <Accordion  style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-            <AccordionSummary  style={{ backgroundColor: isDarkModeOn ? '#181818' : '#FAF9F6', color: isDarkModeOn ? 'white' : 'black',padding:'2px' }}
-              expandIcon={<FaPlus style={{color: isDarkModeOn ? 'white' : 'black' }}/>}
-             >
-              <Typography variant="h2" style={{ color: isDarkModeOn ? 'white' : 'black', paddingLeft: '20px',fontWeight: 'bold' }}>Update Studio</Typography>
-            </AccordionSummary>
-            <AccordionDetails style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-            <StudioUpdate
+       <Box sx={{ width: '100%', typography: 'body1' }}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList style={{color: isDarkModeOn ? 'white' : 'black'}} onChange={handleChange} aria-label="lab API tabs example">
+            <Tab style={{color: isDarkModeOn ? 'white' : 'black'}} label="Add Studio" value="1" />
+            <Tab style={{color: isDarkModeOn ? 'white' : 'black'}} label="Update Studio" value="2" />
+          
+          </TabList>
+        </Box>
+        <TabPanel value="1">
+
+        <StudioAdd instructors={instructors} />
+        </TabPanel>
+        <TabPanel value="2">
+        <>
+        <StudioUpdate
                   studio={studio}
                   setStudio={setStudio}
                   instructors={instructors}
                   studioId={studioId}
                   setStudioId={setStudioId}
                 />
-            </AccordionDetails>
-        </Accordion>
+        </>
+    
+        </TabPanel>
+        
+      </TabContext>
+    </Box>
       </>
       ):""}
  

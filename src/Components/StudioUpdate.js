@@ -332,7 +332,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
       <br></br>
             <Form id="updateStudioForm" onSubmit={handleUpdateStudio}>
               <Form.Group controlId="formBasicUpdate">
@@ -431,58 +431,58 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 <Form.Label>Names of Instructors</Form.Label>
                 <Row >
       
-      <Col xs={6}>
-      <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-        <Dropdown className="d-inline mx-2">
-          <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
-            Add/Remove Instrcutors
-          </Dropdown.Toggle>
-          <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
-            {instructors.map((instructor) => (
-              <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? '#181818' : '' }} key={instructor.id}>
-                <Form.Check
-                  type="checkbox"
-                  id={`checkbox-${instructor.id}`}
-                  label={`${instructor.name} - ${instructor.id.slice(-4)}`}
-                  checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
-                  onChange={() => handleToggleInstructor(instructor)}
-                  style={{ flex: 1 }} 
-                />
-              </div>
-            ))}
-          </Dropdown.Menu>
-        </Dropdown>
-        <br></br>
-        <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
-          Go to Instrcutors' Add/update Page? 
-        </a>
-      </div>
-      </Col>
-      <Col xs={12} md={6}>
-        {selectedInstructors.length > 0 ? (
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
-            <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
-            {selectedInstructors.map((selected, index) => (
-              <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
-                <Badge
-                  bg={colorCombinations[index % colorCombinations.length].background}
-                  style={{
-                    color: colorCombinations[index % colorCombinations.length].text,
-                    marginLeft: '5px',
-                  }}
-                  pill
-                >
-                  {selected.name} - {selected.id.slice(-4)}{' '}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No instructors selected.</p>
-        )}
-      </Col>
-      </Row>  
-      <hr></hr>
+                  <Col xs={6}>
+                  <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                    <Dropdown className="d-inline mx-2">
+                      <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
+                        Add/Remove Instrcutors
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
+                        {instructors.map((instructor) => (
+                          <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? '#181818' : '' }} key={instructor.id}>
+                            <Form.Check
+                              type="checkbox"
+                              id={`checkbox-${instructor.id}`}
+                              label={`${instructor.name} - ${instructor.id.slice(-4)}`}
+                              checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
+                              onChange={() => handleToggleInstructor(instructor)}
+                              style={{ flex: 1 }} 
+                            />
+                          </div>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    <br></br>
+                    <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
+                      Go to Instrcutors' Add/update Page? 
+                    </a>
+                  </div>
+                  </Col>
+                  <Col xs={12} md={6}>
+                    {selectedInstructors.length > 0 ? (
+                      <ul style={{ listStyleType: 'none', padding: 0 }}>
+                        <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
+                        {selectedInstructors.map((selected, index) => (
+                          <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
+                            <Badge
+                              bg={colorCombinations[index % colorCombinations.length].background}
+                              style={{
+                                color: colorCombinations[index % colorCombinations.length].text,
+                                marginLeft: '5px',
+                              }}
+                              pill
+                            >
+                              {selected.name} - {selected.id.slice(-4)}{' '}
+                            </Badge>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No instructors selected.</p>
+                    )}
+                  </Col>
+                </Row>  
+                <hr></hr>
                    
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
                 <Row>

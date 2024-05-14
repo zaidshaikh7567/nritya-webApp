@@ -4,8 +4,15 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 import './StudioTable.css'; // Import the CSS file for styling
 import  TimeRangePicker from './TimeRangePicker';
 import danceStyles from '../danceStyles.json';
+import { Autocomplete, TextField } from '@mui/material';
+
+import { MultiSelect } from 'primereact/multiselect';
+import "primereact/resources/primereact.css";
+import "primereact/resources/themes/saga-blue/theme.css";
+        
 
 const daysOfWeekOptions = [
+  { value: '',label:'No days'},
   { value: 'M', label: 'Monday' },
   { value: 'T', label: 'Tuesday' },
   { value: 'W', label: 'Wednesday' },
@@ -14,6 +21,10 @@ const daysOfWeekOptions = [
   { value: 'Sat', label: 'Saturday' },
   { value: 'Sun', label: 'Sunday' },
 ];
+
+
+const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
+
 
 
 function StudioTable({ tableData, setTableData }) {
@@ -39,10 +50,15 @@ function StudioTable({ tableData, setTableData }) {
 
   const handleTableChange = (index, field, value) => {
     setTableDataReplace((prevData) => {
+      if(field==="days"){
+        console.log("filter1",value,'inside if',Array.isArray(value) )
+        value = Array.isArray(value) ? value.join(',') : value; 
+      }
       const newData = [...prevData];
       newData[index][field] = value;
       return newData;
     });
+    console.log(tableDataReplace)
   };
 
   const handleTimePickerOpen = (index,time) => {
@@ -94,24 +110,24 @@ function StudioTable({ tableData, setTableData }) {
 
   return (
     <>
-      <Table striped bordered hover variant="dark">
+      <Table bordered variant="light">
         <thead>
           <tr >
-            <th >Class Name</th>
-            <th>Dance Forms</th>
-            <th>Days</th>
-            <th>Time</th>
-            <th>Instructors</th>
-            <th>Fee</th>
-            <th>Level</th>
-            <th></th>
+          <th style={{padding:'0.6rem'}}>Class Name</th>
+            <th style={{padding:'0.6rem'}}>Dance Forms</th>
+            <th style={{padding:'0.6rem'}}>Days</th>
+            <th style={{padding:'0.6rem'}}>Time</th>
+            <th style={{padding:'0.6rem'}}>Instructors</th>
+            <th style={{padding:'0.6rem'}}>Fee</th>
+            <th style={{padding:'0.6rem'}}>Level</th>
+            <th style={{padding:'0.6rem'}}></th>
           </tr>
         </thead>
         <tbody>
           {tableDataReplace.map((row, index) => (
             <tr key={index} className={selectedRow === index ? 'selected-row' : ''}>
               <td style={{padding:'0rem'}}>
-                <Form.Control
+                < Form.Control style={{backgroundColor:"white"}}
                   type="text"
                   value={row.className}
                   onChange={(e) => handleTableChange(index, 'className', e.target.value)}
@@ -119,7 +135,7 @@ function StudioTable({ tableData, setTableData }) {
                 />
               </td>
               <td style={{padding:'0rem'}}>
-              <Form.Control
+              < Form.Control style={{backgroundColor:"white"}}
                   as="select"
                   value={row.danceForms}
                   onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}
@@ -134,18 +150,15 @@ function StudioTable({ tableData, setTableData }) {
 
               </td>
               
-              <td style={{ padding: '0rem' }}>
-                  <Form.Control
-                    type="text"
-                    value={row.days}
-                    onChange={(e) => handleTableChange(index, 'days', e.target.value)}
-                  >
-                    
-                  </Form.Control>
-                </td>
-
+              <td style={{ padding: '0rem'}} className="m-0 p-0">
+                <MultiSelect value={row.days && row.days.split(',').filter(day => day !== '') } 
+                    onChange={(event) => handleTableChange(index, 'days', event.target.value)}
+                    options={daysOfWeek}
+                    placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"
+                  />
+              </td>
               <td style={{padding:'0rem'}}>
-                <Form.Control
+                < Form.Control style={{backgroundColor:"white"}}
                   type="text"
                   value={row.time}
                   //onClick={() => handleTimePickerOpen(index,row.time)}
@@ -163,21 +176,21 @@ function StudioTable({ tableData, setTableData }) {
 
               </td>
               <td style={{padding:'0rem'}}>
-                <Form.Control
+                < Form.Control style={{backgroundColor:"white"}}
                   type="text"
                   value={row.instructors}
                   onChange={(e) => handleTableChange(index, 'instructors', e.target.value)}
-                />
+                /> 
               </td>
               <td style={{padding:'0rem'}}>
-                <Form.Control
+                < Form.Control style={{backgroundColor:"white"}}
                   type="text"
                   value={row.fee}
                   onChange={(e) => handleTableChange(index, 'fee', e.target.value)}
                 />
               </td>
               <td style={{padding:'0rem'}}>
-                <Form.Control
+                < Form.Control style={{backgroundColor:"white"}}
                   as="select"
                   value={row.level}
                   onChange={(e) => handleTableChange(index, 'level', e.target.value)}
@@ -210,3 +223,15 @@ function StudioTable({ tableData, setTableData }) {
 }
 
 export default StudioTable;
+
+/*
+                <Autocomplete
+                  multiple
+                  id={`days-autocomplete-${index}`}
+                  options={daysOfWeekOptions}
+                  getOptionLabel={(option) => option.value}
+                  value={row.days.split(',').filter(day => day !== '').map(day => daysOfWeekOptions.find(option => option.value === day))}
+                  onChange={(event, newValue) => handleTableChange(index, 'days', newValue.map(option => option.value).join(','))}
+                  renderInput={(params) => <TextField sx={{color:"black",backgroundColor:"white",width:"100%"}} {...params} />}
+                />
+              */

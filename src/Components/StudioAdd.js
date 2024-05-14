@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, Button, Row, Col , Form,Accordion,Table,Toast,Dropdown,Badge } from 'react-bootstrap';
+import {Button as MuiButton} from '@mui/material';
 import { useState, useEffect, useMemo } from 'react';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } from "firebase/firestore";
@@ -19,6 +20,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {Stepper,Step,StepLabel,Box} from '@mui/material';
 import SuccessMessage from './SucessPage';
+import BasicDemo from './BasicDemo';
 
 
 const encodeToUnicode = (text) => {
@@ -57,6 +59,8 @@ function StudioAdd({instructors}) {
     const [selectedInstructors, setSelectedInstructors] = useState([]);
     const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
     const [selectedAmenities, setSelectedAmenities] = useState([]);
+    const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
+
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
@@ -106,6 +110,10 @@ function StudioAdd({instructors}) {
 
     const handleAmentiesChange = (event, value) => {
       setSelectedAmenities(value);
+    };
+
+    const handleInstructorChange = (event, value) => {
+      setSelectedInstructors(value);
     };
   
       console.log("Studio Add",newStudioId)
@@ -194,7 +202,7 @@ function StudioAdd({instructors}) {
           <Stepper activeStep={activeStep} alternativeLabel>
             {['Basic Studio & Owner details', 'Instructors, Classes & Social Media', 'Address & Registration', 'Studio Icon', 'Studio & Class Images'].map((label) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel ><p style={{color:isDarkModeOn?"white":"black"}}>{label}</p></StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -279,14 +287,14 @@ function StudioAdd({instructors}) {
                 <br></br>
                 <Row>
                   <Col xs={6}>
-                    <Button disabled onClick={() => handleBack()}>
+                    <MuiButton variant="contained" disabled >
                       Prev
-                    </Button>
+                    </MuiButton>
                   </Col>
                   <Col xs={6} className="d-flex justify-content-end">
-                    <Button onClick={() => handleNext()}>
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                       Next
-                    </Button>
+                    </MuiButton>
                   </Col>
                 </Row>
                   
@@ -302,57 +310,28 @@ function StudioAdd({instructors}) {
             <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
                 <Form.Label>Names of Instructors</Form.Label>
                 <Row>
-            
-                <Col xs={6}>
-                <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-                  <Dropdown className="d-inline mx-2">
-                    <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
-                      Add/Remove Instrcutors
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
-                      {instructors.map((instructor) => (
-                        <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'black' : 'white' }} key={instructor.id}>
-                          <Form.Check
-                            type="checkbox"
-                            id={`checkbox-${instructor.id}`}
-                            label={`${instructor.name} - ${instructor.id.slice(-4)}`}
-                            checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
-                            onChange={() => handleToggleInstructor(instructor)}
-                            style={{ flex: 1 }} 
-                          />
-                        </div>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  <br></br>
-                  <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
-                    Go to Instrcutors' Add/update Page? 
-                  </a>
-                </div>
-                </Col>
-            <Col xs={12} md={6}>
-              {selectedInstructors.length > 0 ? (
-                <ul style={{ listStyleType: 'none', padding: 0 }}>
-                  <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>Selected Instructors:</p>
-                  {selectedInstructors.map((selected, index) => (
-                    <li key={selected.id} style={{ display: 'inline-block', marginRight: '10px' }}>
-                      <Badge
-                        bg={colorCombinations[index % colorCombinations.length].background}
-                        style={{
-                          color: colorCombinations[index % colorCombinations.length].text,
-                          marginLeft: '5px',
-                        }}
-                        pill
-                      >
-                        {selected.name} - {selected.id.slice(-4)}{' '}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No instructors selected.</p>
-              )}
-            </Col>
+                <ThemeProvider theme={darkTheme}>
+                  <CssBaseline />
+
+                 <Autocomplete
+                  style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                  multiple
+                  id="tags-standard"
+                  options={instructorNamesWithIds}
+                  value={selectedInstructors}
+                  onChange={handleInstructorChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder="Select Dance Styles"
+                      style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                    />
+                  )}
+                />
+                </ThemeProvider>
+              
+                  
                 </Row> 
 
                 <hr></hr>   
@@ -428,14 +407,14 @@ function StudioAdd({instructors}) {
 
                <Row>
                   <Col xs={6}>
-                    <Button onClick={() => handleBack()}>
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleBack()}>
                       Prev
-                    </Button>
+                    </MuiButton>
                   </Col>
                   <Col xs={6} className="d-flex justify-content-end">
-                    <Button onClick={() => handleNext()}>
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                       Next
-                    </Button>
+                    </MuiButton>
                   </Col>
                 </Row>
               </div>
@@ -485,15 +464,15 @@ function StudioAdd({instructors}) {
 
               <Row>
                   <Col xs={6}>
-                    <Button onClick={() => handleBack()}>
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleBack()}>
                       Prev
-                    </Button>
+                    </MuiButton>
                   </Col>
                   <Col xs={6} className="d-flex justify-content-end">
                     
-                    <Button variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
                       Add Studio & Next
-                    </Button>
+                    </MuiButton>
                   </Col>
                 </Row>
                 
@@ -517,9 +496,9 @@ function StudioAdd({instructors}) {
               <Row>
                 
                 <Col xs={12} className="d-flex justify-content-end">
-                  <Button onClick={() => handleNext()}>
+                  <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                     Next
-                  </Button>
+                  </MuiButton>
                 </Col>
               </Row>
 
@@ -531,9 +510,9 @@ function StudioAdd({instructors}) {
               <Row>
                 
                 <Col xs={12} className="d-flex justify-content-end">
-                  <Button onClick={() => handleNext()}>
+                  <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                     Next
-                  </Button>
+                  </MuiButton>
                 </Col>
               </Row>
             </div>
