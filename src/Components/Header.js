@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Button, Offcanvas, Dropdown,Image } from 'react-bootstrap';
+import { Nav, Navbar, Offcanvas, Dropdown,Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
-
+import {Button}  from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import logo from './../logo.png';
 import { adminLoginFn, adminLogoutFn } from '../reduxStore/adminLoginSlice';
@@ -25,6 +25,7 @@ import { getBrowserLocation } from '../utils/location';
 import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -132,7 +133,7 @@ function Header() {
     fontSize: 10,
     textAlign: "center",
     //background: isDarkModeOn ? '#292929' : '#cccccc',
-    background: isDarkModeOn ? 'black' : 'white',
+    background: 'black',
     }
     
     function getUserNameInitials() {
@@ -142,6 +143,9 @@ function Header() {
       let buttonContent = nameParts[0].charAt(0);
       if (nameParts.length > 1) {
         buttonContent += nameParts[1].charAt(0);
+      }
+      if(nameParts[0].length>1){
+        buttonContent += nameParts[0].charAt(1);
       }
       return buttonContent;
     }
@@ -215,9 +219,10 @@ function Header() {
         </Navbar.Brand>
         <div>
         <meta charset="UTF-8" />
-          <h1 style={{ color: isDarkModeOn ? 'white' : 'black',fontSize:25 , textAlign: 'center', textIndent:'right',textTransform: 'none',  fontFamily:'Times Roman', paddingRight:80}}>{'            नृtya'}</h1>
+          <h1 style={{ color: 'white' ,fontSize:25 , textAlign: 'center', textIndent:'right',textTransform: 'none',  fontFamily:'Times Roman', paddingRight:80}}>{'            नृtya'}</h1>
         </div>
-        <Navbar.Toggle aria-controls="navbarScroll" className={isDarkModeOn ? "text-light" : "text-dark"} />
+        <Navbar.Toggle aria-controls="basic-navbar-nav">  <MenuOutlinedIcon style={{color:"white"}}/> </Navbar.Toggle>
+
         <Navbar.Collapse id="navbarScroll">
          <Nav
             style={{ fontFamily:'Times Roman',fontSize:20, maxHeight: '90px' }}
@@ -231,26 +236,28 @@ function Header() {
                         onClick={handleToggleDarkMode} 
                     />
           {currentUser ? (
-             <> <Button   className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
+             <> <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px' }} >
                🔎 Search Studios
               </Button>
-              <Button   className="me-2 rounded-pill"  href="#/modifyStudios" style={{textTransform: 'none' , backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}>List Studios</Button>
+              <Button  variant="outlined"  className="me-2 rounded-pill"  href="#/modifyStudios" style={{textTransform: 'none' ,borderColor:'white', color:'white',borderWidth:'2px'}}>List Studios</Button>
             </>
           ) : (
             <>
-              <Button   className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} >
+              <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px' }} >
               🔎 Search Studios
             </Button>
-              <Button   className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'}}> List Studios</Button>
+              <Button   className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px'}}> List Studios</Button>
             </>
           )}
           <div className="position-relative location-dropdown-container">
           <Button
+                variant="outlined"
                 className="me-2 rounded-pill"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
                 style={{
                   cursor: 'pointer',
-                  textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'
+                  textTransform: 'none', color:'white', borderColor:'white',
+                  height: '3rem', borderWidth:'2px',
                 }}
               >
                 <FontAwesomeIcon icon={faMapMarker} className="me-2" />
@@ -297,11 +304,13 @@ function Header() {
 
          {currentUser ? (
             <Nav>
-              <Button onClick={openProfileOffcanvas} variant="outline-warning" className=" rounded-pill"
-                style={{fontSize: '1rem', backgroundColor: isDarkModeOn?'#892CDC' : 'black',  
-                  color: isDarkModeOn ? 'white' : 'white', borderRadius: '50%',   
+              <Button onClick={openProfileOffcanvas} className=" rounded-pill"
+                variant="outlined"
+                style={{fontSize: '1rem',
+                  color:'white' , borderRadius: '50%', borderColor:"white",   
                   width: '3rem',  height: '3rem',   display: 'flex',
-                  alignItems: 'center',justifyContent: 'center',cursor: 'pointer',  marginRight: '0.5rem'  
+                  alignItems: 'center',justifyContent: 'center',cursor: 'pointer',  marginRight: '0.5rem',  
+                  borderWidth:'2px',
                 }}>
                   {getUserNameInitials()} 
               </Button>
@@ -310,7 +319,7 @@ function Header() {
               </Nav>
           ) : (
             <Nav>
-              <Button variant="outline-warning" className=" rounded-pill" href="#/login" style={{textTransform: 'none', color: isDarkModeOn ? 'white' : 'black'}}>Sign In</Button>
+              <Button variant="outlined"  className=" rounded-pill" href="#/login" style={{textTransform: 'none', color:'white' }}>Sign In</Button>
             </Nav>
           )}
 
