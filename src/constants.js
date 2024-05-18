@@ -28,6 +28,11 @@ export const STORAGES ={
     WORKSHOPIMAGES :"WorkshopImages",
 }
 
+export const SEARCH_FILTERS ={
+    DANCEFORMS:'danceforms',
+    DISTANCES:'distances',
+}
+
 export const BASEURL_DEV = "http://127.0.0.1:8000/"
 export const BASEURL_PROD= "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
 

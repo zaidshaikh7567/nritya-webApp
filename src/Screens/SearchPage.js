@@ -10,6 +10,9 @@ import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
 import danceStyles from '../danceStyles.json'
 import CardSliderCard from '../Components/CardSliderCard';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
+
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DISTANCES_KEY = 'filterDistances';
@@ -25,6 +28,7 @@ const SearchPage = () => {
   const [selectedDanceForm, setSelectedDanceForm] = useState('');
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
+  const [showFilterValue, setShowFilterValue] = useState('distances');
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
 
@@ -93,7 +97,15 @@ const SearchPage = () => {
 
     if (value.length >= 3) {
       try {
-        const endpoint = baseUrl + `/autocomplete?query=${value}&city=Patna`;
+        const FILTER_LOCATION_KEY = 'filterLocation';
+        const defaultCity = 'New Delhi';
+
+        const city = localStorage.getItem(FILTER_LOCATION_KEY) || defaultCity;
+        const cityParam = encodeURIComponent(city || defaultCity);
+
+        const endpoint = `${baseUrl}/autocomplete?query=${value}&city=${cityParam}`;
+
+        //const endpoint = baseUrl + `/autocomplete?query=${value}&city=Patna`;
         const response = await axios.get(endpoint);
         setSuggestions(response.data);
       } catch (error) {
@@ -160,43 +172,47 @@ const SearchPage = () => {
     <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', padding: '10px' }}>
       <header>
       <Container style={{ width: '100%' }}>
-        <MuiGrid container spacing={1} alignItems="center">
-          <MuiGrid item xs={11}>
-            <MuiStack style={{ width: '100%' }}>
-              <ThemeProvider theme={themeBar}>
-                <MuiAutocomplete
-                  value={query}
-                  onInputChange={handleChange}
-                  onChange={handleInputChange}
-                  options={suggestions}
-                  getOptionLabel={(option) => option.toString()} 
-                  renderInput={(params) => (
-                    <MuiTextField {...params} label="Search" variant="outlined" />
-                  )}
-                />
-              </ThemeProvider>
+        <MuiGrid container alignItems="center">
+        <MuiGrid item xs={12}>
+          <ThemeProvider theme={themeBar}>
+            <MuiStack style={{ width: '100%',paddingRight: 0,marginTop:0 , marginLeft:0,marginBottom:0 }} direction="row" spacing={1}>
+              <MuiAutocomplete
+                value={query}
+                onInputChange={handleChange}
+                onChange={handleInputChange}
+                options={suggestions}
+                getOptionLabel={(option) => option.toString()}
+                renderInput={(params) => (
+                  <MuiTextField
+                    {...params}
+                    label="Search"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <InputAdornment position="end" style={{ marginRight: 0, marginTop:0, marginLeft:0 ,marginBottom:0}}>
+                          <SearchIcon
+                            style={{
+                              cursor: 'pointer',
+                              color: isDarkModeOn ? '#892CDC' : 'black',
+                              marginRight: 1
+                            }}
+                            onClick={handleSearch}
+                          />
+                        </InputAdornment>
+                      ),
+                      style: {
+                        paddingRight: 0,marginTop:0 , marginLeft:0,marginBottom:0
+                      },
+                    }}
+                  />
+                )}
+                style={{ flex: 1 }}
+              />
             </MuiStack>
-          </MuiGrid>
-          <MuiGrid item xs={1}>
-            <MuiButton
-              variant="primary"
-              rounded
-              style={{
-                cursor: 'pointer',
-                textTransform: 'none',
-                backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                color: 'white',
-                height: '100%', 
-                width: '100%',
-                padding: '10px', // Adjusted padding for the Button
-                fontSize: '1rem' // Adjusted font size for the Button
+          </ThemeProvider>
+        </MuiGrid>
 
-              }}
-              onClick={handleSearch}
-            >
-              Search
-            </MuiButton>
-          </MuiGrid>
         </MuiGrid>
         <br></br>
       <Row className="align-items-center">
@@ -282,7 +298,7 @@ const SearchPage = () => {
                   
                 <li
                   style={{ cursor: 'pointer', margin: '5px 0' }}
-                  onClick={() => setShowFilters('distances')}
+                  onClick={() => (setShowFilterValue('distances'),setShowFilters(true))}
                 >
                   Distances
                 </li>
@@ -290,7 +306,7 @@ const SearchPage = () => {
                 <hr style={{ margin: '5px 0' }}></hr>
                 <li
                   style={{ cursor: 'pointer', margin: '5px 0' }}
-                  onClick={() => setShowFilters('danceForm')}
+                  onClick={() => (setShowFilterValue('danceForm'),setShowFilters(true))}
                 >
                   Dance Forms
                 </li>
@@ -298,10 +314,9 @@ const SearchPage = () => {
               </ul>
               </Col>
 
-              {/* Right side for selection lists */}
               <Col md={8}>
               
-                {showFilters === 'distances' && (
+                {showFilters && showFilterValue === 'distances' && (
                   <Form.Group controlId="filterDistances">
                     <Form.Label>Distances:</Form.Label>
                     <Form.Control as="select" value={selectedDistances} onChange={(e) => setSelectedDistances(e.target.value)}>
@@ -316,7 +331,7 @@ const SearchPage = () => {
                 )}
                   
                 
-                {showFilters === 'danceForm' && (
+                {showFilters && showFilterValue === 'danceForm' && (
                   <Form.Group controlId="filterDanceForms">
                     <Form.Label>Dance Forms:</Form.Label>
                     <Form.Control as="select" value={selectedDanceForm} onChange={(e) => setSelectedDanceForm(e.target.value)}>
