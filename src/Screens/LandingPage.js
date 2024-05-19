@@ -5,6 +5,7 @@ import Dance2 from "../Components/DanceImg/Dance2.jpg";
 import Dance3 from "../Components/DanceImg/Dance3.jpg";
 import Dance4 from "../Components/DanceImg/Dance4.jpg";
 import Dance5 from "../Components/DanceImg/Dance5.jpg";
+import { Grid, Card as MUICard, CardContent, Typography } from '@mui/material';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";

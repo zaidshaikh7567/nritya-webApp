@@ -1,73 +1,74 @@
 import React from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import { faMusic } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Container, Grid, Typography, IconButton, Divider } from '@mui/material';
+import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { useNavigate } from 'react-router-dom';
-import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaLinkedin,FaEnvelope } from 'react-icons/fa';
 
 function Footer() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
 
-
-  const adCardStyle = {
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    borderRadius: "10px",
-    padding: "10px",
-    textAlign: "center",
-    background: isDarkModeOn ? '#333333' : '#f8f8f8',
-    color: isDarkModeOn ? 'white' : 'black', // Text color
-    radius: '5%',
-  };
+  const socialIconStyle = { fontSize: '24px', color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' };
+  const linkStyle = { color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' };
 
   return (
     <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white' }}>
-      <Container>
-        <Row>
-          <Col className="text-center">
-            <Card style={adCardStyle} >
-              <Card.Body>
-                <FontAwesomeIcon icon={faMusic} size="3x" />
-                <h3>List your dance studio/workshops</h3>
-                <p>
-                  Showcase your dance studio or workshops to a wide audience of dance enthusiasts. Get started today and
-                  reach out to your potential customers!
-                </p> 
-                <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }} href={isLoggedIn ? '#/modifyStudios' : '#/login'}>List Now</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-      <hr></hr>
+      <Divider />
       <footer style={{ background: isDarkModeOn ? 'black' : 'white', padding: '10px 0' }}>
         <Container>
-          <Row className="justify-content-between align-items-center">
-            <Col xs="auto" className="text-center py-1">
-              
-              <a href="https://www.instagram.com/nritya.co.in/" target="_blank" rel="noopener noreferrer" style={{ color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' }}>
-                <FaInstagram className='genericHoverEffect' style={{ fontSize: '24px' }} />
-              </a>
-              
-              <a href="https://in.linkedin.com/company/nritya" target="_blank" rel="noopener noreferrer" style={{ color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' }}>
-                <FaLinkedin className='genericHoverEffect' style={{ fontSize: '24px' }} />
-              </a>
-              <a href="mailto:nritya.contact@gmail.com" style={{ color: isDarkModeOn ? 'white' : 'black'}}>
-                <FaEnvelope style={{ fontSize: '24px' }} />
-              </a>
-
-            </Col>
-            <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
+          <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
+              <Typography variant="body2" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                India's first dedicated dance-tech connecting dance enthusiasts to dance studios. Learner's get a free trial from studio. Discover the beat in your city.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
+              <Typography variant="h6" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: 20 }}>
+                Follow Us
+              </Typography>
+              <div>
+                <IconButton component="a" href="https://www.instagram.com/nritya.co.in/" target="_blank" rel="noopener noreferrer" style={socialIconStyle}>
+                  <FaInstagram className='genericHoverEffect' />
+                </IconButton>
+                <IconButton component="a" href="https://in.linkedin.com/company/nritya" target="_blank" rel="noopener noreferrer" style={socialIconStyle}>
+                  <FaLinkedin className='genericHoverEffect' />
+                </IconButton>
+                <IconButton component="a" href="mailto:nritya.contact@gmail.com" style={socialIconStyle}>
+                  <FaEnvelope />
+                </IconButton>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
+              <Typography variant="h6" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: 20 }}>
+                About
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/aboutus" style={linkStyle}>About Us</a>
+               </Typography>
+               <Typography variant="body2">
+                <a href="#/contactus" style={linkStyle}>Contact Us</a>
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
+              <Typography variant="h6" style={{ color: isDarkModeOn ? 'white' : 'black' ,fontSize: 20}}>
+                Quick Links
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/jobs" style={linkStyle}>Job Hire</a>
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/modifyStudios" style={linkStyle}>List Studios</a>
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/search/studios" style={linkStyle}>Search Studios</a>
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid container justifyContent="center" py={1}>
+            <Typography variant="body2" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
               &copy; Nritya@2024
-            </Col>
-            <Col xs="auto" className="text-center py-1" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
-            <a href="#/aboutus" style={{ color: isDarkModeOn ? 'white' : 'black', marginRight: '10px' }}>About Us</a>
-            <a href="#/contactus" style={{ color: isDarkModeOn ? 'white' : 'black' }}>Contact Us</a>
-          </Col>
-
-          </Row>
+            </Typography>
+          </Grid>
         </Container>
       </footer>
     </div>

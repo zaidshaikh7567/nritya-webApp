@@ -1,74 +1,120 @@
 import React from 'react';
-import './About.css'; 
-import { useSelector } from 'react-redux'; // Import useSelector
+import { Container, Grid, Typography, Paper, Box, Stepper, Step, StepLabel } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import NrityaImage from '../Components/DanceImg/Dance2.jpg'; // Adjust the path accordingly
-import { Container, Row, Col } from 'react-bootstrap';
+// import aboutUsImage from '../assets/aboutUsImage.jpg'; // Add an image to the assets folder
 
+const theme = createTheme();
 
-const AboutUs = () => {
-    const isDarkModeOn = useSelector(selectDarkModeStatus);
-    const sectionClassName = isDarkModeOn ? "about-section dark-mode" : "about-section";
+function AboutUs() {
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
 
+  const steps = [
+    'March 2023: Idea formulated',
+    'Nov 2023: Company Registered',
+    'June 2024: Logo Trademarked',
+  ];
 
   return (
-    <section className={sectionClassName}>
-      <Container >
-      <Row>
-      <Col lg={6} md={12} sm={12} className="image-column order-lg-1">
-          <div className="inner-column">
-            <div className="author-desc">
-              <h2>Nritya</h2>
-            </div>
-            <figure className="image-1">
-              <a href="#" className="lightbox-image" data-fancybox="images">
-                <img title="Nritya" src={NrityaImage} alt="" />
-              </a>
-            </figure>
-          </div>
-        </Col>
-        <br></br>
-        <Col lg={6} md={12} sm={12} className="content-column order-lg-2">
-          <div className="inner-column">
-            <div className="sec-title">
-              <span className="title">About Nritya</span>
-              <h4 className={`text-big ${isDarkModeOn ? 'dark-mode-text-big' : ''}`}>Discover the beat in your city.</h4>
-            </div>
-            <div className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>
-              At Nritya, we are dedicated to bridging the gap between dance studios, creators, and enthusiasts. Whether you're a dance studio looking to showcase your talent or a user seeking workshops, events, or free trials, Nritya is your one-stop destination.
-            </div>
-            <div className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>
-              Join Nritya today and embark on a journey of dance exploration, connection, and celebration. Let's dance together!
-            </div>
-            <div className="btn-box">
-              <a href="#/contactus" className="theme-btn btn-style-one">Contact Us</a>
-            </div>
-          </div>
-        </Col>
+    <ThemeProvider theme={theme}>
+      <Container
+        sx={{
+          padding: theme.spacing(4),
+          backgroundColor: isDarkModeOn ? '#202020' : 'white',
+          color: isDarkModeOn ? 'white' : 'black',
+          minHeight: '100vh',
+        }}
+      >
+        <Grid container spacing={4} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="h4"
+              sx={{ marginBottom: theme.spacing(2), color: isDarkModeOn ? 'white' : theme.palette.primary.main }}
+            >
+              About Nritya
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 'bold',
+                color: isDarkModeOn ? 'white' : theme.palette.primary.main,
+                marginBottom: theme.spacing(2),
+              }}
+            >
+              Discover the beat in your city.
+            </Typography>
+            <Typography variant="body1" paragraph>
+              Nritya is India's first dance tech community that connects dance enthusiasts to dance studios across the country. We are dedicated to promoting dance as a form of art and fitness by leveraging technology to create a vibrant community of learners and performers.
+            </Typography>
+            <Typography variant="body1" paragraph>
+              Our platform offers a seamless way to discover and book dance classes, providing learners with opportunities to experience free trials from various dance studios. Whether you are a beginner or an experienced dancer, Nritya has something for everyone.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+          <Typography
+            variant="h5"
+            sx={{ marginBottom: theme.spacing(2), textAlign: 'center', color: isDarkModeOn ? 'white' : theme.palette.primary.main }}
+          >
+            Our Journey from 0 to 1
+          </Typography>
+          <Stepper activeStep={-1} alternativeLabel >
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>
+                  <p style={{ color: isDarkModeOn ? 'white' : 'black' }}>{label}</p>
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-      </Row>
-
-      <Row>
-        <Col>
-          <div className="sec-title">
-            <span className="title">Our Future Vision</span>
-            <h4 className={`text-big ${isDarkModeOn ? 'dark-mode-text-big' : ''}`}>Empowering Dance Communities through Technology</h4>
-          </div>
-          <div className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>
-            At Nritya, we are committed to enhancing the dance experience for both creators and users. Our future goals include providing a platform for creators to showcase their studios, workshops, and events, while offering users the opportunity to discover and book free trials and workshops in their locality.
-          </div>
-          <div className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>
-            We believe in leveraging technology to make dance more accessible and enjoyable for everyone. Stay tuned as we work towards revolutionizing the way dance is experienced and shared.
-          </div>
-          <div className={`text ${isDarkModeOn ? 'dark-mode-text' : ''}`}>
-            Join us on this exciting journey to celebrate the joy of dance and build vibrant dance communities around the world.
-          </div>
-        </Col>
-      </Row>
-    </Container>
-
-    </section>
+          </Grid>
+        </Grid>
+        <Box hidden sx={{ marginTop: theme.spacing(4) }}>
+          <Paper
+            sx={{
+              padding: theme.spacing(4),
+              textAlign: 'center',
+              backgroundColor: isDarkModeOn ? '#333' : 'white',
+              color: isDarkModeOn ? 'white' : 'black',
+            }}
+            elevation={3}
+          >
+            <Typography
+              variant="h5"
+              sx={{ marginBottom: theme.spacing(2), color: isDarkModeOn ? 'white' : theme.palette.primary.main }}
+            >
+              Our Mission
+            </Typography>
+            <Typography variant="body1" paragraph>
+              Our mission is to democratize dance education and make it accessible to everyone. By bringing together a diverse community of dance enthusiasts and studios, we aim to foster a culture of learning, creativity, and expression through dance.
+            </Typography>
+          </Paper>
+        </Box>
+        <Box hidden sx={{ marginTop: theme.spacing(4) }}>
+          <Paper
+            sx={{
+              padding: theme.spacing(4),
+              textAlign: 'center',
+              backgroundColor: isDarkModeOn ? '#333' : 'white',
+              color: isDarkModeOn ? 'white' : 'black',
+            }}
+            elevation={3}
+          >
+            <Typography
+              variant="h5"
+              sx={{ marginBottom: theme.spacing(2), color: isDarkModeOn ? 'white' : theme.palette.primary.main }}
+            >
+              Our Vision
+            </Typography>
+            <Typography variant="body1" paragraph>
+              We envision a world where dance is celebrated and accessible to all, breaking barriers and building connections across cultures and communities. Nritya aspires to be the leading platform for dance enthusiasts to learn, grow, and connect with like-minded individuals.
+            </Typography>
+          </Paper>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
-};
+}
 
 export default AboutUs;

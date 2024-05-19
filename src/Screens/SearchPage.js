@@ -169,7 +169,7 @@ const SearchPage = () => {
   }, []);
   
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', padding: '10px' }}>
+    <div style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', padding: '10px' }}>
       <header>
       <Container style={{ width: '100%' }}>
         <MuiGrid container alignItems="center">

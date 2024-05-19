@@ -54,7 +54,7 @@ function MyBookings() {
   
 
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? "black" : "white" }}>
+    <div style={{ backgroundColor: isDarkModeOn ? "#202020" : "white" }}>
       {bookings.length === 0 ? (
 
         <div>

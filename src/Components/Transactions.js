@@ -54,7 +54,7 @@ function Transactions() {
   }, []);
 
   return (
-    <div>
+    <div style={{minHeight:"75vh"}}>
       {currentUser && transactions.length > 0 ? (
         transactions
           .sort((a, b) => b.date - a.date) // Sort transactions in descending order based on date

@@ -141,7 +141,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   }, []);
 
   return (
-  <Container fluid style={{backgroundColor: isDarkModeOn?'black':'white' ,color: isDarkModeOn?'white':'color' }}>
+  <Container fluid style={{backgroundColor: isDarkModeOn?'#202020':'white' ,color: isDarkModeOn?'white':'color' }}>
       <Row>
       <Col lg={8}  >
       <Row>

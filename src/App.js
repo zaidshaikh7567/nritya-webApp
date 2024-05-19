@@ -29,6 +29,7 @@ import {Divider as MuiDivider} from '@mui/material';
 import AboutUs from './Screens/About';
 import ContactUs from './Screens/ContactUs';
 import MyBookings from './Components/MyBookings';
+import JobHire from './Screens/JobHire';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -86,28 +87,8 @@ function App() {
   return (
     <HashRouter  >
        <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
-      <div style={{backgroundColor: isDarkModeOn ? 'black' : 'white'}} hidden>
-        <span
-          onClick={handleToggleDarkMode}
-          style={{
-            fontSize: '1.5rem', 
-            backgroundColor: isDarkModeOn ? 'black' : 'yellow', // White for dark mode, yellow for light mode
-            color: isDarkModeOn ? 'yellow' : 'white', // Yellow text for dark mode, white for light mode
-            border: 'none', 
-            borderRadius: '50%', // Make the element round
-            width: '3rem', 
-            height: '3rem', 
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-        >
-          {isDarkModeOn ? '🌜' : '🌞'} {/* Moon for dark mode, Sun for light mode */}
-        </span>
-      </div>
-      <hr style={{ borderColor: isDarkModeOn ? '#292929' : '#cccccc', borderWidth: '0.01px', margin: '0px 0px' }} />
-      <main className='py-1' style={{backgroundColor: isDarkModeOn ? 'black' : 'white',width: '100%'}} >
+      
+      <main className='py-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
         <Container fluid>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -115,6 +96,7 @@ function App() {
             <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
             <Route path='/st' element={<StudioFullPage/>}/>
             <Route path='/search/:entity' element={<SearchPage/>}/>
+            <Route path='/jobs' element={<JobHire/>}/>
             <Route element={<ProtectedRoute/>}>
               <Route path='/profile' element={<UserPage/>}/>
               <Route path='/kyc' element={<Kyc/>}/>

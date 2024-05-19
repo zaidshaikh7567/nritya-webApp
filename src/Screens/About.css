@@ -218,7 +218,7 @@ background: #A90076;
 padding: 10px 15px;
 left: 25%;
 width: calc(100% - 10rem);
-border-radius: 50px;
+border-radius: 20px;
 }
 .about-section .image-column .inner-column .author-desc h2{
 font-size: 21px;
@@ -259,7 +259,7 @@ bottom: 0;
 .about-section .image-column .image-2 img,
 .about-section .image-column .image-1 img{
 box-shadow: 0 30px 50px rgba(8,13,62,.15);
-border-radius: 46px;
+border-radius: 26px;
 }
 
 .about-section .image-column .video-link{

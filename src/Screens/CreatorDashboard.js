@@ -39,7 +39,7 @@ function CreatorDashboard(){
     getCount()
   },[studiosCount]);
   return(
-    <div>
+    <div style={{minHeight:"75vh"}}>
       <h1 style={{color: isDarkModeOn?"white":"black"}}>Creator Dashboard</h1>
       <Row>
         <Col>

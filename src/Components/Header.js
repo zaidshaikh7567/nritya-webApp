@@ -144,7 +144,7 @@ function Header() {
       if (nameParts.length > 1) {
         buttonContent += nameParts[1].charAt(0);
       }
-      if(nameParts[0].length>1){
+      if( buttonContent.length<2 && nameParts[0].length>1){
         buttonContent += nameParts[0].charAt(1);
       }
       return buttonContent;
@@ -236,17 +236,17 @@ function Header() {
                         onClick={handleToggleDarkMode} 
                     />
           {currentUser ? (
-             <> <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px' }} >
+             <> <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px',width: '12rem' }} >
                🔎 Search Studios
               </Button>
-              <Button  variant="outlined"  className="me-2 rounded-pill"  href="#/modifyStudios" style={{textTransform: 'none' ,borderColor:'white', color:'white',borderWidth:'2px'}}>List Studios</Button>
+              <Button  variant="outlined"  className="me-2 rounded-pill"  href="#/modifyStudios" style={{textTransform: 'none' ,borderColor:'white', color:'white',borderWidth:'2px',width: '12rem'}}>List Studios</Button>
             </>
           ) : (
             <>
-              <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px' }} >
+              <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px',width: '12rem' }} >
               🔎 Search Studios
             </Button>
-              <Button   className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px'}}> List Studios</Button>
+              <Button variant="outlined" className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px',width: '12rem'}}> List Studios</Button>
             </>
           )}
           <div className="position-relative location-dropdown-container">
@@ -257,7 +257,7 @@ function Header() {
                 style={{
                   cursor: 'pointer',
                   textTransform: 'none', color:'white', borderColor:'white',
-                  height: '3rem', borderWidth:'2px',
+                  height: '3rem', borderWidth:'2px', width:'12rem'
                 }}
               >
                 <FontAwesomeIcon icon={faMapMarker} className="me-2" />
@@ -282,10 +282,16 @@ function Header() {
                       options={locationOptions}
                       value={selectedLocation}
                       onChange={handleLocationChange}
-                      sx={{ width: "auto" }}
+                      sx={{ width: "auto",padding:'0' }}
                       renderInput={(params) => (
                         <>
-                        <Chip label="🧭 Current City" style={{ cursor: 'pointer' }} onClick={getLocation}/>
+                        <Chip label="🧭 Current City" sx={{ 
+                            cursor: 'pointer', 
+                            width: "100%",
+                            marginTop: '0px', 
+                            borderRadius: '0px', 
+                            marginBottom: '10px'
+                          }}  onClick={getLocation}/>
                         <TextField
                           {...params}
                           label="Location"
@@ -319,7 +325,7 @@ function Header() {
               </Nav>
           ) : (
             <Nav>
-              <Button variant="outlined"  className=" rounded-pill" href="#/login" style={{textTransform: 'none', color:'white' }}>Sign In</Button>
+              <Button variant="outlined"  className=" rounded-pill" href="#/login" style={{textTransform: 'none', color:'white', borderColor:"white",height: '3rem',borderWidth:'2px' }}>Sign In</Button>
             </Nav>
           )}
 
