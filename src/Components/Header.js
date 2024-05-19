@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Offcanvas, Dropdown,Image } from 'react-bootstrap';
+import { Nav, Navbar, Offcanvas, Dropdown, Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
-import {Button}  from '@mui/material';
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import logo from './../logo.png';
 import { adminLoginFn, adminLogoutFn } from '../reduxStore/adminLoginSlice';
@@ -13,11 +13,11 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelector';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import indianCities from '../cities.json';
-import { toggleDarkMode } from '../redux/actions/darkModeAction'; 
+import { toggleDarkMode } from '../redux/actions/darkModeAction';
 import { useAuth } from '../context/AuthContext';
 import SideMenu from './SideMenu';
 import { refreshLocation } from '../redux/actions/refreshLocationAction';
-import {TextField, Autocomplete, Chip} from '@mui/material';
+import { TextField, Autocomplete, Chip } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import LocationComponent from './LocationComponent';
@@ -26,6 +26,7 @@ import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import './Header.css';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -77,9 +78,8 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-
 function Header() {
-  const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(FILTER_LOCATION_KEY) ? localStorage.getItem(FILTER_LOCATION_KEY): 'New Delhi');
+  const [selectedLocation, setSelectedLocation] = useState(localStorage.getItem(FILTER_LOCATION_KEY) ? localStorage.getItem(FILTER_LOCATION_KEY) : 'New Delhi');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
@@ -87,10 +87,10 @@ function Header() {
   const dispatch = useDispatch();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const adminLogin = useSelector((state) => state.adminLogin);
-  const reduxLocation =  useSelector(selectRefreshLocation);
+  const reduxLocation = useSelector(selectRefreshLocation);
   const theme = useTheme();
 
-  console.log("Redux loc",reduxLocation.city)
+  console.log("Redux loc", reduxLocation.city)
 
   const autocompleteTheme = createTheme({
     components: {
@@ -98,17 +98,16 @@ function Header() {
         styleOverrides: {
           option: {
             '&:hover': {
-              backgroundColor:  '#fce4ec', 
+              backgroundColor: '#fce4ec',
             },
           },
         },
       },
     },
     palette: {
-      mode: isDarkModeOn ? 'dark' : 'light', 
+      mode: isDarkModeOn ? 'dark' : 'light',
     },
   });
-
 
   useEffect(() => {
     console.log("Redux Location changed:", reduxLocation.city);
@@ -116,62 +115,55 @@ function Header() {
       setSelectedLocation(reduxLocation.city);
     }
   }, [reduxLocation.city]);
-  
 
   useEffect(() => {
     localStorage.setItem(FILTER_LOCATION_KEY, selectedLocation);
-
   }, [selectedLocation]);
+
   useEffect(() => {
     const storedLocation = localStorage.getItem(FILTER_LOCATION_KEY);
     if (storedLocation) {
       setSelectedLocation(storedLocation);
     }
   }, []);
-  
+
   const styleObj = {
     fontSize: 10,
     textAlign: "center",
-    //background: isDarkModeOn ? '#292929' : '#cccccc',
     background: 'black',
+  }
+
+  function getUserNameInitials() {
+    const displayName = currentUser.displayName;
+    const nameParts = displayName.split(" ");
+    let buttonContent = nameParts[0].charAt(0);
+    if (nameParts.length > 1) {
+      buttonContent += nameParts[1].charAt(0);
     }
-    
-    function getUserNameInitials() {
-      const displayName = currentUser.displayName;
-      const nameParts = displayName.split(" ");
-      //console.log("hii",nameParts)
-      let buttonContent = nameParts[0].charAt(0);
-      if (nameParts.length > 1) {
-        buttonContent += nameParts[1].charAt(0);
-      }
-      if( buttonContent.length<2 && nameParts[0].length>1){
-        buttonContent += nameParts[0].charAt(1);
-      }
-      return buttonContent;
+    if (buttonContent.length < 2 && nameParts[0].length > 1) {
+      buttonContent += nameParts[0].charAt(1);
     }
-    
-  
+    return buttonContent;
+  }
+
   const handleToggleDarkMode = () => {
     dispatch(toggleDarkMode()); // Dispatch the action using useDispatch
   };
-  const [showProfileOffcanvas, setShowProfileOffcanvas] = React.useState(false);
+  const [showProfileOffcanvas, setShowProfileOffcanvas] = useState(false);
 
-    // Function to open the profile Offcanvas
-    const openProfileOffcanvas = () => {
-      setShowProfileOffcanvas(true);
-    };
-  
-    // Function to close the profile Offcanvas
-    const closeProfileOffcanvas = () => {
-      setShowProfileOffcanvas(false);
-    };
-
-  const handleButtonClick = () => {
-    //console.log("Button clicked from Header.js");
-    navigate('#/search/'+searchText);
+  const openProfileOffcanvas = () => {
+    setShowProfileOffcanvas(true);
   };
 
-  const handleLocationChange = (event,location) => {
+  const closeProfileOffcanvas = () => {
+    setShowProfileOffcanvas(false);
+  };
+
+  const handleButtonClick = () => {
+    navigate('#/search/' + searchText);
+  };
+
+  const handleLocationChange = (event, location) => {
     setSelectedLocation(location);
     setShowLocationDropdown(false);
   };
@@ -182,14 +174,13 @@ function Header() {
     event.preventDefault(); // Prevents default form behavior of submitting
     handleButtonClick();
   }
-  
+
   const { entity } = useParams();
 
   const getLocation = (event) => {
     getBrowserLocation();
     setSelectedLocation(localStorage.getItem('filterLocation'))
   };
-
 
   useEffect(() => {
     const handleDocumentClick = (event) => {
@@ -205,59 +196,60 @@ function Header() {
     };
   }, []);
 
-  console.log("Hii-1",entity)
+  console.log("Hii-1", entity)
 
   return (
-    <Navbar style={styleObj} expand="lg" collapseOnSelect >
+    <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
-        <Navbar.Brand href="/nritya-webApp" style={{textTransform: 'none'}}  >
-          <Image style={{ width: 60, height: 60}}
+        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+          <Image style={{ width: 60, height: 60 }}
             src={logo}
-            alt="Logo" 
-            roundedCircle={true}      
-         />        
+            alt="Logo"
+            roundedCircle={true}
+          />
         </Navbar.Brand>
         <div>
-        <meta charset="UTF-8" />
-          <h1 style={{ color: 'white' ,fontSize:25 , textAlign: 'center', textIndent:'right',textTransform: 'none',  fontFamily:'Times Roman', paddingRight:80}}>{'            नृtya'}</h1>
+          <meta charset="UTF-8" />
+          <h1 style={{ color: 'white', fontSize: 25, textAlign: 'center', textIndent: 'right', textTransform: 'none', fontFamily: 'Times Roman', paddingRight: 80 }}>{'            नृtya'}</h1>
         </div>
-        <Navbar.Toggle aria-controls="basic-navbar-nav">  <MenuOutlinedIcon style={{color:"white"}}/> </Navbar.Toggle>
+        <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
-        <Navbar.Collapse id="navbarScroll">
-         <Nav
-            style={{ fontFamily:'Times Roman',fontSize:20, maxHeight: '90px' }}
+        <Navbar.Collapse id="navbarScroll" className="justify-content-center">
+          <Nav
+            style={{ fontFamily: 'Times Roman', fontSize: 20, maxHeight: '90px' }}
             navbarScroll
           >
           </Nav>
 
-          <Nav className="ms-auto" >
-          <FormControlLabel
-                        control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn?true:false} />}
-                        onClick={handleToggleDarkMode} 
-                    />
-          {currentUser ? (
-             <> <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px',width: '12rem' }} >
-               🔎 Search Studios
-              </Button>
-              <Button  variant="outlined"  className="me-2 rounded-pill"  href="#/modifyStudios" style={{textTransform: 'none' ,borderColor:'white', color:'white',borderWidth:'2px',width: '12rem'}}>List Studios</Button>
-            </>
-          ) : (
-            <>
-              <Button  variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px',width: '12rem' }} >
-              🔎 Search Studios
-            </Button>
-              <Button variant="outlined" className="me-2 rounded-pill" href="#/login" style={{textTransform: 'none',borderColor:'white', color:'white',borderWidth:'2px',width: '12rem'}}> List Studios</Button>
-            </>
-          )}
-          <div className="position-relative location-dropdown-container">
-          <Button
+          <Nav className="ms-auto justify-content-center align-items-center flex-grow-1">
+            <FormControlLabel
+              control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
+              onClick={handleToggleDarkMode}
+            />
+            {currentUser ? (
+              <>
+                <Button variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                  🔎 Search Studios
+                </Button>
+                <Button variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                  🔎 Search Studios
+                </Button>
+                <Button variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
+              </>
+            )}
+            <div className="position-relative location-dropdown-container">
+              <Button
                 variant="outlined"
                 className="me-2 rounded-pill"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
                 style={{
                   cursor: 'pointer',
-                  textTransform: 'none', color:'white', borderColor:'white',
-                  height: '3rem', borderWidth:'2px', width:'12rem'
+                  textTransform: 'none', color: 'white', borderColor: 'white',
+                  height: '3rem', borderWidth: '2px', width: '12rem'
                 }}
               >
                 <FontAwesomeIcon icon={faMapMarker} className="me-2" />
@@ -275,66 +267,65 @@ function Header() {
                   }}
                 >
 
-              <ThemeProvider theme={autocompleteTheme}>
+                  <ThemeProvider theme={autocompleteTheme}>
                     <Autocomplete
                       disablePortal
                       id="locationSearch"
                       options={locationOptions}
                       value={selectedLocation}
                       onChange={handleLocationChange}
-                      sx={{ width: "auto",padding:'0' }}
+                      sx={{ width: "auto", padding: '0' }}
                       renderInput={(params) => (
                         <>
-                        <Chip label="🧭 Current City" sx={{ 
-                            cursor: 'pointer', 
+                          <Chip label="🧭 Current City" sx={{
+                            cursor: 'pointer',
                             width: "100%",
-                            marginTop: '0px', 
-                            borderRadius: '0px', 
+                            marginTop: '0px',
+                            borderRadius: '0px',
                             marginBottom: '10px'
-                          }}  onClick={getLocation}/>
-                        <TextField
-                          {...params}
-                          label="Location"
-                          placeholder="🔍Search..."
-                        />
+                          }} onClick={getLocation} />
+                          <TextField
+                            {...params}
+                            label="Location"
+                            placeholder="🔍Search..."
+                          />
                         </>
-                        
                       )}
                     />
                   </ThemeProvider>
 
                 </Dropdown.Menu>
               )}
-          </div>
-          </Nav>
-
-         {currentUser ? (
-            <Nav>
-              <Button onClick={openProfileOffcanvas} className=" rounded-pill"
+            </div>
+            {currentUser ? (
+            <>
+              <Button onClick={openProfileOffcanvas} className="rounded-pill"
                 variant="outlined"
-                style={{fontSize: '1rem',
-                  color:'white' , borderRadius: '50%', borderColor:"white",   
-                  width: '3rem',  height: '3rem',   display: 'flex',
-                  alignItems: 'center',justifyContent: 'center',cursor: 'pointer',  marginRight: '0.5rem',  
-                  borderWidth:'2px',
+                style={{
+                  fontSize: '1rem',
+                  color: 'white', borderRadius: '50%', borderColor: "white",
+                  width: '3rem', height: '3rem', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
+                  borderWidth: '2px',
                 }}>
-                  {getUserNameInitials()} 
+                {getUserNameInitials()}
               </Button>
-              
-            <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
-              </Nav>
+
+              <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+              </>
+            
           ) : (
-            <Nav>
-              <Button variant="outlined"  className=" rounded-pill" href="#/login" style={{textTransform: 'none', color:'white', borderColor:"white",height: '3rem',borderWidth:'2px' }}>Sign In</Button>
-            </Nav>
+          
+              <Button variant="outlined" className="rounded-pill" href="#/login" style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem', borderWidth: '2px' }}>Sign In</Button>
+           
           )}
+          </Nav>
+          
 
         </Navbar.Collapse>
-            
+
       </Container>
     </Navbar>
-
-    
   );
 }
 

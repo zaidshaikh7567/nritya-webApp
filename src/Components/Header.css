@@ -1,0 +1,30 @@
+/* Ensure navbar elements are centered on small screens */
+@media (max-width: 768px) {
+    .navbar-collapse {
+      text-align: center;
+    }
+  
+    .navbar-collapse .nav-item {
+      margin-bottom: 1rem;
+    }
+  
+    .navbar-collapse .btn {
+      width: 100%; /* Make buttons take full width */
+    }
+  
+    .location-dropdown-container {
+      width: 100%; /* Make location dropdown container take full width */
+    }
+  }
+  
+  /* Align navbar elements to the right on large screens */
+  @media (min-width: 769px) {
+    .navbar-collapse {
+      justify-content: flex-end;
+    }
+  
+    .location-dropdown-container {
+      width: auto; /* Make location dropdown container auto width */
+    }
+  }
+  
