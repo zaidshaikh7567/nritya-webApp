@@ -221,7 +221,7 @@ function Header() {
           >
           </Nav>
 
-          <Nav className="ms-auto justify-content-center align-items-center flex-grow-1">
+          <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
             <FormControlLabel
               control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
               onClick={handleToggleDarkMode}
