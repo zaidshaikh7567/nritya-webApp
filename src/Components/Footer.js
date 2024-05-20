@@ -72,7 +72,7 @@ function Footer() {
             </Grid>
           </Grid>
           <Grid container justifyContent="center" py={1} >
-              <NrityaSVG/>
+              <NrityaSVG text={"Discover the beat in your city!"} x={"0"} y={"10"} fontSize={"5px"}/>
           </Grid>
          
 

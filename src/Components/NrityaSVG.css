@@ -1,0 +1,11 @@
+/* NrityaSVG.css */
+
+.hover-effect {
+    transition: fill 0.3s ease;
+  }
+  
+  .hover-effect:hover {
+    font-size: 1.1em; 
+
+  }
+  
