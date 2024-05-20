@@ -3,6 +3,7 @@ import { Container, Grid, Typography, IconButton, Divider } from '@mui/material'
 import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
+import NrityaSVG from './NrityaSVG';
 
 function Footer() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -48,6 +49,9 @@ function Footer() {
                <Typography variant="body2">
                 <a href="#/contactus" style={linkStyle}>Contact Us</a>
               </Typography>
+              <Typography variant="body2">
+                <a href="#/tnc" style={linkStyle}>T&C</a>
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
               <Typography variant="h6" style={{ color: isDarkModeOn ? 'white' : 'black' ,fontSize: 20}}>
@@ -62,8 +66,16 @@ function Footer() {
               <Typography variant="body2">
                 <a href="#/search/studios" style={linkStyle}>Search Studios</a>
               </Typography>
+              <Typography variant="body2">
+                <a href="#/kyc" style={linkStyle}>Creator's Account Kyc</a>
+              </Typography>
             </Grid>
           </Grid>
+          <Grid container justifyContent="center" py={1} >
+              <NrityaSVG/>
+          </Grid>
+         
+
           <Grid container justifyContent="center" py={1}>
             <Typography variant="body2" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
               &copy; Nritya@2024

@@ -14,18 +14,18 @@ const ContactUs = () => {
 
   useEffect(() => {
     setContainerStyle({
-      backgroundColor: isDarkModeOn ? 'black' : 'white',
+      backgroundColor: isDarkModeOn ? '#202020' : 'white',
       color: isDarkModeOn ? 'white' : 'black'
     });
     setHeadingStyle({
-      backgroundColor: isDarkModeOn ? 'black' : 'white',
+      backgroundColor: isDarkModeOn ? '#202020' : 'white',
       color: "#00aeef"
     });
     setTextStyle({
       color: isDarkModeOn ? 'white' : 'black'
     });
     setFormControl({
-      backgroundColor: isDarkModeOn ? '#181818' : 'white',
+      backgroundColor: isDarkModeOn ? '#202020' : 'white',
       color: isDarkModeOn ? 'white' : 'black',
       border: `1px solid ${isDarkModeOn ? 'white' : 'black'}`, // Add border style
       borderRadius: '5px' // Add border radius

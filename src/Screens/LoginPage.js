@@ -5,12 +5,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { db } from '../config';
 import { doc, getDoc,setDoc } from "firebase/firestore";
 import { STATUSES,COLLECTIONS } from "./../constants.js";
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import {  Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import localImage from '../Components/DanceImg/Dance1.jpg';
+import { Box, Button, Container,Paper,Typography } from '@mui/material';
 
 
 function LoginPage({onLogin,setIsLoggedIn}) {
@@ -85,63 +86,63 @@ function LoginPage({onLogin,setIsLoggedIn}) {
     
       
     return (
-      
-
-      <Container fluid>
-      <Row>
-        
-        <Col xs={12} md={6}>
-          <img
-                  src={localImage}
-                  alt="Your Local Image Alt Text"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-        </Col>
-        <Col xs={12} md={6}>
-        <div
+      <Container fluid style={{ minHeight: '30vh' }}>
+          <Row style = {{paddingTop:"2rem"}}>
+            
+            <Col xs={12} md={6}>
+              
+              <img
+                      src={localImage}
+                      alt="Your Local Image Alt Text"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+            </Col>
+            <Col xs={12} md={6}>
+              
+              <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                        paddingTop:'2rem',
+                      }}
+                    >
+              
+              <form
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop:"2rem",paddingBottom:"2rem",paddingLeft:'2rem',paddingRight:'2rem' }}
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent form submission
+                  signin(); // Call your signin function on form submission
+                }}
+              >
+                <Button
+                  type="submit" // Add a type to the button to trigger form submission
                   style={{
+                    backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
+                    color: 'white',
+                    border: 'none',
+                    boxShadow: 'none',
+                    borderRadius: '0',
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100%',
+                    textTransform: 'none',
                   }}
                 >
-          
-          <form
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent form submission
-              signin(); // Call your signin function on form submission
-            }}
-          >
-            <Button
-              type="submit" // Add a type to the button to trigger form submission
-              style={{
-                backgroundColor: isDarkModeOn ? '#892CDC' : 'black',
-                color: 'white',
-                border: 'none',
-                boxShadow: 'none',
-                borderRadius: '0',
-                display: 'flex',
-                alignItems: 'center',
-                textTransform: 'none',
-              }}
-            >
-              <img
-                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                alt="Google Icon"
-                style={{ marginRight: '10px', height: '20px' }}
-              />
-              Sign In with Google
-            </Button>
-          </form>
-          </div>
-        </Col>
-      </Row>
+                  <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google Icon"
+                    style={{ marginRight: '10px', height: '20px' }}
+                  />
+                  Sign In with Google
+                </Button>
+              </form>
+              
+              </div>
+            </Col>
+          </Row>
       </Container>
-
-
     );
 }
 
