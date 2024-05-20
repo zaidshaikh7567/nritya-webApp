@@ -1,24 +1,15 @@
 import React, { useState,useEffect,useRef  } from "react";
 import { Container, Row, Col, Card, Button, Carousel, ButtonGroup,Image } from "react-bootstrap";
-import Dance1 from "../Components/DanceImg/nritya- banner.png";
-import Dance2 from "../Components/DanceImg/nritya- banner-2.png";
-import Dance3 from "../Components/DanceImg/nritya- banner-3.png";
 import { Grid, Card as MUICard, CardContent, Typography, Skeleton } from '@mui/material';
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
-import StudioCard from "../Components/StudioCard";
 import { faBolt, faMusic, faHiking, faTrophy, faGlassCheers,faClock } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import StudioCardIcon from "../Components/StudioCardIcon";
 import './LandingPage.css'
-import MapsInput from "../Components/MapsInput";
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import CardSlider from "../Components/CardSlider";
-import ResponsiveText from "../Components/ResponsiveText";
-import { FaSearch } from 'react-icons/fa';
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from 'react-router-dom';
 import DanceCarousel from "../Components/DanceCarousel";
@@ -39,8 +30,6 @@ const danceForms = [
 ];
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
-const danceImages = [Dance1, Dance2,Dance3,Dance1];
-
 
 function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
