@@ -90,7 +90,7 @@ function Header() {
   const reduxLocation = useSelector(selectRefreshLocation);
   const theme = useTheme();
 
-  console.log("Redux loc", reduxLocation.city)
+  //console.log("Redux loc", reduxLocation.city)
 
   const autocompleteTheme = createTheme({
     components: {
@@ -316,7 +316,7 @@ function Header() {
             
           ) : (
           
-              <Button variant="outlined" className="rounded-pill" href="#/login" style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem', borderWidth: '2px' }}>Sign In</Button>
+              <Button variant="outlined" className="rounded-pill" href="#/login" style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
            
           )}
           </Nav>
