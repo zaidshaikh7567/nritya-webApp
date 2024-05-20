@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Button, Carousel, ButtonGroup,Image } from "
 import Dance1 from "../Components/DanceImg/nritya- banner.png";
 import Dance2 from "../Components/DanceImg/nritya- banner-2.png";
 import Dance3 from "../Components/DanceImg/nritya- banner-3.png";
-import { Grid, Card as MUICard, CardContent, Typography } from '@mui/material';
+import { Grid, Card as MUICard, CardContent, Typography, Skeleton } from '@mui/material';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
@@ -22,6 +22,7 @@ import { FaSearch } from 'react-icons/fa';
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from 'react-router-dom';
 import DanceCarousel from "../Components/DanceCarousel";
+import { getAllImagesInFolder } from "../utils/firebaseUtils";
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -44,6 +45,7 @@ const danceImages = [Dance1, Dance2,Dance3,Dance1];
 function LandingPage() {
   const [exploreCards, setExploreCards] = useState([])
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
+  const [danceImagesUrl,setDanceImagesUrl] = useState([])
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const navigate = useNavigate(); 
 
@@ -120,39 +122,44 @@ function LandingPage() {
         const userId = JSON.parse(localStorage.getItem('userInfo')).UserId;
         fetchRecentlyWatchedStudios(userId);
       }
+      
+
     }
 
     getStudios();
   }, []);
 
-    const [imageHeight, setImageHeight] = useState(400);
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const dataImagesUrlLocal = await getAllImagesInFolder('LandingPageImages');
+        console.log('dataImagesUrlLocal:', dataImagesUrlLocal); // Debugging log
+        if (Array.isArray(dataImagesUrlLocal)) {
+          const imageUrlsArray = dataImagesUrlLocal.map(image => image.fileURL);
+          setDanceImagesUrl(imageUrlsArray);
+        } else {
+          console.error('Expected an array but got:', dataImagesUrlLocal);
+        }
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
 
-    useEffect(() => {
-      
-      const calculateImageHeight = () => {
-        const screenWidth = window.innerWidth;
-        
-        const aspectRatioWidth = 16;
-        const aspectRatioHeight = 9;
-        // Calculate the height based on the aspect ratio and available width
-        const desiredHeight = (screenWidth * aspectRatioHeight) / aspectRatioWidth;
-        setImageHeight(desiredHeight);
-      };
-  
-      calculateImageHeight();
-      window.addEventListener("resize", calculateImageHeight);
-  
-      // Clean up the event listener when the component unmounts
-      return () => {
-        window.removeEventListener("resize", calculateImageHeight);
-      };
-    }, []);
+    fetchImages();
+  }, []);
 
   return (
     <div  >
       <Container className="my-0">
       <Row>
-        <DanceCarousel danceImages={danceImages}/>
+        {danceImagesUrl.length > 0 ? (
+          <DanceCarousel danceImages={danceImagesUrl} />
+        ) : (
+          
+                <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
+             
+        )}
+
       </Row>
 
         <br />

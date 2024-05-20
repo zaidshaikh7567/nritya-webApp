@@ -137,3 +137,30 @@ export const uploadImages = async (storageFolder, newImages, entityId) => {
     }
   };
   
+  export const getAllImagesInFolder = async (storageFolder) => {
+    const folderPath = `${storageFolder}`;
+    const folderRef = ref(storage, folderPath);
+    
+    try {
+        const fileList = await listAll(folderRef);
+
+        const imageUrlsComprehensive = await Promise.all(
+          fileList.items.map(async (fileRef) => {
+            const downloadURL = await getDownloadURL(fileRef);
+  
+            return {
+              id: fileRef.name,
+              filename: fileRef.name,
+              fileURL: downloadURL,
+            };
+          })
+        );
+
+        // return imageUrls;
+        return imageUrlsComprehensive
+    } catch (error) {
+        console.error('Error retrieving images:', error);
+        throw error;
+    }
+};
+
