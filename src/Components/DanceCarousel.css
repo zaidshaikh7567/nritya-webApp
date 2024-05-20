@@ -1,0 +1,8 @@
+.image-container .hover-image {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.image-container .hover-image:hover {
+  transform: scale(1.01);
+  opacity: 0.9;
+}
