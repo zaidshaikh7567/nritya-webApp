@@ -30,6 +30,7 @@ import AboutUs from './Screens/About';
 import ContactUs from './Screens/ContactUs';
 import MyBookings from './Components/MyBookings';
 import JobHire from './Screens/JobHire';
+import NotFoundPage from './Screens/NotFoundPage';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -86,7 +87,7 @@ function App() {
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
     <HashRouter  >
-       <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+      <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
       
       <main className='py-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
         <Container fluid>
@@ -109,10 +110,10 @@ function App() {
               <Route path='/modifyStudios' element={<CreatorStudio/>}/>
               <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
             </Route>
-            <Route path='/n-admin' element={<AdminPage/>}/>
             <Route path='/n-trail' element={<Trail/>}/>
             <Route path='/aboutus' element={<AboutUs/>}/>
             <Route path='/contactus' element={<ContactUs/>}/>
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Container>
       </main>
