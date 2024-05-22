@@ -26,7 +26,9 @@ import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import './Header.css';
+import { Apartment, PartyModeOutlined, Place, PlaceTwoTone } from '@mui/icons-material';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -196,13 +198,13 @@ function Header() {
     };
   }, []);
 
-  console.log("Hii-1", entity)
+  //console.log("Hii-1", entity)
 
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: 60, height: 60 }}
+          <Image style={{ width: "3rem", height: "3rem" }}
             src={logo}
             alt="Logo"
             roundedCircle={true}
@@ -210,7 +212,7 @@ function Header() {
         </Navbar.Brand>
         <div>
           <meta charset="UTF-8" />
-          <h1 style={{ color: 'white', fontSize: 25, textAlign: 'center', textIndent: 'right', textTransform: 'none', fontFamily: 'Times Roman', paddingRight: 80 }}>{'            नृtya'}</h1>
+          <h1 style={{ color: 'white', fontSize: 20, textAlign: 'center', textIndent: 'right', textTransform: 'none', fontFamily: 'Times Roman' }}>{'    Nritya'}</h1>
         </div>
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
@@ -228,17 +230,17 @@ function Header() {
             />
             {currentUser ? (
               <>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
-                  🔎 Search Studios
+                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                  Search Studios
                 </Button>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
               </>
             ) : (
               <>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
-                  🔎 Search Studios
+                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                  Search Studios
                 </Button>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
               </>
             )}
             <div className="position-relative location-dropdown-container">
@@ -246,13 +248,11 @@ function Header() {
                 variant="outlined"
                 className="me-2 rounded-pill"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                style={{
-                  cursor: 'pointer',
-                  textTransform: 'none', color: 'white', borderColor: 'white',
+                style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
                   height: '3rem', borderWidth: '2px', width: '12rem'
                 }}
+                startIcon={<PlaceTwoTone />}
               >
-                <FontAwesomeIcon icon={faMapMarker} className="me-2" />
                 {selectedLocation}
               </Button>
 
@@ -302,7 +302,7 @@ function Header() {
               <Button onClick={openProfileOffcanvas} className="rounded-pill"
                 variant="outlined"
                 style={{
-                  fontSize: '1rem',
+                  fontSize: '0.9rem',
                   color: 'white', borderRadius: '50%', borderColor: "white",
                   width: '3rem', height: '3rem', display: 'flex',
                   alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
