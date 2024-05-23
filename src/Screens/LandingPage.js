@@ -144,11 +144,8 @@ function LandingPage() {
         {danceImagesUrl.length > 0 ? (
           <DanceCarousel danceImages={danceImagesUrl} />
         ) : (
-          
-                <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
-             
+          <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
         )}
-
       </Row>
 
         <br />
