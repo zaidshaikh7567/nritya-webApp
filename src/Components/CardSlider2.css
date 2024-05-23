@@ -1,0 +1,43 @@
+h2 {
+  color: 'white';
+}
+
+.horizontal-scroll-wrapper {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  padding: 5px 0; 
+  height: 210px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.thumbnails {
+  display: flex;
+  overflow-x: auto;
+}
+
+.thumbnails img {
+  width: 50px; /* Adjust the width of the thumbnails as needed */
+  height: auto;
+  margin-right: 10px; /* Adjust the margin between thumbnails as needed */
+  cursor: pointer;
+}
+
+.thumbnails img:last-child {
+  margin-right: 0; /* Remove margin from the last thumbnail to prevent extra space */
+}
+
+.justify-content {
+  justify-content: center; /* Adjust this property to control horizontal alignment */
+}
+
+.align {
+  align-items: center; /* Adjust this property to control vertical alignment */
+}
