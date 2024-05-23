@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Nav, Navbar, Offcanvas, Dropdown, Image } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
+import { useMediaQuery } from 'react-responsive';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import logo from './../logo.png';
-import { adminLoginFn, adminLogoutFn } from '../reduxStore/adminLoginSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelector';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import indianCities from '../cities.json';
 import { toggleDarkMode } from '../redux/actions/darkModeAction';
 import { useAuth } from '../context/AuthContext';
 import SideMenu from './SideMenu';
-import { refreshLocation } from '../redux/actions/refreshLocationAction';
 import { TextField, Autocomplete, Chip } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
-import LocationComponent from './LocationComponent';
 import { getBrowserLocation } from '../utils/location';
 import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -29,6 +24,8 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import './Header.css';
 import { Apartment, PartyModeOutlined, Place, PlaceTwoTone } from '@mui/icons-material';
+import logoBig from '../assets/images/logo_large.png';
+import logoMobile from '../assets/images/logo_small.jpg';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -91,6 +88,8 @@ function Header() {
   const adminLogin = useSelector((state) => state.adminLogin);
   const reduxLocation = useSelector(selectRefreshLocation);
   const theme = useTheme();
+  const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
+
 
   //console.log("Redux loc", reduxLocation.city)
 
@@ -204,16 +203,12 @@ function Header() {
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "3rem", height: "3rem" }}
-            src={logo}
-            alt="Logo"
-            roundedCircle={true}
+          <Image style={{ width: "100%", height: "4rem" }}
+            src={isMobile ? logoMobile : logoBig}
+            alt="Logo"    
           />
         </Navbar.Brand>
-        <div>
-          <meta charset="UTF-8" />
-          <h1 style={{ color: 'white', fontSize: 20, textAlign: 'center', textIndent: 'right', textTransform: 'none', fontFamily: 'Times Roman' }}>{'    Nritya'}</h1>
-        </div>
+        
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
