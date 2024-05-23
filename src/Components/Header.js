@@ -202,12 +202,22 @@ function Header() {
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
+      {isMobile ? (
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "100%", height: "4rem" }}
-            src={isMobile ? logoMobile : logoBig}
-            alt="Logo"    
+          <Image style={{ width: "3rem", height: "3rem" }}
+            src={logoMobile}
+            alt="Logo"
+            roundedCircle={true}
           />
         </Navbar.Brand>
+      ) : (
+        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+          <Image style={{ width: "100%", height: "4rem" }}
+            src={logoBig}
+            alt="Logo"
+          />
+        </Navbar.Brand>
+      )}
         
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
