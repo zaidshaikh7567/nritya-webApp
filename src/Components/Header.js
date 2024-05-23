@@ -204,7 +204,7 @@ function Header() {
       <Container fluid>
       {isMobile ? (
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "3rem", height: "3rem" }}
+          <Image style={{ width: "4rem", height: "4rem" }}
             src={logoMobile}
             alt="Logo"
             roundedCircle={true}
