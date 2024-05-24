@@ -50,7 +50,7 @@ const CardSlider2 = ({ dataList }) => {
 
   return (
     <div>
-      <div className="horizontal-scroll-wrapper" ref={scrollWrapperRef}>
+      <div className="horizontal-scroll-wrapper-carousel" ref={scrollWrapperRef}>
         {dataList.map((dataUrl, index) => (
           <a key={index} href="#">
             <MuiCard

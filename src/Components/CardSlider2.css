@@ -2,7 +2,7 @@ h2 {
   color: 'white';
 }
 
-.horizontal-scroll-wrapper {
+.horizontal-scroll-wrapper-carousel {
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
@@ -14,7 +14,7 @@ h2 {
   -ms-overflow-style: none; /* IE and Edge */
 }
 
-.horizontal-scroll-wrapper::-webkit-scrollbar {
+.horizontal-scroll-wrapper-carousel::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
 
