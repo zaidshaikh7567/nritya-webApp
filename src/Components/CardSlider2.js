@@ -2,15 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import './CardSlider2.css';
 import { Card as MuiCard } from '@mui/joy';
 import CardCover from '@mui/joy/CardCover';
-import { Row } from 'react-bootstrap';
 
 const CardSlider2 = ({ dataList }) => {
   const scrollWrapperRef = useRef(null);
   const thumbnailsRef = useRef([]);
 
-  const scrollSpeed = 360; // Adjust this value for desired scroll speed
-  const scrollInterval = 3000; // Interval between each scroll (in milliseconds)
-  const stopInterval = 3000; // Interval to stop between scrolls (in milliseconds)
+  const scrollSpeed = 360;
+  const scrollInterval = 3000;
+  const stopInterval = 3000;
 
   useEffect(() => {
     const scrollWrapper = scrollWrapperRef.current;

@@ -8,26 +8,21 @@ import { Hidden } from '@mui/material';
 const DanceCarousel = ({ danceImages }) => {
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
-    speed: 500,
+    speed: 200,
     slidesToShow: 3,
     arrows: false,
     slidesToScroll: 1,
-    customPaging: function(i) {
-      return (
-        <a>
-          <img src={danceImages[i]} />
-        </a>
-      );
-    },
-
+    autoplay: true,
+    autoplaySpeed: 5000,
+    cssEase: "linear",
 
     responsive: [
         {
           breakpoint: 1024,
           settings: {
-            slidesToShow: 3,
+            slidesToShow: 2.25,
             slidesToScroll: 1,
             infinite: true,
             dots: true
@@ -38,7 +33,7 @@ const DanceCarousel = ({ danceImages }) => {
           breakpoint: 800,
           settings: {
             slidesToShow: 2,
-            slidesToScroll: 1,
+            slidesToScroll: 1.5,
             infinite: true,
             dots: true
           }
@@ -60,6 +55,8 @@ const DanceCarousel = ({ danceImages }) => {
         <div id={index} className="image-container">
             <img className="img-fluid hover-image"  style={{paddingRight:"5px"}} src={image}></img>
         </div>
+
+        
       ))}
     </Slider>
   );

@@ -156,8 +156,15 @@ function LandingPage() {
   return (
     <div  >
       <Container className="my-0">
+      <Row className="pb-1 pl-0 pr-0">
+      {danceImagesUrl.length > 0 ? (
+          <DanceCarousel danceImages={danceImagesUrl}/>
+          ) : (
+            <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
+          )}
+        </Row>
         
-        <Row>
+        <Row hidden >
           {danceImagesUrl.length > 0 ? (
            <CardSlider2 dataList={danceImagesUrl} />
           ) : (
