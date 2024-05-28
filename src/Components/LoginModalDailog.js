@@ -32,6 +32,7 @@ const LoginModalDailog = ({open, handleClose }) => {
             onClose={handleClose}
             aria-labelledby="customized-dialog-title"
             open={open}
+            maxWidth='xs'
             BackdropProps={{
               classes: {
                 root: classes.backDrop,

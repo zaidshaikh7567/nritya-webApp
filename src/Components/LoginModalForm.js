@@ -7,9 +7,9 @@ import LoginPage from "../Screens/LoginPage";
 
 const useStyles = makeStyles(() => ({
     loginBoxMain: {
-        width: '375px',
+        width: 'auto',
         backgroundColor: '#000',
-        padding: '15px'
+        padding: '15px',
     },
     loginLogo: {
         height: '130px',
