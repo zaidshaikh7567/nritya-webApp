@@ -1,0 +1,27 @@
+/*-----------------------------------
+     Custom Stylesheet: Login Page
+     Author Info: Nritya
+------------------------------------*/
+.custom-container-main{
+    min-height: 30vh;
+}
+.padding-top-2{
+    padding-top: 2rem;
+} 
+.padding-bottom-2{
+    padding-bottom: 2rem;
+}
+.right-login{
+    display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   height: 100%;
+   padding-top: 2rem;
+}
+.custom-login-form{
+    display: flex;
+   flex-direction: column;
+   align-items: center;
+   padding: 2rem;
+}

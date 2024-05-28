@@ -27,6 +27,7 @@ import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import './Header.css';
+import LoginModalDailog from './LoginModalDailog';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -89,6 +90,7 @@ function Header() {
   const adminLogin = useSelector((state) => state.adminLogin);
   const reduxLocation = useSelector(selectRefreshLocation);
   const theme = useTheme();
+  const [open, setOpen] = useState(false);
 
   //console.log("Redux loc", reduxLocation.city)
 
@@ -197,6 +199,15 @@ function Header() {
   }, []);
 
   console.log("Hii-1", entity)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  //function handle to close the form
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
@@ -316,9 +327,10 @@ function Header() {
             
           ) : (
           
-              <Button variant="outlined" className="rounded-pill" href="#/login" style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
-           
+              <Button variant="outlined" className="rounded-pill" onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
+            {/* display the modal and pass props */}
+            <LoginModalDailog open={open} handleClose={handleClose} />
           </Nav>
           
 

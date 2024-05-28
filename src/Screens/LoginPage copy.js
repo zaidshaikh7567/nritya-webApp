@@ -7,9 +7,13 @@ import { db } from '../config';
 import { doc, getDoc,setDoc } from "firebase/firestore";
 import { STATUSES,COLLECTIONS } from "./../constants.js";
 import {  Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-import { Button, Container } from '@mui/material';
+import localImage from '../Components/DanceImg/Dance1.jpg';
+import { Box, Button, Container } from '@mui/material';
+import  './LoginPage.css'
 
 
 
@@ -86,31 +90,39 @@ function LoginPage({onLogin,setIsLoggedIn}) {
       
     return (
       <Container fluid className='custom-container-main'>
-          <Row>
-            <Col xs={12} md={12}>
-              <div>
+          <Row className='padding-top-2 padding-bottom-2'>
+            <Col xs={12} md={6}>
+              <img src={localImage}
+                      alt="Your Local Image Alt Text"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+            </Col>
+            <Col xs={12} md={6}
+              style={{
+                backgroundColor: isDarkModeOn ? '#3a3a3a' : '#323232',
+                marginLeft: '-12px'
+              }}
+            >
+              <div className='right-login'>
               <form
                 className='custom-login-form'
                 onSubmit={(e) => {
                   e.preventDefault(); // Prevent form submission
                   signin(); // Call your signin function on form submission
                 }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '15px 0'
-                }}
               >
                 <Button
                   type="submit" // Add a type to the button to trigger form submission
                   style={{
-                    backgroundColor: "#D9D9D9",
-                    color: '#000',
-                    borderRadius: '6px',
+                    backgroundColor: isDarkModeOn ? '#3a3a3a' : '#323232',
+                    color: '#f5f5f5',
+                    boxShadow: 'none',
+                    borderRadius: '25px',
+                    display: 'flex',
+                    alignItems: 'center',
                     textTransform: 'none',
                     border: '1px solid #777',
-                    padding: '8px 16px'
+                    padding: '12px 24px'
                   }}
                 >
                   <img

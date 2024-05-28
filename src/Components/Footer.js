@@ -15,7 +15,7 @@ function Footer() {
   return (
     <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white' }}>
       <Divider />
-      <footer style={{ background: isDarkModeOn ? 'black' : 'white', padding: '10px 0' }}>
+      <footer style={{ background: isDarkModeOn ? 'black' : 'white', padding: '15px 0 0' }}>
         <Container>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
@@ -74,14 +74,18 @@ function Footer() {
           <Grid container justifyContent="center" py={1} >
               <NrityaSVG text={"Discover the beat in your city!"} x={"0"} y={"10"} fontSize={"5px"}/>
           </Grid>
-         
-
-          <Grid container justifyContent="center" py={1}>
-            <Typography variant="body2" style={{ fontFamily: 'Times-Roman', fontSize: 12, color: isDarkModeOn ? 'white' : 'black' }}>
-              &copy; Nritya@2024
-            </Typography>
-          </Grid>
         </Container>
+
+        <Grid justifyContent="center" py={1}
+          style={{
+            backgroundColor: isDarkModeOn ? '#3a3a3a' : '#323232',
+            padding: '15px 0 8px',
+            textAlign: 'center'
+          }}
+        >
+            <Typography variant="body2" style={{fontSize: '12px', color: isDarkModeOn ? 'white' : 'white' }}>
+              Copyright &copy; 2024 Nritya. All Rights Reserved.</Typography>
+          </Grid>
       </footer>
     </div>
   );
