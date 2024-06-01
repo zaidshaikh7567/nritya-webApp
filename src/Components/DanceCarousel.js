@@ -3,15 +3,21 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './DanceCarousel.css';
+import { Hidden } from '@mui/material';
 
 const DanceCarousel = ({ danceImages }) => {
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
-    speed: 500,
-    slidesToShow: 2.25,
+    speed: 200,
+    slidesToShow: 3,
+    arrows: false,
     slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    cssEase: "linear",
+
     responsive: [
         {
           breakpoint: 1024,
@@ -27,7 +33,7 @@ const DanceCarousel = ({ danceImages }) => {
           breakpoint: 800,
           settings: {
             slidesToShow: 2,
-            slidesToScroll: 1,
+            slidesToScroll: 1.5,
             infinite: true,
             dots: true
           }
@@ -49,6 +55,8 @@ const DanceCarousel = ({ danceImages }) => {
         <div id={index} className="image-container">
             <img className="img-fluid hover-image"  style={{paddingRight:"5px"}} src={image}></img>
         </div>
+
+        
       ))}
     </Slider>
   );

@@ -1,33 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Nav, Navbar, Offcanvas, Dropdown, Image } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons'; // Import the cart icon
+import { useMediaQuery } from 'react-responsive';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import logo from './../logo.png';
-import { adminLoginFn, adminLogoutFn } from '../reduxStore/adminLoginSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelector';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import indianCities from '../cities.json';
 import { toggleDarkMode } from '../redux/actions/darkModeAction';
 import { useAuth } from '../context/AuthContext';
 import SideMenu from './SideMenu';
-import { refreshLocation } from '../redux/actions/refreshLocationAction';
 import { TextField, Autocomplete, Chip } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
-import LocationComponent from './LocationComponent';
 import { getBrowserLocation } from '../utils/location';
 import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 import './Header.css';
 import LoginModalDailog from './LoginModalDailog';
+import { Apartment, PartyModeOutlined, Place, PlaceTwoTone } from '@mui/icons-material';
+import logoBig from '../assets/images/logo_large.png';
+import logoMobile from '../assets/images/logo_small.jpg';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
@@ -91,6 +90,7 @@ function Header() {
   const reduxLocation = useSelector(selectRefreshLocation);
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
 
   //console.log("Redux loc", reduxLocation.city)
 
@@ -198,7 +198,7 @@ function Header() {
     };
   }, []);
 
-  console.log("Hii-1", entity)
+  //console.log("Hii-1", entity)
 
   const handleOpen = () => {
     setOpen(true)
@@ -212,17 +212,23 @@ function Header() {
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
+      {isMobile ? (
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: 60, height: 60 }}
-            src={logo}
+          <Image style={{ width: "4rem", height: "4rem" }}
+            src={logoMobile}
             alt="Logo"
             roundedCircle={true}
           />
         </Navbar.Brand>
-        <div>
-          <meta charset="UTF-8" />
-          <h1 style={{ color: 'white', fontSize: 25, textAlign: 'center', textIndent: 'right', textTransform: 'none', fontFamily: 'Times Roman', paddingRight: 80 }}>{'            नृtya'}</h1>
-        </div>
+      ) : (
+        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+          <Image style={{ width: "100%", height: "4rem" }}
+            src={logoBig}
+            alt="Logo"
+          />
+        </Navbar.Brand>
+      )}
+        
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
@@ -239,17 +245,17 @@ function Header() {
             />
             {currentUser ? (
               <>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
-                  🔎 Search Studios
+                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                  Search Studios
                 </Button>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
               </>
             ) : (
               <>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
-                  🔎 Search Studios
+                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                  Search Studios
                 </Button>
-                <Button variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
               </>
             )}
             <div className="position-relative location-dropdown-container">
@@ -257,13 +263,11 @@ function Header() {
                 variant="outlined"
                 className="me-2 rounded-pill"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                style={{
-                  cursor: 'pointer',
-                  textTransform: 'none', color: 'white', borderColor: 'white',
+                style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
                   height: '3rem', borderWidth: '2px', width: '12rem'
                 }}
+                startIcon={<PlaceTwoTone />}
               >
-                <FontAwesomeIcon icon={faMapMarker} className="me-2" />
                 {selectedLocation}
               </Button>
 
@@ -313,7 +317,7 @@ function Header() {
               <Button onClick={openProfileOffcanvas} className="rounded-pill"
                 variant="outlined"
                 style={{
-                  fontSize: '1rem',
+                  fontSize: '0.9rem',
                   color: 'white', borderRadius: '50%', borderColor: "white",
                   width: '3rem', height: '3rem', display: 'flex',
                   alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',

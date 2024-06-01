@@ -1,6 +1,6 @@
 import React, { useState,useEffect,useRef  } from "react";
 import { Container, Row, Col, Card, Button, Carousel, ButtonGroup,Image } from "react-bootstrap";
-import { Grid, Card as MUICard, CardContent, Typography, Skeleton } from '@mui/material';
+import { Grid, Card as MUICard, CardContent, Typography, Skeleton, Button as MUIButton } from '@mui/material';
 import { db } from '../config';
 import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query,limit } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
@@ -14,6 +14,11 @@ import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from 'react-router-dom';
 import DanceCarousel from "../Components/DanceCarousel";
 import { getAllImagesInFolder } from "../utils/firebaseUtils";
+import SearchIcon from '@mui/icons-material/Search';
+import textStyles from "../textStyles";
+import { CardCover } from "@mui/joy";
+import {Card as MUIJCard}from '@mui/joy';
+import CardSlider2 from "../Components/CardSlider2";
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -93,6 +98,16 @@ function LandingPage() {
     cursor: 'pointer' ,
   };
 
+  const buttonStyle = {
+    textTransform: 'none',
+    borderColor: isDarkModeOn ? 'white' : 'black',
+    color: isDarkModeOn ? 'white' : 'black',
+    borderWidth: '1px',
+    height: '2rem',
+    width: '100%',
+  };
+
+
   useEffect(() => {
     const getStudios = async () => {
       const studioRef = collection(db, COLLECTIONS.STUDIO);
@@ -136,24 +151,34 @@ function LandingPage() {
 
     fetchImages();
   }, []);
+  
 
   return (
     <div  >
       <Container className="my-0">
-      <Row>
-        {danceImagesUrl.length > 0 ? (
-          <DanceCarousel danceImages={danceImagesUrl} />
-        ) : (
-          
-                <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
-             
-        )}
-
-      </Row>
-
-        <br />
+      <Row className="pb-1 pl-0 pr-0">
+      {danceImagesUrl.length > 0 ? (
+          <DanceCarousel danceImages={danceImagesUrl}/>
+          ) : (
+            <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
+          )}
+        </Row>
+        
+        <Row hidden >
+          {danceImagesUrl.length > 0 ? (
+           <CardSlider2 dataList={danceImagesUrl} />
+          ) : (
+            <Skeleton sx={{width:"100%",height:"40vh", bgcolor: isDarkModeOn?"#202020":"gray" }}  variant="rectangular"animation="wave" />
+          )}
+        </Row>
+        
+        <Row className="d-lg-none pb-2">
+          <MUIButton endIcon={<SearchIcon style={{color: isDarkModeOn?"white":"black"}} />} variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={buttonStyle}>
+                    Search Studios in your city
+          </MUIButton>
+        </Row>
         <Row>
-          {recentlyWatchedStudios.length > 0 && <h3 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Viewed</h3>}
+          {recentlyWatchedStudios.length > 0 && <h4 style={{color: isDarkModeOn ? 'white' : 'black'}}> <FontAwesomeIcon icon={faClock} size="1x" /> Recently Viewed</h4>}
           {recentlyWatchedStudios.length>0?(<CardSlider dataList={recentlyWatchedStudios} imgOnly={false}/>):""}
         </Row>
           <LocationComponent/>
