@@ -4,23 +4,24 @@ import { styled } from '@mui/material/styles';
 import LoginModalForm from "./LoginModalForm";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { makeStyles, Theme} from "@material-ui/core";
+import { Theme } from '@mui/material/styles';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-      padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-      padding: theme.spacing(1),
-    }
-  }));
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  }
+}));
 
-  const useStyles = makeStyles((theme: Theme) => ({
-    backDrop: {
-      backdropFilter: "blur(3px)",
-      backgroundColor:'rgba(0,0,30,0.4)'
-    },
-  }));
+const useStyles = (theme: Theme) => ({
+  backDrop: {
+    backdropFilter: "blur(3px)",
+    backgroundColor: 'rgba(0,0,30,0.4)'
+  },
+});
+
 
 
 const LoginModalDailog = ({open, handleClose }) => {
