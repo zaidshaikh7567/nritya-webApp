@@ -16,19 +16,19 @@ function Footer() {
 
   const ResponsiveTypography = styled(Typography)(({ theme }) => ({
     textTransform: 'none',
-    color: isDarkModeOn ? 'white':'black',
+    color:'white',
     [theme.breakpoints.down('sm')]: {
       fontSize: '1.5rem',
     },
   }));
 
-  const socialIconStyle = { fontSize: '24px', color: isDarkModeOn ? 'white' : 'black' , marginRight: '10px' };
-  const linkStyle = { color: isDarkModeOn ? 'white' : 'black' , marginRight: '10px' };
+  const socialIconStyle = { fontSize: '24px', color:  'white' , marginRight: '10px' };
+  const linkStyle = { color: 'white' , marginRight: '10px' };
 
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? 'black' : '#D2D2D2'}}>
+    <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'black'}}>
       <Divider />
-      <footer style={{ backgroundColor: isDarkModeOn ? 'black' : '#D2D2D2', padding: '15px 0 0' }}>
+      <footer style={{ backgroundColor: isDarkModeOn ? 'black' : 'black', padding: '15px 0 0' }}>
         <Container>
           <Grid container justifyContent="space-between" alignItems="center">
           <Grid container justifyContent="center" py={1} >
@@ -39,12 +39,12 @@ function Footer() {
  
           </Grid>
             <Grid item xs={12} sm={12} md={12} textAlign="center" py={1}>
-              <Typography variant="body1" style={{ textAlign: 'left',color:isDarkModeOn ? 'white':'black'}}>
+              <Typography variant="body1" style={{ textAlign: 'left',color: 'white'}}>
                 Introducing India's first dance tech platform connecting dance enthusiasts with top dance studios in the city. Enjoy a free trial class at your chose dance studio and immerse yourself in the world of dance. Start your journey with us today! 
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
-              <Typography variant="h6" style={{ color:isDarkModeOn ? 'white':'black',fontSize: 20 }}>
+              <Typography variant="h6" style={{ color:'white',fontSize: 20 }}>
                 Follow Us
               </Typography>
               <div>
@@ -60,7 +60,7 @@ function Footer() {
               </div>
             </Grid>
             <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
-              <Typography variant="h6" style={{color:isDarkModeOn ? 'white':'black',fontSize: 20 }}>
+              <Typography variant="h6" style={{color:'white',fontSize: 20 }}>
                 About
               </Typography>
               <Typography variant="body2">
@@ -72,7 +72,7 @@ function Footer() {
             
             </Grid>
             <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
-              <Typography variant="h6" style={{ color: isDarkModeOn ? 'white' : 'black' ,fontSize: 20}}>
+              <Typography variant="h6" style={{ color:'white' ,fontSize: 20}}>
                 Quick Links
               </Typography>
               <Typography variant="body2">
@@ -91,13 +91,13 @@ function Footer() {
 
         <Grid justifyContent="center" py={1}
           style={{
-            backgroundColor: isDarkModeOn ? 'black' : '#D2D2D2',
+            backgroundColor: isDarkModeOn ? 'black' : 'black',
             padding: '15px 0 8px',
             textAlign: 'center'
           }}
         >
-            <Typography variant="body2" style={{fontSize: '12px', color: isDarkModeOn ? 'white' : 'black' }}>
-              Copyright &copy; 2024 Nritya. All Rights Reserved.</Typography>
+            <Typography variant="body2" style={{fontSize: '12px', color: 'white' }}>
+              &copy; 2024 Nritya. All Rights Reserved.</Typography>
           </Grid>
       </footer>
     </div>

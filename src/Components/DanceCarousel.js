@@ -15,7 +15,7 @@ const DanceCarousel = ({ danceImages }) => {
     arrows: false,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 2000,
     cssEase: "linear",
 
     responsive: [

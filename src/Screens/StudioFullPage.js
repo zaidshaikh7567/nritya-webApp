@@ -276,7 +276,8 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
                     
                     style={{ marginRight: '1rem', marginBottom: '0.5rem' , alignItems:'center'}}
                     
-                    sx={{ 
+                    sx={{
+                      backgroundColor : isDarkModeOn ? 'black' :"",
                       color: isDarkModeOn ? 'white' : 'black',
                       marginRight: '0.5rem', 
                       marginBottom: '0.5rem',
