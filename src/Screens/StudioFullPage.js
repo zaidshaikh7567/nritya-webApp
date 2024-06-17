@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image, Form } from 'react-bootstrap';
+import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image, Form, Stack } from 'react-bootstrap';
 import { db,storage } from '../config';
 import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, setDoc, getDocs, collection , updateDoc} from "firebase/firestore";
@@ -28,6 +28,8 @@ import Typography from '@mui/joy/Typography';
 import { Paper, List, ListItem, Chip, Grid } from '@mui/material';
 import { FaShare } from 'react-icons/fa';
 import axios from 'axios';
+import { FaPhoneAlt } from 'react-icons/fa';
+
 
 
 
@@ -55,7 +57,7 @@ const gradientStyles = [
 ];
 
 
-function StudioFullPage() {
+function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
   const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -143,20 +145,19 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'#202020':'white' ,color: isDarkModeOn?'white':'color' }}>
       <Row>
-      <Col lg={8}  >
-      <Row>
-        <Col lg={9} md={9}>
-        <Typography variant="h1" component="h1" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '24px' }}>
-        {studioData ? studioData.studioName : ""}
-        </Typography>
-        </Col>
-        <Col lg={3} md={3}>
-          {studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}
-        </Col>
-      </Row>
-      <Row>
-      <Col xs={12}>
-      {studioData && (studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
+      <Col lg={8}  className='d-flex'>
+      <div className='contentWrapper-main'>
+        <div className='headerArea'>
+          <div className='title-m'>
+            <Typography variant="h1" component="h1" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '24px' }}>
+              {studioData ? studioData.studioName : ""}
+              </Typography>
+            </div>
+            <div className='userRating'>{studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}</div>
+          </div>
+
+        <div className='socialRatings'>
+        {studioData && (studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
       <div style={{ display: 'flex', justifyContent: 'left' }}>
         {studioData.youtube && (
           <a href={studioData.youtube} target="_blank" rel="noopener noreferrer">
@@ -170,28 +171,45 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         )}
         {studioData.instagram && (
           <a href={studioData.instagram} target="_blank" rel="noopener noreferrer">
-            <FaInstagram className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px', marginRight: '10px' }} />
+            <FaInstagram className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px', marginRight: '0px' }} />
           </a>
         )}
         {studioData.twitter && (
           <a href={studioData.twitter} target="_blank" rel="noopener noreferrer">
             <FaTwitter className='genericHoverEffect' style={{ color: isDarkModeOn ? '#fff' : '#000', fontSize: '24px' }} />
           </a>
-        )}
+         )}
+         </div>
+         )}
+        </div>
+        <div className='textWrapper'>
+            {studioData&&studioData.aboutStudio?
+            <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} studioContactNumber={studioData.mobileNumber} studioWhatsAppNumber={studioData.whatsappNumber}/>:""} 
+        </div>
       </div>
-        )}
-      </Col>
-
-      </Row>
-      <Row>
-      {studioData&&studioData.aboutStudio?
-      
-      <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} studioContactNumber={studioData.mobileNumber} studioWhatsAppNumber={studioData.whatsappNumber}/>:""} 
-      </Row>
         
       </Col>
-      <Col lg={4} xs={12} >
+      <Col lg={4} xs={12} className='d-flex'>
       {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About fOUNDER"}/>:""} 
+      </Col>
+    </Row>
+    <Row>
+      <Col lg={12} xs={12}>
+      <div className='socialConnectFeature'>
+           <Stack direction="horizontal" gap={3} className='btn-position'>
+           <Button className='custom-btn' size="md">
+              <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
+                 Text Studio <FaWhatsapp style={{'marginLeft': '8px'}}/>
+              </a>
+           </Button>
+           <Button className='custom-btn' size="md">
+              <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
+                 Call Studio <FaPhoneAlt style={{'marginLeft': '8px'}}/> 
+              </a>
+           </Button>
+           </Stack>
+        </div>
+
       </Col>
     </Row>
       

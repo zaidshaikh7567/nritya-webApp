@@ -63,7 +63,7 @@ function App() {
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('userInfo',JSON.stringify(UserInfo));
     localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
-    console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')))
+    console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
   };
   
   const handleLogout = () => {
