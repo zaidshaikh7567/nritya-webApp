@@ -34,7 +34,7 @@ function NrityaCard({data, title, type, studioContactNumber, studioWhatsAppNumbe
             )}
             <Card.Body style={{ padding: '1rem' }}>
                 {type === 'bubble' ? <CircularBubble number={data} /> : data}
-                {type === 'aboutStudio' && (
+                {/* {type === 'aboutStudio' && (
                     <Container>
                         <Row>
                             <br />
@@ -48,7 +48,7 @@ function NrityaCard({data, title, type, studioContactNumber, studioWhatsAppNumbe
                             </Stack>
                         </Row>
                     </Container>
-                )}
+                )} */}
             </Card.Body>
         </Card>
     );
