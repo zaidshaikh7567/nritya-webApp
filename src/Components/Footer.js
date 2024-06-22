@@ -84,6 +84,9 @@ function Footer() {
               <Typography variant="body2">
                 <a href="#/kyc" style={linkStyle}>Creator's Account Kyc</a>
               </Typography>
+              <Typography variant="body2">
+                <a href="#/modifyInstructors" style={linkStyle}>Instructor listing</a>
+              </Typography>
             </Grid>
           </Grid>
           

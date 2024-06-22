@@ -186,30 +186,25 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
             {studioData&&studioData.aboutStudio?
             <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} studioContactNumber={studioData.mobileNumber} studioWhatsAppNumber={studioData.whatsappNumber}/>:""} 
         </div>
+        <div className='socialConnectFeature'>
+           <Stack direction="horizontal" gap={1}>
+           <Button className='custom-btn' size="md">
+              <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
+                 Text Studio <FaWhatsapp style={{'marginLeft': '2px'}}/>
+              </a>
+           </Button>
+           <Button className='custom-btn' size="md">
+              <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
+                 Call Studio <FaPhoneAlt style={{'marginLeft': '2px'}}/> 
+              </a>
+           </Button>
+           </Stack>
+      </div>
       </div>
         
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
       {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About fOUNDER"}/>:""} 
-      </Col>
-    </Row>
-    <Row>
-      <Col lg={12} xs={12}>
-      <div className='socialConnectFeature'>
-           <Stack direction="horizontal" gap={3} className='btn-position'>
-           <Button className='custom-btn' size="md">
-              <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
-                 Text Studio <FaWhatsapp style={{'marginLeft': '8px'}}/>
-              </a>
-           </Button>
-           <Button className='custom-btn' size="md">
-              <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
-                 Call Studio <FaPhoneAlt style={{'marginLeft': '8px'}}/> 
-              </a>
-           </Button>
-           </Stack>
-        </div>
-
       </Col>
     </Row>
       

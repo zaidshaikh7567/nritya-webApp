@@ -310,30 +310,30 @@ function StudioAdd({instructors}) {
             <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
                 <Form.Label>Names of Instructors</Form.Label>
                 <Row>
-                <ThemeProvider theme={darkTheme}>
-                  <CssBaseline />
+                  <ThemeProvider theme={darkTheme}>
+                    <CssBaseline />
 
-                 <Autocomplete
-                  style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
-                  multiple
-                  id="tags-standard"
-                  options={instructorNamesWithIds}
-                  value={selectedInstructors}
-                  onChange={handleInstructorChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      placeholder="Select Dance Styles"
-                      style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                    <Autocomplete
+                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                      multiple
+                      id="tags-standard"
+                      options={instructorNamesWithIds}
+                      value={selectedInstructors}
+                      onChange={handleInstructorChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          placeholder="Select Dance Styles"
+                          style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                        />
+                      )}
                     />
-                  )}
-                />
-                </ThemeProvider>
-              
-                  
+                  </ThemeProvider>
                 </Row> 
-
+                <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
+                      Go to Instrcutors' Add/update Page? 
+                    </a>
                 <hr></hr>   
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
