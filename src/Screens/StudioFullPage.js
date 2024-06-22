@@ -6,7 +6,7 @@ import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, setDoc, getDocs, collection , updateDoc} from "firebase/firestore";
 import { STATUSES, COLLECTIONS, AMENITIES_ICONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
-import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections } from 'react-icons/fa';
+import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections, FaWhatsappSquare } from 'react-icons/fa';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
 import { FaClock, FaMoneyBill, FaMapMarker, FaPhone, FaWhatsapp  } from 'react-icons/fa';
@@ -186,32 +186,34 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
             {studioData&&studioData.aboutStudio?
             <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} studioContactNumber={studioData.mobileNumber} studioWhatsAppNumber={studioData.whatsappNumber}/>:""} 
         </div>
-        <div className='socialConnectFeature'>
-           <Stack direction="horizontal" gap={1}>
-           <Button className='custom-btn' size="md">
-              <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
-                 Text Studio <FaWhatsapp style={{'marginLeft': '2px'}}/>
-              </a>
-           </Button>
-           <Button className='custom-btn' size="md">
-              <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
-                 Call Studio <FaPhoneAlt style={{'marginLeft': '2px'}}/> 
-              </a>
-           </Button>
-           </Stack>
-      </div>
       </div>
         
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
-      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About fOUNDER"}/>:""} 
+      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About Founder"}/>:""} 
+      </Col>
+      <Col lg={4} xs={12} className='d-flex'>
+        <div className='socialConnectFeature'>
+            <Stack direction="horizontal" gap={1}>
+            <Button className='custom-btn-wa' size="md" style={{color:"white"}}>
+                <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent',color:"white"}}> 
+                  Text Studio <FaWhatsapp style={{'marginLeft': '2px'}}/>
+                </a>
+            </Button>
+            <Button className='custom-btn' size="md">
+                <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
+                  Call Studio <FaPhoneAlt style={{'marginLeft': '2px'}}/> 
+                </a>
+            </Button>
+            </Stack>
+          </div>
       </Col>
     </Row>
       
       <br></br>
       <Row>
         <Col>
-        <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px' }}>
+        <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize' }}>
           Dance Styles
         </Typography>
           {studioData && studioData.danceStyles ? (
@@ -248,7 +250,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       <Row>
         <Col>
-        <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px' }}>
+        <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize' }}>
           Class Schedule
         </Typography>
         </Col>
@@ -270,7 +272,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Row>
       <br></br>
       <Row>
-      <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',color: isDarkModeOn ? 'white' : 'black',fontSize: '18px' }}>
+      <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize' }}>
           Amenities
         </Typography>
         <Col lg={12}>
@@ -312,7 +314,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         <Col lg={12}>
         {studioData && studioData.enrollmentProcess && (
             <>
-              <Typography variant="h1" component="h2"  style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px'  }}>
+              <Typography variant="h1" component="h2"  style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize'  }}>
           Enrollment Process
         </Typography>
               <Typography  variant="body1" style={{ color: isDarkModeOn ? "white" : "black" }} whiteSpace="pre-wrap">
@@ -327,7 +329,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       <Row>
       <Col md={3} lg={3} className="d-flex flex-column">
-          <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px'  }}>
+          <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px'  }}>
             <Grid container alignItems="center" spacing={1}>
               {studioData && studioData.geolocation && (
                 <Grid item>
@@ -340,7 +342,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
                   </a>
                 </Grid>
               )}
-              <Grid item>
+              <Grid item style={{textTransform: 'capitalize'}}>
                 Visit Us at:
               </Grid>
             </Grid>
@@ -349,7 +351,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
           <Grid container alignItems="center" spacing={1}>
           {studioData && (
           
-            <Typography style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '18px'  }}>
+            <Typography style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px'  }}>
               {`${studioData.buildingName ? studioData.buildingName + (studioData.buildingName.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.street ? studioData.street + (studioData.street.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.landmark ? studioData.landmark + (studioData.landmark.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.city ? studioData.city : ''}`}
             </Typography>
           

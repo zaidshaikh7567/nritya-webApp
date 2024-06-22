@@ -106,11 +106,11 @@ const TableView = ({ studioData, studioId }) => {
       </Modal>
         {
           isSmallScreen?(
-            <div className='horizontal-scroll-wrapper-table' >
+            <div className='horizontal-scroll-wrapper-table' style={{backgroundColor: isDarkModeOn?'#202020':'white'}} >
               {Object.keys(studioData.tableData).map((key, index) => {
                 const classItem = studioData.tableData[key];
                 return (
-                  <Card key={index} style={{ minWidth: "400px", border:'none',backgroundColor: isDarkModeOn?'black':'white' ,paddingRight:"1rem" }}>
+                  <Card key={index} style={{ minWidth: "400px", border:'none',backgroundColor: isDarkModeOn?'#202020':'white' ,paddingRight:"1rem" }}>
                   <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
                     <tbody>
                       {[

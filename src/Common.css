@@ -40,12 +40,23 @@
 }
 .custom-btn{
   text-transform: capitalize;
-  border-radius: 24px;
+  border-radius: 20px;
   text-transform: capitalize;
-  padding: 8px 24px;
+  padding: 8px 14px;
   margin-top: 8px;
   border: 1px solid #666;
+}
+
+.custom-btn-wa {
+  text-transform: capitalize;
+  border-radius: 20px;
+  text-transform: capitalize;
+  padding: 8px 14px;
+  margin-top: 8px;
+  border: 1px solid #666;
+  background-color: green;
 }
 .btn-position{
   justify-content: space-evenly;
 }
+

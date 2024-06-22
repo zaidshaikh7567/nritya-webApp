@@ -95,53 +95,71 @@ function InstructorAdd() {
   };
 
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
-      <h1 style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Add Dance Teacher</h1>
+    <div style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
+      <h1 style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'black',textTransform:'capitalize' }}>Add Dance Teacher</h1>
       <Form onSubmit={handleSubmit}>
       <Row>
         <Col md={4}>
         <Form.Group controlId="formFile" className="mb-3">
         <Form.Label>
-          <div
-          style={{
-            width: '20rem',
-            height: '20rem',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            margin: 'auto',
-            position: 'relative', // Add position relative
-            backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black',
-          }}
-        >
-          {selectedImage && (
-            <Image
-            src={selectedImage}
-            alt="Selected"
-            style={{ width: '100%', height: '100%', display: selectedImage ? 'block' : 'none' }}
-          />
-
-          )}
-          </div>
-          <div style={{ textAlign: 'center' }}>
-              <label // Wrap the input label with a label tag
-                htmlFor="fileInput"
+          <Row style={{textAlign: 'center'}}>   
+              <div
                 style={{
-                  cursor: 'pointer',
+                  width: '22rem',
+                  height: '22rem',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  margin: 'auto',
+                  position: 'relative',
+                  backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black',
+                  
                 }}
               >
-              <span style={{ marginBottom: '2px',fontSize:'2rem' }}></span>
-                <input
-                  type="file"
-                  id="fileInput"
-                  name="picture"
-                  accept="image/*"
-                  style={{  }}
-                  onChange={handleImageChange}
-                />
-              </label>
-          </div>
+                {selectedImage && (
+                  <Image
+                    src={selectedImage}
+                    alt="Selected"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      display: selectedImage ? 'block' : 'none',
+                    }}
+                  />
+                )}
+              </div>
+              </Row>
         </Form.Label>
+            <Row>
+              <div style={{ textAlign: 'center' }}>
+                <label
+                  htmlFor="fileInput"
+                  style={{
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                    padding: '8px 8px',
+                    backgroundColor: '#007bff',
+                    color: 'white',
+                    borderRadius: '14px',
+                    textTransform: 'capitalize',
+                    border: '1px solid #666',
+                  }}
+                >
+                  <span style={{ fontSize: '1rem' }}>Image +</span>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    name="picture"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+           
+          </Row>
+
         </Form.Group>
+
           </Col>
           <Col md={8}>
               <Form.Label>Name</Form.Label>

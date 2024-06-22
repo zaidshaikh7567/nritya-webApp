@@ -10,11 +10,21 @@ import { COLLECTIONS } from '../constants';
 import { db } from '../config';
 import InstructorCard from '../Components/InstructorCard';
 import { useAuth } from '../context/AuthContext';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import { Box } from '@mui/material';
 
 function Instructors() {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
     const [instructors, setInstructors] = useState([]);
     const { currentUser } = useAuth();
+    const [value, setValue] = React.useState('1');
+
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
       // Fetch instructors for the current user
     useEffect(() => {
     const fetchInstructors = async () => {
@@ -45,8 +55,30 @@ function Instructors() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? 'black' : '', color: isDarkModeOn ? 'white' : 'black' }}>
-        <Accordion defaultActiveKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+    <div style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+      <Box sx={{ width: '100%', typography: 'body1' }}>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList style={{color: isDarkModeOn ? 'white' : 'black'}} onChange={handleChange} aria-label="lab API tabs example">
+            <Tab style={{color: isDarkModeOn ? 'white' : 'black'}} label="Add Instructor" value="1" />
+            <Tab style={{color: isDarkModeOn ? 'white' : 'black'}} label="Update Instructor" value="2" />
+          
+          </TabList>
+        </Box>
+        <TabPanel value="1">
+
+        <InstructorAdd />
+        </TabPanel>
+        <TabPanel value="2">
+        <>
+        <InstructorUpdate instructors={instructors} setInstructors={setInstructors} />
+        </>
+    
+        </TabPanel>
+        
+      </TabContext>
+    </Box>
+        <Accordion hidden defaultActiveKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
             {/* Add Instructor Accordion */}
             <Accordion.Item eventKey="0" style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
                 <Accordion.Header style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>

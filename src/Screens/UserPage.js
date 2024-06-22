@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import { deleteAllImagesInFolder, uploadOneImageAndGetURL } from '../utils/firebaseUtils';
 import MyBookings from '../Components/MyBookings';
 import './UserPage.css';
+import CreatorDashboard from './CreatorDashboard';
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
@@ -28,6 +29,19 @@ function UserPage() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const cardData = [
+    ['Transactions', 'All', '#/transactions'],
+    ['My Bookings', 'All', '#/myBookings'],
+    ['Kyc', 'All', '#/kyc'],
+    ['Instructors', 'Creator', '#/modifyInstructors'],
+    ['Studios', 'Creator', '#/modifyStudios'],
+    ['Creator DashBoard', 'Creator', '#/creatorDashboard']
+  ];
+  
+  
+  // Sort the array by the card name
+  cardData.sort((a, b) => a[0].localeCompare(b[0]));
+  
   //console.log("UserPage")
   /*
   if(currentUser && currentUser.displayName ){
@@ -131,6 +145,15 @@ function UserPage() {
     }
   };
 
+
+  const cardStyle = {
+    background: isDarkModeOn ? 'black' : 'white',
+    color: isDarkModeOn ? 'white' : 'black',
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "10px",
+    cursor: 'pointer' ,
+  };
+
   return (
     <div >
       <div className='upc'>
@@ -221,9 +244,32 @@ function UserPage() {
                 </Row>
           </Card>
       </div>
-      <MyBookings/>
+      <br/>
+      <Row>
+      {cardData.map(([name, type, link]) => {
+        if (type === 'Creator' && !isCreator) return null;
 
-    
+        return (
+          <Col
+            key={name}
+            xs={12}
+            sm={6}
+            md={6}
+            lg={3}
+            xl={3}
+            className="mb-4"
+          >
+            <a href={link} >
+              <Card style={cardStyle}>
+                <Card.Body>
+                  <Card.Title>{name}</Card.Title>
+                </Card.Body>
+              </Card>
+            </a>
+          </Col>
+        );
+      })}
+    </Row>
     </div>
   );
 }

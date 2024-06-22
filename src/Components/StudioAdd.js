@@ -208,11 +208,11 @@ function StudioAdd({instructors}) {
           </Stepper>
           
             < div hidden={activeStep > 2} >
-            <Form id="addStudioForm" onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+            <Form id="addStudioForm" onSubmit={handleAddStudio} style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>
               <Form.Group controlId="formBasicAdd">
              
                   <div hidden={activeStep !== 0}>
-                  <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
+                  <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -234,7 +234,7 @@ function StudioAdd({instructors}) {
                 </Row>
                 <hr></hr>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -252,7 +252,7 @@ function StudioAdd({instructors}) {
                 </Row>
                 <hr></hr>
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
                 <Row>
                   <Col md={6}>
                 <Form.Label >Dance Styles</Form.Label>
@@ -287,7 +287,7 @@ function StudioAdd({instructors}) {
                 <br></br>
                 <Row>
                   <Col xs={6}>
-                    <MuiButton variant="contained" disabled >
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}} disabled >
                       Prev
                     </MuiButton>
                   </Col>
@@ -307,7 +307,7 @@ function StudioAdd({instructors}) {
 
 
                 
-            <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
+            <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
                 <Form.Label>Names of Instructors</Form.Label>
                 <Row>
                   <ThemeProvider theme={darkTheme}>
@@ -336,11 +336,11 @@ function StudioAdd({instructors}) {
                     </a>
                 <hr></hr>   
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
                 <span>Time Table Of dance classes</span>
                 <StudioTable tableData={tableData} setTableData={setTableData}/>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
                 <Col md={4}>
                   <Form.Label>Owner's Aadhar Number</Form.Label>
@@ -384,7 +384,7 @@ function StudioAdd({instructors}) {
                   <Form.Control rows={12} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
           
                 </Row>
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
                <Row>
                <Col md={4}>
                   <Form.Label>Instagram</Form.Label>
@@ -422,7 +422,7 @@ function StudioAdd({instructors}) {
                
                 <div hidden={activeStep !== 2}>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
                 <Row>
                   <Col md={6}>
                   <Form.Label>Building Name</Form.Label>

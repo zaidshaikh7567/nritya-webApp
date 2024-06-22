@@ -28,7 +28,7 @@ function NrityaCard({data, title, type, studioContactNumber, studioWhatsAppNumbe
     return (
         <Card className={nrityaCardClass} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {type !== 'aboutStudio' && (
-                <Card.Title style={{ position: 'relative', padding: '0.1rem', paddingTop: '0.5rem',fontSize:'20px' }}>
+                <Card.Title style={{ position: 'relative', padding: '0.1rem', paddingTop: '0.5rem',fontSize:'20px',textTransform: 'capitalize' }}>
                     {title}
                 </Card.Title>
             )}

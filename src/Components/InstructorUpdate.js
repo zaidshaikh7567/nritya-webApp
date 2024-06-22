@@ -159,7 +159,7 @@ function InstructorUpdate({ instructors, setInstructors }) {
 
   return (
     <div>
-      <h1>Update Dance Teacher</h1>
+      <h1 style={{color: isDarkModeOn ? 'white' : 'black',textTransform:'capitalize'}}>Update Dance Teacher</h1>
       <Form onSubmit={handleUpdateSubmit}>
         <Form.Control
           as="select"
@@ -189,6 +189,7 @@ function InstructorUpdate({ instructors, setInstructors }) {
               <Col md={4}>
                 <Form.Group controlId="formFile" className="mb-3">
                   <Form.Label>
+                    <Row>
                     <div
                       style={{
                         width: '20rem',
@@ -212,6 +213,10 @@ function InstructorUpdate({ instructors, setInstructors }) {
                         />
                       )}
                     </div>
+                    </Row>
+                    
+                  </Form.Label>
+                  <Row>
                     <div style={{ textAlign: 'center' }}>
                       <label htmlFor="fileInput" style={{ cursor: 'pointer' }}>
                         <span style={{ marginBottom: '2px', fontSize: '2rem' }}></span>
@@ -225,7 +230,7 @@ function InstructorUpdate({ instructors, setInstructors }) {
                         />
                       </label>
                     </div>
-                  </Form.Label>
+                    </Row>
                 </Form.Group>
               </Col>
               <Col>

@@ -332,7 +332,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   };
 
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+    <div style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>
       <br></br>
             <Form id="updateStudioForm" onSubmit={handleUpdateStudio}>
               <Form.Group controlId="formBasicUpdate">
@@ -351,7 +351,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Form.Control>
               </Form.Group>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Basic Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -373,7 +373,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>
                 <hr></hr>
 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Contact Details</h3>
                 <Row>
                 <Col md={6}>
 
@@ -391,7 +391,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>
                 <hr></hr>
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
                 <Row>
                   <Col md={6}>
                 <Form.Label>Dance Styles</Form.Label>
@@ -427,19 +427,19 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>
                 <hr></hr>
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Instructor Details</h3>
                 <Form.Label>Names of Instructors</Form.Label>
                 <Row >
       
                   <Col xs={6}>
-                  <div style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>
+                  <div style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>
                     <Dropdown className="d-inline mx-2">
                       <Dropdown.Toggle variant="warning" id="dropdown-autoclose-true">
                         Add/Remove Instrcutors
                       </Dropdown.Toggle>
                       <Dropdown.Menu style={{marginTop: '1px', backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? 'white' : 'white' }}>
                         {instructors.map((instructor) => (
-                          <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? '#181818' : '' }} key={instructor.id}>
+                          <div style={{backgroundColor: isDarkModeOn ? '#d3d3d3' : 'black', color: isDarkModeOn ? '#202020' : '' }} key={instructor.id}>
                             <Form.Check
                               type="checkbox"
                               id={`checkbox-${instructor.id}`}
@@ -484,7 +484,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </Row>  
                 <hr></hr>
                    
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
                 <Row>
                   <Col md={6}>
                   <Form.Label>Building Name</Form.Label>
@@ -536,7 +536,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 <hr></hr>
 
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
                   <Col md={4}>
                     <Form.Label>Owner's Aadhar Number</Form.Label>
@@ -692,7 +692,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
             </Table>
             <br></br>
-            <h3 style={{ backgroundColor: isDarkModeOn ? '#181818' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
+            <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
                <Row>
             <Col md={4}>
                           <Form.Label>Instagram</Form.Label>
