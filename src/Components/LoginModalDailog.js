@@ -1,9 +1,10 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import Dialog from '@mui/material/Dialog';
 import { styled } from '@mui/material/styles';
 import LoginModalForm from "./LoginModalForm";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import useLocalStorageListener from './useLocalStorageListener'; 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -14,7 +15,25 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   }
 }));
 
-const LoginModalDailog = ({open, handleClose, setIsLoggedIn }) => {
+const LoginModalDailog = ({open, handleClose }) => {
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
+    return storedIsLoggedIn === 'true';
+  });
+  useEffect(() => {
+    if (isLoggedIn) {
+      handleClose();
+    }
+  }, [isLoggedIn, handleClose]);
+
+  useLocalStorageListener('isLoggedIn', () => {
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
+    if (storedIsLoggedIn === 'true') {
+      handleClose();
+    }
+  });
+
     return (
 
         <React.Fragment>
@@ -41,9 +60,9 @@ const LoginModalDailog = ({open, handleClose, setIsLoggedIn }) => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-           <CloseIcon />
-        </IconButton>
-            <LoginModalForm/>
+                <CloseIcon />
+          </IconButton>
+            <LoginModalForm isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
           </BootstrapDialog>
         </React.Fragment>
        

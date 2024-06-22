@@ -43,7 +43,10 @@ function App() {
     const { displayName, email  } = currentUser;
     console.log("Hii",displayName,email)
   }
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
+    return storedIsLoggedIn === 'true';
+  });
   const [username, setUsername] = useState(null);
   const [userID, setUserID] = useState(null);
   const [adminLoggedIn, setAdminLoggedIn] = useState(false)
@@ -67,6 +70,7 @@ function App() {
   };
   
   const handleLogout = () => {
+    console.log("Loggin Out")
     setUsername("");
     setIsLoggedIn(false);
     // Remove user data from localStorage

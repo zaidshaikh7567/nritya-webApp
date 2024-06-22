@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { styled } from '@mui/system';
 import loginBoxLogo from '../../src/Components/DanceImg/Nritya_Login_logo.png';
 import loginText from '../../src/Components/DanceImg/Lets_dance.png';
@@ -23,7 +23,25 @@ const LoginText = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const LoginModalForm = ({ handleClose }) => {
+const LoginModalForm = ({isLoggedIn, setIsLoggedIn}) => {
+    
+      const [username, setUsername] = useState(() => localStorage.getItem('username') || '');
+      const [userID, setUserID] = useState(() => {
+        const userInfo = localStorage.getItem('userInfo');
+        return userInfo ? JSON.parse(userInfo).localId : '';
+      });
+    
+      const handleLogin = (UserInfo, userInfoFull) => {
+        setUsername(UserInfo.displayName);
+        setIsLoggedIn(true);
+        setUserID(UserInfo.localId);
+        localStorage.setItem('username', UserInfo.displayName);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userInfo', JSON.stringify(UserInfo));
+        localStorage.setItem('userInfoFull', JSON.stringify(userInfoFull));
+        console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
+      };
+    
     return (
         <LoginBoxMain>
             <LoginLogo>
@@ -32,7 +50,7 @@ const LoginModalForm = ({ handleClose }) => {
             <LoginText>
                 <img src={loginText} alt="login-text-img" />
             </LoginText>
-            <LoginPage />
+            <LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />
         </LoginBoxMain>
     );
 }

@@ -10,18 +10,21 @@ import './SideMenu.css';
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const { currentUser } = useAuth();
-  // const dispatch = useDispatch();
 
   const handleLogout = async () => {
+    console.log("Logging out")
     try {
       await auth.signOut();
-      /*
-      const clearCart = () => {
-        dispatch(clearCartAction());
-      };
-      clearCart()
-      */
-      // The user is now logged out. You can also add additional cleanup or redirect logic if needed.
+    console.log("Clear Logging out")
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('userInfoFull');
+    localStorage.removeItem('posts');
+    localStorage.removeItem('adminLogin');
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('StudioCreated');
+    localStorage.removeItem('username');
+     
     } catch (error) {
       console.error('Error during logout:', error.message);
     }
