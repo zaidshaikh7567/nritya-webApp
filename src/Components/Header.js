@@ -202,6 +202,7 @@ function Header() {
 
   const handleOpen = () => {
     setOpen(true)
+    console.log("handle Open from header",open)
   }
 
   //function handle to close the form
@@ -333,7 +334,7 @@ function Header() {
           
               <Button variant="outlined" className="rounded-pill" onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
-            {/* display the modal and pass props */}
+           
             <LoginModalDailog open={open} handleClose={handleClose} />
           </Nav>
           

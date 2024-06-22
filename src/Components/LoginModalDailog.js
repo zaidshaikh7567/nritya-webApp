@@ -16,23 +16,20 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const LoginModalDailog = ({open, handleClose }) => {
-  
+  console.log("Open",open)
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
     return storedIsLoggedIn === 'true';
   });
+
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && localStorage.getItem('isLoggedIn') === 'true') {
+      console.log("It's logged in",isLoggedIn)
       handleClose();
     }
   }, [isLoggedIn, handleClose]);
 
-  useLocalStorageListener('isLoggedIn', () => {
-    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
-    if (storedIsLoggedIn === 'true') {
-      handleClose();
-    }
-  });
+  
 
     return (
 
@@ -44,8 +41,7 @@ const LoginModalDailog = ({open, handleClose }) => {
             maxWidth='xs'
             sx={{
               '& .MuiModal-backdrop': {
-                backgroundColor: 'rgba(233, 236, 239, 0.4)',
-                backdropFilter: 'blur(10px)'
+                backdropFilter: 'blur(8px)'
               },
             }}
           
