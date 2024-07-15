@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Form, Button, Col, Row, Image, Modal, FormControl,Badge, ButtonGroup, Container } from 'react-bootstrap';
 import {Badge as MuiBadge,Chip as MuiChip,Autocomplete as MuiAutocomplete, TextField as MuiTextField,createTheme,ThemeProvider,Button as MuiButton, Stack as MuiStack,Grid as MuiGrid} from '@mui/material';
+import Select from 'react-select';
 import axios from 'axios';
 import indianCities from '../cities.json';
 import {refreshLocation} from '../redux/actions/refreshLocationAction';
@@ -25,16 +26,37 @@ const SearchPage = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selectedDistances, setSelectedDistances] = useState('');
-  const [selectedDanceForm, setSelectedDanceForm] = useState('');
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
   const [showFilterValue, setShowFilterValue] = useState('distances');
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
+  const [selectedDanceForms, setSelectedDanceForms] = useState([]);
 
   const dispatch = useDispatch();
-  const danceForms = danceStyles.danceStyles;
-  console.log("dark mode", isDarkModeOn)
+  const danceForms = danceStyles.danceStyles.map(danceForm => ({
+    value: danceForm,
+    label: danceForm
+  }));
+
+  const styles = {
+    valueContainer: (base) => ({
+      ...base,
+      maxHeight: 100,
+      overflowY: "auto"
+    }),
+    multiValue: (base, state) => {
+      return state.data.isFixed ? { ...base, backgroundColor: "gray" } : base;
+    },
+    multiValueLabel: (base, state) => {
+      return state.data.isFixed
+        ? { ...base, fontWeight: "bold", color: "white", paddingRight: 6 }
+        : base;
+    },
+    multiValueRemove: (base, state) => {
+      return state.data.isFixed ? { ...base, display: "none" } : base;
+    }
+  };
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -53,7 +75,9 @@ const SearchPage = () => {
   const countActiveFilters = () => {
     let count = 0;
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
-    if (localStorage.getItem(FILTER_DANCE_FORMS_KEY)) count++;
+
+    const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
+    if (storedDanceForm) count += JSON.parse(storedDanceForm).length;
     return count;
   };
 
@@ -69,21 +93,17 @@ const SearchPage = () => {
     }
   
     if (localStorage.getItem(FILTER_DANCE_FORMS_KEY)) {
-      console.log(selectedDanceForm)
       apiEndpoint += `&danceStyle=${encodeURIComponent(localStorage.getItem(FILTER_DANCE_FORMS_KEY))}`;
     }
     var geoLocation = getGeoLocationFromLocalStorage();
 
     
     if (selectedDistances && geoLocation && localStorage.getItem(FILTER_DISTANCES_KEY)) {
-      console.log(selectedDistances,geoLocation)
       apiEndpoint += `&distance=${encodeURIComponent(localStorage.getItem(FILTER_DISTANCES_KEY))}&user_lat=${encodeURIComponent(geoLocation.latitude)}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
     }
-    console.log("API SERACH",apiEndpoint)
     fetch(apiEndpoint)
       .then(response => response.json())
       .then(data => {
-        console.log('Search results:', data); // Log the data received from the API
         setResults(data);
       })  
       .catch(error => console.error('Error fetching search results:', error));
@@ -92,7 +112,6 @@ const SearchPage = () => {
   const handleChange = async (event, value) => {
     const baseUrl = "https://nrityaserver-2b241e0a97e5.herokuapp.com/api"
     //setQuery(event.target.value);
-    console.log(value)
     setQuery(value);
 
     if (value.length >= 3) {
@@ -122,8 +141,7 @@ const SearchPage = () => {
   const handleApplyFilters = () => {
 
     localStorage.setItem(FILTER_DISTANCES_KEY, selectedDistances);
-    localStorage.setItem(FILTER_DANCE_FORMS_KEY, selectedDanceForm);
-    console.log("Location change, redux operation")
+    localStorage.setItem(FILTER_DANCE_FORMS_KEY, JSON.stringify(selectedDanceForms));
     setActiveFilters(countActiveFilters());
     //dispatch(refreshLocation())
     setShowFilters(false);
@@ -133,25 +151,38 @@ const SearchPage = () => {
 
   const handleClearFilters = () => {
     setSelectedDistances('');
-    setSelectedDanceForm('');
-    console.log("handleClearFilters",selectedDistances,selectedDanceForm)
+    setSelectedDanceForms([]);
     localStorage.removeItem(FILTER_DISTANCES_KEY);
     localStorage.removeItem(FILTER_DANCE_FORMS_KEY);
     setActiveFilters(0);
-
-    console.log("handleClearFilters",selectedDistances,selectedDanceForm)
     setShowFilters(false);
     handleSearch();
-    console.log(results)
   };
 
+  const handleSelectChange = (selectedOptions) => {
+    setSelectedDanceForms(selectedOptions ? selectedOptions.map(option => option.value) : []);
+  };
+
+  const handleRemoveDistance = () => {
+    setSelectedDistances(null);
+    localStorage.removeItem(FILTER_DISTANCES_KEY);
+    setActiveFilters(countActiveFilters());
+    handleSearch();
+  };
+
+  const handleRemoveDanceForm = (danceFormToRemove) => {
+    const filteredDanceForms = selectedDanceForms.filter(danceForm => danceForm !== danceFormToRemove);
+    setSelectedDanceForms(filteredDanceForms);
+    localStorage.setItem(FILTER_DANCE_FORMS_KEY, JSON.stringify(filteredDanceForms));
+    setActiveFilters(countActiveFilters());
+    handleSearch();
+  };
 
   // Retrieve selected filters from local storage on component mount
   useEffect(() => {
     const storedDistances = localStorage.getItem(FILTER_DISTANCES_KEY);
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     
-      console.log("API SearchPage done",storedDanceForm)
   
     
     if (storedDistances) {
@@ -159,11 +190,8 @@ const SearchPage = () => {
     }
     
     if (storedDanceForm) {
-      console.log("API SearchPage Setting selectedDanceForm",storedDanceForm)
-      setSelectedDanceForm(storedDanceForm);
-      console.log("API SearchPage done  selectedDanceForm",selectedDanceForm)
+      setSelectedDanceForms(JSON.parse(storedDanceForm));
     }
-    console.log("API SearchPage done  selectedDanceForm",selectedDanceForm)
     setActiveFilters(countActiveFilters());
     handleSearch();
   }, []);
@@ -216,7 +244,7 @@ const SearchPage = () => {
         </MuiGrid>
         <br></br>
       <Row className="align-items-center">
-      <Col xs="auto">
+      <Col xs="auto" style={{marginTop: '0.5rem'}}>
        
           <MuiBadge
             onClick={toggleFilters}
@@ -235,31 +263,35 @@ const SearchPage = () => {
 
       {/* Filter Badges */}
       {selectedDistances && (
-        <Col xs="auto">
+        <Col xs="auto" style={{marginTop: '0.5rem'}}>
           <MuiBadge color="success" pill>
             <MuiChip
               color="success"
               label={`Distance: ${selectedDistances} km`}
               variant={isDarkModeOn ? "outlined" : "contained"}
+              onDelete={handleRemoveDistance}
             />
           </MuiBadge>
         </Col>
       )}
       
-      {selectedDanceForm && (
+      {selectedDanceForms && (
         <Col xs="auto">
-          <MuiBadge color="info" pill>
+          {selectedDanceForms.map((danceForm, index) => (
+            <MuiBadge key={index} color="info" style={{ marginLeft: index !== 0 ? '0.25rem' : '0', marginTop: '0.5rem' }} pill>
             <MuiChip
               color="info"
-              label={`Dance Form: ${selectedDanceForm}`}
+              label={`Dance Form: ${danceForm}`}
               variant={isDarkModeOn ? "outlined" : "contained"}
+              onDelete={() => handleRemoveDanceForm(danceForm)}
             />
           </MuiBadge>
+          ))}
         </Col>
       )}
 
-      {(selectedDanceForm || selectedDistances) && (
-        <Col xs="auto">
+      {(selectedDanceForms.length || selectedDistances) && (
+        <Col xs="auto" style={{marginTop: '0.5rem'}}>
           <MuiBadge
             color="error"
             onClick={handleClearFilters}
@@ -268,11 +300,10 @@ const SearchPage = () => {
           >
             <MuiChip
               color="error"
-              label="Clear All X"
-              onClick={handleClearFilters}
+              label="Clear All"
+              onDelete={handleClearFilters}
               style={{ cursor: 'pointer' }}
               variant={isDarkModeOn ? "outlined" : "contained"}
-              
             />
           </MuiBadge>
         </Col>
@@ -281,9 +312,7 @@ const SearchPage = () => {
       </Container>
 
       </header>
-      <body>
 
-      </body>
       <Modal  show={showFilters} onHide={toggleFilters} backdrop="static">
           <Modal.Header closeButton >
             <Modal.Title >Filters</Modal.Title>
@@ -334,19 +363,28 @@ const SearchPage = () => {
                 {showFilters && showFilterValue === 'danceForm' && (
                   <Form.Group controlId="filterDanceForms">
                     <Form.Label>Dance Forms:</Form.Label>
-                    <Form.Control as="select" value={selectedDanceForm} onChange={(e) => setSelectedDanceForm(e.target.value)}>
+                    <Select
+                      isMulti
+                      value={danceForms.filter(option => selectedDanceForms.includes(option.value))}
+                      onChange={handleSelectChange}
+                      options={danceForms}
+                      closeMenuOnSelect={false}
+                      placeholder="Select Dance Forms"
+                      styles={styles}
+                    />
+                    {/* <Form.Control as="select" value={selectedDanceForm} onChange={(e) => setSelectedDanceForm(e.target.value)}>
                       <option value="">Select Dance Form</option>
                       {danceForms.map((danceForm) => (
                         <option key={danceForm} value={danceForm}>
                           {danceForm}
                         </option>
                       ))}
-                    </Form.Control>
+                    </Form.Control> */}
                   </Form.Group>
                 )}
               </Col>
             </Row>
-            <ButtonGroup>
+            <ButtonGroup style={{marginTop:'1rem'}}>
             <Button variant="primary" onClick={handleApplyFilters}>
               Apply
             </Button>
@@ -387,7 +425,6 @@ function getGeoLocationFromLocalStorage() {
     try {
       // Parse the JSON string to get an object
       var geoLocObject = JSON.parse(geoLocString);
-      console.log(geoLocObject)
       // Check if the latitude and longitude properties exist in the parsed object
       if (geoLocObject && geoLocObject["latitude"] && geoLocObject["longitude"]) {
         // Extract latitude and longitude from the object
@@ -396,14 +433,10 @@ function getGeoLocationFromLocalStorage() {
 
         // Return an object with latitude and longitude
         return { latitude: latitude, longitude: longitude };
-      } else {
-        console.log('Incomplete data found in localStorage for FILTER_USER_GEO_LOC');
       }
     } catch (error) {
       console.error('Error parsing JSON:', error);
     }
-  } else {
-    console.log('No data found in localStorage for FILTER_USER_GEO_LOC');
   }
 
   // Return null if there's no valid data or an error occurred
