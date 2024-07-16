@@ -443,7 +443,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                             <Form.Check
                               type="checkbox"
                               id={`checkbox-${instructor.id}`}
-                              label={`${instructor.name} - ${instructor.id.slice(-4)}`}
+                              label={`${instructor.name} - ${instructor?.id?.slice?.(-4) || ""}`}
                               checked={selectedInstructors.some((selected) => selected.id === instructor.id)}
                               onChange={() => handleToggleInstructor(instructor)}
                               style={{ flex: 1 }} 
@@ -472,7 +472,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                               }}
                               pill
                             >
-                              {selected.name} - {selected.id.slice(-4)}{' '}
+                              {selected.name} - {selected?.id?.slice?.(-4) || ""}{' '}
                             </Badge>
                           </li>
                         ))}
@@ -592,7 +592,11 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                   <th>Instructors</th>
                   <th>Fee</th>
                   <th>Level</th>
-                  <th></th>
+                  <th style={{ paddingLeft: 0, paddingRight: 0 }}>
+                    <Button variant="primary" onClick={handleAddRow}>
+                      <FaPlus/>
+                    </Button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -672,19 +676,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         </Form.Control>
                     </td>
                     <td style={{padding:'0rem'}}>
-                      {index === 0 ? (
-                        <Button variant="primary" onClick={handleAddRow}>
-                          <FaPlus/>
-                        </Button>
-                      ) : (
-                        <>
-                        {console.log('Yo',rowKey <= selectedStudioFrozenClassRows, rowKey,selectedStudioFrozenClassRows)}
-                        
-                        <Button variant="danger" onClick={() => handleRemoveRow(rowKey)} disabled={rowKey <= selectedStudioFrozenClassRows} >
-                         <FaMinus/>
-                        </Button>
-                        </>
-                      )}
+                      <Button variant="danger" onClick={() => handleRemoveRow(rowKey)}>
+                        <FaMinus/>
+                      </Button>
                     </td>
                   </tr>
                 ))}
