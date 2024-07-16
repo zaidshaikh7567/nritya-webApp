@@ -27,7 +27,11 @@ const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
 
 
 
-function StudioTable({ tableData, setTableData }) {
+function StudioTable({
+  tableData,
+  setTableData,
+  instructorNamesWithIds
+}) {
   const [tableDataReplace, setTableDataReplace] = useState([tableData]);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
@@ -36,7 +40,7 @@ function StudioTable({ tableData, setTableData }) {
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00")
 
   const handleAddRow = () => {
-    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: '', fee:'',level:'' ,status: '' }]);
+    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: [], fee:'',level:'' ,status: '' }]);
     console.log(tableDataReplace, "After adding");
   };
 
@@ -120,7 +124,11 @@ function StudioTable({ tableData, setTableData }) {
             <th style={{padding:'0.6rem'}}>Instructors</th>
             <th style={{padding:'0.6rem'}}>Fee</th>
             <th style={{padding:'0.6rem'}}>Level</th>
-            <th style={{padding:'0.6rem'}}></th>
+            <th style={{padding:'0.6rem'}}>
+              <Button variant="primary" onClick={handleAddRow}>
+                <FaPlus />
+              </Button>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -175,12 +183,21 @@ function StudioTable({ tableData, setTableData }) {
               )}
 
               </td>
-              <td style={{padding:'0rem'}}>
-                < Form.Control style={{backgroundColor:"white"}}
-                  type="text"
+              <td style={{padding:'0rem', width:'20rem'}}>
+                <Autocomplete
+                  multiple
+                  id="tags-standard"
+                  options={instructorNamesWithIds}
                   value={row.instructors}
-                  onChange={(e) => handleTableChange(index, 'instructors', e.target.value)}
-                /> 
+                  onChange={(_, values) => handleTableChange(index, 'instructors', values)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder="Select Instructors"
+                    />
+                  )}
+                />
               </td>
               <td style={{padding:'0rem'}}>
                 < Form.Control style={{backgroundColor:"white"}}
@@ -203,15 +220,13 @@ function StudioTable({ tableData, setTableData }) {
                   </Form.Control>
               </td>
               
-              <td style={{padding:'0rem'}}>
-                {index === 0 ? (
-                  <Button variant="primary" onClick={handleAddRow}>
-                    <FaPlus />
-                  </Button>
-                ) : (
+              <td style={{padding:'0.6rem'}}>
+                {index !== 0 ? (
                   <Button variant="danger" onClick={() => handleRemoveRow(index)}>
-                    <FaMinus />
-                  </Button>
+                  <FaMinus />
+                </Button>
+                ) : (
+                  null
                 )}
               </td>
             </tr>

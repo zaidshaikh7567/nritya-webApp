@@ -51,7 +51,7 @@ const optionsDays = [
 function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
-      { className: '', danceForms: '', days: '', time: '', instructors: '', fee:'',level:'' ,status: ''},
+      { className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: ''},
     );
     const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
@@ -338,7 +338,11 @@ function StudioAdd({instructors}) {
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
                 <span>Time Table Of dance classes</span>
-                <StudioTable tableData={tableData} setTableData={setTableData}/>
+                <StudioTable
+                  tableData={tableData}
+                  setTableData={setTableData}
+                  instructorNamesWithIds={instructorNamesWithIds}
+                />
 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
