@@ -17,6 +17,7 @@ import {Autocomplete,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FaMinus, FaPlus } from 'react-icons/fa';
+import { MultiSelect } from 'primereact/multiselect';
 
 const colorCombinations = [
   { background: 'success', text: 'white' },
@@ -24,6 +25,8 @@ const colorCombinations = [
   { background: 'danger', text: 'white' },
   { background: 'info', text: 'black' },
 ];
+
+const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
 
 function isMapOfMaps(data) {
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
@@ -71,6 +74,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
 
+  const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
 
   const darkTheme = createTheme({
     palette: {
@@ -93,7 +97,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       danceForms: '',
       days: '',
       time: '',
-      instructors: '',
+      instructors: [],
       fee:'',
       level:''
     }
@@ -212,7 +216,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               danceForms: '',
               days: '',
               time: '',
-              instructors: '',
+              instructors: [],
               fee: '',
               level:'',
             }
@@ -321,6 +325,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
   const handleTableChange = (index, field, value) => {
     setTableData((prevData) => {
+      if(field==="days"){
+        value = Array.isArray(value) ? value.join(',') : value; 
+      }
+
       return {
         ...prevData,
         [index]: {
@@ -582,7 +590,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
               <br></br>
             <span>Time Table Of dance classes</span>
-            <Table striped bordered hover variant="dark">
+            <Table bordered variant="light">
               <thead>
                 <tr>
                   <th>Class Name</th>
@@ -625,10 +633,11 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         </Form.Control>
                     </td>
                     <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        type="text"
-                        value={tableData[rowKey].days}
-                        onChange={(e) => handleTableChange(rowKey, 'days', e.target.value)}
+                      <MultiSelect value={tableData[rowKey].days && tableData[rowKey].days.split(',').filter(day => day !== '')}
+                        onChange={(event) => handleTableChange(rowKey, 'days', event.target.value)}
+                        options={daysOfWeek}
+                        placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"
+                        style={{color: '#000', width: '100%'}}
                       />
                     </td>
                     <td style={{padding:'0rem'}}>
@@ -647,11 +656,19 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                       />
                     )}
                     </td>
-                    <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        type="text"
-                        value={tableData[rowKey].instructors?tableData[rowKey].instructors:""}
-                        onChange={(e) => handleTableChange(rowKey, 'instructors', e.target.value)}
+                    <td style={{padding:'0rem', width:'20rem'}}>
+                      <Autocomplete
+                        multiple
+                        options={instructorNamesWithIds}
+                        value={tableData[rowKey].instructors}
+                        onChange={(_, values) => handleTableChange(rowKey, 'instructors', values)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            placeholder="Select Instructors"
+                          />
+                        )}
                       />
                     </td>
                     <td style={{padding:'0rem'}}>
