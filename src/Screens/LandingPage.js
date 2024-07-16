@@ -45,7 +45,7 @@ function LandingPage() {
 
   const handleCardClick = (danceName) => {
     localStorage.removeItem(FILTER_DISTANCES_KEY);
-    localStorage.setItem(FILTER_DANCE_FORMS_KEY, danceName);
+    localStorage.setItem(FILTER_DANCE_FORMS_KEY, JSON.stringify([danceName]));
     if(localStorage.getItem(FILTER_DANCE_FORMS_KEY)==danceName){
       console.log("API LandingPage done",danceName)
     }
