@@ -221,13 +221,9 @@ function StudioTable({
               </td>
               
               <td style={{padding:'0.6rem'}}>
-                {index !== 0 ? (
-                  <Button variant="danger" onClick={() => handleRemoveRow(index)}>
+                <Button variant="danger" onClick={() => handleRemoveRow(index)}>
                   <FaMinus />
                 </Button>
-                ) : (
-                  null
-                )}
               </td>
             </tr>
           ))}
