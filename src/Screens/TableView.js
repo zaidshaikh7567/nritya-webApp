@@ -11,6 +11,20 @@ import { Chip, Typography } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 
 
+function processInstructors(instructors) {
+  if (Array.isArray(instructors)) {
+      // If the input is an array of strings
+      return instructors.map(item => item.split('-')[0]).join(',');
+  } else if (typeof instructors === 'string') {
+      // If the input is a single string
+      return instructors.split('-')[0];
+  } else {
+      // If the input is neither a string nor an array
+      throw new Error('Invalid input type');
+  }
+}
+
+
 const TableView = ({ studioData, studioId }) => {
   //console.log("TableView",studioData,studioId)
   const { currentUser } = useAuth();
@@ -182,7 +196,7 @@ const TableView = ({ studioData, studioId }) => {
                   <td style={commonCellStyle}>{classItem.danceForms ? classItem.danceForms : ""}</td>
                   <td style={commonCellStyle}>{classItem.days ? classItem.days : ""}</td>
                   <td style={commonCellStyle}>{classItem.time ? classItem.time : ""}</td>
-                  <td style={commonCellStyle}>{classItem.instructors ? classItem.instructors : "N/A"}</td>
+                  <td style={commonCellStyle}>{classItem.instructors ? processInstructors(classItem.instructors) : "N/A"}</td>
                   <td style={commonCellStyle}>{classItem.level ? classItem.level : "N/A"}</td>
                   <td style={commonCellStyle} >{classItem.fee ? classItem.fee : "N/A"}</td>
                   <td  className='custom-btn-cell' style={commonCellStyle}  onClick={() => bookFreeTrial(index)}>
