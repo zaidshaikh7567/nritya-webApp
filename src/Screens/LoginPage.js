@@ -93,7 +93,7 @@ function LoginPage({onLogin,setIsLoggedIn}) {
                 onSubmit={(e) => {
                   e.preventDefault(); // Prevent form submission
                   signin(); // Call your signin function on form submission
-                  alert("Form Submitted")
+                  //alert("Form Submitted")
                 }}
                 style={{
                   display: 'flex',
