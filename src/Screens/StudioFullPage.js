@@ -195,16 +195,30 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <Col lg={4} xs={12} className='d-flex'>
         <div className='socialConnectFeature'>
             <Stack direction="horizontal" gap={1}>
-            <Button className='custom-btn-wa' size="md" style={{color:"white"}}>
-                <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent',color:"white"}}> 
+            {studioData && studioData.whatsappNumber && (
+              <Button className='custom-btn-wa' size="md" style={{color:"white"}}>
+                <a 
+                  href={`https://wa.me/91${studioData.whatsappNumber}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color: "white" }}
+                >
                   Text Studio <FaWhatsapp style={{'marginLeft': '2px'}}/>
                 </a>
-            </Button>
-            <Button className='custom-btn' size="md">
-                <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer" style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color:'white' }}> 
-                  Call Studio <FaPhoneAlt style={{'marginLeft': '2px'}}/> 
-                </a>
-            </Button>
+              </Button>
+            )}
+              {studioData && studioData.mobileNumber && (
+                <Button className='custom-btn' size="md">
+                  <a 
+                    href={`tel:${studioData.mobileNumber}`} 
+                    rel="noopener noreferrer" 
+                    style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color: 'white' }}
+                  >
+                    Call Studio <FaPhoneAlt style={{'marginLeft': '2px'}}/>
+                  </a>
+                </Button>
+              )}
+
             </Stack>
           </div>
       </Col>
