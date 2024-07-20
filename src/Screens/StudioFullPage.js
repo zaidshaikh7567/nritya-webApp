@@ -142,6 +142,9 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
    
   }, []);
 
+  const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
+
+
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'#202020':'white' ,color: isDarkModeOn?'white':'color' }}>
       <Row>
@@ -198,7 +201,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
             {studioData && studioData.whatsappNumber && (
               <Button className='custom-btn-wa' size="md" style={{color:"white"}}>
                 <a 
-                  href={`https://wa.me/91${studioData.whatsappNumber}`} 
+                  href={`https://wa.me/91${studioData.whatsappNumber}?text=${whatsappMessage}`} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   style={{ backgroundColor: isDarkModeOn ? 'transparent' : 'transparent', color: "white" }}
