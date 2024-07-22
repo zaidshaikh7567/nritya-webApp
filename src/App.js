@@ -25,7 +25,7 @@ import CreatorStudio from './Screens/CreatorStudio';
 import CreatorDashboard from './Screens/CreatorDashboard';
 import CreatorInstructor from './Screens/CreatorInstructor';
 import LocationComponent from './Components/LocationComponent';
-import {Divider as MuiDivider} from '@mui/material';
+import {Box, Divider as MuiDivider} from '@mui/material';
 import AboutUs from './Screens/About';
 import ContactUs from './Screens/ContactUs';
 import MyBookings from './Components/MyBookings';
@@ -91,38 +91,40 @@ function App() {
   console.log("hi:",process.env.REACT_APP_TRY)
   return (
     <HashRouter  >
-      <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
-      
-      <main className='py-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
-        <Container fluid>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
-            <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
-            <Route path='/st' element={<StudioFullPage/>}/>
-            <Route path='/search/:entity' element={<SearchPage/>}/>
-            <Route path='/jobs' element={<JobHire/>}/>
-            <Route element={<ProtectedRoute/>}>
-              <Route path='/profile' element={<UserPage/>}/>
-              <Route path='/kyc' element={<Kyc/>}/>
-              <Route path='/cplans' element={<CreatorPlans/>}/>
-              <Route path='/orders' element={<Order/>}/>
-              <Route path='/cart' element={<Cart/>}/>
-              <Route path='/myBookings' element={<MyBookings/>}/>
-              <Route path='/transactions' element={<Transactions/>}/>
-              <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
-              <Route path='/modifyStudios' element={<CreatorStudio/>}/>
-              <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
-            </Route>
-            <Route path='/n-trail' element={<Trail/>}/>
-            <Route path='/aboutus' element={<AboutUs/>}/>
-            <Route path='/contactus' element={<ContactUs/>}/>
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Container>
-      </main>
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+        
+        <main className='py-1 flex-grow-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
+          <Container fluid>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
+              <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
+              <Route path='/st' element={<StudioFullPage/>}/>
+              <Route path='/search/:entity' element={<SearchPage/>}/>
+              <Route path='/jobs' element={<JobHire/>}/>
+              <Route element={<ProtectedRoute/>}>
+                <Route path='/profile' element={<UserPage/>}/>
+                <Route path='/kyc' element={<Kyc/>}/>
+                <Route path='/cplans' element={<CreatorPlans/>}/>
+                <Route path='/orders' element={<Order/>}/>
+                <Route path='/cart' element={<Cart/>}/>
+                <Route path='/myBookings' element={<MyBookings/>}/>
+                <Route path='/transactions' element={<Transactions/>}/>
+                <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
+                <Route path='/modifyStudios' element={<CreatorStudio/>}/>
+                <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
+              </Route>
+              <Route path='/n-trail' element={<Trail/>}/>
+              <Route path='/aboutus' element={<AboutUs/>}/>
+              <Route path='/contactus' element={<ContactUs/>}/>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Container>
+        </main>
 
-      <Footer />
+        <Footer />
+      </Box>
     </HashRouter>
   );
 }
