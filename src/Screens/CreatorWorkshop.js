@@ -21,6 +21,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box } from "@mui/material";
 import WorkshopAdd from "../Components/WorkshopAdd";
 import WorkshopUpdate from "../Components/WorkshopUpdate";
+import CardSlider from "../Components/WorkshopCardSlider";
 
 function CreatorWorkshop() {
   const [studioId, setStudioId] = useState([]);
@@ -209,25 +210,14 @@ function CreatorWorkshop() {
       <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
         Your Workshop:
       </h3>
-      <ul>
-        <Row xs={1} md={3} lg={4} className="g-4">
-          {workshop.length > 0 ? (
-            workshop.map((workshop, index) => (
-              <Col key={index}>
-                <a
-                  href={`#/workshop/${workshop.studioId}`}
-                  style={{ textDecoration: "none" }}
-                ></a>
-              </Col>
-            ))
-          ) : (
-            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
-              No workshop yet!
-            </p>
-          )}
-        </Row>
-        <br />
-      </ul>
+
+      {workshop.length > 0 ? (
+        <CardSlider dataList={workshop} />
+      ) : (
+        <p style={{ color: isDarkModeOn ? "white" : "black" }}>
+          No workshop yet!
+        </p>
+      )}
     </div>
   );
 }
