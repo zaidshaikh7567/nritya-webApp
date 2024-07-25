@@ -17,6 +17,7 @@ export const COLLECTIONS ={
     STUDIO: "Studio",
     INSTRUCTORS: "Instructors",
     FREE_TRIAL_BOOKINGS:"FreeTrialBookings",
+    WORKSHOPS: 'Workshops'
 }
 
 export const STORAGES ={

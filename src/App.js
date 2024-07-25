@@ -31,6 +31,7 @@ import ContactUs from './Screens/ContactUs';
 import MyBookings from './Components/MyBookings';
 import JobHire from './Screens/JobHire';
 import NotFoundPage from './Screens/NotFoundPage';
+import CreatorWorkshop from './Screens/CreatorWorkshop';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -113,6 +114,7 @@ function App() {
                 <Route path='/transactions' element={<Transactions/>}/>
                 <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
                 <Route path='/modifyStudios' element={<CreatorStudio/>}/>
+                <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
                 <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
               </Route>
               <Route path='/n-trail' element={<Trail/>}/>

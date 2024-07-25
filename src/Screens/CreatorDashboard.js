@@ -20,6 +20,7 @@ import { queryDocumentsCount } from '../utils/firebaseUtils';
 function CreatorDashboard(){
   const [instructorsCount, setInstructorsCount] = useState(0);
   const [studiosCount, setStudiosCount] = useState(0);
+  const [workshopsCount, setWorkshopsCount] = useState(0);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const { currentUser } = useAuth();
 
@@ -38,6 +39,15 @@ function CreatorDashboard(){
     }
     getCount()
   },[studiosCount]);
+
+  useEffect(() => {
+    const getCount = async (event) => {
+      const count = await queryDocumentsCount(COLLECTIONS.WORKSHOPS, "UserId", '==', currentUser.uid);
+      setWorkshopsCount(count);
+    }
+    getCount()
+  },[workshopsCount]);
+
   return(
     <div style={{minHeight:"75vh"}}>
       <h1 style={{color: isDarkModeOn?"white":"black", textTransform:'capitalize'}}>Creator's Dashboard</h1>
@@ -67,6 +77,27 @@ function CreatorDashboard(){
             bubble={true}
           ></NrityaCard>
         </a>
+      </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <NrityaCard title={"Total Workshops"} data={workshopsCount} bubble={true}></NrityaCard>
+        </Col>
+        <Col></Col>
+      </Row>
+      <Row>
+      <Col>
+        <a href="#/modifyWorkshops" rel="noreferrer" target="_blank" style={{ textDecoration: 'none' }}>
+          <NrityaCard
+            title={"Add/Update Workshops"}
+            data={'+'}
+            bubble={true}
+          ></NrityaCard>
+        </a>
+      </Col>
+      <Col>
+
       </Col>
       </Row>
       </div>
