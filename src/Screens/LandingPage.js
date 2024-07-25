@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import CardSlider from "../Components/CardSlider";
 import WorkshopCardSlider from "../Components/WorkshopCardSlider";
+import OpenClassCardSlider from "../Components/OpenClassCardSlider";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from 'react-router-dom';
 import DanceCarousel from "../Components/DanceCarousel";
@@ -43,6 +44,7 @@ function LandingPage() {
   const [danceImagesUrl,setDanceImagesUrl] = useState([])
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [workshops, setWorkshops] = useState([]);
+  const [openClasses, setOpenClasses] = useState([]);
   const navigate = useNavigate(); 
 
   const handleCardClick = (danceName) => {
@@ -154,6 +156,24 @@ function LandingPage() {
   }, []);
 
   useEffect(() => {
+    const getOpenClasses = async () => {
+      const studioRef = collection(db, COLLECTIONS.OPEN_CLASSES);
+      const q = query(studioRef, limit(15));
+      const querySnapshot = await getDocs(q);
+      const exploreStudioList = querySnapshot.docs.filter(doc => doc.data().openClassName).map(doc => 
+        { const data = doc.data();
+          return {
+            id: doc.id,
+            ...data
+          };
+      });
+      setOpenClasses(exploreStudioList)
+    }
+
+    getOpenClasses();
+  }, []);
+
+  useEffect(() => {
     const fetchImages = async () => {
       try {
         const dataImagesUrlLocal = await getAllImagesInFolder('LandingPageImages');
@@ -213,6 +233,12 @@ function LandingPage() {
         <h3 style={{color: isDarkModeOn ? 'white' : 'black'}} >Explore Workshops</h3>
         <Row>
             <WorkshopCardSlider dataList={workshops} />
+        </Row>
+
+        <br/>
+        <h3 style={{color: isDarkModeOn ? 'white' : 'black'}} >Explore Open Classes</h3>
+        <Row>
+            <OpenClassCardSlider dataList={openClasses} />
         </Row>
 
         <br/>
