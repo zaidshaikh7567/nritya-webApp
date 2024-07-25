@@ -3,13 +3,7 @@ import { Row, Col, Form } from "react-bootstrap";
 import { Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
-import {
-  doc,
-  getDoc,
-  addDoc,
-  updateDoc,
-  collection,
-} from "firebase/firestore";
+import { doc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
@@ -153,7 +147,8 @@ function StudioAdd({ instructors, studioId }) {
                   <ImageUpload
                     entityId={newWorkshopId}
                     title={"Workshop Images"}
-                    storageFolder={STORAGES.WORKSHOPIMAGES}
+                    storageFolder={STORAGES.WORKSHOPICON}
+                    maxImageCount={1}
                   ></ImageUpload>
                 </Col>
 

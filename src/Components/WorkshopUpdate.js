@@ -210,7 +210,8 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                 <ImageUpload
                   entityId={selectedWorkshopId}
                   title={"Workshop Images"}
-                  storageFolder={STORAGES.WORKSHOPIMAGES}
+                  storageFolder={STORAGES.WORKSHOPICON}
+                  maxImageCount={1}
                 ></ImageUpload>
               </Col>
 

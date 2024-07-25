@@ -82,9 +82,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
     }
   };
 
-  const handleUploadSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleUploadSubmit = async () => {
     if (!entityId) {
       alert("No studio selected");
       return;
@@ -112,8 +110,6 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
       }
 
       alert("Images Uploaded/Deleted");
-
-      e.target.reset();
     } catch (error) {
       console.error("Error uploading/deleting images:", error);
     }
@@ -173,7 +169,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                     
                   </div>
                 </div>
-                <form onSubmit={handleUploadSubmit} style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>
+                <form style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>
                   <div className="kb-file-upload">
                     <div className="file-upload-box">
                       <input
@@ -232,10 +228,10 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                   
                   <div className="kb-buttons-box">
                     <button
-                      type="submit"
+                      type="button"
                       className="btn form-submit"
                       style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}
-                      
+                      onClick={handleUploadSubmit}
                     >
                       Image Upload
                     </button>

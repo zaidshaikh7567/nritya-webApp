@@ -28,7 +28,7 @@ export const STORAGES ={
     INSTRUCTORIMAGES: 'InstructorImages',
     WORKSHOPICON :"WorkshopIcon",
     WORKSHOPIMAGES :"WorkshopImages",
-    OPENCLASSIMAGES :"OpenClassImages",
+    OPENCLASSICON :"OpenClassIcon",
 }
 
 export const SEARCH_FILTERS ={

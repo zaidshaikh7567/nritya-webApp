@@ -146,7 +146,8 @@ function OpenClassAdd({ instructors, studioId }) {
                   <ImageUpload
                     entityId={newWorkshopId}
                     title={"Open Class Images"}
-                    storageFolder={STORAGES.OPENCLASSIMAGES}
+                    storageFolder={STORAGES.OPENCLASSICON}
+                    maxImageCount={1}
                   ></ImageUpload>
                 </Col>
 

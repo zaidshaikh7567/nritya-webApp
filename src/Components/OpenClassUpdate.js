@@ -209,7 +209,8 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
                 <ImageUpload
                   entityId={selectedOpenClassId}
                   title={"Open class Images"}
-                  storageFolder={STORAGES.OPENCLASSIMAGES}
+                  storageFolder={STORAGES.OPENCLASSICON}
+                  maxImageCount={1}
                 ></ImageUpload>
               </Col>
 
@@ -385,7 +386,9 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
                 <Form.Label>Venue</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedOpenClass ? selectedOpenClass.venue : ""}
+                  defaultValue={
+                    selectedOpenClass ? selectedOpenClass.venue : ""
+                  }
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
