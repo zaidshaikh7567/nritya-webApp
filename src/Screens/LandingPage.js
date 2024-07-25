@@ -10,6 +10,7 @@ import './LandingPage.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import CardSlider from "../Components/CardSlider";
+import WorkshopCardSlider from "../Components/WorkshopCardSlider";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from 'react-router-dom';
 import DanceCarousel from "../Components/DanceCarousel";
@@ -41,6 +42,7 @@ function LandingPage() {
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
   const [danceImagesUrl,setDanceImagesUrl] = useState([])
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const [workshops, setWorkshops] = useState([]);
   const navigate = useNavigate(); 
 
   const handleCardClick = (danceName) => {
@@ -134,6 +136,24 @@ function LandingPage() {
   }, []);
 
   useEffect(() => {
+    const getWorkshops = async () => {
+      const studioRef = collection(db, COLLECTIONS.WORKSHOPS);
+      const q = query(studioRef, limit(15));
+      const querySnapshot = await getDocs(q);
+      const exploreStudioList = querySnapshot.docs.filter(doc => doc.data().workshopName).map(doc => 
+        { const data = doc.data();
+          return {
+            id: doc.id,
+            ...data
+          };
+      });
+      setWorkshops(exploreStudioList)
+    }
+
+    getWorkshops();
+  }, []);
+
+  useEffect(() => {
     const fetchImages = async () => {
       try {
         const dataImagesUrlLocal = await getAllImagesInFolder('LandingPageImages');
@@ -151,7 +171,6 @@ function LandingPage() {
 
     fetchImages();
   }, []);
-  
 
   return (
     <div  >
@@ -189,6 +208,13 @@ function LandingPage() {
         <Row>
             <CardSlider dataList={exploreCards} imgOnly={false}/>
         </Row>
+
+        <br/>
+        <h3 style={{color: isDarkModeOn ? 'white' : 'black'}} >Explore Workshops</h3>
+        <Row>
+            <WorkshopCardSlider dataList={workshops} />
+        </Row>
+
         <br/>
         <h3 style={{color: isDarkModeOn ? 'white' : 'black'}} >BROWSE BY DANCE FORMS</h3>
         <Row >
