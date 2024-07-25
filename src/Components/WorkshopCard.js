@@ -65,6 +65,9 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 bgcolor: isDarkModeOn ? "#333333" : "#efefef",
                 p: 2,
                 borderRadius: "8px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
               }}
             >
               <Box sx={{ flex: 1 }}>
@@ -91,6 +94,47 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 >
                   {dataItem.venue}
                 </MUITypography>
+              </Box>
+
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <MUITypography
+                  variant="h5"
+                  sx={{
+                    alignSelf: "center",
+                    color: isDarkModeOn ? "white" : "black",
+                  }}
+                >
+                  ₹{dataItem.price}
+                </MUITypography>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    boxShadow: "none",
+                    textTransform: "none",
+                    fontSize: 16,
+                    padding: "6px 12px",
+                    border: "1px solid",
+                    lineHeight: 1.5,
+                    backgroundColor: "transparent",
+                    borderColor: isDarkModeOn ? "white" : "black",
+                    color: isDarkModeOn ? "white" : "black",
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                      borderColor: isDarkModeOn ? "white" : "black",
+                      boxShadow: "none",
+                    },
+                    "&:active": {
+                      boxShadow: "none",
+                      backgroundColor: "transparent",
+                      borderColor: isDarkModeOn ? "white" : "black",
+                    },
+                    "&:focus": {
+                      boxShadow: "none",
+                    },
+                  }}
+                >
+                  Book Now
+                </Button>
               </Box>
             </Box>
           </Grid>
