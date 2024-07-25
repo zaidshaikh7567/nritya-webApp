@@ -21,6 +21,7 @@ function CreatorDashboard(){
   const [instructorsCount, setInstructorsCount] = useState(0);
   const [studiosCount, setStudiosCount] = useState(0);
   const [workshopsCount, setWorkshopsCount] = useState(0);
+  const [openClassesCount, setOpenClassesCount] = useState(0);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const { currentUser } = useAuth();
 
@@ -47,6 +48,14 @@ function CreatorDashboard(){
     }
     getCount()
   },[workshopsCount]);
+
+  useEffect(() => {
+    const getCount = async (event) => {
+      const count = await queryDocumentsCount(COLLECTIONS.OPEN_CLASSES, "UserId", '==', currentUser.uid);
+      setOpenClassesCount(count);
+    }
+    getCount()
+  },[openClassesCount]);
 
   return(
     <div style={{minHeight:"75vh"}}>
@@ -84,7 +93,9 @@ function CreatorDashboard(){
         <Col>
           <NrityaCard title={"Total Workshops"} data={workshopsCount} bubble={true}></NrityaCard>
         </Col>
-        <Col></Col>
+        <Col>
+          <NrityaCard title={"Total Open Classes"} data={openClassesCount} bubble={true}></NrityaCard>
+        </Col>
       </Row>
       <Row>
       <Col>
@@ -97,7 +108,13 @@ function CreatorDashboard(){
         </a>
       </Col>
       <Col>
-
+        <a href="#/modifyOpenClasses" rel="noreferrer" target="_blank" style={{ textDecoration: 'none' }}>
+          <NrityaCard
+            title={"Add/Update Open Classes"}
+            data={'+'}
+            bubble={true}
+          ></NrityaCard>
+        </a>
       </Col>
       </Row>
       </div>

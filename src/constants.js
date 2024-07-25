@@ -17,7 +17,8 @@ export const COLLECTIONS ={
     STUDIO: "Studio",
     INSTRUCTORS: "Instructors",
     FREE_TRIAL_BOOKINGS:"FreeTrialBookings",
-    WORKSHOPS: 'Workshops'
+    WORKSHOPS: 'Workshops',
+    OPEN_CLASSES: 'OpenClasses',
 }
 
 export const STORAGES ={
@@ -27,6 +28,7 @@ export const STORAGES ={
     INSTRUCTORIMAGES: 'InstructorImages',
     WORKSHOPICON :"WorkshopIcon",
     WORKSHOPIMAGES :"WorkshopImages",
+    OPENCLASSIMAGES :"OpenClassImages",
 }
 
 export const SEARCH_FILTERS ={
