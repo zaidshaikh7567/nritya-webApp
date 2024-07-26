@@ -96,7 +96,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 </MUITypography>
               </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "end" }}>
+              {/* <Box sx={{ display: "flex", justifyContent: "end" }}>
                 <Button
                   variant="outlined"
                   sx={{
@@ -126,7 +126,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 >
                   Book Now
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
           </Grid>
           <Grid item>
