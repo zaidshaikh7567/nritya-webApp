@@ -33,6 +33,7 @@ import JobHire from './Screens/JobHire';
 import NotFoundPage from './Screens/NotFoundPage';
 import CreatorWorkshop from './Screens/CreatorWorkshop';
 import CreatorOpenClass from './Screens/CreatorOpenClass';
+import CreatorCourse from './Screens/CreatorCourse';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -117,6 +118,7 @@ function App() {
                 <Route path='/modifyStudios' element={<CreatorStudio/>}/>
                 <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
                 <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
+                <Route path='/modifyCourses' element={<CreatorCourse/>}/>
                 <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
               </Route>
               <Route path='/n-trail' element={<Trail/>}/>

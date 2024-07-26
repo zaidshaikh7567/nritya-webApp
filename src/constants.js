@@ -19,6 +19,7 @@ export const COLLECTIONS ={
     FREE_TRIAL_BOOKINGS:"FreeTrialBookings",
     WORKSHOPS: 'Workshops',
     OPEN_CLASSES: 'OpenClasses',
+    COURSES: 'Courses',
 }
 
 export const STORAGES ={
@@ -29,6 +30,7 @@ export const STORAGES ={
     WORKSHOPICON :"WorkshopIcon",
     WORKSHOPIMAGES :"WorkshopImages",
     OPENCLASSICON :"OpenClassIcon",
+    COURSEICON :"CourseIcon",
 }
 
 export const SEARCH_FILTERS ={

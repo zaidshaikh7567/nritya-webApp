@@ -22,6 +22,7 @@ function CreatorDashboard(){
   const [studiosCount, setStudiosCount] = useState(0);
   const [workshopsCount, setWorkshopsCount] = useState(0);
   const [openClassesCount, setOpenClassesCount] = useState(0);
+  const [coursesCount, setCoursesCount] = useState(0);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const { currentUser } = useAuth();
 
@@ -56,6 +57,14 @@ function CreatorDashboard(){
     }
     getCount()
   },[openClassesCount]);
+
+  useEffect(() => {
+    const getCount = async (event) => {
+      const count = await queryDocumentsCount(COLLECTIONS.COURSES, "UserId", '==', currentUser.uid);
+      setCoursesCount(count);
+    }
+    getCount()
+  },[coursesCount]);
 
   return(
     <div style={{minHeight:"75vh"}}>
@@ -116,6 +125,25 @@ function CreatorDashboard(){
           ></NrityaCard>
         </a>
       </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <NrityaCard title={"Total Courses"} data={coursesCount} bubble={true}></NrityaCard>
+        </Col>
+        <Col></Col>
+      </Row>
+      <Row>
+      <Col>
+        <a href="#/modifyCourses" rel="noreferrer" target="_blank" style={{ textDecoration: 'none' }}>
+          <NrityaCard
+            title={"Add/Update Courses"}
+            data={'+'}
+            bubble={true}
+          ></NrityaCard>
+        </a>
+      </Col>
+      <Col></Col>
       </Row>
       </div>
   );
