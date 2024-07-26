@@ -107,8 +107,8 @@ function OpenClassAdd({ instructors, studioId }) {
       if (userSnap.exists()) {
         if (userSnap.data() != null) {
           await updateDoc(userRef, {
-            WorkshopCreated: [
-              ...userSnap.data().WorkshopCreated,
+            OpenClassCreated: [
+              ...userSnap.data().OpenClassCreated,
               workshopRef.id,
             ],
           });
