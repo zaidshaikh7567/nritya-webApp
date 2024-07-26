@@ -95,6 +95,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
         venue: event.target.openClassVenue.value,
+        description: event.target.description.value,
       };
 
       const studioRef = doc(db, COLLECTIONS.OPEN_CLASSES, selectedOpenClassId);
@@ -399,6 +400,27 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
                 />
               </Col>
               <Col md={6}>
+                <Form.Label>Brief Description</Form.Label>
+                <Form.Control
+                  rows={3}
+                  defaultValue={
+                    selectedOpenClass ? selectedOpenClass.description : ""
+                  }
+                  style={{
+                    backgroundColor: isDarkModeOn ? "#333333" : "",
+                    color: isDarkModeOn ? "white" : "black",
+                  }}
+                  as="textarea"
+                  placeholder="Enter Description"
+                  name="description"
+                />
+              </Col>
+            </Row>
+
+            <br />
+
+            <Row>
+              <Col md={6}>
                 <Form.Label>Studio (optional)</Form.Label>
                 <ThemeProvider theme={darkTheme}>
                   <CssBaseline />
@@ -426,6 +448,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
                   />
                 </ThemeProvider>
               </Col>
+              <Col md={6}></Col>
             </Row>
 
             <br />

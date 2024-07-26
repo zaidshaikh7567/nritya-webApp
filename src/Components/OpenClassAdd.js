@@ -89,6 +89,7 @@ function OpenClassAdd({ instructors, studioId }) {
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
         venue: event.target.openClassVenue.value,
+        description: event.target.description.value,
       };
 
       const workshopRef = await addDoc(
@@ -330,6 +331,24 @@ function OpenClassAdd({ instructors, studioId }) {
                   />
                 </Col>
                 <Col md={6}>
+                  <Form.Label>Brief Description</Form.Label>
+                  <Form.Control
+                    rows={3}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    as="textarea"
+                    placeholder="Enter Description"
+                    name="description"
+                  />
+                </Col>
+              </Row>
+
+              <br />
+
+              <Row>
+                <Col md={6}>
                   <Form.Label>Studio (optional)</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -357,6 +376,7 @@ function OpenClassAdd({ instructors, studioId }) {
                     />
                   </ThemeProvider>
                 </Col>
+                <Col md={6}></Col>
               </Row>
 
               <br />
@@ -385,8 +405,8 @@ function OpenClassAdd({ instructors, studioId }) {
           ""
         ) : (
           <p>
-            New Open Class Created with id {newWorkshopId}. Now u can upload images
-            regarding them
+            New Open Class Created with id {newWorkshopId}. Now u can upload
+            images regarding them
           </p>
         )}
       </div>

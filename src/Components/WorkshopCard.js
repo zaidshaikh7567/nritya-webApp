@@ -106,7 +106,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 >
                   ₹{dataItem.price}
                 </MUITypography>
-{/*                 <Button
+                {/*                 <Button
                   variant="outlined"
                   sx={{
                     boxShadow: "none",
@@ -146,6 +146,13 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
             >
               {dataItem.workshopName || ""}
               {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
+            </MUITypography>
+            <MUITypography
+              variant="body1"
+              component="p"
+              sx={{ mt: 2, color: isDarkModeOn ? "white" : "black" }}
+            >
+              {dataItem.description || ""}
             </MUITypography>
           </Grid>
         </Grid>

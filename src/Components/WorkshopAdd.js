@@ -90,6 +90,7 @@ function StudioAdd({ instructors, studioId }) {
         date: workshopDate.format("YYYY-MM-DD"),
         price: event.target.workshopFees.value,
         venue: event.target.workshopVenue.value,
+        description: event.target.description.value,
       };
 
       const workshopRef = await addDoc(
@@ -349,6 +350,19 @@ function StudioAdd({ instructors, studioId }) {
 
               <Row>
                 <Col md={6}>
+                  <Form.Label>Brief Description</Form.Label>
+                  <Form.Control
+                    rows={3}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    as="textarea"
+                    placeholder="Enter Description"
+                    name="description"
+                  />
+                </Col>
+                <Col md={6}>
                   <Form.Label>Studio (optional)</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -376,7 +390,6 @@ function StudioAdd({ instructors, studioId }) {
                     />
                   </ThemeProvider>
                 </Col>
-                <Col md={6}></Col>
               </Row>
               <hr></hr>
 

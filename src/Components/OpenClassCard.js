@@ -138,6 +138,13 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
               {dataItem.openClassName || ""}
               {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
             </MUITypography>
+            <MUITypography
+              variant="body1"
+              component="p"
+              sx={{ mt: 2, color: isDarkModeOn ? "white" : "black" }}
+            >
+              {dataItem.description || ""}
+            </MUITypography>
           </Grid>
         </Grid>
       </Box>
