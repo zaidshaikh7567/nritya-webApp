@@ -106,7 +106,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 >
                   ₹{dataItem.price}
                 </MUITypography>
-                <Button
+{/*                 <Button
                   variant="outlined"
                   sx={{
                     boxShadow: "none",
@@ -134,7 +134,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                   }}
                 >
                   Book Now
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           </Grid>
