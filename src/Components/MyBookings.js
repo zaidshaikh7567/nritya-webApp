@@ -171,9 +171,6 @@ function MyBookings() {
             />
           )}
         </Modal.Body>
-        <Modal.Footer>
-          
-        </Modal.Footer>
       </Modal>
     </div>
   );
