@@ -20,6 +20,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 
+const FILTER_LOCATION_KEY = 'filterLocation';
+
 function OpenClassAdd({ instructors, studioId }) {
   const [newWorkshopId, setNewWorkshopId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -90,6 +92,7 @@ function OpenClassAdd({ instructors, studioId }) {
         date: openClassDate.format("YYYY-MM-DD"),
         venue: event.target.openClassVenue.value,
         description: event.target.description.value,
+        city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
       };
 
       const workshopRef = await addDoc(
