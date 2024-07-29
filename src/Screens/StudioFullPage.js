@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image, Form, Stack } from 'react-bootstrap';
 import { db,storage } from '../config';
 import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
-import { doc, getDoc, setDoc, getDocs, collection , updateDoc} from "firebase/firestore";
+import { doc, getDoc, setDoc, getDocs, collection , updateDoc, where, query} from "firebase/firestore";
 import { STATUSES, COLLECTIONS, AMENITIES_ICONS } from "./../constants.js";
 import Table from 'react-bootstrap/Table';
 import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections, FaWhatsappSquare } from 'react-icons/fa';
@@ -21,6 +21,9 @@ import TableView from './TableView.js';
 import '../Common.css'
 import CircularCarousel from '../Components/CircularCarousel.js';
 import CardSlider from '../Components/CardSlider.js';
+import WorkshopCardSlider from '../Components/WorkshopCardSlider.js';
+import OpenClassCardSlider from '../Components/OpenClassCardSlider.js';
+import CourseCardSlider from '../Components/CourseCardSlider.js';
 import {Card as MuiCard} from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import CardContent from '@mui/joy/CardContent';
@@ -64,6 +67,9 @@ function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
   const containerRef = useRef(null);
   const [studioData, setStudioData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
+  const [workshops, setWorkshops] = useState([]);
+  const [openClasses, setOpenClasses] = useState([]);
+  const [courses, setCourses] = useState([]);
 
 
 // Function to update the recently watched studios in Firebase
@@ -122,19 +128,23 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
   const BASEURL_STUDIO="https://nrityaserver-2b241e0a97e5.herokuapp.com/api/studio/"
   useEffect(() => {
     const fetchData = async () => {
-      if(JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId){
-        const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
-        updateRecentlyWatchedInFirebase(UserId,studioId);
+      try {
+        if(JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId){
+          const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
+          updateRecentlyWatchedInFirebase(UserId,studioId);
+        }
+        const responseText = await axios.get(`${BASEURL_STUDIO}${studioId}/text/`);
+        const dataText = responseText.data;
+        setStudioData(dataText);
+        const responseImages = await axios.get(`${BASEURL_STUDIO}${studioId}/images/`);
+        const dataImages = responseImages.data;
+        if(dataImages && dataImages.studioImages){
+          setCarouselImages(dataImages.studioImages)
+        }
+        console.log(studioData);
+      } catch (error) {
+        console.error(error);
       }
-      const responseText = await axios.get(`${BASEURL_STUDIO}${studioId}/text/`);
-      const dataText = responseText.data;
-      setStudioData(dataText);
-      const responseImages = await axios.get(`${BASEURL_STUDIO}${studioId}/images/`);
-      const dataImages = responseImages.data;
-      if(dataImages && dataImages.studioImages){
-        setCarouselImages(dataImages.studioImages)
-      }
-      console.log(studioData);
 
     };
 
@@ -144,6 +154,86 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
 
   const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
 
+  useEffect(() => {
+    const getWorkshopsOfStudio = async () => {
+      const q = query(
+        collection(db, COLLECTIONS.WORKSHOPS),
+        where(
+          "StudioId",
+          "==",
+          studioId
+        )
+      );
+
+      const querySnapshot = await getDocs(q);
+      const workshopsOfStudio = querySnapshot.docs
+        .filter((doc) => doc.data().workshopName)
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
+      setWorkshops(workshopsOfStudio);
+    };
+
+    getWorkshopsOfStudio();
+  }, []);
+
+  useEffect(() => {
+    const getOpenClassesOfStudio = async () => {
+      const q = query(
+        collection(db, COLLECTIONS.OPEN_CLASSES),
+        where(
+          "StudioId",
+          "==",
+          studioId
+        )
+      );
+
+      const querySnapshot = await getDocs(q);
+      const openClassesOfStudio = querySnapshot.docs
+        .filter((doc) => doc.data().openClassName)
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
+      setOpenClasses(openClassesOfStudio);
+    };
+
+    getOpenClassesOfStudio();
+  }, []);
+
+  useEffect(() => {
+    const getCoursesOfStudio = async () => {
+      const q = query(
+        collection(db, COLLECTIONS.COURSES),
+        where(
+          "StudioId",
+          "==",
+          studioId
+        )
+      );
+
+      const querySnapshot = await getDocs(q);
+      const coursesOfStudio = querySnapshot.docs
+        .filter((doc) => doc.data().name)
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
+      setCourses(coursesOfStudio);
+    };
+
+    getCoursesOfStudio();
+  }, []);
 
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'#202020':'white' ,color: isDarkModeOn?'white':'color' }}>
@@ -389,6 +479,53 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </Col>
       </Row>
       <br></br>
+      <br></br>
+      <Row>
+        <Col xs={12}>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Workshops:</h3>
+        </Col>
+        <Col xs={12}>
+          {workshops.length > 0 ? (
+            <WorkshopCardSlider dataList={workshops} />
+          ) : (
+            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
+              No workshop yet!
+            </p>
+          )}
+        </Col>
+      </Row>
+
+      <br></br>
+      <Row>
+        <Col xs={12}>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Open Classes:</h3>
+        </Col>
+        <Col xs={12}>
+          {openClasses.length > 0 ? (
+            <OpenClassCardSlider dataList={openClasses} />
+          ) : (
+            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
+              No open class yet!
+            </p>
+          )}
+        </Col>
+      </Row>
+
+      <br></br>
+      <Row>
+        <Col xs={12}>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Courses:</h3>
+        </Col>
+        <Col xs={12}>
+          {courses.length > 0 ? (
+            <CourseCardSlider dataList={courses} />
+          ) : (
+            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
+              No course yet!
+            </p>
+          )}
+        </Col>
+      </Row>
     </Container>
   
   )
