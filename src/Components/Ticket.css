@@ -45,6 +45,7 @@
     border: 2px solid transparent;
     border-top: none;
     border-radius: 0px 0px 10px 10px;
+    background: #000000;
 }
 
 .logo-container {
