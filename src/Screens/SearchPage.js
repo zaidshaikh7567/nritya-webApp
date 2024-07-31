@@ -98,7 +98,9 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
-    if (selectedSearchType === 'studio') {
+    const storedSelectedSearchType = localStorage.getItem(FILTER_SEARCH_TYPE_KEY);
+
+    if (storedSelectedSearchType === 'studio') {
       // Perform the search and update the results
     if (query == null){
       setQuery('')
@@ -126,16 +128,18 @@ const SearchPage = () => {
       .catch(error => console.error('Error fetching search results:', error));
     } else {
       const selectedDanceFormsString = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
+      const city = localStorage.getItem(FILTER_LOCATION_KEY);
       let danceFormsList = []
       if (selectedDanceFormsString) danceFormsList = JSON.parse(selectedDanceFormsString);
-      let q = collection(db, searchTypes.find(type => type.name === selectedSearchType).collection);
+      let q = collection(db, searchTypes.find(type => type.name === storedSelectedSearchType).collection);
       if (danceFormsList.length) q = firebaseQuery(q, where("danceStyles", "array-contains-any", danceFormsList));
+      if (city) q = firebaseQuery(q, where('city', '==', city))
 
       getDocs(q).then(querySnapshot => {
         const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setSearchData(prev => ({
           ...prev,
-          [selectedSearchType]: docs
+          [storedSelectedSearchType]: docs
         }))
       });
     }
