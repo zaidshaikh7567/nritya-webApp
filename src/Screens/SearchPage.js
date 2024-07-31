@@ -11,16 +11,29 @@ import {refreshLocation} from '../redux/actions/refreshLocationAction';
 import SmallCard from '../Components/SmallCard';
 import danceStyles from '../danceStyles.json'
 import CardSliderCard from '../Components/CardSliderCard';
+import WorkshopCardSlider from '../Components/WorkshopCardSlider';
+import OpenClassCardSlider from '../Components/OpenClassCardSlider';
+import CourseCardSlider from '../Components/CourseCardSlider';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
+import { COLLECTIONS } from '../constants';
+import { collection, query as firebaseQuery, getDocs, where } from 'firebase/firestore';
+import { db } from '../config';
 
 
 const FILTER_LOCATION_KEY = 'filterLocation';
+const FILTER_SEARCH_TYPE_KEY = 'filterSearchType';
 const FILTER_DISTANCES_KEY = 'filterDistances';
 const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 const FILTER_USER_GEO_LOC = "browserGeoLoc";
 //const danceForms = ['Ballet', 'Hip Hop', 'Salsa', 'Kathak'];
 const distances = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const searchTypes = [
+  { name: 'studio', label: 'Studio', collection: COLLECTIONS.STUDIO },
+  { name: 'workshop', label: 'Workshop', collection: COLLECTIONS.WORKSHOPS },
+  { name: 'openClass', label: 'Open Class', collection: COLLECTIONS.OPEN_CLASSES },
+  { name: 'course', label: 'Course', collection: COLLECTIONS.COURSES }
+];
 
 const SearchPage = () => {
   const [query, setQuery] = useState('');
@@ -32,6 +45,8 @@ const SearchPage = () => {
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
+  const [selectedSearchType, setSelectedSearchType] = useState('studio');
+  const [searchData, setSearchData] = useState({ workshop: [], openClass: [], course: [] });
 
   const dispatch = useDispatch();
   const danceForms = danceStyles.danceStyles.map(danceForm => ({
@@ -75,6 +90,7 @@ const SearchPage = () => {
   const countActiveFilters = () => {
     let count = 0;
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
+    if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
 
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     if (storedDanceForm) count += JSON.parse(storedDanceForm).length;
@@ -82,16 +98,17 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
-    // Perform the search and update the results
+    if (selectedSearchType === 'studio') {
+      // Perform the search and update the results
     if (query == null){
-        setQuery('')
+      setQuery('')
     }
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
 
     if (localStorage.getItem(FILTER_LOCATION_KEY)) {
       apiEndpoint += `&city=${encodeURIComponent(localStorage.getItem(FILTER_LOCATION_KEY))}`;
     }
-  
+
     if (localStorage.getItem(FILTER_DANCE_FORMS_KEY)) {
       apiEndpoint += `&danceStyle=${encodeURIComponent(localStorage.getItem(FILTER_DANCE_FORMS_KEY))}`;
     }
@@ -107,6 +124,21 @@ const SearchPage = () => {
         setResults(data);
       })  
       .catch(error => console.error('Error fetching search results:', error));
+    } else {
+      const selectedDanceFormsString = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
+      let danceFormsList = []
+      if (selectedDanceFormsString) danceFormsList = JSON.parse(selectedDanceFormsString);
+      let q = collection(db, searchTypes.find(type => type.name === selectedSearchType).collection);
+      if (danceFormsList.length) q = firebaseQuery(q, where("danceStyles", "array-contains-any", danceFormsList));
+
+      getDocs(q).then(querySnapshot => {
+        const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSearchData(prev => ({
+          ...prev,
+          [selectedSearchType]: docs
+        }))
+      });
+    }
   };
 
   const handleChange = async (event, value) => {
@@ -141,6 +173,7 @@ const SearchPage = () => {
   const handleApplyFilters = () => {
 
     localStorage.setItem(FILTER_DISTANCES_KEY, selectedDistances);
+    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, selectedSearchType);
     localStorage.setItem(FILTER_DANCE_FORMS_KEY, JSON.stringify(selectedDanceForms));
     setActiveFilters(countActiveFilters());
     //dispatch(refreshLocation())
@@ -152,15 +185,23 @@ const SearchPage = () => {
   const handleClearFilters = () => {
     setSelectedDistances('');
     setSelectedDanceForms([]);
+    setSelectedSearchType('studio');
     localStorage.removeItem(FILTER_DISTANCES_KEY);
     localStorage.removeItem(FILTER_DANCE_FORMS_KEY);
-    setActiveFilters(0);
+    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, 'studio');
+    setActiveFilters(countActiveFilters());
     setShowFilters(false);
     handleSearch();
   };
 
   const handleSelectChange = (selectedOptions) => {
     setSelectedDanceForms(selectedOptions ? selectedOptions.map(option => option.value) : []);
+  };
+
+  const handleSearchTypeChange = (e) => {
+    setSelectedSearchType(e.target.value);
+    setSelectedDistances('');
+    localStorage.removeItem(FILTER_DISTANCES_KEY);
   };
 
   const handleRemoveDistance = () => {
@@ -178,13 +219,23 @@ const SearchPage = () => {
     handleSearch();
   };
 
+  const handleRemoveSearchType = () => {
+    setSelectedSearchType('studio');
+    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, 'studio');
+  };
+
   // Retrieve selected filters from local storage on component mount
   useEffect(() => {
     const storedDistances = localStorage.getItem(FILTER_DISTANCES_KEY);
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
+    const storedSearchType = localStorage.getItem(FILTER_SEARCH_TYPE_KEY);
     
   
     
+    if (storedSearchType) {
+      setSelectedSearchType(storedSearchType);
+    }
+
     if (storedDistances) {
       setSelectedDistances(storedDistances);
     }
@@ -261,6 +312,19 @@ const SearchPage = () => {
         
       </Col>
 
+      {selectedSearchType && (
+        <Col xs="auto" style={{marginTop: '0.5rem'}}>
+          <MuiBadge color="warning" pill>
+            <MuiChip
+              color="warning"
+              label={searchTypes.find(searchType => searchType.name === selectedSearchType).label}
+              variant={isDarkModeOn ? "outlined" : "contained"}
+              onDelete={handleRemoveSearchType}
+            />
+          </MuiBadge>
+        </Col>
+      )}
+
       {/* Filter Badges */}
       {selectedDistances && (
         <Col xs="auto" style={{marginTop: '0.5rem'}}>
@@ -327,10 +391,18 @@ const SearchPage = () => {
                   
                 <li
                   style={{ cursor: 'pointer', margin: '5px 0' }}
+                  onClick={() => (setShowFilterValue('searchTypes'),setShowFilters(true))}
+                >
+                  Search Types
+                </li>
+                  
+                {selectedSearchType === 'studio' && <><hr style={{ margin: '5px 0' }}></hr>
+                <li
+                  style={{ cursor: 'pointer', margin: '5px 0' }}
                   onClick={() => (setShowFilterValue('distances'),setShowFilters(true))}
                 >
                   Distances
-                </li>
+                </li></>}
                   
                 <hr style={{ margin: '5px 0' }}></hr>
                 <li
@@ -345,6 +417,19 @@ const SearchPage = () => {
 
               <Col md={8}>
               
+                {showFilters && showFilterValue === 'searchTypes' && (
+                  <Form.Group controlId="filterSearchTypes">
+                    <Form.Label>Types:</Form.Label>
+                    <Form.Control as="select" value={selectedSearchType} onChange={handleSearchTypeChange}>
+                      {searchTypes.map((searchType) => (
+                        <option key={searchType.name} value={searchType.name}>
+                          {searchType.label}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
+                )}
+
                 {showFilters && showFilterValue === 'distances' && (
                   <Form.Group controlId="filterDistances">
                     <Form.Label>Distances:</Form.Label>
@@ -396,22 +481,23 @@ const SearchPage = () => {
       </Modal>
 
       <hr></hr>
-      <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
-      {results.length === 0 ? (
-      <div className="" style={{ minHeight:"30vh" }}>
-        
-      </div>
+      {selectedSearchType === 'studio' && <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
+        {results.length === 0 ? (
+          <div className="" style={{ minHeight: "30vh" }}></div>
         ) : (
           results.map((studio, index) => (
             <div key={index} className="studio-card-container" style={{ padding: "0.2rem" }} md={2}>
               <a href={`#/studio/${studio.studioId}`} style={{ textDecoration: "none" }}>
-                <CardSliderCard studio={studio}/>
+                <CardSliderCard studio={studio} />
               </a>
             </div>
           ))
         )}
+      </div>}
 
-      </div>
+      {selectedSearchType === 'workshop' && <WorkshopCardSlider dataList={searchData.workshop} />}
+      {selectedSearchType === 'openClass' && <OpenClassCardSlider dataList={searchData.openClass} />}
+      {selectedSearchType === 'course' && <CourseCardSlider dataList={searchData.course} />}
     </div>
   );
 };
