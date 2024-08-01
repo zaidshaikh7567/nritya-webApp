@@ -3,7 +3,6 @@ import logo from './../logo.png';
 import './Ticket.css';
 import moment from 'moment-timezone';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import QRCode from 'react-qr-code';
 import { Button,Image } from 'react-bootstrap';
 import { BASEURL_PROD } from '../constants';
@@ -32,11 +31,15 @@ function Ticket({ studioName, className, address, timing, days, customerName, ti
   };
 
   const downloadTicket = () => {
-    const ticketContainer = document.getElementById('nritya-ticket-container');
-    html2canvas(ticketContainer).then((canvas) => {
-      const pdf = new jsPDF();
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-      pdf.save(`booking_ticket_${customerName}.pdf`);
+    const ticketContainer = document.getElementById("nritya-ticket-container");
+    html2canvas(ticketContainer, {
+      backgroundColor: null,
+    }).then((canvas) => {
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "my-image.png";
+      link.click();
     });
   };
 
