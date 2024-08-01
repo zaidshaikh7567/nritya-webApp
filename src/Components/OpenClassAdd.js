@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
 import { Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
-import { doc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
-import { COLLECTIONS } from "../constants";
+import { doc, getDoc, addDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { COLLECTIONS, DRAFT_COLLECTIONS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
 import { useSelector } from "react-redux";
@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 
 const FILTER_LOCATION_KEY = 'filterLocation';
+const DRAFT_INTERVAL_TIME = 1000 * 60;
 
 function OpenClassAdd({ instructors, studioId }) {
   const [newWorkshopId, setNewWorkshopId] = useState("");
@@ -34,6 +35,7 @@ function OpenClassAdd({ instructors, studioId }) {
 
   const danceStylesOptions = danceStyles.danceStyles;
 
+  const [isReady, setIsReady] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
@@ -131,6 +133,170 @@ function OpenClassAdd({ instructors, studioId }) {
 
     setOpenClassTime(newTime);
   };
+
+  useEffect(() => {
+    async function main() {
+      const form = document.getElementById("addStudioForm");
+
+      try {
+        const q = query(
+          collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES),
+          where(
+            "UserId",
+            "==",
+            JSON.parse(localStorage.getItem("userInfo")).UserId
+          )
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          let openClasses = [];
+
+          querySnapshot.forEach((doc) => {
+            openClasses.push({ id: doc.id, ...doc.data() });
+          });
+
+          let foundOpenClass = openClasses[0];
+
+          form.openClassName.value = foundOpenClass?.openClassName || ""
+          form.openClassVenue.value = foundOpenClass?.venue || ""
+          form.description.value = foundOpenClass?.description || ""
+
+          setSelectedDanceStyles(
+            foundOpenClass?.danceStyles?.length
+              ? foundOpenClass.danceStyles
+              : []
+          )
+
+          setSelectedInstructors(instructors
+            .filter((instructor) =>
+              foundOpenClass?.instructors.includes(instructor.id)
+            )
+            .map((instructor) => `${instructor.name} - ${instructor.id}`));
+
+          const studios = studioId.map((studio) => studio.split(":")[1].trim());
+          const currentStudioIndex = studios.findIndex(
+            (studio) => studio === foundOpenClass?.StudioId
+          );
+          if (currentStudioIndex > 0) setSelectedStudio(studioId[currentStudioIndex]);
+
+          setSelectedDuration(foundOpenClass?.duration || "");
+
+          setSelectedLevel(foundOpenClass?.level || "");
+
+          setOpenClassTime(foundOpenClass?.time || "");
+
+          setOpenClassDate(dayjs(foundOpenClass?.date || Date.now()));
+        } else {
+          await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
+            openClassName: form.openClassName.value,
+            venue: form.openClassVenue.value,
+            description: form.description.value,
+            danceStyles: selectedDanceStyles,
+            instructors: selectedInstructors
+              ? selectedInstructors?.map?.(
+                (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
+              )
+              : null,
+            author: JSON.parse(localStorage.getItem("userInfo")).displayName,
+            UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
+            creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+            StudioId: selectedStudio
+              ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
+              : null,
+            duration: selectedDuration,
+            level: selectedLevel,
+            time: openClassTime,
+            date: openClassDate.format("YYYY-MM-DD"),
+            city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+          });
+        }
+
+        setIsReady(true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    main();
+  }, []);
+
+  useEffect(() => {
+    let intervalId = null;
+
+    async function main() {
+      const form = document.getElementById("addStudioForm");
+
+      try {
+        const q = query(
+          collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES),
+          where(
+            "UserId",
+            "==",
+            JSON.parse(localStorage.getItem("userInfo")).UserId
+          )
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          let openClasses = [];
+
+          querySnapshot.forEach((doc) => {
+            openClasses.push({ id: doc.id, ...doc.data() });
+          });
+
+          let foundOpenClasses = openClasses[0];
+
+          const openClassRef = doc(
+            db,
+            DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES,
+            foundOpenClasses.id
+          );
+
+          intervalId = setInterval(async () => {
+            try {
+              await updateDoc(openClassRef, {
+                openClassName: form.openClassName.value,
+                venue: form.openClassVenue.value,
+                description: form.description.value,
+                danceStyles: selectedDanceStyles,
+                instructors: selectedInstructors
+                  ? selectedInstructors?.map?.(
+                    (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
+                  )
+                  : null,
+                StudioId: selectedStudio
+                  ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
+                  : null,
+                duration: selectedDuration,
+                level: selectedLevel,
+                time: openClassTime,
+                date: openClassDate.format("YYYY-MM-DD"),
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }, DRAFT_INTERVAL_TIME);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    if (isReady) main();
+
+    return () => clearInterval(intervalId);
+  }, [
+    isReady,
+    selectedDanceStyles,
+    selectedInstructors,
+    selectedStudio,
+    selectedDuration,
+    selectedLevel,
+    openClassTime,
+    openClassDate
+  ]);
 
   return (
     <div>

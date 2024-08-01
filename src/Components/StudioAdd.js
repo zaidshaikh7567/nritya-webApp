@@ -1,16 +1,15 @@
 import React from 'react'
-import { Card, Button, Row, Col , Form,Accordion,Table,Toast,Dropdown,Badge } from 'react-bootstrap';
+import { Row, Col , Form } from 'react-bootstrap';
 import {Button as MuiButton} from '@mui/material';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { db } from '../config';
-import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } from "firebase/firestore";
-import { COLLECTIONS } from '../constants';
+import { doc, getDoc,addDoc,updateDoc,collection,where,getDocs,query, deleteDoc } from "firebase/firestore";
+import { COLLECTIONS, DRAFT_COLLECTIONS } from '../constants';
 import StudioTable from './StudioTable';
 import ImageUpload from './ImageUpload';
 import { STORAGES } from '../constants';
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import MapsInput from './MapsInput';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector} from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import indianCities from '../cities.json';
 import danceStyles from '../danceStyles.json';
@@ -18,15 +17,19 @@ import { AMENITIES_ICONS } from '../constants';
 import {Autocomplete,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Stepper,Step,StepLabel,Box} from '@mui/material';
+import {Stepper,Step,StepLabel} from '@mui/material';
 import SuccessMessage from './SucessPage';
-import BasicDemo from './BasicDemo';
-
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
   const utf8Encoded = textEncoder.encode(text);
   return String.fromCharCode(...utf8Encoded);
+};
+
+const decodeUnicode = (unicodeString) => {
+  const utf8Encoded = unicodeString.split('').map((c) => c.charCodeAt(0));
+  const textDecoder = new TextDecoder();
+  return textDecoder.decode(new Uint8Array(utf8Encoded));
 };
 
 const colorCombinations = [
@@ -46,7 +49,7 @@ const optionsDays = [
   { value: 'Sun', label: 'Sunday' },
 ]
 
-
+const DRAFT_INTERVAL_TIME = 1000 * 60;
 
 function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
@@ -60,6 +63,7 @@ function StudioAdd({instructors}) {
     const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
     const [selectedAmenities, setSelectedAmenities] = useState([]);
     const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
+    const [isReady, setIsReady] = useState(false);
 
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -114,6 +118,41 @@ function StudioAdd({instructors}) {
 
     const handleInstructorChange = (event, value) => {
       setSelectedInstructors(value);
+    };
+
+    const resetDraft = async () => {
+      try {
+        const q = query(
+          collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS),
+          where(
+            "UserId",
+            "==",
+            JSON.parse(localStorage.getItem("userInfo")).UserId
+          )
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          let studios = [];
+
+          querySnapshot.forEach((doc) => {
+            studios.push({ id: doc.id, ...doc.data() });
+          });
+
+          let foundStudio = studios[0];
+
+          const studioRef = doc(
+            db,
+            DRAFT_COLLECTIONS.DRAFT_STUDIOS,
+            foundStudio.id
+          );
+
+          await deleteDoc(studioRef);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     };
   
       console.log("Studio Add",newStudioId)
@@ -188,14 +227,234 @@ function StudioAdd({instructors}) {
               console.log("User not found but studio created... error");
             }
 
-            handleNext()
-          
+            resetDraft();
+            handleNext();
+
         } catch (error) {
           console.error("Error adding studio: ", error);
         }
-     
       };
-      
+
+  useEffect(() => {
+    async function main() {
+      const form = document.getElementById("addStudioForm");
+
+      try {
+        const q = query(
+          collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS),
+          where(
+            "UserId",
+            "==",
+            JSON.parse(localStorage.getItem("userInfo")).UserId
+          )
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          let studios = [];
+
+          querySnapshot.forEach((doc) => {
+            studios.push({ id: doc.id, ...doc.data() });
+          });
+
+          let foundStudio = studios[0];
+
+          form.studioName.value = foundStudio.studioName;
+          form.aboutStudio.value = foundStudio.aboutStudio;
+          form.founderName.value = foundStudio.founderName;
+          form.aboutFounder.value = foundStudio.aboutFounder;
+          form.mobileNumber.value = foundStudio.mobileNumber;
+          form.whatsappNumber.value = foundStudio.whatsappNumber;
+          form.mailAddress.value = foundStudio.mailAddress;
+          setSelectedDanceStyles(
+            foundStudio.danceStyles.length
+              ? foundStudio.danceStyles.split(",")
+              : []
+          );
+          form.numberOfHalls.value = foundStudio.numberOfHalls;
+          form.maximumOccupancy.value = foundStudio.maximumOccupancy;
+          setSelectedInstructors(foundStudio.instructorsNames);
+          form.buildingName.value = foundStudio.buildingName;
+          form.street.value = foundStudio.street;
+          form.city.value = foundStudio.city;
+          form.landmark.value = foundStudio.landmark;
+          form.pincode.value = foundStudio.pincode;
+          form.state.value = foundStudio.state;
+          setSelectedLocation(foundStudio.geolocation);
+          form.aadharNumber.value = foundStudio.aadharNumber;
+          form.gstNumber.value = foundStudio.gstNumber;
+          setTableData(foundStudio.tableData);
+          setSelectedAmenities(
+            foundStudio.addAmenities.length
+              ? foundStudio.addAmenities.split(",")
+              : []
+          );
+          form.enrollmentProcess.value = decodeUnicode(
+            foundStudio.enrollmentProcess
+          );
+          form.instagram.value = foundStudio.instagram;
+          form.facebook.value = foundStudio.facebook;
+          form.youtube.value = foundStudio.youtube;
+          form.twitter.value = foundStudio.twitter;
+        } else {
+          await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS), {
+            studioName: form.studioName.value,
+            aboutStudio: form.aboutStudio.value,
+            founderName: form.founderName.value,
+            aboutFounder: form.aboutFounder.value,
+            mobileNumber: form.mobileNumber.value,
+            whatsappNumber: form.whatsappNumber.value,
+            mailAddress: form.mailAddress.value,
+            danceStyles: selectedDanceStyles.join(","),
+            numberOfHalls: form.numberOfHalls.value,
+            maximumOccupancy: form.maximumOccupancy.value,
+            instructorsNames: selectedInstructors,
+            status: "OPEN",
+            tableData: {
+              0: {
+                className: "",
+                danceForms: "",
+                days: "",
+                time: "",
+                instructors: [],
+                fee: "",
+                level: "",
+              },
+            },
+            buildingName: form.buildingName.value,
+            street: form.street.value,
+            city: form.city.value,
+            landmark: form.landmark.value,
+            pincode: form.pincode.value,
+            state: form.state.value,
+            country: "India",
+            geolocation: selectedLocation,
+            aadharNumber: form.aadharNumber.value,
+            gstNumber: form.gstNumber.value,
+            enrolledId: [],
+            reviews: [],
+            author: JSON.parse(localStorage.getItem("userInfo")).displayName,
+            UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
+            isPremium: true,
+            addAmenities: selectedAmenities.join(","),
+            enrollmentProcess: encodeToUnicode(form.enrollmentProcess.value),
+            creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+            instagram: form.instagram.value,
+            facebook: form.facebook.value,
+            youtube: form.youtube.value,
+            twitter: form.twitter.value,
+            visibilty: 1,
+          });
+        }
+
+        setIsReady(true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    main();
+  }, []);
+
+  useEffect(() => {
+    let intervalId = null;
+
+    async function main() {
+      const form = document.getElementById("addStudioForm");
+
+      try {
+        const q = query(
+          collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS),
+          where(
+            "UserId",
+            "==",
+            JSON.parse(localStorage.getItem("userInfo")).UserId
+          )
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          let studios = [];
+
+          querySnapshot.forEach((doc) => {
+            studios.push({ id: doc.id, ...doc.data() });
+          });
+
+          let foundStudio = studios[0];
+
+          const studioRef = doc(
+            db,
+            DRAFT_COLLECTIONS.DRAFT_STUDIOS,
+            foundStudio.id
+          );
+
+          intervalId = setInterval(async () => {
+            try {
+              await updateDoc(studioRef, {
+                studioName: form.studioName.value,
+                aboutStudio: form.aboutStudio.value,
+                founderName: form.founderName.value,
+                aboutFounder: form.aboutFounder.value,
+                mobileNumber: form.mobileNumber.value,
+                whatsappNumber: form.whatsappNumber.value,
+                mailAddress: form.mailAddress.value,
+                danceStyles: selectedDanceStyles.join(","),
+                numberOfHalls: form.numberOfHalls.value,
+                maximumOccupancy: form.maximumOccupancy.value,
+                instructorsNames: selectedInstructors,
+                status: "OPEN",
+                tableData: tableData,
+                buildingName: form.buildingName.value,
+                street: form.street.value,
+                city: form.city.value,
+                landmark: form.landmark.value,
+                pincode: form.pincode.value,
+                state: form.state.value,
+                country: "India",
+                geolocation: selectedLocation,
+                aadharNumber: form.aadharNumber.value,
+                gstNumber: form.gstNumber.value,
+                enrolledId: [],
+                reviews: [],
+                author: JSON.parse(localStorage.getItem("userInfo"))
+                  .displayName,
+                UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
+                isPremium: true,
+                addAmenities: selectedAmenities.join(","),
+                enrollmentProcess: encodeToUnicode(
+                  form.enrollmentProcess.value
+                ),
+                creatorEmail: JSON.parse(localStorage.getItem("userInfo"))
+                  .email,
+                instagram: form.instagram.value,
+                facebook: form.facebook.value,
+                youtube: form.youtube.value,
+                twitter: form.twitter.value,
+                visibilty: 1,
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }, DRAFT_INTERVAL_TIME);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (isReady) main();
+
+    return () => clearInterval(intervalId);
+  }, [
+    isReady,
+    selectedDanceStyles,
+    selectedInstructors,
+    tableData,
+    selectedLocation,
+    selectedAmenities,
+  ]);
 
   return (
     <div >

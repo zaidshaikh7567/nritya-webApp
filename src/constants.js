@@ -7,6 +7,14 @@ export const STATUSES = {
     VERIFIED: "Verified",
     VERIFICATION_FAILED: "Failed Verification",
 };
+
+export const DRAFT_COLLECTIONS = {
+    DRAFT_STUDIOS: 'DraftStudios',
+    DRAFT_WORKSHOPS: 'DraftWorkshops',
+    DRAFT_OPEN_CLASSES: 'DraftOpenClasses',
+    DRAFT_COURSES: 'DraftCourses'
+};
+
 export const COLLECTIONS ={
     USER: "User",
     USER_KYC:"UserKyc",
