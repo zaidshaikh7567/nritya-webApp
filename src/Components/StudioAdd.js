@@ -49,12 +49,12 @@ const optionsDays = [
   { value: 'Sun', label: 'Sunday' },
 ]
 
-const DRAFT_INTERVAL_TIME = 1000 * 60;
+const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
-      { className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: ''},
+      [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: ''}],
     );
     const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
@@ -167,6 +167,11 @@ function StudioAdd({instructors}) {
         let isPremium=true
         console.log("selectedLocation to be added",selectedLocation)
             
+        const newData = tableData.reduce((accumulator, current, index) => {
+          accumulator[index] = current;
+          return accumulator;
+        }, {});
+
         //body: event.target.body.value,
         try {
             const studioRef = await addDoc(collection(db, COLLECTIONS.STUDIO), {
@@ -182,7 +187,7 @@ function StudioAdd({instructors}) {
               maximumOccupancy: event.target.maximumOccupancy.value,
               instructorsNames: selectedInstructors,
               status: 'OPEN',
-              tableData: tableData,
+              tableData: newData,
               buildingName: event.target.buildingName.value,
               street: event.target.street.value,
               city: event.target.city.value,
@@ -284,7 +289,7 @@ function StudioAdd({instructors}) {
           setSelectedLocation(foundStudio.geolocation);
           form.aadharNumber.value = foundStudio.aadharNumber;
           form.gstNumber.value = foundStudio.gstNumber;
-          setTableData(foundStudio.tableData);
+          setTableData(Object.values(foundStudio.tableData));
           setSelectedAmenities(
             foundStudio.addAmenities.length
               ? foundStudio.addAmenities.split(",")
@@ -383,15 +388,20 @@ function StudioAdd({instructors}) {
           });
 
           let foundStudio = studios[0];
-
+          
           const studioRef = doc(
             db,
             DRAFT_COLLECTIONS.DRAFT_STUDIOS,
             foundStudio.id
           );
-
+          
           intervalId = setInterval(async () => {
             try {
+              const newData = tableData.reduce((accumulator, current, index) => {
+                accumulator[index] = current;
+                return accumulator;
+              }, {});
+
               await updateDoc(studioRef, {
                 studioName: form.studioName.value,
                 aboutStudio: form.aboutStudio.value,
@@ -405,7 +415,7 @@ function StudioAdd({instructors}) {
                 maximumOccupancy: form.maximumOccupancy.value,
                 instructorsNames: selectedInstructors,
                 status: "OPEN",
-                tableData: tableData,
+                tableData: newData,
                 buildingName: form.buildingName.value,
                 street: form.street.value,
                 city: form.city.value,

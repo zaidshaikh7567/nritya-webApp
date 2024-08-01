@@ -27,12 +27,7 @@ const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
 
 
 
-function StudioTable({
-  tableData,
-  setTableData,
-  instructorNamesWithIds
-}) {
-  const [tableDataReplace, setTableDataReplace] = useState([tableData]);
+function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -40,12 +35,11 @@ function StudioTable({
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00")
 
   const handleAddRow = () => {
-    setTableDataReplace((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: [], fee:'',level:'' ,status: '' }]);
-    console.log(tableDataReplace, "After adding");
+    setTableData((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: [], fee:'',level:'' ,status: '' }]);
   };
 
   const handleRemoveRow = (index) => {
-    setTableDataReplace((prevData) => {
+    setTableData((prevData) => {
       const newData = [...prevData];
       newData.splice(index, 1);
       return newData;
@@ -53,7 +47,7 @@ function StudioTable({
   };
 
   const handleTableChange = (index, field, value) => {
-    setTableDataReplace((prevData) => {
+    setTableData((prevData) => {
       if(field==="days"){
         console.log("filter1",value,'inside if',Array.isArray(value) )
         value = Array.isArray(value) ? value.join(',') : value; 
@@ -62,7 +56,6 @@ function StudioTable({
       newData[index][field] = value;
       return newData;
     });
-    console.log(tableDataReplace)
   };
 
   const handleTimePickerOpen = (index,time) => {
@@ -79,7 +72,7 @@ function StudioTable({
   };
 
   const handleTimeSelect = (startTime, endTime) => {
-    setTableDataReplace((prevData) => {
+    setTableData((prevData) => {
       const newData = [...prevData];
       
       if (selectedRowIndex !== null && newData[selectedRowIndex]) {
@@ -104,14 +97,6 @@ function StudioTable({
 
   };
 
-  useEffect(() => {
-    const newData = tableDataReplace.reduce((accumulator, current, index) => {
-      accumulator[index] = current;
-      return accumulator;
-    }, {});
-    setTableData(newData);
-  }, [tableDataReplace, setTableData]);
-
   return (
     <>
       <Table bordered variant="light">
@@ -132,7 +117,7 @@ function StudioTable({
           </tr>
         </thead>
         <tbody>
-          {tableDataReplace.map((row, index) => (
+          {tableData.map((row, index) => (
             <tr key={index} className={selectedRow === index ? 'selected-row' : ''}>
               <td style={{padding:'0rem'}}>
                 < Form.Control style={{backgroundColor:"white"}}
@@ -178,7 +163,7 @@ function StudioTable({
                   show={showTimePicker}
                   handleClose={handleTimePickerClose}
                   handleSelect={handleTimeSelect}
-                  defaultTime={tableDataReplace[selectedRowIndex]?.time || "00:00-00:00"}
+                  defaultTime={tableData[selectedRowIndex]?.time || "00:00-00:00"}
                 />
               )}
 
