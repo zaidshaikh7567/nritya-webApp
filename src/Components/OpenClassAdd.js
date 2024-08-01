@@ -21,7 +21,7 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 
 const FILTER_LOCATION_KEY = 'filterLocation';
-const DRAFT_INTERVAL_TIME = 1000 * 60;
+const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function OpenClassAdd({ instructors, studioId }) {
   const [newWorkshopId, setNewWorkshopId] = useState("");
