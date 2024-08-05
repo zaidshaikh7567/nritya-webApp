@@ -61,11 +61,6 @@ function LoginPage({onLogin,setIsLoggedIn}) {
     const signin = async () => {
       try {
         const result = await signInWithPopup(auth, provider);
-        if (result) {
-          let token = await auth.currentUser?.getIdToken();
-          console.log("token", token);
-          localStorage.setItem("authToken", token);
-        }
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const accessToken = credential.accessToken;
         const idToken = credential.idToken;
@@ -75,6 +70,11 @@ function LoginPage({onLogin,setIsLoggedIn}) {
         console.log("Post login :",user);
         console.log("UserId",user.uid);
         console.log("Result ", result)
+        if (result) {
+          let token = await auth.currentUser?.getIdToken();
+          console.log("token", token);
+          localStorage.setItem("authToken", token);
+        }
         onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled},user);
         setIsLoggedIn(true);
         await addUserIfMissing(user);
