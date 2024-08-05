@@ -61,6 +61,11 @@ function LoginPage({onLogin,setIsLoggedIn}) {
     const signin = async () => {
       try {
         const result = await signInWithPopup(auth, provider);
+        if (result) {
+          let token = await auth.currentUser?.getIdToken();
+          console.log("token", token);
+          localStorage.setItem("authToken", token);
+        }
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const accessToken = credential.accessToken;
         const idToken = credential.idToken;
