@@ -149,6 +149,36 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
             </MUITypography>
           </Grid>
         </Grid>
+
+        <Box sx={{ mt: "1rem", textAlign: "right" }}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            sx={{
+              color: "white",
+              boxShadow: "none",
+              border: "1px solid",
+              backgroundColor: "transparent",
+              borderColor: isDarkModeOn ? "white" : "black",
+              color: isDarkModeOn ? "white" : "black",
+              "&:hover": {
+                backgroundColor: "transparent",
+                borderColor: isDarkModeOn ? "white" : "black",
+                boxShadow: "none",
+              },
+              "&:active": {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+                borderColor: isDarkModeOn ? "white" : "black",
+              },
+              "&:focus": {
+                boxShadow: "none",
+              },
+            }}
+          >
+            Close
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );
@@ -210,6 +240,7 @@ export default function OpenClassCard({ dataItem }) {
         sx={{
           ...cardStyle,
           "&:hover": cardHoverStyle,
+          flex: "none",
         }}
         onClick={handleWorkshopDetailsModalOpen}
       >
@@ -230,7 +261,11 @@ export default function OpenClassCard({ dataItem }) {
                 <Chip
                   key={index}
                   color={index % 2 === 0 ? "danger" : "success"}
-                  style={{ marginBottom: "10px", fontSize: "0.8rem" }}
+                  style={{
+                    marginLeft: "10px",
+                    marginBottom: "10px",
+                    fontSize: "0.8rem",
+                  }}
                 >
                   {form.trim()}
                 </Chip>

@@ -102,6 +102,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
                 <MUITypography
                   variant="h5"
                   sx={{
+                    mt: "2rem",
                     alignSelf: "center",
                     color: isDarkModeOn ? "white" : "black",
                   }}
@@ -158,6 +159,36 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
             </MUITypography>
           </Grid>
         </Grid>
+
+        <Box sx={{ mt: '1rem', textAlign: "right" }}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            sx={{
+              color: "white",
+              boxShadow: "none",
+              border: "1px solid",
+              backgroundColor: "transparent",
+              borderColor: isDarkModeOn ? "white" : "black",
+              color: isDarkModeOn ? "white" : "black",
+              "&:hover": {
+                backgroundColor: "transparent",
+                borderColor: isDarkModeOn ? "white" : "black",
+                boxShadow: "none",
+              },
+              "&:active": {
+                boxShadow: "none",
+                backgroundColor: "transparent",
+                borderColor: isDarkModeOn ? "white" : "black",
+              },
+              "&:focus": {
+                boxShadow: "none",
+              },
+            }}
+          >
+            Close
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );
@@ -184,7 +215,10 @@ export default function WorkshopCard({ dataItem }) {
           workshopId
         );
 
-        setImageUrl(url);
+        setImageUrl(
+          url ||
+            "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
+        );
       } catch (error) {
         console.error("Error fetching image URL:", error);
       }
@@ -216,16 +250,13 @@ export default function WorkshopCard({ dataItem }) {
         sx={{
           ...cardStyle,
           "&:hover": cardHoverStyle,
+          flex: "none",
         }}
         onClick={handleWorkshopDetailsModalOpen}
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img
-            src={
-              imageUrl
-                ? imageUrl
-                : "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
-            }
+            src={imageUrl}
             loading="lazy"
             alt="Studio Image"
             style={{ maxWidth: "100%", height: "auto", overflow: "hidden" }}
@@ -240,7 +271,7 @@ export default function WorkshopCard({ dataItem }) {
                 <Chip
                   key={index}
                   color={index % 2 === 0 ? "danger" : "success"}
-                  style={{ marginBottom: "10px", fontSize: "0.8rem" }}
+                  style={{ marginLeft: '10px', marginBottom: "10px", fontSize: "0.8rem" }}
                 >
                   {form.trim()}
                 </Chip>
