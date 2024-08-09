@@ -34,6 +34,7 @@ import NotFoundPage from './Screens/NotFoundPage';
 import CreatorWorkshop from './Screens/CreatorWorkshop';
 import CreatorOpenClass from './Screens/CreatorOpenClass';
 import CreatorCourse from './Screens/CreatorCourse';
+import SnackbarProvider from './context/SnackbarContext';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -99,33 +100,35 @@ function App() {
         
         <main className='py-1 flex-grow-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
           <Container fluid>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
-              <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
-              <Route path='/st' element={<StudioFullPage/>}/>
-              <Route path='/search/:entity' element={<SearchPage/>}/>
-              <Route path='/jobs' element={<JobHire/>}/>
-              <Route element={<ProtectedRoute/>}>
-                <Route path='/profile' element={<UserPage/>}/>
-                <Route path='/kyc' element={<Kyc/>}/>
-                <Route path='/cplans' element={<CreatorPlans/>}/>
-                <Route path='/orders' element={<Order/>}/>
-                <Route path='/cart' element={<Cart/>}/>
-                <Route path='/myBookings' element={<MyBookings/>}/>
-                <Route path='/transactions' element={<Transactions/>}/>
-                <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
-                <Route path='/modifyStudios' element={<CreatorStudio/>}/>
-                <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
-                <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
-                <Route path='/modifyCourses' element={<CreatorCourse/>}/>
-                <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
-              </Route>
-              <Route path='/n-trail' element={<Trail/>}/>
-              <Route path='/aboutus' element={<AboutUs/>}/>
-              <Route path='/contactus' element={<ContactUs/>}/>
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+          <SnackbarProvider>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
+                <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
+                <Route path='/st' element={<StudioFullPage/>}/>
+                <Route path='/search/:entity' element={<SearchPage/>}/>
+                <Route path='/jobs' element={<JobHire/>}/>
+                <Route element={<ProtectedRoute/>}>
+                  <Route path='/profile' element={<UserPage/>}/>
+                  <Route path='/kyc' element={<Kyc/>}/>
+                  <Route path='/cplans' element={<CreatorPlans/>}/>
+                  <Route path='/orders' element={<Order/>}/>
+                  <Route path='/cart' element={<Cart/>}/>
+                  <Route path='/myBookings' element={<MyBookings/>}/>
+                  <Route path='/transactions' element={<Transactions/>}/>
+                  <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
+                  <Route path='/modifyStudios' element={<CreatorStudio/>}/>
+                  <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
+                  <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
+                  <Route path='/modifyCourses' element={<CreatorCourse/>}/>
+                  <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
+                </Route>
+                <Route path='/n-trail' element={<Trail/>}/>
+                <Route path='/aboutus' element={<AboutUs/>}/>
+                <Route path='/contactus' element={<ContactUs/>}/>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </SnackbarProvider>
           </Container>
         </main>
 
