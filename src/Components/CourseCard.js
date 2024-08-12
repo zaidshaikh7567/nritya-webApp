@@ -19,7 +19,7 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
 
-function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse }) {
+function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse, actionsAllowed }) {
   const showSnackbar = useSnackbar();
   const currentUser = JSON.parse(localStorage.getItem("userInfo")).UserId;
 
@@ -185,7 +185,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse }) {
         </Grid>
 
         <Box sx={{ mt: "1rem", textAlign: "right" }}>
-          {isCreatorOfWorkshop && (
+          {(actionsAllowed && isCreatorOfWorkshop) && (
             <Button
               onClick={handleDelete}
               variant="outlined"
@@ -248,7 +248,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse }) {
   );
 }
 
-export default function CourseCard({ dataItem, deleteCourse }) {
+export default function CourseCard({ dataItem, deleteCourse, actionsAllowed }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [isWorkshopDetailsModalOpen, setIsWorkshopDetailsModalOpen] =
@@ -380,6 +380,7 @@ export default function CourseCard({ dataItem, deleteCourse }) {
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
         deleteCourse={deleteCourse}
+        actionsAllowed={actionsAllowed}
       />
     </>
   );

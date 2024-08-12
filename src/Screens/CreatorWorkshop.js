@@ -244,7 +244,7 @@ function CreatorWorkshop() {
             Your Workshops
           </h3>
 
-          <CardSlider dataList={workshop} deleteWorkshop={deleteWorkshop} />
+          <CardSlider dataList={workshop} deleteWorkshop={deleteWorkshop} actionsAllowed />
         </>
       )}
     </div>

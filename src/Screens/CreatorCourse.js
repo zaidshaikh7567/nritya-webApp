@@ -243,7 +243,7 @@ function CreatorCourse() {
             Your Courses
           </h3>
 
-          <CardSlider dataList={workshop} deleteCourse={deleteCourse} />
+          <CardSlider dataList={workshop} deleteCourse={deleteCourse} actionsAllowed />
         </>
       )}
     </div>

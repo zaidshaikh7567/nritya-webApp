@@ -21,7 +21,7 @@ import { db } from "../config";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useSnackbar } from "../context/SnackbarContext";
 
-function WorkshopDetailsModal({ open, handleClose, dataItem, deleteWorkshop }) {
+function WorkshopDetailsModal({ open, handleClose, dataItem, deleteWorkshop, actionsAllowed }) {
   const showSnackbar = useSnackbar();
   const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
 
@@ -179,7 +179,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteWorkshop }) {
         </Grid>
 
         <Box sx={{ mt: "1rem", textAlign: "right" }}>
-          {isCreatorOfWorkshop && (
+          {(actionsAllowed && isCreatorOfWorkshop) && (
             <Button
               onClick={handleDelete}
               variant="outlined"
@@ -206,7 +206,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteWorkshop }) {
                 },
               }}
             >
-              Delete
+              Deactivate
             </Button>
           )}
           <Button
@@ -242,7 +242,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteWorkshop }) {
   );
 }
 
-export default function WorkshopCard({ dataItem, deleteWorkshop }) {
+export default function WorkshopCard({ actionsAllowed, dataItem, deleteWorkshop }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [isWorkshopDetailsModalOpen, setIsWorkshopDetailsModalOpen] =
@@ -374,6 +374,7 @@ export default function WorkshopCard({ dataItem, deleteWorkshop }) {
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
         deleteWorkshop={deleteWorkshop}
+        actionsAllowed={actionsAllowed}
       />
     </>
   );

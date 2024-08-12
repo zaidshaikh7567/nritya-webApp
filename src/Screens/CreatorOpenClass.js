@@ -246,7 +246,7 @@ function CreatorOpenClass() {
           <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
             Your Open Classes:
           </h3>
-          <CardSlider dataList={workshop} deleteOpenClass={deleteOpenClass} />
+          <CardSlider dataList={workshop} deleteOpenClass={deleteOpenClass} actionsAllowed />
         </>
       )}
     </div>
