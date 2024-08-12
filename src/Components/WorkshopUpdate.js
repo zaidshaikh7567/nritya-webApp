@@ -34,6 +34,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -99,6 +100,8 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         description: event.target.description.value,
       };
 
+      setIsSubmitting(true);
+
       const studioRef = doc(db, COLLECTIONS.WORKSHOPS, selectedWorkshopId);
 
       await updateDoc(studioRef, dbPayload);
@@ -109,6 +112,8 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
       console.error("Error updating workshop: ", error);
       setShowUpdateSuccessAlert(false);
       setShowUpdateErrorAlert(true);
+    } finally {
+      setIsSubmitting(false);
     }
     document.getElementById("updateStudioForm").reset();
   };
@@ -474,6 +479,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                     backgroundColor: isDarkModeOn ? "#892cdc" : "black",
                   }}
                   type="submit"
+                  disabled={isSubmitting}
                 >
                   Update Workshop
                 </MuiButton>

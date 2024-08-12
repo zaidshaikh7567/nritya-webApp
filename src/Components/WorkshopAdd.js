@@ -53,6 +53,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const darkTheme = createTheme({
     palette: {
@@ -161,6 +162,8 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
         city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
       };
 
+      setIsSubmitting(true);
+
       const workshopRef = await addDoc(
         collection(db, COLLECTIONS.WORKSHOPS),
         dbPayload
@@ -192,6 +195,8 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -660,6 +665,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
                       backgroundColor: isDarkModeOn ? "#892cdc" : "black",
                     }}
                     type="submit"
+                    disabled={isSubmitting}
                   >
                     Add Workshop
                   </MuiButton>
