@@ -3,7 +3,17 @@ import { Row, Col, Form } from "react-bootstrap";
 import { Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
-import { doc, getDoc, addDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  addDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 import { COLLECTIONS, DRAFT_COLLECTIONS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
@@ -19,11 +29,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
+import { useSnackbar } from "../context/SnackbarContext";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
-function CourseAdd({ instructors, studioId }) {
+function CourseAdd({ instructors, studioId, setCourses }) {
+  const showSnackbar = useSnackbar();
   const [newWorkshopId, setNewWorkshopId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
@@ -68,10 +80,62 @@ function CourseAdd({ instructors, studioId }) {
     setSelectedInstructors(value);
   };
 
+  const isValidInputs = (form) => {
+    let validationFailed = true;
+    if (
+      !form.name.value ||
+      !form.duration.value ||
+      !form.workshopFees.value ||
+      !form.workshopVenue.value ||
+      !form.description.value ||
+      !selectedDanceStyles?.length ||
+      !selectedInstructors?.length ||
+      !selectedStudio ||
+      !selectedDurationUnit ||
+      !selectedLevel ||
+      !workshopTime ||
+      !workshopDate
+    )
+      validationFailed = false;
+
+    return validationFailed;
+  };
+
+  const resetDraft = async () => {
+    const q = query(
+      collection(db, DRAFT_COLLECTIONS.DRAFT_COURSES),
+      where("UserId", "==", JSON.parse(localStorage.getItem("userInfo")).UserId)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      let studios = [];
+
+      querySnapshot.forEach((doc) => {
+        studios.push({ id: doc.id, ...doc.data() });
+      });
+
+      let foundStudio = studios[0];
+
+      const studioRef = doc(
+        db,
+        DRAFT_COLLECTIONS.DRAFT_COURSES,
+        foundStudio.id
+      );
+
+      await deleteDoc(studioRef);
+    }
+  };
+
   const handleAddStudio = async (event) => {
     event.preventDefault();
-    const title = event.target.name.value;
-    if (!title) return;
+    const form = event.target;
+
+    if (!isValidInputs(form)) {
+      showSnackbar("Please fill all the fields.", "error");
+      return;
+    }
 
     try {
       const dbPayload = {
@@ -105,6 +169,8 @@ function CourseAdd({ instructors, studioId }) {
       );
 
       setNewWorkshopId(workshopRef.id);
+      setCourses((prev) => [...prev, { id: workshopRef.id, ...dbPayload }]);
+
       const userRef = doc(
         db,
         "User",
@@ -118,9 +184,25 @@ function CourseAdd({ instructors, studioId }) {
           });
         }
       }
+
+      clearForm(form);
+      resetDraft();
+      showSnackbar("Course successfully added.", "success");
     } catch (error) {
       console.error("Error adding workshop: ", error);
+      showSnackbar(error?.message || "Something went wrong", "error");
     }
+  };
+
+  const clearForm = (form) => {
+    form.reset();
+    setSelectedDanceStyles([]);
+    setSelectedInstructors([]);
+    setSelectedStudio(null);
+    setSelectedDurationUnit('');
+    setSelectedLevel("");
+    setWorkshopTime("");
+    setWorkshopDate(dayjs(Date.now()));
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -158,31 +240,32 @@ function CourseAdd({ instructors, studioId }) {
 
           let foundCourse = courses[0];
 
-          form.name.value=foundCourse.name
-          form.workshopFees.value=foundCourse.price
-          form.workshopVenue.value=foundCourse.venue
-          form.description.value=foundCourse.description
-          form.duration.value=foundCourse.duration
+          form.name.value = foundCourse.name;
+          form.workshopFees.value = foundCourse.price;
+          form.workshopVenue.value = foundCourse.venue;
+          form.description.value = foundCourse.description;
+          form.duration.value = foundCourse.duration;
 
           setSelectedDanceStyles(
-            foundCourse?.danceStyles?.length
-              ? foundCourse.danceStyles
-              : []
-          )
+            foundCourse?.danceStyles?.length ? foundCourse.danceStyles : []
+          );
 
-          setSelectedInstructors(instructors
-            .filter((instructor) =>
-              foundCourse?.instructors.includes(instructor.id)
-            )
-            .map((instructor) => `${instructor.name} - ${instructor.id}`));
-          
-            const studios = studioId.map((studio) => studio.split(":")[1].trim());
-            const currentStudioIndex = studios.findIndex(
-              (studio) => studio === foundCourse?.StudioId
-            );
-            if (currentStudioIndex > 0) setSelectedStudio(studioId[currentStudioIndex]);
+          setSelectedInstructors(
+            instructors
+              .filter((instructor) =>
+                foundCourse?.instructors.includes(instructor.id)
+              )
+              .map((instructor) => `${instructor.name} - ${instructor.id}`)
+          );
 
-          setSelectedDurationUnit(foundCourse.durationUnit)
+          const studios = studioId.map((studio) => studio.split(":")[1].trim());
+          const currentStudioIndex = studios.findIndex(
+            (studio) => studio === foundCourse?.StudioId
+          );
+          if (currentStudioIndex > 0)
+            setSelectedStudio(studioId[currentStudioIndex]);
+
+          setSelectedDurationUnit(foundCourse.durationUnit);
 
           setSelectedLevel(foundCourse?.level || "");
           setWorkshopTime(foundCourse?.time || "");
@@ -198,7 +281,8 @@ function CourseAdd({ instructors, studioId }) {
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
               ? selectedInstructors?.map?.(
-                  (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
+                  (instructor) =>
+                    instructor?.split?.("-")?.[1]?.trim?.() || null
                 )
               : null,
             author: JSON.parse(localStorage.getItem("userInfo")).displayName,
@@ -264,7 +348,8 @@ function CourseAdd({ instructors, studioId }) {
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
-                      (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
+                      (instructor) =>
+                        instructor?.split?.("-")?.[1]?.trim?.() || null
                     )
                   : null,
                 StudioId: selectedStudio
@@ -277,7 +362,7 @@ function CourseAdd({ instructors, studioId }) {
                 date: workshopDate.format("YYYY-MM-DD"),
                 price: form.workshopFees.value,
                 venue: form.workshopVenue.value,
-                description: form.description.value
+                description: form.description.value,
               });
             } catch (error) {
               console.error(error);
@@ -300,7 +385,7 @@ function CourseAdd({ instructors, studioId }) {
     selectedDurationUnit,
     selectedLevel,
     workshopTime,
-    workshopDate
+    workshopDate,
   ]);
 
   return (
@@ -553,7 +638,7 @@ function CourseAdd({ instructors, studioId }) {
                   />
                 </Col>
                 <Col md={6}>
-                  <Form.Label>Studio (optional)</Form.Label>
+                  <Form.Label>Studio</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
 

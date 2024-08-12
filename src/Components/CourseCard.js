@@ -17,9 +17,25 @@ import { STORAGES } from "../constants";
 import { readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
+import { useSnackbar } from "../context/SnackbarContext";
 
-function WorkshopDetailsModal({ open, handleClose, dataItem }) {
+function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse }) {
+  const showSnackbar = useSnackbar();
+  const currentUser = JSON.parse(localStorage.getItem("userInfo")).UserId;
+
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const isCreatorOfWorkshop = dataItem.UserId === currentUser;
+
+  const handleDelete = async () => {
+    try {
+      await deleteCourse(dataItem.id);
+      handleClose();
+      showSnackbar("Course deleted!", "success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Modal
@@ -169,6 +185,36 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
         </Grid>
 
         <Box sx={{ mt: "1rem", textAlign: "right" }}>
+          {isCreatorOfWorkshop && (
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              sx={{
+                mr: "1rem",
+                color: "white",
+                boxShadow: "none",
+                border: "1px solid",
+                backgroundColor: "red",
+                borderColor: "white",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "red",
+                  borderColor: "white",
+                  boxShadow: "none",
+                },
+                "&:active": {
+                  boxShadow: "none",
+                  backgroundColor: "red",
+                  borderColor: "white",
+                },
+                "&:focus": {
+                  boxShadow: "none",
+                },
+              }}
+            >
+              Delete
+            </Button>
+          )}
           <Button
             onClick={handleClose}
             variant="outlined"
@@ -202,7 +248,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
   );
 }
 
-export default function CourseCard({ dataItem }) {
+export default function CourseCard({ dataItem, deleteCourse }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [isWorkshopDetailsModalOpen, setIsWorkshopDetailsModalOpen] =
@@ -267,7 +313,7 @@ export default function CourseCard({ dataItem }) {
             src={imageUrl}
             loading="lazy"
             alt="Studio Image"
-            style={{ maxWidth: "100%", height: "auto", overflow: "hidden" }}
+            style={{ maxWidth: "100%", objectFit: "cover", overflow: "hidden" }}
           />
           <Stack
             direction="row"
@@ -311,7 +357,7 @@ export default function CourseCard({ dataItem }) {
               extDecoder: "one",
             }}
           >
-            {dataItem && dataItem.workshopName ? dataItem.workshopName : ""}
+            {dataItem && dataItem.name ? dataItem.name : ""}
           </Box>
           <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
@@ -333,6 +379,7 @@ export default function CourseCard({ dataItem }) {
         dataItem={{ ...dataItem, imageUrl }}
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
+        deleteCourse={deleteCourse}
       />
     </>
   );
