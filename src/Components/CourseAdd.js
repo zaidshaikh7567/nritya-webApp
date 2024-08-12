@@ -53,6 +53,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const darkTheme = createTheme({
     palette: {
@@ -163,6 +164,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
       };
 
+      setIsSubmitting(true);
+
       const workshopRef = await addDoc(
         collection(db, COLLECTIONS.COURSES),
         dbPayload
@@ -191,6 +194,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -678,6 +683,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                       backgroundColor: isDarkModeOn ? "#892cdc" : "black",
                     }}
                     type="submit"
+                    disabled={isSubmitting}
                   >
                     Add Course
                   </MuiButton>
