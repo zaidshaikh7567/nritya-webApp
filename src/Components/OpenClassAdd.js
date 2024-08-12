@@ -53,6 +53,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const darkTheme = createTheme({
     palette: {
@@ -160,6 +161,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
       };
 
+      setIsSubmitting(true);
+
       const workshopRef = await addDoc(
         collection(db, COLLECTIONS.OPEN_CLASSES),
         dbPayload
@@ -191,6 +194,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -647,6 +652,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                       backgroundColor: isDarkModeOn ? "#892cdc" : "black",
                     }}
                     type="submit"
+                    disabled={isSubmitting}
                   >
                     Add Open Class
                   </MuiButton>

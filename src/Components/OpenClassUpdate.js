@@ -34,6 +34,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -98,6 +99,8 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
         description: event.target.description.value,
       };
 
+      setIsSubmitting(true);
+
       const studioRef = doc(db, COLLECTIONS.OPEN_CLASSES, selectedOpenClassId);
 
       await updateDoc(studioRef, dbPayload);
@@ -108,6 +111,8 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
       console.error("Error updating workshop: ", error);
       setShowUpdateSuccessAlert(false);
       setShowUpdateErrorAlert(true);
+    } finally {
+      setIsSubmitting(false);
     }
     document.getElementById("updateStudioForm").reset();
   };
@@ -464,6 +469,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
                     backgroundColor: isDarkModeOn ? "#892cdc" : "black",
                   }}
                   type="submit"
+                  disabled={isSubmitting}
                 >
                   Update Open Class
                 </MuiButton>
