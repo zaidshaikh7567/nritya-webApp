@@ -472,62 +472,54 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         {studioData && studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (<MapReadOnly selectedLocationParam={studioData.geolocation}></MapReadOnly>) :""}
         </Col>
       </Row>
+
+      <br />
+
+      {workshops.length > 0 && (
+        <>
+          <br></br>
+          <Row>
+            <Col xs={12}>
+              <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Workshops</h3>
+              <WorkshopCardSlider dataList={workshops} />
+            </Col>
+          </Row>
+        </>
+      )}
+
+      {openClasses.length > 0 && (
+        <>
+          <br></br>
+          <Row>
+            <Col xs={12}>
+              <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Open Classes</h3>
+              <OpenClassCardSlider dataList={openClasses} />
+            </Col>
+          </Row>
+        </>
+      )}
+
+      {courses.length > 0 && (
+        <>
+          <br></br>
+          <Row>
+            <Col xs={12}>
+              <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Courses</h3>
+              <CourseCardSlider dataList={courses} />
+              )
+            </Col>
+          </Row>
+        </>
+      )}
+
       <br></br>
       <Row className="justify-content-center">
         <Col xs="auto">
-        <Ratings userID={JSON.parse(localStorage.getItem('userInfo'))? JSON.parse(localStorage.getItem('userInfo')).UserId: null} studioID={studioId}></Ratings>
+          <Ratings userID={JSON.parse(localStorage.getItem('userInfo')) ? JSON.parse(localStorage.getItem('userInfo')).UserId : null} studioID={studioId}></Ratings>
         </Col>
       </Row>
       <br></br>
-      <br></br>
-      <Row>
-        <Col xs={12}>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Workshops:</h3>
-        </Col>
-        <Col xs={12}>
-          {workshops.length > 0 ? (
-            <WorkshopCardSlider dataList={workshops} />
-          ) : (
-            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
-              No workshop yet!
-            </p>
-          )}
-        </Col>
-      </Row>
-
-      <br></br>
-      <Row>
-        <Col xs={12}>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Open Classes:</h3>
-        </Col>
-        <Col xs={12}>
-          {openClasses.length > 0 ? (
-            <OpenClassCardSlider dataList={openClasses} />
-          ) : (
-            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
-              No open class yet!
-            </p>
-          )}
-        </Col>
-      </Row>
-
-      <br></br>
-      <Row>
-        <Col xs={12}>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Courses:</h3>
-        </Col>
-        <Col xs={12}>
-          {courses.length > 0 ? (
-            <CourseCardSlider dataList={courses} />
-          ) : (
-            <p style={{ color: isDarkModeOn ? "white" : "black" }}>
-              No course yet!
-            </p>
-          )}
-        </Col>
-      </Row>
     </Container>
-  
   )
 };
 
