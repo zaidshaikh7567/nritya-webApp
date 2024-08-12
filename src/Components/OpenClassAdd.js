@@ -3,7 +3,17 @@ import { Row, Col, Form } from "react-bootstrap";
 import { Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
-import { doc, getDoc, addDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  addDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 import { COLLECTIONS, DRAFT_COLLECTIONS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
@@ -19,11 +29,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
+import { useSnackbar } from "../context/SnackbarContext";
 
-const FILTER_LOCATION_KEY = 'filterLocation';
+const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
-function OpenClassAdd({ instructors, studioId }) {
+function OpenClassAdd({ instructors, studioId, setOpenClass }) {
+  const showSnackbar = useSnackbar();
   const [newWorkshopId, setNewWorkshopId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
@@ -68,10 +80,61 @@ function OpenClassAdd({ instructors, studioId }) {
     setSelectedInstructors(value);
   };
 
+  const isValidInputs = (form) => {
+    let validationFailed = true;
+
+    if (
+      !form.openClassName.value ||
+      !form.openClassVenue.value ||
+      !form.description.value ||
+      !selectedDanceStyles?.length ||
+      !selectedInstructors?.length ||
+      !selectedStudio ||
+      !selectedDuration ||
+      !selectedLevel ||
+      !openClassTime ||
+      !openClassDate
+    )
+      validationFailed = false;
+
+    return validationFailed;
+  };
+
+  const resetDraft = async () => {
+    const q = query(
+      collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES),
+      where("UserId", "==", JSON.parse(localStorage.getItem("userInfo")).UserId)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      let studios = [];
+
+      querySnapshot.forEach((doc) => {
+        studios.push({ id: doc.id, ...doc.data() });
+      });
+
+      let foundStudio = studios[0];
+
+      const studioRef = doc(
+        db,
+        DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES,
+        foundStudio.id
+      );
+
+      await deleteDoc(studioRef);
+    }
+  };
+
   const handleAddStudio = async (event) => {
     event.preventDefault();
-    const title = event.target.openClassName.value;
-    if (!title) return;
+    const form = event.target;
+
+    if (!isValidInputs(form)) {
+      showSnackbar("Please fill all the fields.", "error");
+      return;
+    }
 
     try {
       const dbPayload = {
@@ -103,6 +166,8 @@ function OpenClassAdd({ instructors, studioId }) {
       );
 
       setNewWorkshopId(workshopRef.id);
+      setOpenClass((prev) => [...prev, { id: workshopRef.id, ...dbPayload }]);
+
       const userRef = doc(
         db,
         "User",
@@ -113,15 +178,31 @@ function OpenClassAdd({ instructors, studioId }) {
         if (userSnap.data() != null) {
           await updateDoc(userRef, {
             OpenClassCreated: [
-              ...userSnap.data().OpenClassCreated,
+              ...(userSnap.data()?.OpenClassCreated || []),
               workshopRef.id,
             ],
           });
         }
       }
+
+      clearForm(form);
+      resetDraft();
+      showSnackbar("Open class successfully added.", "success");
     } catch (error) {
       console.error("Error adding workshop: ", error);
+      showSnackbar(error?.message || "Something went wrong", "error");
     }
+  };
+
+  const clearForm = (form) => {
+    form.reset();
+    setSelectedDanceStyles([]);
+    setSelectedInstructors([]);
+    setSelectedStudio(null);
+    setSelectedDuration("");
+    setSelectedLevel("");
+    setOpenClassTime("");
+    setOpenClassDate(dayjs(new Date()));
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -159,27 +240,30 @@ function OpenClassAdd({ instructors, studioId }) {
 
           let foundOpenClass = openClasses[0];
 
-          form.openClassName.value = foundOpenClass?.openClassName || ""
-          form.openClassVenue.value = foundOpenClass?.venue || ""
-          form.description.value = foundOpenClass?.description || ""
+          form.openClassName.value = foundOpenClass?.openClassName || "";
+          form.openClassVenue.value = foundOpenClass?.venue || "";
+          form.description.value = foundOpenClass?.description || "";
 
           setSelectedDanceStyles(
             foundOpenClass?.danceStyles?.length
               ? foundOpenClass.danceStyles
               : []
-          )
+          );
 
-          setSelectedInstructors(instructors
-            .filter((instructor) =>
-              foundOpenClass?.instructors.includes(instructor.id)
-            )
-            .map((instructor) => `${instructor.name} - ${instructor.id}`));
+          setSelectedInstructors(
+            instructors
+              .filter((instructor) =>
+                foundOpenClass?.instructors.includes(instructor.id)
+              )
+              .map((instructor) => `${instructor.name} - ${instructor.id}`)
+          );
 
           const studios = studioId.map((studio) => studio.split(":")[1].trim());
           const currentStudioIndex = studios.findIndex(
             (studio) => studio === foundOpenClass?.StudioId
           );
-          if (currentStudioIndex > 0) setSelectedStudio(studioId[currentStudioIndex]);
+          if (currentStudioIndex > 0)
+            setSelectedStudio(studioId[currentStudioIndex]);
 
           setSelectedDuration(foundOpenClass?.duration || "");
 
@@ -196,8 +280,9 @@ function OpenClassAdd({ instructors, studioId }) {
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
               ? selectedInstructors?.map?.(
-                (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
-              )
+                  (instructor) =>
+                    instructor?.split?.("-")?.[1]?.trim?.() || null
+                )
               : null,
             author: JSON.parse(localStorage.getItem("userInfo")).displayName,
             UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
@@ -264,8 +349,9 @@ function OpenClassAdd({ instructors, studioId }) {
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
-                    (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
-                  )
+                      (instructor) =>
+                        instructor?.split?.("-")?.[1]?.trim?.() || null
+                    )
                   : null,
                 StudioId: selectedStudio
                   ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
@@ -295,7 +381,7 @@ function OpenClassAdd({ instructors, studioId }) {
     selectedDuration,
     selectedLevel,
     openClassTime,
-    openClassDate
+    openClassDate,
   ]);
 
   return (
@@ -518,7 +604,7 @@ function OpenClassAdd({ instructors, studioId }) {
 
               <Row>
                 <Col md={6}>
-                  <Form.Label>Studio (optional)</Form.Label>
+                  <Form.Label>Studio</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
 

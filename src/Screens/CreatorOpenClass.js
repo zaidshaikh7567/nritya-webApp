@@ -9,6 +9,8 @@ import {
   where,
   getDocs,
   query,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { useSelector } from "react-redux";
@@ -36,6 +38,34 @@ function CreatorOpenClass() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const deleteOpenClass = async (openClassId) => {
+    try {
+      const docRef = doc(db, COLLECTIONS.OPEN_CLASSES, openClassId);
+      await deleteDoc(docRef);
+
+      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        if (userSnap.data() != null) {
+          await updateDoc(userRef, {
+            OpenClassCreated:
+              userSnap
+                .data()
+                .OpenClassCreated?.filter?.(
+                  (workshop) => workshop.id !== openClassId
+                ) || [],
+          });
+        }
+      }
+
+      setWorkshop((prev) =>
+        prev.filter((workshop) => workshop.id !== openClassId)
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -189,7 +219,11 @@ function CreatorOpenClass() {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <OpenClassAdd instructors={instructors} studioId={studioId} />
+                <OpenClassAdd
+                  instructors={instructors}
+                  studioId={studioId}
+                  setOpenClass={setWorkshop}
+                />
               </TabPanel>
               <TabPanel value="2">
                 <>
@@ -207,16 +241,13 @@ function CreatorOpenClass() {
         ""
       )}
 
-      <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-        Your Open Classes:
-      </h3>
-
-      {workshop.length > 0 ? (
-        <CardSlider dataList={workshop} />
-      ) : (
-        <p style={{ color: isDarkModeOn ? "white" : "black" }}>
-          No open class yet!
-        </p>
+      {workshop.length > 0 && (
+        <>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
+            Your Open Classes:
+          </h3>
+          <CardSlider dataList={workshop} deleteOpenClass={deleteOpenClass} />
+        </>
       )}
     </div>
   );
