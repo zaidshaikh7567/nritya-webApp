@@ -9,6 +9,8 @@ import {
   where,
   getDocs,
   query,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { useSelector } from "react-redux";
@@ -36,6 +38,31 @@ function CreatorWorkshop() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const deleteWorkshop = async (workshopId) => {
+    try {
+      const docRef = doc(db, COLLECTIONS.WORKSHOPS, workshopId);
+      await deleteDoc(docRef);
+
+      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        if (userSnap.data() != null) {
+          await updateDoc(userRef, {
+            WorkshopCreated: userSnap
+              .data()
+              .WorkshopCreated.filter((workshop) => workshop.id !== workshopId),
+          });
+        }
+      }
+
+      setWorkshop((prev) =>
+        prev.filter((workshop) => workshop.id !== workshopId)
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -189,7 +216,11 @@ function CreatorWorkshop() {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <WorkshopAdd instructors={instructors} studioId={studioId} />
+                <WorkshopAdd
+                  instructors={instructors}
+                  studioId={studioId}
+                  setWorkshop={setWorkshop}
+                />
               </TabPanel>
               <TabPanel value="2">
                 <>
@@ -207,16 +238,14 @@ function CreatorWorkshop() {
         ""
       )}
 
-      <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-        Your Workshop:
-      </h3>
+      {workshop.length > 0 && (
+        <>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
+            Your Workshops
+          </h3>
 
-      {workshop.length > 0 ? (
-        <CardSlider dataList={workshop} />
-      ) : (
-        <p style={{ color: isDarkModeOn ? "white" : "black" }}>
-          No workshop yet!
-        </p>
+          <CardSlider dataList={workshop} deleteWorkshop={deleteWorkshop} />
+        </>
       )}
     </div>
   );

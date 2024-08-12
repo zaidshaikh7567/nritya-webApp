@@ -13,13 +13,31 @@ import {
   Button,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { STORAGES } from "../constants";
+import { COLLECTIONS, STORAGES } from "../constants";
 import { readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
+import { db } from "../config";
+import { deleteDoc, doc } from "firebase/firestore";
+import { useSnackbar } from "../context/SnackbarContext";
 
-function WorkshopDetailsModal({ open, handleClose, dataItem }) {
+function WorkshopDetailsModal({ open, handleClose, dataItem, deleteWorkshop }) {
+  const showSnackbar = useSnackbar();
+  const currentUser = JSON.parse(localStorage.getItem("userInfo")).UserId;
+
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const isCreatorOfWorkshop = dataItem.UserId === currentUser;
+
+  const handleDelete = async () => {
+    try {
+      await deleteWorkshop(dataItem.id);
+      handleClose();
+      showSnackbar("Workshop deleted!", "success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Modal
@@ -160,7 +178,37 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: '1rem', textAlign: "right" }}>
+        <Box sx={{ mt: "1rem", textAlign: "right" }}>
+          {isCreatorOfWorkshop && (
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              sx={{
+                mr: "1rem",
+                color: "white",
+                boxShadow: "none",
+                border: "1px solid",
+                backgroundColor: "red",
+                borderColor: "white",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "red",
+                  borderColor: "white",
+                  boxShadow: "none",
+                },
+                "&:active": {
+                  boxShadow: "none",
+                  backgroundColor: "red",
+                  borderColor: "white",
+                },
+                "&:focus": {
+                  boxShadow: "none",
+                },
+              }}
+            >
+              Delete
+            </Button>
+          )}
           <Button
             onClick={handleClose}
             variant="outlined"
@@ -194,7 +242,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem }) {
   );
 }
 
-export default function WorkshopCard({ dataItem }) {
+export default function WorkshopCard({ dataItem, deleteWorkshop }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [isWorkshopDetailsModalOpen, setIsWorkshopDetailsModalOpen] =
@@ -259,7 +307,7 @@ export default function WorkshopCard({ dataItem }) {
             src={imageUrl}
             loading="lazy"
             alt="Studio Image"
-            style={{ maxWidth: "100%", height: "auto", overflow: "hidden" }}
+            style={{ maxWidth: "100%", objectFit: "cover", overflow: "hidden" }}
           />
           <Stack
             direction="row"
@@ -271,7 +319,11 @@ export default function WorkshopCard({ dataItem }) {
                 <Chip
                   key={index}
                   color={index % 2 === 0 ? "danger" : "success"}
-                  style={{ marginLeft: '10px', marginBottom: "10px", fontSize: "0.8rem" }}
+                  style={{
+                    marginLeft: "10px",
+                    marginBottom: "10px",
+                    fontSize: "0.8rem",
+                  }}
                 >
                   {form.trim()}
                 </Chip>
@@ -321,6 +373,7 @@ export default function WorkshopCard({ dataItem }) {
         dataItem={{ ...dataItem, imageUrl }}
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
+        deleteWorkshop={deleteWorkshop}
       />
     </>
   );
