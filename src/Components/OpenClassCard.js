@@ -21,7 +21,7 @@ import { useSnackbar } from "../context/SnackbarContext";
 
 function WorkshopDetailsModal({ open, handleClose, dataItem, deleteOpenClass }) {
   const showSnackbar = useSnackbar();
-  const currentUser = JSON.parse(localStorage.getItem("userInfo")).UserId;
+  const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
 
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
