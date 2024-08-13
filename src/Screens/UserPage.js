@@ -17,7 +17,7 @@ import MyBookings from '../Components/MyBookings';
 import './UserPage.css';
 import CreatorDashboard from './CreatorDashboard';
 import Kyc from '../Components/Kyc';
-import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography} from '@mui/material';
+import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography, Tooltip} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
@@ -174,7 +174,9 @@ function UserPage() {
             <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
               {currentUser.displayName}
               {isCreator && (
-                <CheckCircleIcon sx={{ color: 'green', marginLeft: 0.5, fontSize: 20 }} />
+                 <Tooltip title="You are a verified user." arrow>
+                 <CheckCircleIcon sx={{ color: 'green', marginLeft: 0.5, fontSize: 20 }} />
+               </Tooltip>
               )}
             </Typography>
           }
