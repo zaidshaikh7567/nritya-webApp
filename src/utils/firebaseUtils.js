@@ -28,7 +28,6 @@ export const setCreatorMode = async (uid) => {
   }
 }
 
-
 export const getCreatorMode = async () => {
   try{
     const mode = secureLocalStorage.getItem('CreatorMode');
@@ -44,8 +43,6 @@ export const getCreatorMode = async () => {
     return false
   }
 }
-
-
 
 // Read operation with image URL
 export const readDocumentWithImageUrl = async (collectionName, productId) => {

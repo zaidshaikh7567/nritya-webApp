@@ -1,29 +1,37 @@
-import React, { useState } from 'react';
-import { Form, Button, Container,Row,Col } from 'react-bootstrap';
-import { db } from '../config';
-import { doc, getDoc,setDoc,addDoc,updateDoc,collection } from "firebase/firestore";
-import { useNavigate } from 'react-router-dom';
-import {useEffect } from 'react';
-import TrackingDetails from './TrackingDetails';
-import { STATUSES,COLLECTIONS } from "./../constants.js";
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Container } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { Stepper, Step, StepLabel, StepContent } from '@mui/material';
+import { saveDocument, updateDocumentFields, readDocument } from '../utils/firebaseUtils.js';
+import { STATUSES, COLLECTIONS } from '../constants.js';
 import KycStepper from './KycStepper.js';
+import CryptoJS from 'crypto-js';
 
 function Kyc() {
   const [formData, setFormData] = useState({
     name: '',
-    uid: '',
     age: '',
     address: '',
     city: '',
     state: '',
     zip: '',
     country: '',
+    phoneNumber: '',
+    status: STATUSES.SUBMITTED,
+    hash: '', // Added for storing hash
   });
-  const [kycList, setKycList] = useState(null);
+  const [kycData, setKycData] = useState(null);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const user_id = JSON.parse(localStorage.getItem('userInfo')).UserId;
+  const kycId = `${user_id}_Kyc`;
+
+  const calculateHash = (data) => {
+    const filteredData = Object.keys(data).filter(key => key !== 'hash' && key !== 'status');
+    const sortedData = filteredData.sort().map(key => `${key}:${data[key]}`).join('|');
+  // Calculate hash using SHA-256
+    return CryptoJS.SHA256(sortedData).toString();
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,190 +43,90 @@ function Kyc() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const uuid = event.target.uid.value;
-    if (!uuid) {
-      return;
-    }
-    console.log("hi#")
     try {
-        console.log(event.target.name.value,JSON.parse(localStorage.getItem('userInfo')).UserId)
-        const docRef = await addDoc(collection(db, COLLECTIONS.USER_KYC), {
-          name: event.target.name.value,
-          uid: event.target.uid.value,
-          author: JSON.parse(localStorage.getItem('userInfo')).displayName,
-          age: event.target.age.value,
-          address: event.target.address.value,
-          UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
-          city: event.target.city.value,
-          state: event.target.state.value,
-          phoneNumber : event.target.phoneNumber.value,
-          status:STATUSES.SUBMITTED,
-        });
-        
+      const kycDoc = await readDocument(COLLECTIONS.USER_KYC, kycId);
+      const newHash = calculateHash(formData);
 
-        
-        const userRef = doc(db, COLLECTIONS.USER, JSON.parse(localStorage.getItem('userInfo')).UserId);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          console.log("User there",userSnap.data());
-          if(userSnap.data() != null){
-            await updateDoc(userRef,{
-      
-              KycIdList: {...userSnap.data().KycIdList,[docRef.id]:STATUSES.SUBMITTED}
-            });
-            console.log("Kyc added back successfully");
-            alert("Kyc added successfully");
-            event.target.reset();
-          }else{
-            console.log("userSnap.data() null")
-          }
+      if (kycDoc) {
+        if (kycDoc.hash !== newHash) {
+          await updateDocumentFields(COLLECTIONS.USER_KYC, kycId, {
+            ...formData,
+            hash: newHash,
+          });
+          alert("KYC updated successfully");
         } else {
-          console.log("User not found but workshop created... error");
+          alert("No changes detected");
         }
-      
+      } else {
+        // If no KYC record exists, create a new one
+        await saveDocument(COLLECTIONS.USER_KYC, kycId, {
+          ...formData,
+          UserId: user_id,
+          hash: newHash,
+        });
+        alert("KYC added successfully");
+      }
+
+      await updateDocumentFields(COLLECTIONS.USER, user_id, {
+        KycIdList: { [kycId]: formData.status },
+      });
+
+      event.target.reset();
     } catch (error) {
-      console.error("Error adding workshop: ", error);
+      console.error("Error processing KYC: ", error);
     }
   };
 
   useEffect(() => {
-    const getKycList = async () => {
-      const docRef = doc(db, COLLECTIONS.USER, JSON.parse(localStorage.getItem('userInfoFull')).uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setKycList(docSnap.data().KycIdList);
-        console.log("kyc list from KycJs : ",kycList)
+    const fetchKycData = async () => {
+      const kycDoc = await readDocument(COLLECTIONS.USER_KYC, kycId);
+      if (kycDoc) {
+        setKycData(kycDoc);
+        setFormData({ ...kycDoc, status: kycDoc.status || STATUSES.SUBMITTED });
       } else {
-        console.log("kyc2")
-        setKycList([]);
+        setKycData(null);
       }
-    }
+    };
 
-    getKycList();
-  }, []);
-
-  const orderStatus ="dispatched"
+    fetchKycData();
+  }, [kycId]);
 
   return (
-    <div style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>
-      
-      <Container style={{ margin: 'auto',border: isDarkModeOn ? '1px solid white' : '1px solid black', borderRadius: '5px', padding: '20px'  }}>
+    <div style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+      <Container style={{ margin: 'auto', border: isDarkModeOn ? '1px solid white' : '1px solid black', borderRadius: '5px', padding: '20px' }}>
+        <Form onSubmit={handleSubmit}>
+          <h1 style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'capitalize' }}>Verify yourself</h1>
+          <div className="row">
+            { Object.keys(formData).map((key) => (
+              key !== 'status' && key !== 'hash' && key !== 'country' && key !== 'UserId' && (
+                <div className="col-md-6 col-lg-4" key={key}>
+                  <Form.Group controlId={`formBasic${key}`}>
+                    <Form.Label>{key.charAt(0).toUpperCase() + key.slice(1)}</Form.Label>
+                    <Form.Control
+                      type={key === 'age' || key === 'phoneNumber' ? 'number' : 'text'}
+                      placeholder={`Enter ${key}`}
+                      name={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      required
+                      style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
+                    />
+                  </Form.Group>
+                </div>
+              )
+            ))}
+          </div>
+          <Button variant="success" type="submit" disabled={formData.status === "Verified"}>
+            Submit
+          </Button>
 
-      <Form onSubmit={handleSubmit}>
-        <h1 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Kyc Form</h1>
-        <div className="row">
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicFirstName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter name"
-                name="name"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicLastName">
-              <Form.Label>AADHAR UID/Number</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter aadhar number"
-                name="uid"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Age</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter age"
-                name="age"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicNumber">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter active phone number"
-                name="phoneNumber"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicAddress">
-              <Form.Label>Address</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter address"
-                name="address"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicCity">
-              <Form.Label>City</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter city"
-                name="city"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-          <div className="col-md-6 col-lg-4">
-            <Form.Group controlId="formBasicState">
-              <Form.Label>State</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter state"
-                name="state"
-                onChange={handleChange}
-                required
-                style={{ backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5', color: isDarkModeOn ? 'white' : 'black' }}
-              />
-            </Form.Group>
-          </div>
-        </div>
-        <Button variant="success" type="submit">
-          Submit
-        </Button>
-      </Form>
-
-      </Container>
+        </Form>
         <br/>
-
-        {kycList && Object.keys(kycList).length > 0 &&
         <>
-        <Row style={{alignItems:'center'}}>
-        <h3 style={{ backgroundColor: isDarkModeOn ? 'black' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Kyc Application(s)</h3>
-        </Row>
-         
-          <KycStepper kycList={kycList}/>
-         
-          </>
-        }
-
+          {formData.hash && <KycStepper kycId={kycId} status={formData.status} />}
+        </>
+      </Container>
+      <br />
     </div>
   );
 }

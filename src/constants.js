@@ -2,7 +2,7 @@ import { FaSnowflake, FaWifi, FaTint, FaToilet, FaPlug, FaFireExtinguisher, FaFi
 
 export const STATUSES = {
     SUBMITTED: "Submitted",
-    UNDER_REVIEW: "Under review",
+    UNDER_REVIEW: "Under Review",
     REVIEWED: "Reviewed",
     VERIFIED: "Verified",
     VERIFICATION_FAILED: "Failed Verification",

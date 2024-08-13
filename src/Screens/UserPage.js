@@ -16,6 +16,8 @@ import { deleteAllImagesInFolder, uploadOneImageAndGetURL } from '../utils/fireb
 import MyBookings from '../Components/MyBookings';
 import './UserPage.css';
 import CreatorDashboard from './CreatorDashboard';
+import Kyc from '../Components/Kyc';
+import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography} from '@mui/material';
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
@@ -29,10 +31,10 @@ function UserPage() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  console.log("currentUser",currentUser)
   const cardData = [
     ['Transactions', 'All', '#/transactions'],
     ['My Bookings', 'All', '#/myBookings'],
-    ['Kyc', 'All', '#/kyc'],
     ['Instructors', 'Creator', '#/modifyInstructors'],
     ['Studios', 'Creator', '#/modifyStudios'],
     ['Creator DashBoard', 'Creator', '#/creatorDashboard']
@@ -156,94 +158,30 @@ function UserPage() {
 
   return (
     <div >
-      <div className='upc'>
-        <div className='upc-inner'>
-          <div className='profile-down'>
-            <img src={profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/'} alt='Profile Pic'></img>
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                  <label htmlFor="profilePictureInput" style={{ cursor: 'pointer', color: 'white', fontSize: '1.2rem', marginTop: '5px' }}>
-                    +
-                    <input
-                      type="file"
-                      id="profilePictureInput"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={handleProfilePictureChange}
-                    />
-                  </label>
-                </div>
-            
-                {isCreator ? (
-                    <>
-                    <div className='profile-description' style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}><a href="#/kyc" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Creator</a> </div>
-                    <div className='profile-description' style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}> {getCurrentUnixTimestamp() > parseInt(premiumTill) ?
-                                                    ( <Button variant="outline-warning" className="me-2 rounded-pill" size="sm" href="#/cplans" >Subscribe</Button>) 
-                                                    : ( <a href="#/cplans" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Premium</a>
-                                                    )} </div >
-                    </>
-                  ) : (
-                    <div className='profile-description' ><Button variant="outline-warning" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.8rem' }} href="#/kyc">Apply for Creator</Button> </div >
-                  )}
-                  <div className='profile-description' >  {currentUser.email}</div >
-                  <div className='profile-description'>
-                    Account Created: {formatDateTime(currentUser.metadata.creationTime)}
-                  </div>
-                  <div className='profile-description'>
-                    Last Login: {formatDateTime(currentUser.metadata.lastSignInTime)}
-                  </div>
-
-          </div>
-        </div>
-      </div>
-      <div class="card-container" hidden>
-          <Card  
-              key="dark1"
-              text={isDarkModeOn ? 'white' : 'black'}
-              style={{ width: '100%',backgroundColor: isDarkModeOn ? '#333333' : '' }}
-            
-              >
-            <Card.Header >Profile</Card.Header>
-                <Row>
-                <Col xs={12} md={4}>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",backgroundColor: "#050A30", }}>
-                  <div style={{width: '20rem',height: '20rem', borderRadius: '50%', overflow: 'hidden', border: '1px solid #00ed64', marginBottom: "2px" }}>
-                    <Image style={{ width: '100%', height: '100%'}} src={ profilePictureUrl?profilePictureUrl: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539/' }/>
-                  </div>
-                  <label htmlFor="profilePictureInput" style={{ cursor: 'pointer', color: 'white', fontSize: '1.2rem', marginTop: '5px' }}>
-                    +
-                    <input
-                      type="file"
-                      id="profilePictureInput"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={handleProfilePictureChange}
-                    />
-                  </label>
-                </div>
-                </Col>
-                <Col xs={12} md={8} >
-                <div >
-                <Card.Title style={{ fontSize: '1.5rem', textAlign: "center",color: isDarkModeOn ? 'white' : 'black' ,marginBottom: "5px",marginTop: "5px" }}>{currentUser.displayName}</Card.Title>
-                  {isCreator ? (
-                    <>
-                    <Card.Text style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}>Creator </Card.Text>
-                    <Card.Text style={{ fontSize: '1.2rem', color: '#E4A11B', textAlign: "center" }}> {getCurrentUnixTimestamp() > parseInt(premiumTill) ?
-                                                    ( <Button variant="outline-warning" className="me-2 rounded-pill" size="sm" href="#/cplans" >Subscribe</Button>) 
-                                                    : ( <a href="#/cplans" style={{ textDecoration: 'none', fontWeight: 'normal', color: 'goldenrod' }} rel="noreferrer">Premium</a>
-                                                    )} </Card.Text>
-                    </>
-                  ) : (
-                    <Card.Text style={{ fontSize: '0.8rem', textAlign: "center" }}><Button variant="outline-warning" className="me-2 rounded-pill" size="sm" style={{ fontSize: '0.8rem' }} href="#/kyc">Apply for Creator</Button> </Card.Text>
-                  )}
-                  <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>  {currentUser.email}</Card.Text>
-                  <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Account Created : {formatDateTime(currentUser.metadata.creationTime).toLocaleString()}</Card.Text>
-                  <Card.Text style={{ fontSize: '0.8rem' ,textAlign: "center"}}>Last Login At : {formatDateTime(currentUser.metadata.lastSignInTime).toLocaleString()}</Card.Text>
-              
-                </div>
-                </Col>
-                </Row>
-          </Card>
-      </div>
+      <h1 style={{ color: isDarkModeOn ? 'white' : 'black', textTransform:'capitalize' }}>Profile</h1>
+      <MUICard sx={{ maxWidth: 345,background: isDarkModeOn ? 'black' : 'white',color: isDarkModeOn ? 'white' : 'black'}}>
+        <CardHeader
+          avatar={
+            <Avatar
+              alt={"Picture"}
+              src={currentUser.photoURL}
+              sx={{ width: 40, height: 40 }}
+            />
+          }
+          title={currentUser.displayName}
+          subheader={currentUser.email}
+          subheaderTypographyProps={{
+            sx: {
+              color: isDarkModeOn ? 'gray' : 'darkgray'
+            }
+          }}
+        />
+        <CardContent>
+        <Typography variant="body2" color="text.secondary" style={{color: isDarkModeOn ? 'white' : 'black'}}>
+          {isCreator ? "List your studios now!!" : "Welcome to the Nritya!"}
+        </Typography>
+      </CardContent>
+      </MUICard>
       <br/>
       <Row>
       {cardData.map(([name, type, link]) => {
@@ -270,6 +208,7 @@ function UserPage() {
         );
       })}
     </Row>
+    <Kyc/>
     </div>
   );
 }

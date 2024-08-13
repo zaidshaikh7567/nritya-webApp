@@ -1,18 +1,15 @@
-import React, {useState,useEffect} from 'react';
-import {  Stepper, Step, StepLabel, Box, Typography, Paper, ThemeProvider, createTheme, Divider } from '@mui/material';
-import { useSelector } from 'react-redux'; 
+import React, { useState, useEffect } from 'react';
+import { Stepper, Step, StepLabel, Box, Typography, Paper, ThemeProvider, createTheme, Divider } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-
 import { styled } from '@mui/material/styles';
-
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import { StepIconProps } from '@mui/material/StepIcon';
-import { readDocument } from '../utils/firebaseUtils';
-import { STATUSES,COLLECTIONS } from '../constants';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { Spinner } from 'react-bootstrap';
-import './KycStepper.css'
+import { readDocument } from '../utils/firebaseUtils';
+import { STATUSES, COLLECTIONS } from '../constants';
+import './KycStepper.css';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -37,7 +34,6 @@ const QontoConnector = styled(StepConnector)(({ theme }) => ({
   },
 }));
 
-
 const stages = [STATUSES.SUBMITTED, STATUSES.UNDER_REVIEW, STATUSES.REVIEWED, STATUSES.VERIFIED];
 const map = {
   [STATUSES.SUBMITTED]: 0,
@@ -47,131 +43,51 @@ const map = {
   [STATUSES.VERIFICATION_FAILED]: 3
 };
 
-
-const KycStepper = ({ kycList }) => {
+const KycStepper = ({ kycId, status }) => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const [kycDataMap, setKycDataMap] = useState({});
-  const [expandedKycId, setExpandedKycId] = useState({});
-
-
+  const [kycData, setKycData] = useState({});
+  const [expanded, setExpanded] = useState(false);
 
   const theme = createTheme({
     palette: {
       mode: isDarkModeOn ? 'dark' : 'light',
       primary: {
-        main: isDarkModeOn ? '#90caf9' : '#1976d2', // Adjust primary color for dark and light mode
+        main: isDarkModeOn ? '#90caf9' : '#1976d2',
       },
     },
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      for (const kycId of Object.keys(kycList)) {
-        try {
-          const data = await readDocument(COLLECTIONS.USER_KYC, kycId);
-          setKycDataMap(prevState => ({
-            ...prevState,
-            [kycId]: data
-          }));
-
-          setExpandedKycId(prevState => ({
-            ...prevState,
-            [kycId]: false
-          }));
-          
-        } catch (error) {
-          console.error(`Error fetching KYC data for KYC ID ${kycId}:`, error);
-        }
+      try {
+        const data = await readDocument(COLLECTIONS.USER_KYC, kycId);
+        setKycData(data);
+      } catch (error) {
+        console.error(`Error fetching KYC data for KYC ID ${kycId}:`, error);
       }
     };
     fetchData();
-  }, [kycList]);
+  }, [kycId]);
 
-  const handleExpand = (kycId) => {
-
-    setExpandedKycId(prevState => ({
-      ...prevState,
-      [kycId]: true
-    }));
-    
-   
-  };
-  
-  const handleCollapse = (kycId) => {
-    setExpandedKycId(prevState => ({
-      ...prevState,
-      [kycId]: false
-    }));
-    
-    
-  };
-  
-
-  console.log(kycDataMap,expandedKycId)
-
+  const handleExpand = () => setExpanded(true);
+  const handleCollapse = () => setExpanded(false);
 
   return (
     <ThemeProvider theme={theme}>
-      <div >
-        {Object.keys(kycList).map((kycId) => (
-          
-            
-
-          <Paper key={kycId} sx={{ textAlign: 'center', marginBottom: "1rem" }} elevation={2}>
-            <Typography variant="h5" component="p">Kyc application Status : {kycList[kycId]}</Typography>
-            <br></br>
-            <Typography variant="subtitle1" component="p" gutterBottom>KYC Id : {kycId}</Typography> 
-            <Stepper activeStep={(map[kycList[kycId]])} alternativeLabel connector={<QontoConnector />}>
-            
-              {stages.map((stage, index) => (
-
-               
-                <Step key={index}>
-                  <StepLabel error={stage === STATUSES.VERIFIED && kycList[kycId] === STATUSES.VERIFICATION_FAILED}>
-                    {stage === STATUSES.VERIFIED&& kycList[kycId] === STATUSES.VERIFICATION_FAILED? (
-                      <p>Failed Verification</p>
-                    ) : (
-                      stage
-                    )}
-                  </StepLabel>
-                </Step>
-              ))}
-              
-            </Stepper>
-            {kycDataMap && kycDataMap[kycId] ? (
-              expandedKycId[kycId] === true ? (
-                <div>
-                  <br></br>
-                  <div className="form-container">
-                    <table>
-                      <tbody>
-                        {Object.keys(kycDataMap[kycId]).map((key, index) => (
-                          <React.Fragment key={index}>
-                            <tr className="form-row">
-                              <td className="form-label">{toPascalCase(key)}</td>
-                              <td className="form-value">{kycDataMap[kycId][key]}</td>
-                            </tr>
-                            {index !== Object.keys(kycDataMap[kycId]).length - 1 && <Divider variant="middle" />}
-                          </React.Fragment>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-
-                  <ExpandLessIcon onClick={() => handleCollapse(kycId)} />
-                </div>
-              ) : (
-                <ExpandMoreIcon onClick={() => handleExpand(kycId)} />
-              )
-            ) : (
-              <Spinner size="small" />
-            )}
-
-          </Paper>
-          
-        ))}
-      </div>
+      <Paper sx={{ textAlign: 'center', marginBottom: '1rem' }} elevation={2}>
+        <Typography variant="h5" component="p">Application Status: {status}</Typography>
+        <br/>
+        <Stepper activeStep={map[status]} alternativeLabel connector={<QontoConnector />}>
+          {stages.map((stage, index) => (
+            <Step key={index}>
+              <StepLabel error={stage === STATUSES.VERIFIED && status === STATUSES.VERIFICATION_FAILED}>
+                {stage === STATUSES.VERIFIED && status === STATUSES.VERIFICATION_FAILED ? 'Failed Verification' : stage}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <br/>
+      </Paper>
     </ThemeProvider>
   );
 };
@@ -181,6 +97,5 @@ function toPascalCase(str) {
     return firstChar.toUpperCase() + rest.toLowerCase();
   });
 }
-
 
 export default KycStepper;
