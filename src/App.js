@@ -34,6 +34,9 @@ import NotFoundPage from './Screens/NotFoundPage';
 import CreatorWorkshop from './Screens/CreatorWorkshop';
 import CreatorOpenClass from './Screens/CreatorOpenClass';
 import CreatorCourse from './Screens/CreatorCourse';
+import CreatorRoute from './utils/CreatorRoute';
+import secureLocalStorage from 'react-secure-storage';
+
 import SnackbarProvider from './context/SnackbarContext';
 
 function App() {
@@ -62,10 +65,11 @@ function App() {
     console.log("Admin n",adminLoggedIn)
   }, [adminLoggedIn]);
 
-  const handleLogin = (UserInfo,userInfoFull) => {
+  const handleLogin = async (UserInfo,userInfoFull) => {
     setUsername(UserInfo.displayName);
     setIsLoggedIn(true);
-    setUserID(UserInfo.localId)
+    setUserID(UserInfo.UserId) 
+
     localStorage.setItem('username',username);
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('userInfo',JSON.stringify(UserInfo));
@@ -85,6 +89,7 @@ function App() {
     localStorage.removeItem('adminLogin');
     localStorage.removeItem('userDetails');
     localStorage.removeItem('StudioCreated');
+    secureLocalStorage.removeItem('CreatorMode');
   };
  
   const handleToggleDarkMode = () => {

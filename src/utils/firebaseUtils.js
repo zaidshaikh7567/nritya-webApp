@@ -2,7 +2,51 @@ import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, 
 import { db } from '../config';
 import { getStorage,ref,listAll,getDownloadURL,uploadBytes, deleteObject  } from "firebase/storage";
 import { storage } from '../config';
-  
+import { STORAGES, COLLECTIONS } from '../constants';
+import secureLocalStorage from 'react-secure-storage';
+
+export const setCreatorMode = async (uid) => {
+  console.log("setCreatorMode ",uid)
+  try{
+  const userRef = doc(db, COLLECTIONS.USER, uid);
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+    if(userSnap.data() != null){
+      const mode = userSnap.data().CreatorMode
+      console.log("setCreatorMode: Is User a creator?",mode)
+      secureLocalStorage.setItem('CreatorMode', mode);
+        
+    }else{
+      console.log("userSnap.data() null")
+      
+    }
+  } else {
+    console.log("User not found");
+  }
+  }catch(error){
+    console.log(" error");
+  }
+}
+
+
+export const getCreatorMode = async () => {
+  try{
+    const mode = secureLocalStorage.getItem('CreatorMode');
+    console.log("getCreatorMode ",mode)
+    if (mode){
+      return mode
+    }else{
+      return false
+    }
+  } 
+  catch(error){
+    console.log(" error");
+    return false
+  }
+}
+
+
+
 // Read operation with image URL
 export const readDocumentWithImageUrl = async (collectionName, productId) => {
     console.log("Debug ",`${collectionName}/${productId}`)

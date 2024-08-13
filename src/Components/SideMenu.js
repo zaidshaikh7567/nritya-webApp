@@ -6,6 +6,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useSelector, useDispatch } from 'react-redux';
 import logo from './../logo.png';
 import './SideMenu.css';
+import secureLocalStorage from 'react-secure-storage';
 
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -31,11 +32,11 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   };
 
   const regularMenuItems = [
-    { action: () => window.location.hash = '#/profile', name: 'Profile' },
-    { action: () => window.location.hash = '#/transactions', name: 'Transactions' },
-    { action: () => window.location.hash = '#/creatorDashboard', name: 'Dashboard' },
-    { action: () => window.location.hash = '#/myBookings', name: 'Bookings' },
-    { action: handleLogout, name: 'Sign Out' },
+    { action: () => window.location.hash = '#/profile', name: 'Profile', show: true },
+    { action: () => window.location.hash = '#/transactions', name: 'Transactions',show:true },
+    { action: () => window.location.hash = '#/creatorDashboard', name: 'Dashboard',show: secureLocalStorage.getItem('CreatorMode')  },
+    { action: () => window.location.hash = '#/myBookings', name: 'Bookings',show:true },
+    { action: handleLogout, name: 'Sign Out',show:true },
   ];
 
   const handleProfile = () => {
@@ -59,8 +60,8 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
       <Offcanvas.Body>
         <ul className="menu">
           <ul className="vertical-menu">
-            {regularMenuItems.map(({ action, name }, index) => (
-              <li key={index}>
+            {regularMenuItems.map(({ action, name,show }, index) => (
+              <li key={index} hidden={!show}>
                 <Button
                   variant="outline-warning"
                   className="rounded-pill menu-button"

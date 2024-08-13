@@ -10,6 +10,7 @@ import {  Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Button, Container } from '@mui/material';
+import { setCreatorMode } from '../utils/firebaseUtils.js';
 
 
 
@@ -75,10 +76,11 @@ function LoginPage({onLogin,setIsLoggedIn}) {
           console.log("token", token);
           localStorage.setItem("authToken", token);
         }
-        onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled},user);
+        onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL},user);
         setIsLoggedIn(true);
         await addUserIfMissing(user);
-        navigate(`/profile`);
+        await setCreatorMode(user.uid);
+        navigate(`/`);
       } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;

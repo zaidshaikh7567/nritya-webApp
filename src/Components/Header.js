@@ -91,6 +91,8 @@ function Header() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
+  const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+  const photoURL = userInfo?.photoURL;
 
   //console.log("Redux loc", reduxLocation.city)
 
@@ -315,7 +317,34 @@ function Header() {
             </div>
             {currentUser ? (
             <>
-              <Button onClick={openProfileOffcanvas} className="rounded-pill"
+            {
+              photoURL ? (
+                <Button
+                  onClick={openProfileOffcanvas}
+                  style={{
+                    borderRadius: '50%',
+                    width: '3rem',
+                    height: '3rem',
+                    marginRight: '0.5rem',
+                    padding: 0, // Ensure no padding around the image
+                    minWidth: '3rem', // Ensure the button size is consistent
+                    minHeight: '3rem', // Ensure the button size is consistent
+                    borderWidth: '0.2px',
+                    backgroundImage: `url(${photoURL})`,
+                    backgroundSize: 'cover', // Cover the entire button area
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: 'none', // Remove default border if needed
+                    boxShadow: 'none', // Remove default shadow if needed
+                  }}
+                />
+
+              ) :
+              (
+                <Button onClick={openProfileOffcanvas} className="rounded-pill"
                 variant="outlined"
                 style={{
                   fontSize: '0.9rem',
@@ -326,6 +355,9 @@ function Header() {
                 }}>
                 {getUserNameInitials()}
               </Button>
+
+              )
+            }
 
               <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
               </>

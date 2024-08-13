@@ -68,7 +68,7 @@ function CreatorDashboard(){
 
   return(
     <div style={{minHeight:"75vh"}}>
-      <h1 style={{color: isDarkModeOn?"white":"black", textTransform:'capitalize'}}>Creator's Dashboard</h1>
+      <h1 style={{color: isDarkModeOn?"white":"black", textTransform:'capitalize'}}>Dashboard</h1>
       <Row>
         <Col>
           <NrityaCard title={"Total Studios"} data={studiosCount} bubble={true}></NrityaCard>
