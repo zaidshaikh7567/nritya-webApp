@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.css-clttge-MuiAutocomplete-root .MuiInput-root .MuiInput-input {
+  padding: 12px 24px !important;
+}
+
+.css-4jnixx-MuiStack-root {
+  padding: 0 !important;
+}
