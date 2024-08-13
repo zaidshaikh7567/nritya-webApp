@@ -7,9 +7,11 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { deleteAllImagesInFolder,deleteImages,uploadImages} from '../utils/firebaseUtils'
 import { Card, CardContent, CardMedia, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useSnackbar } from "../context/SnackbarContext";
 
 
 const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode }) => {
+  const showSnackbar = useSnackbar();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]); // Track new files to be added
@@ -109,7 +111,8 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
 
       }
 
-      alert("Images Uploaded/Deleted");
+      // alert("Images Uploaded/Deleted");
+      showSnackbar("Images Uploaded/Deleted", "success");
     } catch (error) {
       console.error("Error uploading/deleting images:", error);
     }
