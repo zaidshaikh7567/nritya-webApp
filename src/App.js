@@ -121,7 +121,10 @@ function App() {
                   <Route path='/cart' element={<Cart/>}/>
                   <Route path='/myBookings' element={<MyBookings/>}/>
                   <Route path='/transactions' element={<Transactions/>}/>
-                  <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
+                  <Route element={<CreatorRoute/>}>
+                    <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
+                  </Route>
+
                   <Route path='/modifyStudios' element={<CreatorStudio/>}/>
                   <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
                   <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
