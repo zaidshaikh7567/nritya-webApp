@@ -26,7 +26,7 @@ function WorkshopDetailsModal({
   deactivateCourse,
   actionsAllowed,
 }) {
-  const currentUser = JSON.parse(localStorage.getItem("userInfo")).UserId;
+  const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
 
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
