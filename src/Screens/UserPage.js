@@ -18,6 +18,8 @@ import './UserPage.css';
 import CreatorDashboard from './CreatorDashboard';
 import Kyc from '../Components/Kyc';
 import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
@@ -168,7 +170,14 @@ function UserPage() {
               sx={{ width: 40, height: 40 }}
             />
           }
-          title={currentUser.displayName}
+          title={
+            <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+              {currentUser.displayName}
+              {isCreator && (
+                <CheckCircleIcon sx={{ color: 'green', marginLeft: 0.5, fontSize: 20 }} />
+              )}
+            </Typography>
+          }
           subheader={currentUser.email}
           subheaderTypographyProps={{
             sx: {
