@@ -162,6 +162,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         venue: event.target.workshopVenue.value,
         description: event.target.description.value,
         city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+        active: true,
       };
 
       setIsSubmitting(true);
@@ -204,7 +205,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     setSelectedDanceStyles([]);
     setSelectedInstructors([]);
     setSelectedStudio(null);
-    setSelectedDurationUnit('');
+    setSelectedDurationUnit("");
     setSelectedLevel("");
     setWorkshopTime("");
     setWorkshopDate(dayjs(Date.now()));

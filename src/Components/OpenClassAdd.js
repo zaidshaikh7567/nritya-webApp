@@ -159,6 +159,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         venue: event.target.openClassVenue.value,
         description: event.target.description.value,
         city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+        active: true,
       };
 
       setIsSubmitting(true);

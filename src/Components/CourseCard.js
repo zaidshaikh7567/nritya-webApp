@@ -17,25 +17,20 @@ import { STORAGES } from "../constants";
 import { readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
-import { useSnackbar } from "../context/SnackbarContext";
 
-function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse, actionsAllowed }) {
-  const showSnackbar = useSnackbar();
+function WorkshopDetailsModal({
+  open,
+  handleClose,
+  dataItem,
+  activateCourse,
+  deactivateCourse,
+  actionsAllowed,
+}) {
   const currentUser = JSON.parse(localStorage.getItem("userInfo")).UserId;
 
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const isCreatorOfWorkshop = dataItem.UserId === currentUser;
-
-  const handleDelete = async () => {
-    try {
-      await deleteCourse(dataItem.id);
-      handleClose();
-      showSnackbar("Course deleted!", "success");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <Modal
@@ -185,26 +180,30 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse, actio
         </Grid>
 
         <Box sx={{ mt: "1rem", textAlign: "right" }}>
-          {(actionsAllowed && isCreatorOfWorkshop) && (
+          {actionsAllowed && isCreatorOfWorkshop && (
             <Button
-              onClick={handleDelete}
+              onClick={() =>
+                dataItem?.active
+                  ? deactivateCourse(dataItem?.id)
+                  : activateCourse(dataItem?.id)
+              }
               variant="outlined"
               sx={{
                 mr: "1rem",
                 color: "white",
                 boxShadow: "none",
                 border: "1px solid",
-                backgroundColor: "red",
+                backgroundColor: dataItem?.active ? "red" : "green",
                 borderColor: "white",
                 color: "white",
                 "&:hover": {
-                  backgroundColor: "red",
+                  backgroundColor: dataItem?.active ? "red" : "green",
                   borderColor: "white",
                   boxShadow: "none",
                 },
                 "&:active": {
                   boxShadow: "none",
-                  backgroundColor: "red",
+                  backgroundColor: dataItem?.active ? "red" : "green",
                   borderColor: "white",
                 },
                 "&:focus": {
@@ -212,7 +211,7 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse, actio
                 },
               }}
             >
-              Delete
+              {dataItem?.active ? "Deactivate" : "Activate"}
             </Button>
           )}
           <Button
@@ -248,7 +247,12 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteCourse, actio
   );
 }
 
-export default function CourseCard({ dataItem, deleteCourse, actionsAllowed }) {
+export default function CourseCard({
+  dataItem,
+  activateCourse,
+  deactivateCourse,
+  actionsAllowed,
+}) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [isWorkshopDetailsModalOpen, setIsWorkshopDetailsModalOpen] =
@@ -357,7 +361,20 @@ export default function CourseCard({ dataItem, deleteCourse, actionsAllowed }) {
               extDecoder: "one",
             }}
           >
-            {dataItem && dataItem.name ? dataItem.name : ""}
+            <span>{dataItem && dataItem.name ? dataItem.name : ""}</span>
+            {!dataItem?.active && (
+              <span
+                style={{
+                  marginLeft: "2px",
+                  padding: "2px 4px",
+                  fontSize: "14px",
+                  borderRadius: "4px",
+                  background: "red",
+                }}
+              >
+                Inactive
+              </span>
+            )}
           </Box>
           <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
@@ -379,7 +396,8 @@ export default function CourseCard({ dataItem, deleteCourse, actionsAllowed }) {
         dataItem={{ ...dataItem, imageUrl }}
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
-        deleteCourse={deleteCourse}
+        activateCourse={activateCourse}
+        deactivateCourse={deactivateCourse}
         actionsAllowed={actionsAllowed}
       />
     </>

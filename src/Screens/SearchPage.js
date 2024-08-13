@@ -187,6 +187,9 @@ const SearchPage = () => {
         searchTypes.find((type) => type.name === storedSelectedSearchType)
           .collection
       );
+
+      q = firebaseQuery(q, where("active", "==", true));
+
       if (danceFormsList.length)
         q = firebaseQuery(
           q,

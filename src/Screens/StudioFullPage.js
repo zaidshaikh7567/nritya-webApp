@@ -162,7 +162,8 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
           "StudioId",
           "==",
           studioId
-        )
+        ),
+        where("active", "==", true)
       );
 
       const querySnapshot = await getDocs(q);
@@ -189,7 +190,8 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
           "StudioId",
           "==",
           studioId
-        )
+        ),
+        where("active", "==", true)
       );
 
       const querySnapshot = await getDocs(q);
@@ -216,7 +218,8 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
           "StudioId",
           "==",
           studioId
-        )
+        ),
+        where("active", "==", true)
       );
 
       const querySnapshot = await getDocs(q);

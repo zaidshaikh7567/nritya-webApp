@@ -133,7 +133,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
     const form = event.target;
 
     if (!isValidInputs(form)) {
-      showSnackbar('Please fill all the fields.', 'error');
+      showSnackbar("Please fill all the fields.", "error");
       return;
     }
 
@@ -160,6 +160,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
         venue: event.target.workshopVenue.value,
         description: event.target.description.value,
         city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+        active: true,
       };
 
       setIsSubmitting(true);
@@ -191,10 +192,10 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
 
       clearForm(form);
       resetDraft();
-      showSnackbar('Workshop successfully added.', 'success');
+      showSnackbar("Workshop successfully added.", "success");
     } catch (error) {
       console.error("Error adding workshop: ", error);
-      showSnackbar(error?.message || "Something went wrong", 'error');
+      showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -679,8 +680,8 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
           ""
         ) : (
           <p>
-            New workshop created with id {newWorkshopId}. Now u can upload images
-            regarding them
+            New workshop created with id {newWorkshopId}. Now u can upload
+            images regarding them
           </p>
         )}
       </div>

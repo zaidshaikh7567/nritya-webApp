@@ -40,25 +40,30 @@ function CreatorWorkshop() {
     setValue(newValue);
   };
 
-  const deleteWorkshop = async (workshopId) => {
+  const activateWorkshop = async (workshopId) => {
     try {
       const docRef = doc(db, COLLECTIONS.WORKSHOPS, workshopId);
-      await deleteDoc(docRef);
-
-      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            WorkshopCreated: userSnap
-              .data()
-              .WorkshopCreated.filter((workshop) => workshop.id !== workshopId),
-          });
-        }
-      }
+      await updateDoc(docRef, { active: true });
 
       setWorkshop((prev) =>
-        prev.filter((workshop) => workshop.id !== workshopId)
+        prev.map((workshop) =>
+          workshop.id === workshopId ? { ...workshop, active: true } : workshop
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deactivateWorkshop = async (workshopId) => {
+    try {
+      const docRef = doc(db, COLLECTIONS.WORKSHOPS, workshopId);
+      await updateDoc(docRef, { active: false });
+
+      setWorkshop((prev) =>
+        prev.map((workshop) =>
+          workshop.id === workshopId ? { ...workshop, active: false } : workshop
+        )
       );
     } catch (error) {
       console.error(error);
@@ -244,7 +249,12 @@ function CreatorWorkshop() {
             Your Workshops
           </h3>
 
-          <CardSlider dataList={workshop} deleteWorkshop={deleteWorkshop} actionsAllowed />
+          <CardSlider
+            dataList={workshop}
+            activateWorkshop={activateWorkshop}
+            deactivateWorkshop={deactivateWorkshop}
+            actionsAllowed
+          />
         </>
       )}
     </div>

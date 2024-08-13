@@ -40,25 +40,30 @@ function CreatorCourse() {
     setValue(newValue);
   };
 
-  const deleteCourse = async (courseId) => {
+  const activateCourse = async (courseId) => {
     try {
       const docRef = doc(db, COLLECTIONS.COURSES, courseId);
-      await deleteDoc(docRef);
-
-      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            CourseCreated: (userSnap
-              .data()
-              ?.CourseCreated?.filter?.((workshop) => workshop.id !== courseId)) || [],
-          });
-        }
-      }
+      await updateDoc(docRef, { active: true });
 
       setWorkshop((prev) =>
-        prev.filter((workshop) => workshop.id !== courseId)
+        prev.map((workshop) =>
+          workshop.id === courseId ? { ...workshop, active: true } : workshop
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deactivateCourse = async (courseId) => {
+    try {
+      const docRef = doc(db, COLLECTIONS.COURSES, courseId);
+      await updateDoc(docRef, { active: false });
+
+      setWorkshop((prev) =>
+        prev.map((workshop) =>
+          workshop.id === courseId ? { ...workshop, active: false } : workshop
+        )
       );
     } catch (error) {
       console.error(error);
@@ -243,7 +248,12 @@ function CreatorCourse() {
             Your Courses
           </h3>
 
-          <CardSlider dataList={workshop} deleteCourse={deleteCourse} actionsAllowed />
+          <CardSlider
+            dataList={workshop}
+            activateCourse={activateCourse}
+            deactivateCourse={deactivateCourse}
+            actionsAllowed
+          />
         </>
       )}
     </div>

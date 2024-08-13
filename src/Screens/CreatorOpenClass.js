@@ -40,28 +40,32 @@ function CreatorOpenClass() {
     setValue(newValue);
   };
 
-  const deleteOpenClass = async (openClassId) => {
+  const activateOpenClass = async (openClassId) => {
     try {
       const docRef = doc(db, COLLECTIONS.OPEN_CLASSES, openClassId);
-      await deleteDoc(docRef);
-
-      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            OpenClassCreated:
-              userSnap
-                .data()
-                .OpenClassCreated?.filter?.(
-                  (workshop) => workshop.id !== openClassId
-                ) || [],
-          });
-        }
-      }
+      await updateDoc(docRef, { active: true });
 
       setWorkshop((prev) =>
-        prev.filter((workshop) => workshop.id !== openClassId)
+        prev.map((workshop) =>
+          workshop.id === openClassId ? { ...workshop, active: true } : workshop
+        )
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deactivateOpenClass = async (openClassId) => {
+    try {
+      const docRef = doc(db, COLLECTIONS.OPEN_CLASSES, openClassId);
+      await updateDoc(docRef, { active: false });
+
+      setWorkshop((prev) =>
+        prev.map((workshop) =>
+          workshop.id === openClassId
+            ? { ...workshop, active: false }
+            : workshop
+        )
       );
     } catch (error) {
       console.error(error);
@@ -246,7 +250,12 @@ function CreatorOpenClass() {
           <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
             Your Open Classes:
           </h3>
-          <CardSlider dataList={workshop} deleteOpenClass={deleteOpenClass} actionsAllowed />
+          <CardSlider
+            dataList={workshop}
+            activateOpenClass={activateOpenClass}
+            deactivateOpenClass={deactivateOpenClass}
+            actionsAllowed
+          />
         </>
       )}
     </div>

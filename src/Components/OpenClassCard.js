@@ -17,25 +17,20 @@ import { STORAGES } from "../constants";
 import { readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
-import { useSnackbar } from "../context/SnackbarContext";
 
-function WorkshopDetailsModal({ open, handleClose, dataItem, deleteOpenClass, actionsAllowed }) {
-  const showSnackbar = useSnackbar();
+function WorkshopDetailsModal({
+  open,
+  handleClose,
+  dataItem,
+  activateOpenClass,
+  deactivateOpenClass,
+  actionsAllowed,
+}) {
   const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
 
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const isCreatorOfWorkshop = dataItem.UserId === currentUser;
-
-  const handleDelete = async () => {
-    try {
-      await deleteOpenClass(dataItem.id);
-      handleClose();
-      showSnackbar("Open Class deleted!", "success");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <Modal
@@ -167,26 +162,30 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteOpenClass, ac
         </Grid>
 
         <Box sx={{ mt: "1rem", textAlign: "right" }}>
-        {(actionsAllowed && isCreatorOfWorkshop) && (
+          {actionsAllowed && isCreatorOfWorkshop && (
             <Button
-              onClick={handleDelete}
+              onClick={() =>
+                dataItem?.active
+                  ? deactivateOpenClass(dataItem?.id)
+                  : activateOpenClass(dataItem?.id)
+              }
               variant="outlined"
               sx={{
                 mr: "1rem",
                 color: "white",
                 boxShadow: "none",
                 border: "1px solid",
-                backgroundColor: "red",
+                backgroundColor: dataItem?.active ? "red" : "green",
                 borderColor: "white",
                 color: "white",
                 "&:hover": {
-                  backgroundColor: "red",
+                  backgroundColor: dataItem?.active ? "red" : "green",
                   borderColor: "white",
                   boxShadow: "none",
                 },
                 "&:active": {
                   boxShadow: "none",
-                  backgroundColor: "red",
+                  backgroundColor: dataItem?.active ? "red" : "green",
                   borderColor: "white",
                 },
                 "&:focus": {
@@ -194,10 +193,10 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteOpenClass, ac
                 },
               }}
             >
-              Delete
+              {dataItem?.active ? "Deactivate" : "Activate"}
             </Button>
           )}
-          
+
           <Button
             onClick={handleClose}
             variant="outlined"
@@ -231,7 +230,12 @@ function WorkshopDetailsModal({ open, handleClose, dataItem, deleteOpenClass, ac
   );
 }
 
-export default function OpenClassCard({ dataItem, deleteOpenClass, actionsAllowed }) {
+export default function OpenClassCard({
+  dataItem,
+  activateOpenClass,
+  deactivateOpenClass,
+  actionsAllowed,
+}) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [isWorkshopDetailsModalOpen, setIsWorkshopDetailsModalOpen] =
@@ -340,7 +344,22 @@ export default function OpenClassCard({ dataItem, deleteOpenClass, actionsAllowe
               extDecoder: "one",
             }}
           >
-            {dataItem && dataItem.openClassName ? dataItem.openClassName : ""}
+            <span>
+              {dataItem && dataItem.openClassName ? dataItem.openClassName : ""}
+            </span>
+            {!dataItem?.active && (
+              <span
+                style={{
+                  marginLeft: "2px",
+                  padding: "2px 4px",
+                  fontSize: "14px",
+                  borderRadius: "4px",
+                  background: "red",
+                }}
+              >
+                Inactive
+              </span>
+            )}
           </Box>
           <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
@@ -362,7 +381,8 @@ export default function OpenClassCard({ dataItem, deleteOpenClass, actionsAllowe
         dataItem={{ ...dataItem, imageUrl }}
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
-        deleteOpenClass={deleteOpenClass}
+        activateOpenClass={activateOpenClass}
+        deactivateOpenClass={deactivateOpenClass}
         actionsAllowed={actionsAllowed}
       />
     </>
