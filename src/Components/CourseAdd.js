@@ -54,6 +54,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [step, setStep] = useState(1);
 
   const darkTheme = createTheme({
     palette: {
@@ -192,6 +193,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
       clearForm(form);
       resetDraft();
       showSnackbar("Course successfully added.", "success");
+      setStep((prev) => prev + 1);
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -278,11 +280,11 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           setWorkshopDate(dayjs(foundCourse?.date || Date.now()));
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_COURSES), {
-            name: form.name.value,
-            duration: form.duration.value,
-            price: form.workshopFees.value,
-            venue: form.workshopVenue.value,
-            description: form.description.value,
+            name: form.name?.value || "",
+            duration: form.duration?.value || "",
+            price: form.workshopFees?.value || "",
+            venue: form.workshopVenue?.value || "",
+            description: form.description?.value || "",
 
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -350,7 +352,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           intervalId = setInterval(async () => {
             try {
               await updateDoc(openClassRef, {
-                name: form.name.value,
+                name: form.name?.value || "",
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -361,14 +363,14 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 StudioId: selectedStudio
                   ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
                   : null,
-                duration: form.duration.value,
+                duration: form.duration?.value || "",
                 durationUnit: selectedDurationUnit,
                 level: selectedLevel,
                 time: workshopTime,
                 date: workshopDate.format("YYYY-MM-DD"),
-                price: form.workshopFees.value,
-                venue: form.workshopVenue.value,
-                description: form.description.value,
+                price: form.workshopFees?.value || "",
+                venue: form.workshopVenue?.value || "",
+                description: form.description?.value || "",
               });
             } catch (error) {
               console.error(error);
@@ -396,7 +398,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
   return (
     <div>
-      <div>
+      {step === 1 && (
         <Form
           id="addStudioForm"
           onSubmit={handleAddStudio}
@@ -409,15 +411,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
             <div>
               <Row>
                 <Col md={6}>
-                  <ImageUpload
-                    entityId={newWorkshopId}
-                    title={"Course Images"}
-                    storageFolder={STORAGES.COURSEICON}
-                    maxImageCount={1}
-                  ></ImageUpload>
-                </Col>
-
-                <Col md={6}>
                   <Form.Label>Couese Name</Form.Label>
                   <Form.Control
                     rows={1}
@@ -429,9 +422,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     placeholder="Enter course name"
                     name="name"
                   />
-
-                  <br />
-
+                </Col>
+                <Col md={6}>
                   <Form.Label>Dance Styles</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -459,9 +451,13 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                       )}
                     />
                   </ThemeProvider>
+                </Col>
+              </Row>
 
-                  <br />
+              <br />
 
+              <Row>
+                <Col md={6}>
                   <Form.Label>Names of Instructors</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -489,11 +485,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     />
                   </ThemeProvider>
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Row>
                     <Col md={6}>
@@ -539,18 +530,17 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     </Col>
                   </Row>
                 </Col>
+              </Row>
 
+              <br />
+
+              <Row>
                 <Col md={6}>
                   <TimeRange
                     defaultTime={workshopTime || "00:00-00:00"}
                     handleSelect={handleTimeSelect}
                   />
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Course Start Date</Form.Label>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -566,6 +556,11 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Col>
+              </Row>
+
+              <br />
+
+              <Row>
                 <Col md={6}>
                   <Form.Label>Level</Form.Label>
                   <ThemeProvider theme={darkTheme}>
@@ -594,11 +589,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     />
                   </ThemeProvider>
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Fees/Price</Form.Label>
                   <Form.Control
@@ -612,6 +602,11 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     name="workshopFees"
                   />
                 </Col>
+              </Row>
+
+              <br />
+
+              <Row>
                 <Col md={6}>
                   <Form.Label>Venue</Form.Label>
                   <Form.Control
@@ -623,24 +618,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     type="text"
                     placeholder="Enter Venue"
                     name="workshopVenue"
-                  />
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
-                <Col md={6}>
-                  <Form.Label>Brief Description</Form.Label>
-                  <Form.Control
-                    rows={3}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    as="textarea"
-                    placeholder="Enter Description"
-                    name="description"
                   />
                 </Col>
                 <Col md={6}>
@@ -672,6 +649,24 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                   </ThemeProvider>
                 </Col>
               </Row>
+
+              <br />
+
+              <Row>
+                <Col md={6}>
+                  <Form.Label>Brief Description</Form.Label>
+                  <Form.Control
+                    rows={3}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    as="textarea"
+                    placeholder="Enter Description"
+                    name="description"
+                  />
+                </Col>
+              </Row>
               <hr></hr>
 
               <Row>
@@ -686,29 +681,43 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    Add Course
+                    Next
                   </MuiButton>
                 </Col>
               </Row>
             </div>
           </Form.Group>
         </Form>
+      )}
 
-        {newWorkshopId === "" ? (
-          ""
-        ) : (
-          <p>
-            New Course Created with id {newWorkshopId}. Now u can upload images
-            regarding them
-          </p>
-        )}
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", height: "auto" }}>
-        <br></br>
-      </div>
-
-      <br></br>
+      {step === 2 && (
+        <>
+          <Row>
+            <Col>
+              <ImageUpload
+                entityId={newWorkshopId}
+                title={"Course Images"}
+                storageFolder={STORAGES.COURSEICON}
+                maxImageCount={1}
+              ></ImageUpload>
+            </Col>
+          </Row>
+          <Row style={{ margin: "1rem 0" }}>
+            <Col style={{ textAlign: "right" }}>
+              <MuiButton
+                variant="contained"
+                style={{
+                  color: "white",
+                  backgroundColor: isDarkModeOn ? "#892cdc" : "black",
+                }}
+                onClick={() => setStep((prev) => prev - 1)}
+              >
+                Done
+              </MuiButton>
+            </Col>
+          </Row>
+        </>
+      )}
     </div>
   );
 }

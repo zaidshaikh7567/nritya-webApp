@@ -54,6 +54,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [step, setStep] = useState(1);
 
   const darkTheme = createTheme({
     palette: {
@@ -192,6 +193,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
       clearForm(form);
       resetDraft();
       showSnackbar("Open class successfully added.", "success");
+      setStep((prev) => prev + 1);
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -280,9 +282,9 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           setOpenClassDate(dayjs(foundOpenClass?.date || Date.now()));
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
-            openClassName: form.openClassName.value,
-            venue: form.openClassVenue.value,
-            description: form.description.value,
+            openClassName: form.openClassName?.value || "",
+            venue: form.openClassVenue?.value || "",
+            description: form.description?.value || "",
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
               ? selectedInstructors?.map?.(
@@ -349,9 +351,9 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           intervalId = setInterval(async () => {
             try {
               await updateDoc(openClassRef, {
-                openClassName: form.openClassName.value,
-                venue: form.openClassVenue.value,
-                description: form.description.value,
+                openClassName: form.openClassName?.value || "",
+                venue: form.openClassVenue?.value || "",
+                description: form.description?.value || "",
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -392,7 +394,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
   return (
     <div>
-      <div>
+      {step === 1 && (
         <Form
           id="addStudioForm"
           onSubmit={handleAddStudio}
@@ -405,15 +407,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
             <div>
               <Row>
                 <Col md={6}>
-                  <ImageUpload
-                    entityId={newWorkshopId}
-                    title={"Open Class Images"}
-                    storageFolder={STORAGES.OPENCLASSICON}
-                    maxImageCount={1}
-                  ></ImageUpload>
-                </Col>
-
-                <Col md={6}>
                   <Form.Label>Open Class Name</Form.Label>
                   <Form.Control
                     rows={1}
@@ -425,13 +418,11 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     placeholder="Enter open class name"
                     name="openClassName"
                   />
-
-                  <br />
-
+                </Col>
+                <Col md={6}>
                   <Form.Label>Dance Styles</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
-
                     <Autocomplete
                       style={{
                         backgroundColor: isDarkModeOn ? "#333333" : "",
@@ -455,9 +446,13 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                       )}
                     />
                   </ThemeProvider>
+                </Col>
+              </Row>
 
-                  <br />
+              <br />
 
+              <Row>
+                <Col md={6}>
                   <Form.Label>Names of Instructors</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -485,11 +480,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     />
                   </ThemeProvider>
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Duration (in hours)</Form.Label>
                   <ThemeProvider theme={darkTheme}>
@@ -518,18 +508,17 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     />
                   </ThemeProvider>
                 </Col>
+              </Row>
 
+              <br />
+
+              <Row>
                 <Col md={6}>
                   <TimeRange
                     defaultTime={openClassTime || "00:00-00:00"}
                     handleSelect={handleTimeSelect}
                   />
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Date</Form.Label>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -545,6 +534,11 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Col>
+              </Row>
+
+              <br />
+
+              <Row>
                 <Col md={6}>
                   <Form.Label>Level</Form.Label>
                   <ThemeProvider theme={darkTheme}>
@@ -573,11 +567,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     />
                   </ThemeProvider>
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Venue</Form.Label>
                   <Form.Control
@@ -589,19 +578,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     type="text"
                     placeholder="Enter Venue"
                     name="openClassVenue"
-                  />
-                </Col>
-                <Col md={6}>
-                  <Form.Label>Brief Description</Form.Label>
-                  <Form.Control
-                    rows={3}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    as="textarea"
-                    placeholder="Enter Description"
-                    name="description"
                   />
                 </Col>
               </Row>
@@ -637,10 +613,21 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     />
                   </ThemeProvider>
                 </Col>
-                <Col md={6}></Col>
+                <Col md={6}>
+                  <Form.Label>Brief Description</Form.Label>
+                  <Form.Control
+                    rows={3}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    as="textarea"
+                    placeholder="Enter Description"
+                    name="description"
+                  />
+                </Col>
               </Row>
 
-              <br />
               <hr></hr>
 
               <Row>
@@ -655,29 +642,43 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    Add Open Class
+                    Next
                   </MuiButton>
                 </Col>
               </Row>
             </div>
           </Form.Group>
         </Form>
+      )}
 
-        {newWorkshopId === "" ? (
-          ""
-        ) : (
-          <p>
-            New Open Class Created with id {newWorkshopId}. Now u can upload
-            images regarding them
-          </p>
-        )}
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", height: "auto" }}>
-        <br></br>
-      </div>
-
-      <br></br>
+      {step === 2 && (
+        <>
+          <Row>
+            <Col>
+              <ImageUpload
+                entityId={newWorkshopId}
+                title={"Open Class Images"}
+                storageFolder={STORAGES.OPENCLASSICON}
+                maxImageCount={1}
+              ></ImageUpload>
+            </Col>
+          </Row>
+          <Row style={{ margin: "1rem 0" }}>
+            <Col style={{ textAlign: "right" }}>
+              <MuiButton
+                variant="contained"
+                style={{
+                  color: "white",
+                  backgroundColor: isDarkModeOn ? "#892cdc" : "black",
+                }}
+                onClick={() => setStep((prev) => prev - 1)}
+              >
+                Done
+              </MuiButton>
+            </Col>
+          </Row>
+        </>
+      )}
     </div>
   );
 }
