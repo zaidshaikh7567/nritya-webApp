@@ -129,6 +129,9 @@ function LandingPage() {
     }
   };
 
+  const FILTER_LOCATION_KEY = "filterLocation";
+  const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || null;
+
   const cardStyle = {
     background: isDarkModeOn ? "#333333" : "white",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -176,7 +179,8 @@ function LandingPage() {
   useEffect(() => {
     const getWorkshops = async () => {
       const studioRef = collection(db, COLLECTIONS.WORKSHOPS);
-      const q = query(studioRef, where("active", "==", true), limit(15));
+      let q = query(studioRef, where("active", "==", true), limit(15));
+      if (currentCity) q = query(q, where('city', '==', currentCity));
       const querySnapshot = await getDocs(q);
       const exploreStudioList = querySnapshot.docs
         .filter((doc) => doc.data().workshopName)
@@ -196,7 +200,8 @@ function LandingPage() {
   useEffect(() => {
     const getOpenClasses = async () => {
       const studioRef = collection(db, COLLECTIONS.OPEN_CLASSES);
-      const q = query(studioRef, where("active", "==", true), limit(15));
+      let q = query(studioRef, where("active", "==", true), limit(15));
+      if (currentCity) q = query(q, where('city', '==', currentCity));
       const querySnapshot = await getDocs(q);
       const exploreStudioList = querySnapshot.docs
         .filter((doc) => doc.data().openClassName)
