@@ -46,6 +46,7 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import CardSlider from "../Components/CardSlider";
 import WorkshopCardSlider from "../Components/WorkshopCardSlider";
 import OpenClassCardSlider from "../Components/OpenClassCardSlider";
+import CourseCardSlider from "../Components/CourseCardSlider";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from "react-router-dom";
 import DanceCarousel from "../Components/DanceCarousel";
@@ -79,6 +80,7 @@ function LandingPage() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [workshops, setWorkshops] = useState([]);
   const [openClasses, setOpenClasses] = useState([]);
+  const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
 
   const handleCardClick = (danceName) => {
@@ -180,7 +182,7 @@ function LandingPage() {
     const getWorkshops = async () => {
       const studioRef = collection(db, COLLECTIONS.WORKSHOPS);
       let q = query(studioRef, where("active", "==", true), limit(15));
-      if (currentCity) q = query(q, where('city', '==', currentCity));
+      if (currentCity) q = query(q, where("city", "==", currentCity));
       const querySnapshot = await getDocs(q);
       const exploreStudioList = querySnapshot.docs
         .filter((doc) => doc.data().workshopName)
@@ -201,7 +203,7 @@ function LandingPage() {
     const getOpenClasses = async () => {
       const studioRef = collection(db, COLLECTIONS.OPEN_CLASSES);
       let q = query(studioRef, where("active", "==", true), limit(15));
-      if (currentCity) q = query(q, where('city', '==', currentCity));
+      if (currentCity) q = query(q, where("city", "==", currentCity));
       const querySnapshot = await getDocs(q);
       const exploreStudioList = querySnapshot.docs
         .filter((doc) => doc.data().openClassName)
@@ -216,6 +218,27 @@ function LandingPage() {
     };
 
     getOpenClasses();
+  }, []);
+
+  useEffect(() => {
+    const getCourses = async () => {
+      const studioRef = collection(db, COLLECTIONS.COURSES);
+      let q = query(studioRef, where("active", "==", true), limit(15));
+      if (currentCity) q = query(q, where("city", "==", currentCity));
+      const querySnapshot = await getDocs(q);
+      const exploreStudioList = querySnapshot.docs
+        .filter((doc) => doc.data().name)
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+          };
+        });
+      setCourses(exploreStudioList);
+    };
+
+    getCourses();
   }, []);
 
   useEffect(() => {
@@ -333,6 +356,18 @@ function LandingPage() {
             </h3>
             <Row>
               <OpenClassCardSlider dataList={openClasses} />
+            </Row>
+          </>
+        ) : null}
+
+        {courses?.length ? (
+          <>
+            <br />
+            <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
+              Explore Courses
+            </h3>
+            <Row>
+              <CourseCardSlider dataList={courses} />
             </Row>
           </>
         ) : null}
