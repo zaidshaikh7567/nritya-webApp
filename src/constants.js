@@ -5,7 +5,7 @@ export const STATUSES = {
     UNDER_REVIEW: "Under Review",
     REVIEWED: "Reviewed",
     VERIFIED: "Verified",
-    VERIFICATION_FAILED: "Failed Verification",
+    VERIFICATION_FAILED: "Verification Failed",
 };
 
 export const DRAFT_COLLECTIONS = {

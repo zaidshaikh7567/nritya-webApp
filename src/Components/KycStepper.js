@@ -47,7 +47,8 @@ const KycStepper = ({ kycId, status }) => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [kycData, setKycData] = useState({});
   const [expanded, setExpanded] = useState(false);
-
+  console.log(status)
+  console.log(STATUSES.VERIFICATION_FAILED)
   const theme = createTheme({
     palette: {
       mode: isDarkModeOn ? 'dark' : 'light',
