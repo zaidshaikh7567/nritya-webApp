@@ -189,7 +189,7 @@ function UserPage() {
         />
         <CardContent>
         <Typography variant="body2" color="text.secondary" style={{color: isDarkModeOn ? 'white' : 'black'}}>
-          {isCreator ? "List your studios now!!" : "Welcome to the Nritya!"}
+          {isCreator ? "List your studios now!!" : "Welcome to the Nritya! \n Verify your profile to list your studio."}
         </Typography>
       </CardContent>
       </MUICard>

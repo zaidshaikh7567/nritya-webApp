@@ -13,10 +13,7 @@ import CreatorPlans from './Screens/CreatorPlans';
 import Order from './Screens/Order';
 import Cart from './Screens/Cart';
 import Transactions from './Components/Transactions';
-import AdminPage from './Screens/AdminPage';
 import Trail from './Components/Trail';
-import { connect } from 'react-redux';
-import { toggleDarkMode } from './redux/actions/darkModeAction'; 
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from './redux/selectors/darkModeSelector'; 
 import { useAuth } from './context/AuthContext';
@@ -24,7 +21,6 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import CreatorStudio from './Screens/CreatorStudio';
 import CreatorDashboard from './Screens/CreatorDashboard';
 import CreatorInstructor from './Screens/CreatorInstructor';
-import LocationComponent from './Components/LocationComponent';
 import {Box, Divider as MuiDivider} from '@mui/material';
 import AboutUs from './Screens/About';
 import ContactUs from './Screens/ContactUs';
@@ -35,8 +31,6 @@ import CreatorWorkshop from './Screens/CreatorWorkshop';
 import CreatorOpenClass from './Screens/CreatorOpenClass';
 import CreatorCourse from './Screens/CreatorCourse';
 import CreatorRoute from './utils/CreatorRoute';
-import secureLocalStorage from 'react-secure-storage';
-
 import SnackbarProvider from './context/SnackbarContext';
 
 function App() {
@@ -76,32 +70,11 @@ function App() {
     localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
     console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
   };
-  
-  const handleLogout = () => {
-    console.log("Loggin Out")
-    setUsername("");
-    setIsLoggedIn(false);
-    // Remove user data from localStorage
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('userInfoFull');
-    localStorage.removeItem('posts');
-    localStorage.removeItem('adminLogin');
-    localStorage.removeItem('userDetails');
-    localStorage.removeItem('StudioCreated');
-    secureLocalStorage.removeItem('CreatorMode');
-  };
- 
-  const handleToggleDarkMode = () => {
-    dispatch(toggleDarkMode()); // Dispatch the action using useDispatch
-  };
 
-  // console.log(currentUser)
-  console.log("hi:",process.env.REACT_APP_TRY)
   return (
     <HashRouter  >
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Header username={username} isLoggedIn={isLoggedIn} handleLogout={handleLogout}/>
+        <Header/>
         
         <main className='py-1 flex-grow-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
           <Container fluid>
@@ -123,13 +96,12 @@ function App() {
                   <Route path='/transactions' element={<Transactions/>}/>
                   <Route element={<CreatorRoute/>}>
                     <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
+                    <Route path='/modifyStudios' element={<CreatorStudio/>}/>
+                    <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
+                    <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
+                    <Route path='/modifyCourses' element={<CreatorCourse/>}/>
+                    <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
                   </Route>
-
-                  <Route path='/modifyStudios' element={<CreatorStudio/>}/>
-                  <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
-                  <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
-                  <Route path='/modifyCourses' element={<CreatorCourse/>}/>
-                  <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
                 </Route>
                 <Route path='/n-trail' element={<Trail/>}/>
                 <Route path='/aboutus' element={<AboutUs/>}/>

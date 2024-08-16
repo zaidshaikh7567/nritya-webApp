@@ -13,18 +13,11 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const { currentUser } = useAuth();
 
   const handleLogout = async () => {
-    console.log("Logging out")
+    console.log("Logging out SideMenu")
     try {
-      await auth.signOut();
-    console.log("Clear Logging out")
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('userInfoFull');
-    localStorage.removeItem('posts');
-    localStorage.removeItem('adminLogin');
-    localStorage.removeItem('userDetails');
-    localStorage.removeItem('StudioCreated');
-    localStorage.removeItem('username');
+    await auth.signOut();
+    localStorage.clear()
+    secureLocalStorage.clear()
      
     } catch (error) {
       console.error('Error during logout:', error.message);
