@@ -30,6 +30,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
+import cities from '../cities.json';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -46,11 +47,13 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   );
 
   const danceStylesOptions = danceStyles.danceStyles;
+  const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
 
   const [isReady, setIsReady] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedCity, setSelectedCity] = useState(currentCity);
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,6 +77,10 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     setSelectedLevel(value);
   };
 
+  const handleCityChange = (event, value) => {
+    setSelectedCity(value);
+  };
+
   const handleSelectStudio = (event, value) => {
     setSelectedStudio(value);
   };
@@ -95,7 +102,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
       !selectedDuration ||
       !selectedLevel ||
       !openClassTime ||
-      !openClassDate
+      !openClassDate ||
+      !selectedCity
     )
       validationFailed = false;
 
@@ -159,7 +167,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         date: openClassDate.format("YYYY-MM-DD"),
         venue: event.target.openClassVenue.value,
         description: event.target.description.value,
-        city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+        city: selectedCity,
         active: true,
       };
 
@@ -211,6 +219,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     setSelectedLevel("");
     setOpenClassTime("");
     setOpenClassDate(dayjs(new Date()));
+    setSelectedCity('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -280,6 +289,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           setOpenClassTime(foundOpenClass?.time || "");
 
           setOpenClassDate(dayjs(foundOpenClass?.date || Date.now()));
+
+          setSelectedCity(foundOpenClass?.city || '');
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
             openClassName: form.openClassName?.value || "",
@@ -302,7 +313,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
             level: selectedLevel,
             time: openClassTime,
             date: openClassDate.format("YYYY-MM-DD"),
-            city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+            city: selectedCity,
           });
         }
 
@@ -368,6 +379,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                 level: selectedLevel,
                 time: openClassTime,
                 date: openClassDate.format("YYYY-MM-DD"),
+                city: selectedCity,
               });
             } catch (error) {
               console.error(error);
@@ -390,6 +402,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     selectedLevel,
     openClassTime,
     openClassDate,
+    selectedCity,
   ]);
 
   return (
@@ -586,6 +599,34 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
               <Row>
                 <Col md={6}>
+                  <Form.Label>City</Form.Label>
+                  <ThemeProvider theme={darkTheme}>
+                    <CssBaseline />
+
+                    <Autocomplete
+                      style={{
+                        backgroundColor: isDarkModeOn ? "#333333" : "",
+                        color: isDarkModeOn ? "white" : "black",
+                      }}
+                      id="tags-standard"
+                      options={cities.cities}
+                      value={selectedCity}
+                      onChange={handleCityChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          placeholder="Select City"
+                          style={{
+                            backgroundColor: isDarkModeOn ? "#333333" : "",
+                            color: isDarkModeOn ? "white" : "black",
+                          }}
+                        />
+                      )}
+                    />
+                  </ThemeProvider>
+                </Col>
+                <Col md={6}>
                   <Form.Label>Studio</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -613,6 +654,11 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     />
                   </ThemeProvider>
                 </Col>
+              </Row>
+
+              <br />
+
+              <Row>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
                   <Form.Control
@@ -626,9 +672,10 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     name="description"
                   />
                 </Col>
+                <Col md={6}></Col>
               </Row>
 
-              <hr></hr>
+              <hr />
 
               <Row>
                 <Col xs={6}></Col>
