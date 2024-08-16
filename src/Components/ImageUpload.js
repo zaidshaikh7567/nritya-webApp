@@ -188,7 +188,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                   <br></br>
                   <div className="kb-attach-box mb-3">
                   <div className="row">
-                    {selectedFiles.length > 0 ? (
+                    {entityId && selectedFiles.length > 0 ? (
                       selectedFiles.map((file) => (
                         
                         <div key={file.id} className="col-6 col-md-3 mb-3" style={{ position: 'relative' }}>

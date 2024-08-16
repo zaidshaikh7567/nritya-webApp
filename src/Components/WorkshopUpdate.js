@@ -18,20 +18,26 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
-import AlertPopup from "./AlertPopup";
+import { useSnackbar } from "../context/SnackbarContext";
+import cities from '../cities.json';
+
+const FILTER_LOCATION_KEY = "filterLocation";
 
 function WorkshopUpdate({ workshopId, instructors, studioId }) {
+  const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
+
+  const showSnackbar = useSnackbar();
+
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
 
   const danceStylesOptions = danceStyles.danceStyles;
-  const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
-  const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedCity, setSelectedCity] = useState(currentCity);
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,18 +78,49 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
     }
   };
 
+  const isValidInputs = (form) => {
+    let validationFailed = true;
+    if (
+      !form.workshopName.value ||
+      !form.workshopFees.value ||
+      !form.workshopVenue.value ||
+      !form.description.value ||
+      !selectedDanceStyles?.length ||
+      !selectedInstructors?.length ||
+      !selectedStudio ||
+      !selectedDuration ||
+      !selectedLevel ||
+      !workshopTime ||
+      !workshopDate ||
+      !selectedCity
+    )
+      validationFailed = false;
+
+    return validationFailed;
+  };
+
   const handleUpdateStudio = async (event) => {
     event.preventDefault();
+    const form = event.target;
+
     if (!selectedWorkshopId) return;
+
+    if (!isValidInputs(form)) {
+      showSnackbar("Please fill all the fields.", "error");
+      return;
+    }
 
     try {
       const dbPayload = {
-        workshopName: event.target.workshopName.value,
+        workshopName: form.workshopName.value,
+        price: form.workshopFees.value,
+        venue: form.workshopVenue.value,
+        description: form.description.value,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
-              (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
-            )
+            (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
+          )
           : null,
         author: JSON.parse(localStorage.getItem("userInfo")).displayName,
         UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
@@ -95,9 +132,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         level: selectedLevel,
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
-        price: event.target.workshopFees.value,
-        venue: event.target.workshopVenue.value,
-        description: event.target.description.value,
+        city: selectedCity,
       };
 
       setIsSubmitting(true);
@@ -106,16 +141,29 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
       await updateDoc(studioRef, dbPayload);
 
-      setShowUpdateSuccessAlert(true);
-      setShowUpdateErrorAlert(false);
+      clearForm(form);
+      showSnackbar("Workshop successfully updated.", "success");
     } catch (error) {
       console.error("Error updating workshop: ", error);
-      setShowUpdateSuccessAlert(false);
-      setShowUpdateErrorAlert(true);
+      showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
     }
     document.getElementById("updateStudioForm").reset();
+  };
+
+  const clearForm = (form) => {
+    form.reset();
+    setSelectedDanceStyles([]);
+    setSelectedInstructors([]);
+    setSelectedStudio(null);
+    setSelectedDuration("");
+    setSelectedLevel("");
+    setWorkshopTime("");
+    setWorkshopDate(dayjs(new Date()));
+    setSelectedCity('');
+    setSelectedWorkshop(null);
+    setSelectedWorkshopId("");
   };
 
   const handleDurationChange = (event, value) => {
@@ -124,6 +172,10 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
   const handleLevelChange = (event, value) => {
     setSelectedLevel(value);
+  };
+
+  const handleCityChange = (event, value) => {
+    setSelectedCity(value);
   };
 
   const handleSelectStudioValue = (event, value) => {
@@ -175,6 +227,8 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         );
         setSelectedStudio(studioId[currentStudioIndex] || null);
       }
+
+      setSelectedCity(selectedWorkshop?.city || '');
     }
   }, [selectedWorkshop]);
 
@@ -222,6 +276,8 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
               </Col>
 
               <Col md={6}>
+                <br />
+
                 <Form.Label>Workshop Name</Form.Label>
                 <Form.Control
                   rows={1}
@@ -423,23 +479,35 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
             <Row>
               <Col md={6}>
-                <Form.Label>Brief Description</Form.Label>
-                <Form.Control
-                  rows={3}
-                  defaultValue={
-                    selectedWorkshop ? selectedWorkshop.description : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  as="textarea"
-                  placeholder="Enter Description"
-                  name="description"
-                />
+                <Form.Label>City</Form.Label>
+                <ThemeProvider theme={darkTheme}>
+                  <CssBaseline />
+
+                  <Autocomplete
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    id="tags-standard"
+                    options={cities.cities}
+                    value={selectedCity}
+                    onChange={handleCityChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        placeholder="Select City"
+                        style={{
+                          backgroundColor: isDarkModeOn ? "#333333" : "",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                      />
+                    )}
+                  />
+                </ThemeProvider>
               </Col>
               <Col md={6}>
-                <Form.Label>Studio (optional)</Form.Label>
+                <Form.Label>Studio</Form.Label>
                 <ThemeProvider theme={darkTheme}>
                   <CssBaseline />
 
@@ -467,6 +535,28 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                 </ThemeProvider>
               </Col>
             </Row>
+
+            <br />
+
+            <Row>
+              <Col md={6}>
+                <Form.Label>Brief Description</Form.Label>
+                <Form.Control
+                  rows={3}
+                  defaultValue={
+                    selectedWorkshop ? selectedWorkshop.description : ""
+                  }
+                  style={{
+                    backgroundColor: isDarkModeOn ? "#333333" : "",
+                    color: isDarkModeOn ? "white" : "black",
+                  }}
+                  as="textarea"
+                  placeholder="Enter Description"
+                  name="description"
+                />
+              </Col>
+            </Row>
+
             <hr></hr>
 
             <Row>
@@ -488,24 +578,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
           </div>
         </Form.Group>
       </Form>
-      {showUpdateSuccessAlert && (
-        <AlertPopup
-          type="info"
-          message="Workshop Updated successfully"
-          timeOfDisplay={3000}
-          fontSize="10px"
-          fontWeight="bold"
-        />
-      )}
-      {showUpdateErrorAlert && (
-        <AlertPopup
-          type="warning"
-          message="Workshop Update failed"
-          timeOfDisplay={3000}
-          fontSize="10px"
-          fontWeight="bold"
-        />
-      )}
     </div>
   );
 }
