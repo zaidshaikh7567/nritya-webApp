@@ -30,6 +30,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
+import cities from '../cities.json';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -46,11 +47,13 @@ function CourseAdd({ instructors, studioId, setCourses }) {
   );
 
   const danceStylesOptions = danceStyles.danceStyles;
+  const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
 
   const [isReady, setIsReady] = useState(false);
   const [selectedDurationUnit, setSelectedDurationUnit] = useState("");
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedCity, setSelectedCity] = useState(currentCity);
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,6 +75,10 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
   const handleLevelChange = (event, value) => {
     setSelectedLevel(value);
+  };
+
+  const handleCityChange = (event, value) => {
+    setSelectedCity(value);
   };
 
   const handleSelectStudio = (event, value) => {
@@ -96,7 +103,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
       !selectedDurationUnit ||
       !selectedLevel ||
       !workshopTime ||
-      !workshopDate
+      !workshopDate ||
+      !selectedCity
     )
       validationFailed = false;
 
@@ -162,7 +170,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         price: event.target.workshopFees.value,
         venue: event.target.workshopVenue.value,
         description: event.target.description.value,
-        city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+        city: selectedCity,
         active: true,
       };
 
@@ -211,6 +219,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     setSelectedLevel("");
     setWorkshopTime("");
     setWorkshopDate(dayjs(Date.now()));
+    setSelectedCity('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -278,6 +287,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           setSelectedLevel(foundCourse?.level || "");
           setWorkshopTime(foundCourse?.time || "");
           setWorkshopDate(dayjs(foundCourse?.date || Date.now()));
+          setSelectedCity(foundCourse?.city || '');
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_COURSES), {
             name: form.name?.value || "",
@@ -303,7 +313,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
             level: selectedLevel,
             time: workshopTime,
             date: workshopDate.format("YYYY-MM-DD"),
-            city: localStorage.getItem(FILTER_LOCATION_KEY) || null,
+            city: selectedCity,
           });
         }
 
@@ -353,6 +363,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
             try {
               await updateDoc(openClassRef, {
                 name: form.name?.value || "",
+                price: form.workshopFees?.value || "",
+                venue: form.workshopVenue?.value || "",
+                description: form.description?.value || "",
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -368,9 +381,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 level: selectedLevel,
                 time: workshopTime,
                 date: workshopDate.format("YYYY-MM-DD"),
-                price: form.workshopFees?.value || "",
-                venue: form.workshopVenue?.value || "",
-                description: form.description?.value || "",
+                city: selectedCity,
               });
             } catch (error) {
               console.error(error);
@@ -394,6 +405,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     selectedLevel,
     workshopTime,
     workshopDate,
+    selectedCity,
   ]);
 
   return (
@@ -621,6 +633,39 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                   />
                 </Col>
                 <Col md={6}>
+                  <Form.Label>City</Form.Label>
+                  <ThemeProvider theme={darkTheme}>
+                    <CssBaseline />
+
+                    <Autocomplete
+                      style={{
+                        backgroundColor: isDarkModeOn ? "#333333" : "",
+                        color: isDarkModeOn ? "white" : "black",
+                      }}
+                      id="tags-standard"
+                      options={cities.cities}
+                      value={selectedCity}
+                      onChange={handleCityChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          placeholder="Select City"
+                          style={{
+                            backgroundColor: isDarkModeOn ? "#333333" : "",
+                            color: isDarkModeOn ? "white" : "black",
+                          }}
+                        />
+                      )}
+                    />
+                  </ThemeProvider>
+                </Col>
+              </Row>
+
+              <br />
+
+              <Row>
+                <Col md={6}>
                   <Form.Label>Studio</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -648,11 +693,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     />
                   </ThemeProvider>
                 </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
                   <Form.Control

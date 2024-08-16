@@ -166,7 +166,7 @@ function WorkshopDetailsModal({
               component="p"
               sx={{ mt: 1, color: isDarkModeOn ? "white" : "black" }}
             >
-              {dataItem.workshopName || ""}
+              {dataItem.name || ""}
               {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
             </MUITypography>
             <MUITypography
