@@ -16,7 +16,7 @@ function NrityaCard({data, title, type, studioContactNumber, studioWhatsAppNumbe
   }`;
   
     const nrityaBubbleClass = `mb-2 ${isDarkModeOn ? 'circular-bubble-dark' : 'circular-bubble'}`;
-
+    console.log("nrityaCardClass : ",nrityaCardClass)
     function CircularBubble({ number }) {
       return (
         <div className={nrityaBubbleClass}>
