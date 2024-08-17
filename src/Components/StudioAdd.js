@@ -489,15 +489,15 @@ function StudioAdd({instructors}) {
                 <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="studioName" />
                 
                 <Form.Label>About Studio</Form.Label>
-                <Form.Control rows={6} style={{  minHeight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio details" name="aboutStudio" />
+                <Form.Control rows={6} style={{  minHeight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio's details" name="aboutStudio" />
                 
                 </Col>
                 <Col md={6}>
                 <Form.Label>Founder's Name</Form.Label>
-                <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="founderName" />
+                <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter founder name" name="founderName" />
                 
                 <Form.Label>About Founder</Form.Label>
-                <Form.Control rows={6} style={{  minheight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio details" name="aboutFounder" />
+                <Form.Control rows={6} style={{  minheight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter founder's details" name="aboutFounder" />
                 
                 </Col>
                 </Row>
@@ -508,14 +508,14 @@ function StudioAdd({instructors}) {
                 <Col md={6}>
 
                 <Form.Label>Mobile Number</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter studio details" name="mobileNumber" type="number"  />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter mobile number" name="mobileNumber" type="number"  />
 
                 <Form.Label>WhatsApp Number</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter studio details" name="whatsappNumber" type="number"  />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter whatsapp number" name="whatsappNumber" type="number"  />
                 </Col>
                 <Col md={6}>
                 <Form.Label>Mail Address</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="email" rows={1} placeholder="Enter studio details" name="mailAddress" />
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="email" rows={1} placeholder="Enter mail address" name="mailAddress" />
                 
                   </Col>
                 </Row>
@@ -743,7 +743,7 @@ function StudioAdd({instructors}) {
                   </Col>
                   <Col xs={6} className="d-flex justify-content-end">
                     
-                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}variant="primary" type="submit" style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}>
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black", color:'white'}} type="submit">
                       Add Studio & Next
                     </MuiButton>
                   </Col>
