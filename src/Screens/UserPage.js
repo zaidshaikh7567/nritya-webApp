@@ -1,24 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Card, Button, Row, Col , Form,Accordion,Image } from 'react-bootstrap';
+import { Card, Row, Col } from 'react-bootstrap';
+import { Button as MUIButton } from '@mui/joy';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../config';
-import { doc, getDoc,setDoc,addDoc,updateDoc,collection } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, listAll,deleteObject } from 'firebase/storage';
-import Creator from '../Components/Creator';
-import NonCreator from '../Components/NonCreator';
-import ImageUpload from '../Components/ImageUpload';
-import { storage } from '../config'; // Import Firebase Storage
 import { STORAGES, COLLECTIONS } from '../constants';
 import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { useAuth } from '../context/AuthContext';
-import { deleteAllImagesInFolder, uploadOneImageAndGetURL } from '../utils/firebaseUtils';
-import MyBookings from '../Components/MyBookings';
+import { deleteAllImagesInFolder, readDocument, saveDocument, uploadOneImageAndGetURL } from '../utils/firebaseUtils';
 import './UserPage.css';
-import CreatorDashboard from './CreatorDashboard';
 import Kyc from '../Components/Kyc';
 import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography, Tooltip} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EditProfileModal from '../Components/EditProfileModal';
 
 
 function getCurrentUnixTimestamp() {
@@ -28,8 +21,15 @@ function getCurrentUnixTimestamp() {
 function UserPage() {
 
   const [isCreator, setIsCreator] = useState(false);
-  const [premiumTill, setPremiumTill] = useState(-1);
-  const [profilePictureUrl,setProfilePictureUrl] = useState(null);
+  const [userProfileInfo,setUserProfileInfo] = useState(
+    {
+      Name: '',
+      Age: '',
+      DanceStyles: '',
+      Gender: '',
+      Bio: '',
+    }
+  );
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const navigate = useNavigate();
   const { currentUser } = useAuth();
@@ -39,82 +39,46 @@ function UserPage() {
     ['My Bookings', 'All', '#/myBookings'],
     ['Instructors', 'Creator', '#/modifyInstructors'],
     ['Studios', 'Creator', '#/modifyStudios'],
-    ['Creator DashBoard', 'Creator', '#/creatorDashboard']
+    ['DashBoard', 'Creator', '#/creatorDashboard']
   ];
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSave = async (updatedProfile) => {
+    console.log('Profile updated:', updatedProfile);
+    const data = await saveDocument(COLLECTIONS.USER, currentUser.uid,updatedProfile)
+    if(data){
+      alert("Data Updated")
+    }
+  };
   
   
   // Sort the array by the card name
   cardData.sort((a, b) => a[0].localeCompare(b[0]));
-  
-  //console.log("UserPage")
-  /*
-  if(currentUser && currentUser.displayName ){
-    navigate('#/login');
-  }
-  */
-   /*
-// Fix
-
+ 
   useEffect(() => {
-    if (currentUser && currentUser.displayName) {
-      navigate('#/login');
-    }
-  }, [currentUser, navigate]);
-   
-   
-   */
-
-
-  useEffect(() => {
-    console.log()
-    const userId= currentUser.uid;
-    console.log(userId)
-  
-    if (userId) {
-      const storagePath = `${STORAGES.USERIMAGE}/${userId}`;
-      const folderRef = ref(storage, storagePath);
-  
-      try {
-        listAll(folderRef)
-          .then((result) => {
-            if (result.items.length > 0) {
-              const firstFileRef = result.items[0];
-              getDownloadURL(firstFileRef)
-                .then((url) => {
-                  setProfilePictureUrl(url);
-                })
-                .catch((error) => {
-                  console.error('Error fetching studio icon:', error);
-                });
-            } else {
-              console.log('No files found in the folder.');
-            }
-          })
-          .catch((error) => {
-            console.error('Error listing files in the folder:', error);
-          });
-      } catch (error) {
-        console.error('Error fetching studio icon:', error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log("UserPage getCreatorMode")
+    console.log("UserPage data")
     const getCreatorMode = async () => {
       try{
-      const userRef = doc(db, COLLECTIONS.USER, currentUser.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        //console.log("User there",userSnap.data(),userSnap.data().CreatorMode,JSON.parse(localStorage.getItem('userInfoFull')));
-        if(userSnap.data() != null){
-          
-          setIsCreator(userSnap.data().CreatorMode)
-          setPremiumTill(userSnap.data().isPremium)
-          //console.log("Premium Till",premiumTill)
-        }else{
-          console.log("userSnap.data() null")
-        }
+      const userData = await readDocument(COLLECTIONS.USER, currentUser.uid);
+      if (userData) {
+          setUserProfileInfo(
+            {
+              Name: userData.Name || '',
+              Age: userData.Age || '',
+              DanceStyles: userData.DanceStyles || '',
+              Gender: userData.Gender || '',
+              Bio: userData.Bio || '',
+            }
+          )
+          setIsCreator(userData.CreatorMode)
       } else {
         console.log("User not found but workshop created... error");
       }
@@ -125,30 +89,6 @@ function UserPage() {
   
     getCreatorMode();
   }, [isCreator]); // Run once on mount
-
-  //console.log("hi",currentUser)
-
-
-  const handleProfilePictureChange = async (e) => {
-    const file = e.target.files[0]; // Get the selected file
-  
-    if (file) {
-      try {
-        // Delete old files in the storage folder
-        console.log("currentUser ",currentUser)
-        const userId = currentUser.uid
-        await deleteAllImagesInFolder(STORAGES.USERIMAGE,userId)
-  
-        const imageUrl= await uploadOneImageAndGetURL(STORAGES.USERIMAGE, file, userId);
-
-        setProfilePictureUrl(imageUrl);
-  
-      } catch (error) {
-        console.error('Error handling profile picture:', error);
-      }
-    }
-  };
-
 
   const cardStyle = {
     background: isDarkModeOn ? 'black' : 'white',
@@ -161,7 +101,7 @@ function UserPage() {
   return (
     <div >
       <h1 style={{ color: isDarkModeOn ? 'white' : 'black', textTransform:'capitalize' }}>Profile</h1>
-      <MUICard sx={{ maxWidth: 345,background: isDarkModeOn ? 'black' : 'white',color: isDarkModeOn ? 'white' : 'black'}}>
+      <MUICard sx={{ maxWidth: 400,background: isDarkModeOn ? 'black' : 'white',color: isDarkModeOn ? 'white' : 'black'}}>
         <CardHeader
           avatar={
             <Avatar
@@ -171,7 +111,7 @@ function UserPage() {
             />
           }
           title={
-            <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h6" component="div" sx={{ display: 'flex',color: isDarkModeOn ? 'white' : 'black', alignItems: 'center' }}>
               {currentUser.displayName}
               {isCreator && (
                  <Tooltip title="You are a verified user." arrow>
@@ -180,13 +120,37 @@ function UserPage() {
               )}
             </Typography>
           }
-          subheader={currentUser.email}
+          subheader={
+            <>
+              <Typography variant="body2" component="div" sx={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                {[currentUser.email, userProfileInfo.Age]
+                  .filter(Boolean)
+                  .join(' || ')}
+              </Typography>
+              {userProfileInfo.DanceStyles && (
+                <Typography variant="body2" component="div" sx={{ mt: 1, color: isDarkModeOn ? 'white' : 'black' }}>
+                  {userProfileInfo.DanceStyles}
+                </Typography>
+              )}
+              {userProfileInfo.Bio && (
+                <Typography variant="body2" component="div" sx={{ mt: 1, color: isDarkModeOn ? 'white' : 'black' }}>
+                  {userProfileInfo.Bio}
+                </Typography>
+              )}
+            </>
+          }
+      
+          
           subheaderTypographyProps={{
             sx: {
               color: isDarkModeOn ? 'gray' : 'darkgray'
             }
           }}
         />
+        <MUIButton sx={{ ml: 2 }} variant="outlined" onClick={handleOpen}>
+          Edit Profile
+        </MUIButton>
+        <EditProfileModal open={open} onClose={handleClose} userProfileInfo={userProfileInfo} setUserProfileInfo={setUserProfileInfo} onSave={handleSave} />
         <CardContent>
         <Typography variant="body2" color="text.secondary" style={{color: isDarkModeOn ? 'white' : 'black'}}>
           {isCreator ? "List your studios now!!" : "Welcome to the Nritya! \n Verify your profile to list your studio."}
