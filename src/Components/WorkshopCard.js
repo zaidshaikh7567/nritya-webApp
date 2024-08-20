@@ -121,7 +121,7 @@ function WorkshopDetailsModal({
                 >
                   ₹{dataItem.price}
                 </MUITypography>
-                <Button
+                {!actionsAllowed && <Button
                   variant="outlined"
                   sx={{
                     alignSelf: "center",
@@ -150,12 +150,12 @@ function WorkshopDetailsModal({
                   }}
                 >
                   Book Now
-                </Button>
+                </Button>}
               </Box>
             </Box>
-            <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
+            {!actionsAllowed && <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
               Book here and pay at the venue
-            </MUITypography>
+            </MUITypography>}
           </Grid>
           <Grid item sx={{ mt: 1 }}>
             <MUITypography

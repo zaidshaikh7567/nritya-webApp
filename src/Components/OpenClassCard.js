@@ -112,7 +112,7 @@ function WorkshopDetailsModal({
               </Box>
 
               <Box sx={{ mt: "2rem", textAlign: 'right' }}>
-                <Button
+                {!actionsAllowed && <Button
                   variant="outlined"
                   sx={{
                     boxShadow: "none",
@@ -140,12 +140,12 @@ function WorkshopDetailsModal({
                   }}
                 >
                   Book Now
-                </Button>
+                </Button>}
               </Box>
             </Box>
-            <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
+            {!actionsAllowed && <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
               Book your spot
-            </MUITypography>
+            </MUITypography>}
           </Grid>
           <Grid item sx={{ mt: 1, }}>
             <MUITypography

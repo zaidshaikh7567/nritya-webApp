@@ -40,7 +40,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { COLLECTIONS } from "../constants";
 import {
   collection,
+  doc,
   query as firebaseQuery,
+  getDoc,
   getDocs,
   where,
 } from "firebase/firestore";
@@ -198,14 +200,21 @@ const SearchPage = () => {
       if (city) q = firebaseQuery(q, where("city", "==", city));
 
       getDocs(q).then((querySnapshot) => {
-        const docs = querySnapshot.docs.map((doc) => ({
+        const docsPromise = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }));
-        setSearchData((prev) => ({
-          ...prev,
-          [storedSelectedSearchType]: docs,
-        }));
+        })).map(async (document) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, document?.StudioId);
+          const docSnap = await getDoc(docRef);
+          return { ...document, studioDetails: docSnap.data() };
+        });
+
+        Promise.all(docsPromise).then((docs => {
+          setSearchData((prev) => ({
+            ...prev,
+            [storedSelectedSearchType]: docs,
+          }));
+        }))
       });
     }
   };

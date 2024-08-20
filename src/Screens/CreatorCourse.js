@@ -162,7 +162,7 @@ function CreatorCourse() {
         )
       );
       const querySnapshot = await getDocs(q);
-      const workshopsOfUser = querySnapshot.docs
+      const workshopsOfUserPromise = querySnapshot.docs
         .filter((doc) => doc.data().name)
         .map((doc) => {
           const data = doc.data();
@@ -170,7 +170,12 @@ function CreatorCourse() {
             id: doc.id,
             ...data,
           };
+        }).map(async (workshop) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, workshop?.StudioId);
+          const docSnap = await getDoc(docRef);
+          return { ...workshop, studioDetails: docSnap.data() };
         });
+      const workshopsOfUser = await Promise.all(workshopsOfUserPromise);
       localStorage.setItem("CourseCreated", JSON.stringify(workshopsOfUser));
       setWorkshop(workshopsOfUser);
       setWorkshopId(
