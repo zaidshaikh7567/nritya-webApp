@@ -45,7 +45,7 @@
   overflow-y: hidden;
   white-space: nowrap;
   padding: 10px 0; 
-  height: 310px;
+  min-height: 310px;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
 }

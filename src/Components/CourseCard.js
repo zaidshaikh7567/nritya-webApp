@@ -11,12 +11,14 @@ import {
   Stack,
   Typography as MUITypography,
   Button,
+  IconButton,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { STORAGES } from "../constants";
 import { readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
+import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
 
 function WorkshopDetailsModal({
   open,
@@ -31,6 +33,8 @@ function WorkshopDetailsModal({
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const isCreatorOfWorkshop = dataItem.UserId === currentUser;
+
+  const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
 
   return (
     <Modal
@@ -57,21 +61,19 @@ function WorkshopDetailsModal({
           borderRadius: "8px",
         }}
       >
-        <Grid container spacing="8px">
-          <Grid item xs={12} md={8}>
-            <Box sx={{ height: "300px" }}>
-              <img
-                src={dataItem.imageUrl}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-              />
-            </Box>
+        <Grid container spacing="8px" rowGap={2}>
+          <Grid item xs={12} lg={8}>
+            <img
+              src={dataItem.imageUrl}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                borderRadius: "8px",
+              }}
+            />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} lg={4}>
             <Box
               sx={{
                 height: "100%",
@@ -117,20 +119,20 @@ function WorkshopDetailsModal({
                 </MUITypography>
               </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box sx={{ mt: "2rem", display: "flex", justifyContent: "space-between", flexWrap: 'wrap' }}>
                 <MUITypography
                   variant="h5"
                   sx={{
-                    mt: "2rem",
                     alignSelf: "center",
                     color: isDarkModeOn ? "white" : "black",
                   }}
                 >
                   ₹{dataItem.price}
                 </MUITypography>
-                {/*                 <Button
+                <Button
                   variant="outlined"
                   sx={{
+                    alignSelf: "center",
                     boxShadow: "none",
                     textTransform: "none",
                     fontSize: 16,
@@ -156,18 +158,38 @@ function WorkshopDetailsModal({
                   }}
                 >
                   Book Now
-                </Button> */}
+                </Button>
               </Box>
             </Box>
+            <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
+              Book here and pay at the venue
+            </MUITypography>
           </Grid>
-          <Grid item>
+          <Grid item sx={{ mt: 1 }}>
             <MUITypography
               variant="h5"
               component="p"
-              sx={{ mt: 1, color: isDarkModeOn ? "white" : "black" }}
+              sx={{ color: isDarkModeOn ? "white" : "black" }}
             >
               {dataItem.name || ""}
               {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
+            </MUITypography>
+            <MUITypography
+              variant="body1"
+              component="p"
+              sx={{ mt: 1, color: isDarkModeOn ? "white" : "black" }}
+            >
+              <span>By {dataItem.studioDetails?.studioName || ""}</span>
+              {dataItem.studioDetails && dataItem.studioDetails?.whatsappNumber && (
+                <IconButton color="success" size="small" target="_blank" href={`https://wa.me/91${dataItem.studioDetails.whatsappNumber}?text=${whatsappMessage}`}>
+                  <FaWhatsapp style={{ 'marginLeft': '2px' }} />
+                </IconButton>
+              )}
+              {dataItem.studioDetails && dataItem.studioDetails?.mobileNumber && (
+                <IconButton color="primary" size="small" target="_blank" href={`tel:${dataItem.studioDetails.mobileNumber}`}>
+                  <FaPhoneAlt style={{ 'marginLeft': '2px' }} />
+                </IconButton>
+              )}
             </MUITypography>
             <MUITypography
               variant="body1"
@@ -275,7 +297,7 @@ export default function CourseCard({
 
         setImageUrl(
           url ||
-            "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
+          "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"
         );
       } catch (error) {
         console.error("Error fetching image URL:", error);
@@ -376,6 +398,13 @@ export default function CourseCard({
               </span>
             )}
           </Box>
+          <Typography
+            style={{ color: isDarkModeOn ? "white" : "black" }}
+            level="body-xs"
+            noWrap
+          >
+            By {dataItem.studioDetails?.studioName ? dataItem.studioDetails.studioName : ""}
+          </Typography>
           <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
             level="body-xs"

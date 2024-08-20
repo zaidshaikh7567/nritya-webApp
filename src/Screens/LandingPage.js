@@ -184,7 +184,7 @@ function LandingPage() {
       let q = query(studioRef, where("active", "==", true), limit(15));
       if (currentCity) q = query(q, where("city", "==", currentCity));
       const querySnapshot = await getDocs(q);
-      const exploreStudioList = querySnapshot.docs
+      const exploreStudioPromiseList = querySnapshot.docs
         .filter((doc) => doc.data().workshopName)
         .map((doc) => {
           const data = doc.data();
@@ -192,7 +192,14 @@ function LandingPage() {
             id: doc.id,
             ...data,
           };
+        })
+        .map(async (workshop) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, workshop?.StudioId);
+          const docSnap = await getDoc(docRef);
+          return { ...workshop, studioDetails: docSnap.data() };
         });
+
+      const exploreStudioList = await Promise.all(exploreStudioPromiseList);
       setWorkshops(exploreStudioList);
     };
 
@@ -205,7 +212,7 @@ function LandingPage() {
       let q = query(studioRef, where("active", "==", true), limit(15));
       if (currentCity) q = query(q, where("city", "==", currentCity));
       const querySnapshot = await getDocs(q);
-      const exploreStudioList = querySnapshot.docs
+      const exploreStudioPromiseList = querySnapshot.docs
         .filter((doc) => doc.data().openClassName)
         .map((doc) => {
           const data = doc.data();
@@ -213,7 +220,14 @@ function LandingPage() {
             id: doc.id,
             ...data,
           };
+        })
+        .map(async (openClass) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, openClass?.StudioId);
+          const docSnap = await getDoc(docRef);
+          return { ...openClass, studioDetails: docSnap.data() };
         });
+
+      const exploreStudioList = await Promise.all(exploreStudioPromiseList);
       setOpenClasses(exploreStudioList);
     };
 
@@ -226,7 +240,7 @@ function LandingPage() {
       let q = query(studioRef, where("active", "==", true), limit(15));
       if (currentCity) q = query(q, where("city", "==", currentCity));
       const querySnapshot = await getDocs(q);
-      const exploreStudioList = querySnapshot.docs
+      const exploreStudioPromiseList = querySnapshot.docs
         .filter((doc) => doc.data().name)
         .map((doc) => {
           const data = doc.data();
@@ -234,7 +248,14 @@ function LandingPage() {
             id: doc.id,
             ...data,
           };
+        })
+        .map(async (course) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, course?.StudioId);
+          const docSnap = await getDoc(docRef);
+          return { ...course, studioDetails: docSnap.data() };
         });
+
+      const exploreStudioList = await Promise.all(exploreStudioPromiseList);
       setCourses(exploreStudioList);
     };
 
