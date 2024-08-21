@@ -28,6 +28,7 @@ export const COLLECTIONS ={
     WORKSHOPS: 'Workshops',
     OPEN_CLASSES: 'OpenClasses',
     COURSES: 'Courses',
+    BOOKINGS: 'Bookings',
 }
 
 export const STORAGES ={

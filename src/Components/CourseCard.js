@@ -14,11 +14,14 @@ import {
   IconButton,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { STORAGES } from "../constants";
+import { COLLECTIONS, STORAGES } from "../constants";
 import { readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../config";
+import { useSnackbar } from "../context/SnackbarContext";
 
 function WorkshopDetailsModal({
   open,
@@ -28,11 +31,67 @@ function WorkshopDetailsModal({
   deactivateCourse,
   actionsAllowed,
 }) {
+
+  const showSnackbar = useSnackbar();
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const [isBooking, setIsBooking] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+
   const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
 
-  const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const handleBook = async () => {
+    try {
+      setIsBooking(true);
+
+      addDoc(collection(db, COLLECTIONS.BOOKINGS), {
+        StudioId: dataItem.StudioId,
+        CourseId: dataItem.id,
+        UserId: currentUser,
+        bookingDate: Date.now(),
+      });
+
+      const userRef = doc(db, "User", currentUser);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        if (userSnap.data() != null) {
+          await updateDoc(userRef, {
+            BookedCourses: [
+              ...(userSnap.data().BookedCourses || []),
+              dataItem.id,
+            ],
+          });
+        }
+      }
+
+      setUserDetails(prev => ({ ...prev, BookedCourses: [...(prev?.BookedCourses || []), dataItem.id] }));
+
+      showSnackbar("Course booked", "success");
+    } catch (error) {
+      console.error(error);
+      showSnackbar(error?.message || "Something went wrong", "error");
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const userRef = doc(db, "User", currentUser);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) setUserDetails(userSnap.data());
+      } catch (error) {
+        console.log(" error");
+      }
+    };
+
+    getUser();
+  }, []);
 
   const isCreatorOfWorkshop = dataItem.UserId === currentUser;
+
+  const isBooked = userDetails?.BookedCourses?.includes?.(dataItem?.id);
 
   const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
 
@@ -129,8 +188,10 @@ function WorkshopDetailsModal({
                 >
                   ₹{dataItem.price}
                 </MUITypography>
-                {!actionsAllowed && <Button
+                {!actionsAllowed && !isCreatorOfWorkshop && currentUser && <Button
                   variant="outlined"
+                  onClick={handleBook}
+                  disabled={isBooked || isBooking}
                   sx={{
                     alignSelf: "center",
                     boxShadow: "none",
@@ -157,11 +218,11 @@ function WorkshopDetailsModal({
                     },
                   }}
                 >
-                  Book Now
+                  {isBooked ? "Booked" : "Book Now"}
                 </Button>}
               </Box>
             </Box>
-            {!actionsAllowed && <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
+            {!actionsAllowed && !isCreatorOfWorkshop && currentUser && <MUITypography component={'p'} variant="caption" sx={{ my: '2px', color: isDarkModeOn ? "white" : "black", textAlign: 'center' }}>
               Book here and pay at the venue
             </MUITypography>}
           </Grid>
