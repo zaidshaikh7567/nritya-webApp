@@ -1,55 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Row, Container, Stack } from 'react-bootstrap';
+import React from 'react';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import '../Components/NrityaCard.css';
-import { FaPhoneAlt, FaWhatsapp } from 'react-icons/fa';
 
-function NrityaCard({data, title, type, studioContactNumber, studioWhatsAppNumber}) {
-
-    const isDarkModeOn = useSelector(selectDarkModeStatus);
-   //const nrityaCardClass = `mb-2 ${isDarkModeOn ? 'nritya-card nritya-card-dark' : 'nritya-card nritya-card-light'}`;
-   const nrityaCardClass = `mb-2 ${
-    isDarkModeOn ? 
-    'nritya-card nritya-card-dark' : 
-    (type === 'aboutFounder' ? 'nritya-card nritya-card-extra-dark' : 'nritya-card nritya-card-light')
-  }`;
-  
-    const nrityaBubbleClass = `mb-2 ${isDarkModeOn ? 'circular-bubble-dark' : 'circular-bubble'}`;
-    console.log("nrityaCardClass : ",nrityaCardClass)
-    function CircularBubble({ number }) {
-      return (
-        <div className={nrityaBubbleClass}>
-          {number}
-        </div>
-      );
+function NrityaCard({ data, title, type }) {
+    let isDarkModeOn = useSelector(selectDarkModeStatus)  ;
+    if(type === 'aboutFounder'){
+        isDarkModeOn = true;
     }
 
+    const cardStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        maxHeight: '250rem',
+        backgroundColor: isDarkModeOn ? '#000' : '#fff',
+        color: isDarkModeOn ? '#fff' : '#000',
+        boxShadow: '1em 1em 1em 1em rgba(0, 0, 0, 0.1)',
+        cursor: 'pointer',
+        borderRadius: '0.75rem'
+    };
+
     return (
-        <Card className={nrityaCardClass} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Card sx={cardStyle}>
+            
+            <CardContent sx={{ padding: '1rem', color: cardStyle.color }}>
             {type !== 'aboutStudio' && (
-                <Card.Title style={{ position: 'relative', padding: '0.1rem', paddingTop: '0.5rem',fontSize:'20px',textTransform: 'capitalize' }}>
+                <Typography
+                    variant="h5"
+                    component="div"
+                    sx={{
+                        position: 'relative',
+                        padding: '0.1rem',
+                        paddingTop: '0.5rem',
+                        fontSize: '25px',
+                        textTransform: 'capitalize',
+                        color: cardStyle.color
+                    }}
+                >
                     {title}
-                </Card.Title>
+                </Typography>
             )}
-            <Card.Body style={{ padding: '1rem' }}>
-                {type === 'bubble' ? <CircularBubble number={data} /> : data}
-                {/* {type === 'aboutStudio' && (
-                    <Container>
-                        <Row>
-                            <br />
-                            <Stack direction="horizontal" gap={3}>
-                                <a href={`https://wa.me/${studioWhatsAppNumber}`} target="_blank" rel="noopener noreferrer"> 
-                                    <FaWhatsapp style={{ color: 'green', fontSize: '24px', marginRight: '10px' }}  />
-                                </a>
-                                <a href={`tel:${studioContactNumber}`} rel="noopener noreferrer"> 
-                                <FaPhoneAlt style={{ color: 'black', fontSize: '24px', marginRight: '10px' }} /> 
-                            </a>
-                            </Stack>
-                        </Row>
-                    </Container>
-                )} */}
-            </Card.Body>
+                {data}
+            </CardContent>
         </Card>
     );
 }

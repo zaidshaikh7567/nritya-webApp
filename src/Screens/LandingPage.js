@@ -151,6 +151,45 @@ function LandingPage() {
   };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let filterLocation = localStorage.getItem('filterLocation');
+        if(filterLocation){
+          if(filterLocation === "null"){
+            filterLocation = 'New Delhi';
+          }
+        }else{
+          filterLocation = 'New Delhi'
+        }
+        let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?&city=${filterLocation}`;
+        const response = await fetch(apiEndpoint);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        const exploreStudioList = data
+          .filter((item) => item.studioName)
+          .map((item) => {
+            return {
+              id: item.id,
+              ...item,
+            };
+          });
+
+        setExploreCards(exploreStudioList);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+
+    const userId = JSON.parse(localStorage.getItem("userInfo")).UserId;
+    if(userId){
+      fetchRecentlyWatchedStudios(userId);
+    }
+
+
     const getStudios = async () => {
       const studioRef = collection(db, COLLECTIONS.STUDIO);
       const q = query(studioRef, limit(15));
@@ -174,8 +213,8 @@ function LandingPage() {
         fetchRecentlyWatchedStudios(userId);
       }
     };
-
-    getStudios();
+    
+    //getStudios();
   }, []);
 
   useEffect(() => {

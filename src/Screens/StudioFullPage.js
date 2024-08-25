@@ -280,13 +280,14 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         </div>
         <div className='textWrapper'>
             {studioData&&studioData.aboutStudio?
-            <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} studioContactNumber={studioData.mobileNumber} studioWhatsAppNumber={studioData.whatsappNumber}/>:""} 
+            <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} />:""} 
         </div>
       </div>
         
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
-      {studioData&&studioData.aboutFounder? <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About Founder"}/>:""} 
+        {studioData&&studioData.aboutFounder? 
+        <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About Founder"}/>:""} 
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
         <div className='socialConnectFeature'>
