@@ -184,9 +184,12 @@ function LandingPage() {
     };
     fetchData();
 
-    const userId = JSON.parse(localStorage.getItem("userInfo")).UserId;
-    if(userId){
-      fetchRecentlyWatchedStudios(userId);
+    const userInfo = localStorage.getItem("userInfo");
+    if (userInfo) {
+      const userId = JSON.parse(userInfo).UserId;
+      if (userId) {
+        fetchRecentlyWatchedStudios(userId);
+      }
     }
 
 
