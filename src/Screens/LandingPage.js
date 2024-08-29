@@ -74,7 +74,7 @@ const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 
 function LandingPage() {
-  const [exploreCards, setExploreCards] = useState([]);
+  const [exploreCards, setExploreCards] = useState({});
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
   const [danceImagesUrl, setDanceImagesUrl] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -167,17 +167,9 @@ function LandingPage() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        console.log("Data ",data)
 
-        const exploreStudioList = data
-          .filter((item) => item.studioName)
-          .map((item) => {
-            return {
-              id: item.id,
-              ...item,
-            };
-          });
-
-        setExploreCards(exploreStudioList);
+        setExploreCards(data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -193,31 +185,7 @@ function LandingPage() {
     }
 
 
-    const getStudios = async () => {
-      const studioRef = collection(db, COLLECTIONS.STUDIO);
-      const q = query(studioRef, limit(15));
-      const querySnapshot = await getDocs(q);
-      const exploreStudioList = querySnapshot.docs
-        .filter((doc) => doc.data().studioName)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id, // Include the document ID in the data
-            ...data,
-          };
-        });
-      setExploreCards(exploreStudioList);
-      console.log(exploreCards);
-      if (
-        JSON.parse(localStorage.getItem("userInfo")) &&
-        JSON.parse(localStorage.getItem("userInfo")).UserId
-      ) {
-        const userId = JSON.parse(localStorage.getItem("userInfo")).UserId;
-        fetchRecentlyWatchedStudios(userId);
-      }
-    };
     
-    //getStudios();
   }, []);
 
   useEffect(() => {

@@ -2,29 +2,11 @@ import React, { useState, useEffect } from "react";
 import StudioCard from "../Components/StudioCard";
 import { useSelector, useDispatch } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
-import {
-  Form,
-  Button,
-  Col,
-  Row,
-  Image,
-  Modal,
-  FormControl,
-  Badge,
-  ButtonGroup,
-  Container,
-} from "react-bootstrap";
-import {
-  Badge as MuiBadge,
-  Chip as MuiChip,
-  Autocomplete as MuiAutocomplete,
-  TextField as MuiTextField,
-  createTheme,
-  ThemeProvider,
-  Button as MuiButton,
-  Stack as MuiStack,
-  Grid as MuiGrid,
-} from "@mui/material";
+import {Form, Button, Col,Row, Image, Modal, FormControl, Badge, ButtonGroup,
+      Container,} from "react-bootstrap";
+import { Badge as MuiBadge, Chip as MuiChip, Autocomplete as MuiAutocomplete,
+  TextField as MuiTextField, createTheme,ThemeProvider, Button as MuiButton,
+  Stack as MuiStack,Grid as MuiGrid,} from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
 import indianCities from "../cities.json";
@@ -38,13 +20,7 @@ import CourseCardSlider from "../Components/CourseCardSlider";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import { COLLECTIONS } from "../constants";
-import {
-  collection,
-  doc,
-  query as firebaseQuery,
-  getDoc,
-  getDocs,
-  where,
+import { collection,doc, query as firebaseQuery, getDoc, getDocs,where,
 } from "firebase/firestore";
 import { db } from "../config";
 
@@ -53,7 +29,7 @@ const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
 const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 const FILTER_USER_GEO_LOC = "browserGeoLoc";
-//const danceForms = ['Ballet', 'Hip Hop', 'Salsa', 'Kathak'];
+
 const distances = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const searchTypes = [
   { name: "studio", label: "Studio", collection: COLLECTIONS.STUDIO },
@@ -171,7 +147,8 @@ const SearchPage = () => {
       fetch(apiEndpoint)
         .then((response) => response.json())
         .then((data) => {
-          setResults(data);
+          const formattedData = Array.isArray(data) ? data : Object.values(data);
+          setResults(formattedData);
         })
         .catch((error) =>
           console.error("Error fetching search results:", error)
