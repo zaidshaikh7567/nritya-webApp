@@ -126,11 +126,10 @@ const SearchPage = () => {
         )}`;
       }
 
-      if (localStorage.getItem(FILTER_DANCE_FORMS_KEY)) {
-        apiEndpoint += `&danceStyle=${encodeURIComponent(
-          localStorage.getItem(FILTER_DANCE_FORMS_KEY)
-        )}`;
+      if (selectedDanceForms) {
+        apiEndpoint += `&danceStyle=${selectedDanceForms.join(",")}`;
       }
+
       var geoLocation = getGeoLocationFromLocalStorage();
 
       if (
@@ -144,6 +143,7 @@ const SearchPage = () => {
           geoLocation.latitude
         )}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
       }
+      console.log("apiEndpoint ",apiEndpoint)
       fetch(apiEndpoint)
         .then((response) => response.json())
         .then((data) => {
