@@ -16,11 +16,8 @@ const firebaseConfig = {
 const gMapApiKey ={
   key: process.env.REACT_APP_GMAP_API_KEY
 };
-const razorpayConfig = {
-  key_id: "rzp_test_KGN4elrXhQOG65",
-  key_secret : "wmMR51UhKWEJf1LeHKiJ24S5"
-};
-console.log(process.env.REACT_APP_GMAP_API_KEY,"yo")
+
+//console.log(process.env.REACT_APP_GMAP_API_KEY,"yo")
 //nitialize Firebase
 const app = initializeApp(firebaseConfig);
 
@@ -32,4 +29,4 @@ const auth = getAuth(app)
 const db = getFirestore(app);
 const storage = getStorage(app)
 
-export {auth,provider,db,storage,razorpayConfig,gMapApiKey};
+export {auth,provider,db,storage,gMapApiKey};

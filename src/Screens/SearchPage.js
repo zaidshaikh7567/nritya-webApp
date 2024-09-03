@@ -34,11 +34,7 @@ const distances = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const searchTypes = [
   { name: "studio", label: "Studio", collection: COLLECTIONS.STUDIO },
   { name: "workshop", label: "Workshop", collection: COLLECTIONS.WORKSHOPS },
-  {
-    name: "openClass",
-    label: "Open Class",
-    collection: COLLECTIONS.OPEN_CLASSES,
-  },
+  { name: "openClass",label: "Open Class",collection: COLLECTIONS.OPEN_CLASSES},
   { name: "course", label: "Course", collection: COLLECTIONS.COURSES },
 ];
 
@@ -213,7 +209,10 @@ const SearchPage = () => {
 
         //const endpoint = baseUrl + `/autocomplete?query=${value}&city=Patna`;
         const response = await axios.get(endpoint);
-        setSuggestions(response.data);
+        console.log("Response :",response.data)
+        const filteredSuggestions = Object.values(response.data).filter(value => value !== null);
+        setSuggestions(filteredSuggestions);
+
       } catch (error) {
         console.error("Error fetching autocomplete suggestions:", error);
       }

@@ -1,19 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
   Col,
   Card,
-  Button,
-  Carousel,
-  ButtonGroup,
-  Image,
 } from "react-bootstrap";
 import {
-  Grid,
-  Card as MUICard,
-  CardContent,
-  Typography,
   Skeleton,
   Button as MUIButton,
 } from "@mui/material";
@@ -21,9 +13,6 @@ import { db } from "../config";
 import {
   doc,
   getDoc,
-  setDoc,
-  addDoc,
-  updateDoc,
   collection,
   where,
   getDocs,
@@ -35,13 +24,12 @@ import {
   faBolt,
   faMusic,
   faHiking,
-  faTrophy,
   faGlassCheers,
   faClock,
 } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./LandingPage.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import CardSlider from "../Components/CardSlider";
 import WorkshopCardSlider from "../Components/WorkshopCardSlider";
@@ -52,10 +40,8 @@ import { useNavigate } from "react-router-dom";
 import DanceCarousel from "../Components/DanceCarousel";
 import { getAllImagesInFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
-import textStyles from "../textStyles";
-import { CardCover } from "@mui/joy";
-import { Card as MUIJCard } from "@mui/joy";
 import CardSlider2 from "../Components/CardSlider2";
+import PayButton from "../Components/PayButton";
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -86,7 +72,7 @@ function LandingPage() {
   const handleCardClick = (danceName) => {
     localStorage.removeItem(FILTER_DISTANCES_KEY);
     localStorage.setItem(FILTER_DANCE_FORMS_KEY, JSON.stringify([danceName]));
-    if (localStorage.getItem(FILTER_DANCE_FORMS_KEY) == danceName) {
+    if (localStorage.getItem(FILTER_DANCE_FORMS_KEY) === danceName) {
       console.log("API LandingPage done", danceName);
     }
     setTimeout(() => {
@@ -425,6 +411,7 @@ function LandingPage() {
             </Col>
           ))}
         </Row>
+        <PayButton/>
       </Container>
     </div>
   );
