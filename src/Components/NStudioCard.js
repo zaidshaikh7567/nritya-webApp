@@ -24,22 +24,8 @@ import Favorite from '@mui/icons-material/Favorite';
 
 export default function NStudioCard({img_src,data}) {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
-    const [imageUrl, setImageUrl] = useState(null);
+    
     const studioId = data.id?data.id:data.studioId;
-
-    useEffect(() => {
-      const fetchImageUrl = async () => {
-        try {
-          const url = await readDocumentWithImageUrl(STORAGES.STUDIOICON, studioId);
-          
-          setImageUrl(url);
-        } catch (error) {
-          console.error('Error fetching image URL:', error);
-        }
-      };
-  
-      fetchImageUrl();
-    }, [data.id]);
 
     const cardStyle = {
       backgroundColor: isDarkModeOn ? '#444' : 'white',
@@ -64,14 +50,14 @@ export default function NStudioCard({img_src,data}) {
       
         <AspectRatio ratio="1.78" style={{ position: 'relative'}}>
           <img
-            src={imageUrl?imageUrl:"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+            src={data && data.iconUrl ? data.iconUrl :"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
             loading="lazy"
             alt="Studio Image"
             style={{ maxWidth: '100%', height: 'auto', overflow: 'hidden' }}
             
           />
           <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: 0, left: 0, padding: '1px' }}>
-        {data && data.danceStyles ? (data.danceStyles.split(",").slice(0, 3).map((form, index) => (
+        {data && data.danceStyles && typeof data.danceStyles === 'string' ? (data.danceStyles.split(",").slice(0, 3).map((form, index) => (
         <Chip
             key={index}
             color={index % 2 === 0 ? "danger" : "success"}  

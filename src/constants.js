@@ -15,10 +15,25 @@ export const DRAFT_COLLECTIONS = {
     DRAFT_COURSES: 'DraftCourses'
 };
 
-export const COLLECTIONS ={
+export const LEVELS = {
+    ALL : "All",
+    BEGINNERS : "Beginner", 
+    INTERMEDIATE :"Intermediate", 
+    ADVANCED :"Advanced"
+}
+
+export const CHIP_LEVELS_DESIGN = {
+    [LEVELS.ALL]: { backgroundColor: "#28a745", color: "#fff" },           // Green background, white text
+    [LEVELS.BEGINNERS]: { backgroundColor: "#007bff", color: "#fff" },     // Blue background, white text
+    [LEVELS.INTERMEDIATE]: { backgroundColor: "#ffc107", color: "#000" },  // Yellow background, black text
+    [LEVELS.ADVANCED]: { backgroundColor: "#dc3545", color: "#fff" }       // Red background, white text
+  };
+  
+  
+
+export const COLLECTIONS = {
     USER: "User",
     USER_KYC:"UserKyc",
-    WORKSHOP:"Workshop",
     ADMIN:"Admin",
     REVIEWS: "Reviews",
     TRANSACTIONS: "Transactions",

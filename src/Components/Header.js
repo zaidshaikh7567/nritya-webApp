@@ -225,7 +225,10 @@ function Header() {
         </Navbar.Brand>
       ) : (
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "100%", height: "4rem" }}
+          <Image style={{ width: "100%", height: "4rem",maxWidth: "200px", 
+          margin: 0,  
+          padding: 0,  
+          objectFit: "contain"  }}
             src={logoBig}
             alt="Logo"
           />

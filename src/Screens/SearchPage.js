@@ -14,21 +14,25 @@ import { refreshLocation } from "../redux/actions/refreshLocationAction";
 import SmallCard from "../Components/SmallCard";
 import danceStyles from "../danceStyles.json";
 import CardSliderCard from "../Components/CardSliderCard";
-import WorkshopCardSlider from "../Components/WorkshopCardSlider";
-import OpenClassCardSlider from "../Components/OpenClassCardSlider";
-import CourseCardSlider from "../Components/CourseCardSlider";
+import './SearchPage.css';
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
-import { COLLECTIONS } from "../constants";
+import { COLLECTIONS, LEVELS } from "../constants";
 import { collection,doc, query as firebaseQuery, getDoc, getDocs,where,
 } from "firebase/firestore";
 import { db } from "../config";
+import NWorkshopCard from "../Components/NWorkshopCard";
+import NOpenClassCard from "../Components/NOpenClassCard";
+import NCourseCard from "../Components/NCourseCard";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
 const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 const FILTER_USER_GEO_LOC = "browserGeoLoc";
+
+const levelsTypes = [LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]
+const MAX_PRICE  = 10**10
 
 const distances = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const searchTypes = [
@@ -38,17 +42,25 @@ const searchTypes = [
   { name: "course", label: "Course", collection: COLLECTIONS.COURSES },
 ];
 
+const getCollectionForSearchType = (searchType) => {
+  const searchTypeObject = searchTypes.find(type => type.name === searchType);
+  return searchTypeObject ? searchTypeObject.collection : COLLECTIONS.STUDIO;
+};
+
 const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [selectedDistances, setSelectedDistances] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
+  const [studioIdName,setStudioIdName] = useState({});
   const [showFilterValue, setShowFilterValue] = useState("distances");
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
   const [selectedSearchType, setSelectedSearchType] = useState("studio");
+  const [selectedLevel, setSelectedLevel] = useState("All");
+  const [selectedMaxPrice, setSelectedMaxPrice] = useState(MAX_PRICE);
   const [searchData, setSearchData] = useState({
     workshop: [],
     openClass: [],
@@ -97,10 +109,26 @@ const SearchPage = () => {
     let count = 0;
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
     if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
-
+    if (selectedLevel && selectedLevel !== LEVELS.ALL) count++;
+    if (selectedMaxPrice && selectedMaxPrice != MAX_PRICE) count++;
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     if (storedDanceForm) count += JSON.parse(storedDanceForm).length;
     return count;
+  };
+  const fetchIdNameMp = async (city) => {
+    try {
+      const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      
+      const data = await response.json();
+      setStudioIdName(data);
+      
+    } catch (error) {
+      console.error("Error in processing:", error);
+    }
   };
 
   const handleSearch = () => {
@@ -109,88 +137,48 @@ const SearchPage = () => {
       selectedSearchType ||
       "studio";
 
-    if (storedSelectedSearchType === "studio") {
-      // Perform the search and update the results
-      if (query == null) {
-        setQuery("");
-      }
-      let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
-
-      if (localStorage.getItem(FILTER_LOCATION_KEY)) {
-        apiEndpoint += `&city=${encodeURIComponent(
-          localStorage.getItem(FILTER_LOCATION_KEY)
-        )}`;
-      }
-
-      if (selectedDanceForms) {
-        apiEndpoint += `&danceStyle=${selectedDanceForms.join(",")}`;
-      }
-
-      var geoLocation = getGeoLocationFromLocalStorage();
-
-      if (
-        selectedDistances &&
-        geoLocation &&
-        localStorage.getItem(FILTER_DISTANCES_KEY)
-      ) {
-        apiEndpoint += `&distance=${encodeURIComponent(
-          localStorage.getItem(FILTER_DISTANCES_KEY)
-        )}&user_lat=${encodeURIComponent(
-          geoLocation.latitude
-        )}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
-      }
-      console.log("apiEndpoint ",apiEndpoint)
-      fetch(apiEndpoint)
-        .then((response) => response.json())
-        .then((data) => {
-          const formattedData = Array.isArray(data) ? data : Object.values(data);
-          setResults(formattedData);
-        })
-        .catch((error) =>
-          console.error("Error fetching search results:", error)
-        );
-    } else {
-      const selectedDanceFormsString = localStorage.getItem(
-        FILTER_DANCE_FORMS_KEY
-      );
-      const city = localStorage.getItem(FILTER_LOCATION_KEY);
-      let danceFormsList = [];
-      if (selectedDanceFormsString)
-        danceFormsList = JSON.parse(selectedDanceFormsString);
-      let q = collection(
-        db,
-        searchTypes.find((type) => type.name === storedSelectedSearchType)
-          .collection
-      );
-
-      q = firebaseQuery(q, where("active", "==", true));
-
-      if (danceFormsList.length)
-        q = firebaseQuery(
-          q,
-          where("danceStyles", "array-contains-any", danceFormsList)
-        );
-      if (city) q = firebaseQuery(q, where("city", "==", city));
-
-      getDocs(q).then((querySnapshot) => {
-        const docsPromise = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })).map(async (document) => {
-          const docRef = doc(db, COLLECTIONS.STUDIO, document?.StudioId);
-          const docSnap = await getDoc(docRef);
-          return { ...document, studioDetails: docSnap.data() };
-        });
-
-        Promise.all(docsPromise).then((docs => {
-          setSearchData((prev) => ({
-            ...prev,
-            [storedSelectedSearchType]: docs,
-          }));
-        }))
-      });
+    if (query == null) {
+      setQuery("");
     }
+    let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
+    const entity = getCollectionForSearchType(storedSelectedSearchType);
+
+    const city = localStorage.getItem(FILTER_LOCATION_KEY) || "New Delhi";
+    apiEndpoint += `&city=${encodeURIComponent(city)}`;
+    fetchIdNameMp(city)
+    if (storedSelectedSearchType) {
+      apiEndpoint += `&entity=${encodeURIComponent(entity)}`;
+    }
+
+    if (selectedDanceForms.length > 0) {
+      apiEndpoint += `&danceStyle=${encodeURIComponent(selectedDanceForms.join(","))}`;
+    }
+
+    if (entity !== COLLECTIONS.STUDIO && selectedLevel && selectedLevel !== LEVELS.ALL) {
+      apiEndpoint += `&level=${encodeURIComponent(selectedLevel)}`
+    }
+
+    if ((entity === COLLECTIONS.WORKSHOPS || entity === COLLECTIONS.COURSES) && selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) {
+      apiEndpoint += `&price=${encodeURIComponent(selectedMaxPrice)}`
+    }
+
+    const geoLocation = getGeoLocationFromLocalStorage();
+    if (selectedDistances && geoLocation && localStorage.getItem(FILTER_DISTANCES_KEY)) {
+      apiEndpoint += `&distance=${encodeURIComponent(selectedDistances)}&user_lat=${encodeURIComponent(geoLocation.latitude)}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
+    }
+
+    console.log("apiEndpoint ", apiEndpoint);
+    fetch(apiEndpoint)
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedData = Array.isArray(data) ? data : Object.values(data);
+        setResults(formattedData);
+      })
+      .catch((error) =>
+        console.error("Error fetching search results:", error)
+      );
   };
+
 
   const handleChange = async (event, value) => {
     const baseUrl = "https://nrityaserver-2b241e0a97e5.herokuapp.com/api";
@@ -239,6 +227,8 @@ const SearchPage = () => {
     setSelectedDistances("");
     setSelectedDanceForms([]);
     setSelectedSearchType("studio");
+    setSelectedMaxPrice(MAX_PRICE);
+    setSelectedLevel(LEVELS.ALL);
     localStorage.removeItem(FILTER_DISTANCES_KEY);
     localStorage.removeItem(FILTER_DANCE_FORMS_KEY);
     localStorage.setItem(FILTER_SEARCH_TYPE_KEY, "studio");
@@ -257,6 +247,13 @@ const SearchPage = () => {
     setSelectedSearchType(e.target.value);
     setSelectedDistances("");
     localStorage.removeItem(FILTER_DISTANCES_KEY);
+    if(e.target.value == "studio"){
+      setSelectedMaxPrice(MAX_PRICE);
+      setSelectedLevel(LEVELS.ALL);
+    }
+    if(e.target.value == "openClass"){
+      setSelectedMaxPrice(MAX_PRICE);
+    }
   };
 
   const handleRemoveDistance = () => {
@@ -382,6 +379,7 @@ const SearchPage = () => {
           </MuiGrid>
           <br></br>
           <Row className="align-items-center">
+          <div className="horizontal-scroll-wrapper-for-filters"> 
             <Col xs="auto" style={{ marginTop: "0.5rem" }}>
               <MuiBadge
                 onClick={toggleFilters}
@@ -451,7 +449,53 @@ const SearchPage = () => {
               </Col>
             )}
 
-            {(selectedDanceForms.length || selectedDistances) && (
+            {(selectedLevel && selectedLevel !== LEVELS.ALL) &&(
+              <Col xs="auto">
+                {
+                  <MuiBadge
+                    key={selectedLevel}
+                    color="info"
+                    style={{
+                      marginLeft: "0",
+                      marginTop: "0.5rem",
+                    }}
+                    pill
+                  >
+                    <MuiChip
+                      color="info"
+                      label={`Level: ${selectedLevel}`}
+                      variant={isDarkModeOn ? "outlined" : "contained"}
+                      onDelete={() => setSelectedLevel(LEVELS.ALL)}
+                    />
+                  </MuiBadge>
+                }
+              </Col>
+            )}
+
+            {(selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) &&(
+              <Col xs="auto">
+                {
+                  <MuiBadge
+                    key={selectedMaxPrice}
+                    color="info"
+                    style={{
+                      marginLeft: "0",
+                      marginTop: "0.5rem",
+                    }}
+                    pill
+                  >
+                    <MuiChip
+                      color="info"
+                      label={`Prices Upto: ${selectedMaxPrice}`}
+                      variant={isDarkModeOn ? "outlined" : "contained"}
+                      onDelete={() => setSelectedMaxPrice(MAX_PRICE)}
+                    />
+                  </MuiBadge>
+                }
+              </Col>
+            )}
+
+            {(selectedDanceForms.length || selectedDistances || (selectedLevel && selectedLevel !== LEVELS.ALL) ||(selectedMaxPrice && selectedMaxPrice !== MAX_PRICE)) && (
               <Col xs="auto" style={{ marginTop: "0.5rem" }}>
                 <MuiBadge
                   color="error"
@@ -469,6 +513,7 @@ const SearchPage = () => {
                 </MuiBadge>
               </Col>
             )}
+           </div>
           </Row>
         </Container>
       </header>
@@ -504,6 +549,35 @@ const SearchPage = () => {
                     >
                       Distances
                     </li>
+                  </>
+                )}
+
+              {(selectedSearchType === "workshop" || selectedSearchType === "course") && (
+                  <>
+                    <hr style={{ margin: "5px 0" }}></hr>
+                    <li
+                      style={{ cursor: "pointer", margin: "5px 0" }}
+                      onClick={() => (
+                        setShowFilterValue("price"), setShowFilters(true)
+                      )}
+                    >
+                      Price
+                    </li>
+                  </>
+                )}
+
+                {selectedSearchType !== "studio" && (
+                  <>
+                    <hr style={{ margin: "5px 0" }}></hr>
+                    <li
+                      style={{ cursor: "pointer", margin: "5px 0" }}
+                      onClick={() => (
+                        setShowFilterValue("level"), setShowFilters(true)
+                      )}
+                    >
+                      Level
+                    </li>
+                    
                   </>
                 )}
 
@@ -556,6 +630,42 @@ const SearchPage = () => {
                 </Form.Group>
               )}
 
+              {showFilters && showFilterValue === "level" && (
+                <Form.Group controlId="filterLevel">
+                  <Form.Label>Level :</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={selectedLevel}
+                    onChange={(e) => setSelectedLevel(e.target.value)}
+                  >
+                    <option value="">Select Lavel</option>
+                    {levelsTypes.map((level) => (
+                      <option key={level} value={level}>
+                        {level} 
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              )}
+
+              {showFilters && showFilterValue === "price" && (
+                <Form.Group controlId="filterPrice">
+                  <Form.Label>Prices :</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={selectedMaxPrice}
+                    onChange={(e) => setSelectedMaxPrice(e.target.value)}
+                  >
+                    <option value="">Prices below</option>
+                    {[499,999,1499,1999,2999,4999,9999,MAX_PRICE].map((price) => (
+                      <option key={price} value={price}>
+                        {price >= MAX_PRICE ?"All":price} 
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              )}
+
               {showFilters && showFilterValue === "danceForm" && (
                 <Form.Group controlId="filterDanceForms">
                   <Form.Label>Dance Forms:</Form.Label>
@@ -570,14 +680,6 @@ const SearchPage = () => {
                     placeholder="Select Dance Forms"
                     styles={styles}
                   />
-                  {/* <Form.Control as="select" value={selectedDanceForm} onChange={(e) => setSelectedDanceForm(e.target.value)}>
-                      <option value="">Select Dance Form</option>
-                      {danceForms.map((danceForm) => (
-                        <option key={danceForm} value={danceForm}>
-                          {danceForm}
-                        </option>
-                      ))}
-                    </Form.Control> */}
                 </Form.Group>
               )}
             </Col>
@@ -623,13 +725,75 @@ const SearchPage = () => {
       )}
 
       {selectedSearchType === "workshop" && (
-        <WorkshopCardSlider dataList={searchData.workshop} />
+        
+          <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
+            {results.length === 0 ? (
+              <div className="" style={{ minHeight: "30vh" }}></div>
+            ) : (
+              results.map((data, index) => (
+                <div
+                  key={index}
+                  className="studio-card-container"
+                  style={{ padding: "0.2rem" }}
+                  md={2}
+                >
+                  
+                    <NWorkshopCard
+                    key={data.id}
+                    dataItem={data}
+                    studioIdName={studioIdName}
+                  />
+                  
+                </div>
+              ))
+            )}
+          </div>
+      
+        
       )}
       {selectedSearchType === "openClass" && (
-        <OpenClassCardSlider dataList={searchData.openClass} />
+         <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
+         {results.length === 0 ? (
+           <div className="" style={{ minHeight: "30vh" }}></div>
+         ) : (
+           results.map((data, index) => (
+             <div
+               key={index}
+               className="studio-card-container"
+               style={{ padding: "0.2rem" }}
+               md={2}
+             >
+               <NOpenClassCard
+                key={data.id}
+                dataItem={data}
+                studioIdName={studioIdName}
+              />
+             </div>
+           ))
+         )}
+       </div>
       )}
       {selectedSearchType === "course" && (
-        <CourseCardSlider dataList={searchData.course} />
+       <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
+       {results.length === 0 ? (
+         <div className="" style={{ minHeight: "30vh" }}></div>
+       ) : (
+         results.map((data, index) => (
+           <div
+             key={index}
+             className="studio-card-container"
+             style={{ padding: "0.2rem" }}
+             md={2}
+           >
+             <NCourseCard
+            key={data.id}
+            dataItem={data}
+            studioIdName={studioIdName}
+          />
+           </div>
+         ))
+       )}
+     </div>
       )}
     </div>
   );

@@ -14,7 +14,7 @@ import {
   getDocs,
   deleteDoc,
 } from "firebase/firestore";
-import { COLLECTIONS, DRAFT_COLLECTIONS } from "../constants";
+import { COLLECTIONS, DRAFT_COLLECTIONS, LEVELS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
 import { useSelector } from "react-redux";
@@ -563,7 +563,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                         color: isDarkModeOn ? "white" : "black",
                       }}
                       id="tags-standard"
-                      options={["Beginner", "Intermediate", "Advanced"]}
+                      options={[LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]}
                       value={selectedLevel}
                       onChange={handleLevelChange}
                       renderInput={(params) => (

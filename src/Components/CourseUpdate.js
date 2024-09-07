@@ -3,7 +3,7 @@ import { Row, Col, Form } from "react-bootstrap";
 import { Button as MuiButton } from "@mui/material";
 import { db } from "../config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { COLLECTIONS } from "../constants";
+import { COLLECTIONS, LEVELS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
 import { useSelector } from "react-redux";
@@ -442,7 +442,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     id="tags-standard"
-                    options={["Beginner", "Intermediate", "Advanced"]}
+                    options={[LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]}
                     value={selectedLevel}
                     onChange={handleLevelChange}
                     renderInput={(params) => (

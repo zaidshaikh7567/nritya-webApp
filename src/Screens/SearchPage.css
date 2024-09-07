@@ -1,0 +1,13 @@
+.horizontal-scroll-wrapper-for-filters {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 10px 0; 
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .horizontal-scroll-wrapper-for-filters::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }

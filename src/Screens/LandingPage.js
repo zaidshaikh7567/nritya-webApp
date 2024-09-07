@@ -32,9 +32,6 @@ import "./LandingPage.css";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import CardSlider from "../Components/CardSlider";
-import WorkshopCardSlider from "../Components/WorkshopCardSlider";
-import OpenClassCardSlider from "../Components/OpenClassCardSlider";
-import CourseCardSlider from "../Components/CourseCardSlider";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from "react-router-dom";
 import DanceCarousel from "../Components/DanceCarousel";
@@ -42,6 +39,7 @@ import { getAllImagesInFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
 import CardSlider2 from "../Components/CardSlider2";
 import PayButton from "../Components/PayButton";
+import CardSliderNew from "../Components/CardSliderNew";
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -61,7 +59,11 @@ const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 
 function LandingPage() {
   const [exploreCards, setExploreCards] = useState({});
-  const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
+  const [exploreEntity, setExploreEntity] = useState({
+    [COLLECTIONS.STUDIO]:{}, [COLLECTIONS.WORKSHOPS]:{}, 
+    [COLLECTIONS.OPEN_CLASSES]:{}, [COLLECTIONS.COURSES]:{}
+  });
+  const [studioIdName,setStudioIdName] = useState({});
   const [danceImagesUrl, setDanceImagesUrl] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [workshops, setWorkshops] = useState([]);
@@ -78,43 +80,6 @@ function LandingPage() {
     setTimeout(() => {
       navigate("/search/studios");
     }, 100);
-  };
-
-  const fetchRecentlyWatchedStudios = async (userId) => {
-    try {
-      const userRef = doc(db, COLLECTIONS.USER, userId);
-      const userDoc = await getDoc(userRef);
-      const recentlyWatchedMap = userDoc.exists()
-        ? userDoc.data().recentlyWatched
-        : {};
-
-      const studioIds = Object.values(recentlyWatchedMap);
-      //console.log("got",studioIds)
-      const studioDataPromises = studioIds.map(async (studioId) => {
-        //console.log(studioId)
-        if (!studioId) {
-          console.warn("Invalid studioId:", studioId);
-          return null;
-        }
-        console.log("studioId", studioId);
-        const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
-        const studioDoc = await getDoc(studioRef);
-        if (studioDoc.exists()) {
-          //console.log(studioDoc.data())
-          return { id: studioId, ...studioDoc.data() };
-        } else {
-          console.warn(`Studio document not found for ID: ${studioId}`);
-          return null;
-        }
-      });
-
-      const studioData = await Promise.all(studioDataPromises);
-      const validStudioData = studioData.filter((studio) => studio !== null);
-
-      setRecentlyWatchedStudios(validStudioData);
-    } catch (error) {
-      console.error("Error fetching recently watched studios:", error);
-    }
   };
 
   const FILTER_LOCATION_KEY = "filterLocation";
@@ -137,7 +102,53 @@ function LandingPage() {
   };
 
   useEffect(() => {
+
+    const fetchAndSaveData = async (city, entities) => {
+      try {
+        const promises = entities.map(entity => {
+          const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?&city=${city}&entity=${entity}`;
+          return fetch(apiEndpoint)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Network response for ${entity} was not ok`);
+              }
+              return response.json();
+            })
+            .then(data => ({ [entity]: data }));
+        });
+    
+        const allData = await Promise.all(promises);
+    
+        // Combine the fetched data into a single object
+        const combinedData = Object.assign({}, ...allData);
+        setExploreEntity(combinedData);
+        console.log("All Fetched Data:", combinedData);
+    
+        // You can now save `combinedData` to your state or perform other operations
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    const fetchIdNameMp = async (city) => {
+      try {
+        const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
+        const response = await fetch(apiEndpoint);
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        
+        const data = await response.json();
+        setStudioIdName(data);
+        
+      } catch (error) {
+        console.error("Error in processing:", error);
+      }
+    };
+    
+
     const fetchData = async () => {
+      
       try {
         let filterLocation = localStorage.getItem('filterLocation');
         if(filterLocation){
@@ -147,28 +158,15 @@ function LandingPage() {
         }else{
           filterLocation = 'New Delhi'
         }
-        let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?&city=${filterLocation}`;
-        const response = await fetch(apiEndpoint);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log("Data ",data)
-
-        setExploreCards(data);
+        const entities = [COLLECTIONS.STUDIO, COLLECTIONS.WORKSHOPS, 
+          COLLECTIONS.COURSES, COLLECTIONS.OPEN_CLASSES];
+        fetchIdNameMp(filterLocation)
+        fetchAndSaveData(filterLocation, entities);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-
-    const userInfo = localStorage.getItem("userInfo");
-    if (userInfo) {
-      const userId = JSON.parse(userInfo).UserId;
-      if (userId) {
-        fetchRecentlyWatchedStudios(userId);
-      }
-    }
 
 
     
@@ -329,19 +327,7 @@ function LandingPage() {
             Search Studios in your city
           </MUIButton>
         </Row>
-        <Row>
-          {recentlyWatchedStudios.length > 0 && (
-            <h4 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              {" "}
-              <FontAwesomeIcon icon={faClock} size="1x" /> Recently Viewed
-            </h4>
-          )}
-          {recentlyWatchedStudios.length > 0 ? (
-            <CardSlider dataList={recentlyWatchedStudios} imgOnly={false} />
-          ) : (
-            ""
-          )}
-        </Row>
+        
         <LocationComponent />
 
         <br />
@@ -349,45 +335,47 @@ function LandingPage() {
           Explore Studios
         </h3>
         <Row>
-          <CardSlider dataList={exploreCards} imgOnly={false} />
+          <CardSlider dataList={exploreEntity[COLLECTIONS.STUDIO]} imgOnly={false} />
         </Row>
-
-        {workshops?.length ? (
-          <>
-            {" "}
-            <br />
+        {
+          exploreEntity[COLLECTIONS.WORKSHOPS] && Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 0 ? (
+            <>
             <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Workshops
+              Explore Workshops {console.log("385",exploreEntity[COLLECTIONS.WORKSHOPS])}
             </h3>
             <Row>
-              <WorkshopCardSlider dataList={workshops} />
+              <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName = {studioIdName} type={COLLECTIONS.WORKSHOPS} />
             </Row>
-          </>
-        ) : null}
+            </>
+          ) : null
+        }
 
-        {openClasses?.length ? (
-          <>
-            <br />
+      {
+          exploreEntity[COLLECTIONS.OPEN_CLASSES] && Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 0 ? (
+            <>
             <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Open Classes
+              Explore Open Classes {console.log("385",exploreEntity[COLLECTIONS.OPEN_CLASSES])}
             </h3>
             <Row>
-              <OpenClassCardSlider dataList={openClasses} />
+              <CardSliderNew dataList={exploreEntity[COLLECTIONS.OPEN_CLASSES]} studioIdName = {studioIdName} type={COLLECTIONS.OPEN_CLASSES} />
             </Row>
-          </>
-        ) : null}
+            </>
+          ) : null
+        }
 
-        {courses?.length ? (
-          <>
-            <br />
+      {
+          exploreEntity[COLLECTIONS.COURSES] && Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 0 ? (
+            <>
             <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Courses
+              Explore Courses {console.log("385",exploreEntity[COLLECTIONS.COURSES])}
             </h3>
             <Row>
-              <CourseCardSlider dataList={courses} />
+              <CardSliderNew dataList={exploreEntity[COLLECTIONS.COURSES]} studioIdName = {studioIdName} type={COLLECTIONS.COURSES} />
             </Row>
-          </>
-        ) : null}
+            </>
+          ) : null
+        }
+
 
         <br />
         <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>

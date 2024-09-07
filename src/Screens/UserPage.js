@@ -12,7 +12,16 @@ import Kyc from '../Components/Kyc';
 import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography, Tooltip} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditProfileModal from '../Components/EditProfileModal';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import {
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
+import CardSlider from "../Components/CardSlider";
+import { db } from "../config";
 
 function getCurrentUnixTimestamp() {
   return Math.floor(Date.now());
@@ -42,6 +51,45 @@ function UserPage() {
     ['DashBoard', 'Creator', '#/creatorDashboard']
   ];
   const [open, setOpen] = useState(false);
+  const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
+
+
+  const fetchRecentlyWatchedStudios = async (userId) => {
+    try {
+      const userRef = doc(db, COLLECTIONS.USER, userId);
+      const userDoc = await getDoc(userRef);
+      const recentlyWatchedMap = userDoc.exists()
+        ? userDoc.data().recentlyWatched
+        : {};
+
+      const studioIds = Object.values(recentlyWatchedMap);
+      //console.log("got",studioIds)
+      const studioDataPromises = studioIds.map(async (studioId) => {
+        //console.log(studioId)
+        if (!studioId) {
+          console.warn("Invalid studioId:", studioId);
+          return null;
+        }
+        console.log("studioId", studioId);
+        const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
+        const studioDoc = await getDoc(studioRef);
+        if (studioDoc.exists()) {
+          //console.log(studioDoc.data())
+          return { id: studioId, ...studioDoc.data() };
+        } else {
+          console.warn(`Studio document not found for ID: ${studioId}`);
+          return null;
+        }
+      });
+
+      const studioData = await Promise.all(studioDataPromises);
+      const validStudioData = studioData.filter((studio) => studio !== null);
+
+      setRecentlyWatchedStudios(validStudioData);
+    } catch (error) {
+      console.error("Error fetching recently watched studios:", error);
+    }
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -64,7 +112,12 @@ function UserPage() {
   cardData.sort((a, b) => a[0].localeCompare(b[0]));
  
   useEffect(() => {
-    console.log("UserPage data")
+  
+    if (currentUser && currentUser.uid) {
+      
+        fetchRecentlyWatchedStudios(currentUser.uid);
+      
+    }
     const getCreatorMode = async () => {
       try{
       const userData = await readDocument(COLLECTIONS.USER, currentUser.uid);
@@ -184,6 +237,19 @@ function UserPage() {
       })}
     </Row>
     <Kyc/>
+    <Row>
+          {recentlyWatchedStudios.length > 0 && (
+            <h4 style={{ color: isDarkModeOn ? "white" : "black" }}>
+              {" "}
+              <FontAwesomeIcon icon={faClock} size="1x" /> Recently Viewed
+            </h4>
+          )}
+          {recentlyWatchedStudios.length > 0 ? (
+            <CardSlider dataList={recentlyWatchedStudios} imgOnly={false} />
+          ) : (
+            ""
+          )}
+        </Row>
     </div>
   );
 }
