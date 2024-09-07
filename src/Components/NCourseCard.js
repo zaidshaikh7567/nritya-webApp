@@ -14,7 +14,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { CHIP_LEVELS_DESIGN, COLLECTIONS, STORAGES } from "../constants";
+import { CHIP_LEVELS_DESIGN, COLLECTIONS, COLORS, danceStylesColorChips, STORAGES } from "../constants";
 import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
@@ -318,6 +318,7 @@ export default function NCourseCard({dataItem, studioIdName}) {
     cursor: "pointer",
   };
 
+
   return (
     <>
       <Card
@@ -345,11 +346,12 @@ export default function NCourseCard({dataItem, studioIdName}) {
               dataItem.danceStyles.slice(0, 3).map((form, index) => (
                 <Chip
                   key={index}
-                  color={index % 2 === 0 ? "danger" : "success"}
-                  style={{
+                  sx={{
                     marginLeft: "10px",
                     marginBottom: "10px",
                     fontSize: "0.8rem",
+                    bgcolor: danceStylesColorChips[index].backgroundColor,
+                    color: danceStylesColorChips[index].color, 
                   }}
                 >
                   {form.trim()}

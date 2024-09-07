@@ -510,7 +510,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
             <Col xs={12}>
               <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Courses</h3>
               <CourseCardSlider dataList={courses} />
-              )
+              
             </Col>
           </Row>
         </>

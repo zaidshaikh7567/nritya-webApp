@@ -17,7 +17,7 @@ import { Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux'; // Import useSelector
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { readDocumentWithImageUrl } from '../utils/firebaseUtils';
-import { STORAGES } from '../constants';
+import { danceStylesColorChips, STORAGES } from '../constants';
 import IconButton from '@mui/joy/IconButton';
 import Favorite from '@mui/icons-material/Favorite';
 
@@ -61,7 +61,10 @@ export default function NStudioCard({img_src,data}) {
         <Chip
             key={index}
             color={index % 2 === 0 ? "danger" : "success"}  
-            style={{ marginBottom: "10px", fontSize: '0.8rem' }}
+            sx={{ marginBottom: "10px", fontSize: '0.8rem',  
+                    bgcolor: danceStylesColorChips[index].backgroundColor,
+                    color: danceStylesColorChips[index].color, 
+            }}
         >
             {form.trim()}
         </Chip>

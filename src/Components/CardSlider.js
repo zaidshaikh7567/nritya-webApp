@@ -15,39 +15,44 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
 
   return (
     <div className="horizontal-scroll-wrapper">
-      {formattedDataList.map((studio, index) => (
-        <a key={index} href={`#/studio/${studio.id}`}>
-          {imgOnly ? (
-            <MuiCard
-              style={{ marginRight: "0.5rem" }}
-              component="li"
-              sx={{
-                height: 300,
-                width: 534,
-                '&:hover': {
-                  ...cardHoverStyle,
-                },
-              }}
-            >
-              <CardCover>
-                <img
-                  src={studio.iconUrl} // Use studio.iconUrl for the image source
-                  srcSet={studio.iconUrl}
-                  loading="lazy"
-                  alt={studio.studioName || "Studio image"} // Use studioName for alt text
-                />
-              </CardCover>
-            </MuiCard>
-          ) : (
+      {formattedDataList.map((entity, index) => (
+        imgOnly ? (
+          // Image-only case with anchor <a> no link just to make card UI look proper
+          <a>
+          <MuiCard
+            key={index}
+            style={{ marginRight: "0.5rem" }}
+            component="li"
+            sx={{
+              height: 300,
+              width: 534,
+              '&:hover': {
+                ...cardHoverStyle,
+              },
+            }}
+          >
+            <CardCover>
+              <img
+                src={entity} // Use studio.iconUrl for the image source
+                loading="lazy"
+                alt={ "Studio image"} // Use studioName for alt text
+              />
+            </CardCover>
+          </MuiCard>
+          </a>
+        ) : (
+          // Non-image-only case, wrap in <a>
+          <a key={index} href={`#/studio/${entity.id}`}>
             <ProductCard
-              key={studio.id}
-              data={studio}
-              img_src={studio.iconUrl} // Use iconUrl if imgSrc is not available
+              key={entity.id}
+              data={entity}
+              img_src={entity.iconUrl} // Use iconUrl if imgSrc is not available
             />
-          )}
-        </a>
+          </a>
+        )
       ))}
     </div>
+
   );
 };
 
