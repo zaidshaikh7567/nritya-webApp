@@ -18,7 +18,7 @@ function PayButton() {
   
   const handlePaymentResponse = async (response) => {
     try {
-      const backendResponse = await axios.post("http://127.0.0.1:8000/payments/razorpay_callback", response);
+      const backendResponse = await axios.post("https://nrityaserver-2b241e0a97e5.herokuapp.com/payments/razorpay_callback", response);
       if (backendResponse.status === 200) {
         alert(`Payment Success:
           Order ID: ${response.razorpay_order_id}
@@ -43,7 +43,7 @@ function PayButton() {
     }
 
     // Create a new order and send details to backend
-    const result = await axios.post("http://127.0.0.1:8000/payments/razorpay_order", {
+    const result = await axios.post("https://nrityaserver-2b241e0a97e5.herokuapp.com/payments/razorpay_order", {
       "order_id": "Order-5152",
       "name": "Ayush Raj",
       "entity_id": "abnh_78opjsjwq123",

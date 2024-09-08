@@ -203,7 +203,7 @@ function UserPage() {
         <MUIButton sx={{ ml: 2 }} variant="outlined" onClick={handleOpen}>
           Edit Profile
         </MUIButton>
-        <EditProfileModal open={open} onClose={handleClose} userProfileInfo={userProfileInfo} setUserProfileInfo={setUserProfileInfo} onSave={handleSave} />
+        <EditProfileModal open={open} onClose={handleClose} userProfileInfo={userProfileInfo} setUserProfileInfo={setUserProfileInfo} />
         <CardContent>
         <Typography variant="body2" color="text.secondary" style={{color: isDarkModeOn ? 'white' : 'black'}}>
           {isCreator ? "List your studios now!!" : "Welcome to the Nritya! \n Verify your profile to list your studio."}

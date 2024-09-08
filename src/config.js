@@ -1,9 +1,9 @@
  
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import {getAuth,GoogleAuthProvider} from "firebase/auth";
+import {getAuth,GoogleAuthProvider } from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY ,
   authDomain: "nritya-7e526.firebaseapp.com",

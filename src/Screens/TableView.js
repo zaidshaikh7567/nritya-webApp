@@ -34,7 +34,8 @@ const TableView = ({ studioData, studioId }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalVariant, setModalVariant] = useState('success'); // or 'danger' for error
   const [loading, setLoading] = useState(false);
-  const isSmallScreen = useMediaQuery('(max-width:800px)');
+  const isSmallScreen =true;
+  //useMediaQuery('(max-width:800px)');
 
   //console.log("Small Screen Check",isSmallScreen)
   console.log(studioData)
@@ -169,8 +170,8 @@ const TableView = ({ studioData, studioId }) => {
                   </Table>
                 </Card>
 
-                );
-              })};
+                )
+              })}
             </div>
 
           ):(

@@ -1,16 +1,43 @@
-import React, { useState } from 'react';
-import { Modal, Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Modal, Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Autocomplete } from '@mui/material';
+import danceStyles from '../danceStyles.json';
 
-const EditProfileModal = ({ open, onClose, onSave,userProfileInfo, setUserProfileInfo }) => {
+import { COLLECTIONS } from '../constants';
+import { useAuth } from '../context/AuthContext';
+import {  saveDocument } from '../utils/firebaseUtils';
 
+const EditProfileModal = ({ open, onClose,userProfileInfo, setUserProfileInfo }) => {
+  const { currentUser } = useAuth();
+  const danceStylesOptions = danceStyles.danceStyles;
+  const [userDanceStyles, setUserDanceStyles] = useState([]);
+  
+
+  console.log(userProfileInfo)
+
+  useEffect(() =>{
+    if (userProfileInfo && userProfileInfo.DanceStyles && (userProfileInfo.DanceStyles !== "" )){
+      setUserDanceStyles(userProfileInfo.DanceStyles)
+    }
+  },[userProfileInfo])
   const handleChange = (e) => {
     setUserProfileInfo({ ...userProfileInfo, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    onSave(userProfileInfo);
-    onClose();
+
+  const handleDanceStylesChange = (event, value) => {
+    setUserDanceStyles(value);
   };
+
+  const handleSave = async () => {
+    console.log('Profile updated:', userProfileInfo);
+
+    userProfileInfo.DanceStyles = userDanceStyles
+    const data = await saveDocument(COLLECTIONS.USER, currentUser.uid,userProfileInfo)
+    if(data){
+      alert("Data Updated")
+    }
+  };
+
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -35,14 +62,34 @@ const EditProfileModal = ({ open, onClose, onSave,userProfileInfo, setUserProfil
           onChange={handleChange}
           margin="normal"
         />
-        <TextField
+
+      <TextField
           fullWidth
-          label="Dance Styles"
-          name="DanceStyles"
-          value={userProfileInfo.DanceStyles}
+          label="Phone Number"
+          name="PhoneNumber"
+          type="number"
+          value={userProfileInfo.PhoneNumber}
           onChange={handleChange}
           margin="normal"
         />
+
+        <br/>
+        <Autocomplete
+            style={{ backgroundColor:  'black', color:  'white'  }}
+            multiple
+            id="tags-standard"
+            options={danceStylesOptions}
+            value={userDanceStyles}
+            onChange={handleDanceStylesChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                placeholder="Select Dance Styles"
+                style={{ backgroundColor:  'white' , color: 'black'  }}
+              />
+            )}
+          />
         <FormControl fullWidth margin="normal">
           <InputLabel>Gender</InputLabel>
           <Select
