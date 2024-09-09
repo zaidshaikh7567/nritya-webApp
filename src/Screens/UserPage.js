@@ -129,6 +129,8 @@ function UserPage() {
               DanceStyles: userData.DanceStyles || '',
               Gender: userData.Gender || '',
               Bio: userData.Bio || '',
+              PhoneNumber : userData.PhoneNumber || '',
+              isPhoneNumberVerified : userData.isPhoneNumberVerified || false,
             }
           )
           setIsCreator(userData.CreatorMode)

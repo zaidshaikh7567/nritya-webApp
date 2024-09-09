@@ -80,6 +80,13 @@ export const saveDocument = async (collectionName, documentId, data) => {
     return data;
 };
 
+
+export const handleSavePostOTPSuccess = async (collectionName, documentId, phoneNumber) => {
+  const docRef = doc(db, collectionName, documentId);
+  await updateDoc(docRef, {isPhoneNumberVerified:true,phoneNumber});
+  return true;
+};
+
 // Update specific fields in a document
 export const updateDocumentFields = async (collectionName, documentId, fields) => {
     const docRef = doc(db, collectionName, documentId);
