@@ -15,6 +15,7 @@ const names_map = new Map([
   ["street_address" , "Street Address"],
   ["city" , "City"],
   ["state_province" , "State"],
+  ["state" , "State"],
   ["zip_pin_code" , "PIN Code/ZIP"],
   ["aadhar" , "Aadhar Number"],
   ["gstin" , "GST Number"],

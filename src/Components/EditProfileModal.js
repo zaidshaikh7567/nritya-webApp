@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Autocomplete } from '@mui/material';
+import { Modal, Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Autocomplete, Alert, Snackbar } from '@mui/material';
 import danceStyles from '../danceStyles.json';
 import { COLLECTIONS } from '../constants';
 import { useAuth } from '../context/AuthContext';
@@ -20,6 +20,9 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
   const [otp, setOtp] = useState('');
   const [isPhoneVerified, setIsPhoneVerified] = useState(userProfileInfo?.isPhoneNumberVerified || false);
   const [otpSent, setOtpSent] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   useEffect(() => {
     if (userProfileInfo && userProfileInfo.DanceStyles && userProfileInfo.DanceStyles !== "") {
@@ -43,7 +46,9 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
     userProfileInfo.DanceStyles = userDanceStyles;
     const data = await saveDocument(COLLECTIONS.USER, currentUser.uid, userProfileInfo);
     if (data) {
-      alert("Profile Updated");
+      setSnackbarMessage("Profile Updated");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     }
   };
 
@@ -70,13 +75,17 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
       if (response.status === 200) {
         setOtpSent(true);
         setIsOTPModalOpen(true); // Open OTP modal
-        alert('OTP sent to your phone number.');
+        setSnackbarMessage("OTP sent to your phone number.");
+        setSnackbarSeverity("info");
+        setSnackbarOpen(true);
       } else {
         throw new Error('Failed to send OTP.');
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
-      alert('Error sending OTP, please try again.');
+      setSnackbarMessage('Error sending OTP, please try again.');
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
   };
   
@@ -102,19 +111,30 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
         setUserProfileInfo({ ...userProfileInfo, isPhoneNumberVerified: true });
         setIsOTPModalOpen(false);
         handleSavePostOTP()
-        alert('Phone number verified successfully.');
+        setSnackbarMessage('Phone number verified successfully.');
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
       } else {
-        alert(response.message || 'Invalid OTP.');
+        setSnackbarMessage(response.message || 'Invalid OTP.');
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       }
     } catch (error) {
       console.error('Error verifying OTP:', error);
-      alert('Error verifying OTP, please try again.');
+      setSnackbarMessage('Error verifying OTP, please try again.');
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+
   return (
     <>
-      <Modal open={open} onClose={onClose}>
+      <Modal open={open} onClose={onClose} style={{ overflow: 'scroll' }}>
         <Box sx={{ p: 4, backgroundColor: 'white', margin: 'auto', mt: 5, maxWidth: 400, borderRadius: 2 }}>
           <Typography variant="h6" gutterBottom>
             Edit Profile
@@ -222,6 +242,12 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
           </Box>
         </Box>
       </Modal>
+
+      <Snackbar open={snackbarOpen} autoHideDuration={600}  anchorOrigin={ {vertical:'top', horizontal:'center'} } onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
