@@ -9,25 +9,13 @@ import {
   Skeleton,
   Button as MUIButton,
 } from "@mui/material";
-import { db } from "../config";
-import {
-  doc,
-  getDoc,
-  collection,
-  where,
-  getDocs,
-  query,
-  limit,
-} from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import {
   faBolt,
   faMusic,
   faHiking,
   faGlassCheers,
-  faClock,
 } from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./LandingPage.css";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
@@ -38,7 +26,6 @@ import DanceCarousel from "../Components/DanceCarousel";
 import { getAllImagesInFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
 import CardSlider2 from "../Components/CardSlider2";
-import PayButton from "../Components/PayButton";
 import CardSliderNew from "../Components/CardSliderNew";
 
 // Define the array of dance forms with their names and corresponding icons
@@ -58,7 +45,6 @@ const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 
 function LandingPage() {
-  const [exploreCards, setExploreCards] = useState({});
   const [exploreEntity, setExploreEntity] = useState({
     [COLLECTIONS.STUDIO]:{}, [COLLECTIONS.WORKSHOPS]:{}, 
     [COLLECTIONS.OPEN_CLASSES]:{}, [COLLECTIONS.COURSES]:{}
@@ -66,9 +52,6 @@ function LandingPage() {
   const [studioIdName,setStudioIdName] = useState({});
   const [danceImagesUrl, setDanceImagesUrl] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const [workshops, setWorkshops] = useState([]);
-  const [openClasses, setOpenClasses] = useState([]);
-  const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
 
   const handleCardClick = (danceName) => {
@@ -170,90 +153,6 @@ function LandingPage() {
 
 
     
-  }, []);
-
-  useEffect(() => {
-    const getWorkshops = async () => {
-      const studioRef = collection(db, COLLECTIONS.WORKSHOPS);
-      let q = query(studioRef, where("active", "==", true), limit(15));
-      if (currentCity) q = query(q, where("city", "==", currentCity));
-      const querySnapshot = await getDocs(q);
-      const exploreStudioPromiseList = querySnapshot.docs
-        .filter((doc) => doc.data().workshopName)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-          };
-        })
-        .map(async (workshop) => {
-          const docRef = doc(db, COLLECTIONS.STUDIO, workshop?.StudioId);
-          const docSnap = await getDoc(docRef);
-          return { ...workshop, studioDetails: docSnap.data() };
-        });
-
-      const exploreStudioList = await Promise.all(exploreStudioPromiseList);
-      setWorkshops(exploreStudioList);
-    };
-
-    getWorkshops();
-  }, []);
-
-  useEffect(() => {
-    const getOpenClasses = async () => {
-      const studioRef = collection(db, COLLECTIONS.OPEN_CLASSES);
-      let q = query(studioRef, where("active", "==", true), limit(15));
-      if (currentCity) q = query(q, where("city", "==", currentCity));
-      const querySnapshot = await getDocs(q);
-      const exploreStudioPromiseList = querySnapshot.docs
-        .filter((doc) => doc.data().openClassName)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-          };
-        })
-        .map(async (openClass) => {
-          const docRef = doc(db, COLLECTIONS.STUDIO, openClass?.StudioId);
-          const docSnap = await getDoc(docRef);
-          return { ...openClass, studioDetails: docSnap.data() };
-        });
-
-      const exploreStudioList = await Promise.all(exploreStudioPromiseList);
-      setOpenClasses(exploreStudioList);
-    };
-
-    getOpenClasses();
-  }, []);
-
-  useEffect(() => {
-    const getCourses = async () => {
-      const studioRef = collection(db, COLLECTIONS.COURSES);
-      let q = query(studioRef, where("active", "==", true), limit(15));
-      if (currentCity) q = query(q, where("city", "==", currentCity));
-      const querySnapshot = await getDocs(q);
-      const exploreStudioPromiseList = querySnapshot.docs
-        .filter((doc) => doc.data().name)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-          };
-        })
-        .map(async (course) => {
-          const docRef = doc(db, COLLECTIONS.STUDIO, course?.StudioId);
-          const docSnap = await getDoc(docRef);
-          return { ...course, studioDetails: docSnap.data() };
-        });
-
-      const exploreStudioList = await Promise.all(exploreStudioPromiseList);
-      setCourses(exploreStudioList);
-    };
-
-    getCourses();
   }, []);
 
   useEffect(() => {
@@ -399,7 +298,7 @@ function LandingPage() {
             </Col>
           ))}
         </Row>
-        <PayButton/>
+        
       </Container>
     </div>
   );

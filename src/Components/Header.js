@@ -337,6 +337,7 @@ function Header() {
                     backgroundSize: 'cover', // Cover the entire button area
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
+                    borderColor:'yellow',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
