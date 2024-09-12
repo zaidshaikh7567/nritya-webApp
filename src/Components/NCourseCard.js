@@ -18,12 +18,12 @@ import { CHIP_LEVELS_DESIGN, COLLECTIONS, COLORS, danceStylesColorChips, STORAGE
 import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
-import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../config";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Spinner } from "react-bootstrap";
 import { bookEntity } from "../utils/common";
+
+import whatsAppImage from '../assets/images/whatsapp.png';
+import callImage from '../assets/images/india_11009487.png';
 
 function CourseDetailsModal({
   open,
@@ -265,12 +265,12 @@ function CourseDetailsModal({
               <span>By {dataItem.studioDetails?.studioName || ""}</span>
               {dataItem.studioDetails && dataItem.studioDetails?.whatsappNumber && (
                 <IconButton color="success" size="small" target="_blank" href={`https://wa.me/91${dataItem.studioDetails.whatsappNumber}?text=${whatsappMessage}`}>
-                  <FaWhatsapp style={{ 'marginLeft': '2px' }} />
+                  <img src={whatsAppImage} alt="Whatsapp call" style={{ width: 30, height: 28 }} />
                 </IconButton>
               )}
               {dataItem.studioDetails && dataItem.studioDetails?.mobileNumber && (
                 <IconButton color="primary" size="small" target="_blank" href={`tel:${dataItem.studioDetails.mobileNumber}`}>
-                  <FaPhoneAlt style={{ 'marginLeft': '2px' }} />
+                  <img src={callImage} alt="Phone call" style={{ width: 30, height: 28 }} />
                 </IconButton>
               )}
             </MUITypography>
