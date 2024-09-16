@@ -134,6 +134,7 @@ function Header() {
     fontSize: 10,
     textAlign: "center",
     background: 'black',
+    padding: 0
   }
 
   function getUserNameInitials() {
