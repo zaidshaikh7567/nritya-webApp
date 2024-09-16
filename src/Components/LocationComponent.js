@@ -57,7 +57,9 @@ const LocationComponent = () => {
       console.log('Error getting location:', error.message);
     };
 
-    askForLocationPermission();
+    if (!selectedLocation) {
+      askForLocationPermission();
+    }
   }, []);
 
   // You can customize the rendering as needed

@@ -114,11 +114,10 @@ function Header() {
   });
 
   useEffect(() => {
-    console.log("Redux Location changed:", reduxLocation.city);
-    if (reduxLocation.city) {
-      setSelectedLocation(reduxLocation.city);
+    if (reduxLocation) {
+      setSelectedLocation(reduxLocation);
     }
-  }, [reduxLocation.city]);
+  }, [reduxLocation]);
 
   useEffect(() => {
     localStorage.setItem(FILTER_LOCATION_KEY, selectedLocation);
@@ -168,8 +167,11 @@ function Header() {
   };
 
   const handleLocationChange = (event, location) => {
-    setSelectedLocation(location);
+    if (!location) setSelectedLocation("New Delhi");
+    else setSelectedLocation(location);
+
     setShowLocationDropdown(false);
+    window.location.reload();
   };
 
   const locationOptions = indianCities.cities;
