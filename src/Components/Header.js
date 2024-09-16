@@ -238,12 +238,6 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
-          <Nav
-            style={{ fontFamily: 'Times Roman', fontSize: 20, maxHeight: '90px' }}
-            navbarScroll
-          >
-          </Nav>
-
           <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
             <FormControlLabel
               control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
@@ -251,23 +245,26 @@ function Header() {
             />;
             {currentUser ? (
               <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studio" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 my-3" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
                   Search
                 </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="me-2 my-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
               </>
             ) : (
               <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 my-3" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
                   Search
                 </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="me-2 my-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
               </>
             )}
-            <div className="position-relative location-dropdown-container">
+          </Nav>
+
+          <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
+            <div className="position-relative location-dropdown-container my-3">
               <Button
                 variant="outlined"
-                className="me-2 rounded-pill"
+                className="me-2"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
                 style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
                   height: '3rem', borderWidth: '2px', width: '12rem'
@@ -324,6 +321,7 @@ function Header() {
               photoURL ? (
                 <Button
                   onClick={openProfileOffcanvas}
+                  className='my-3'
                   style={{
                     borderRadius: '50%',
                     width: '3rem',
@@ -348,7 +346,7 @@ function Header() {
 
               ) :
               (
-                <Button onClick={openProfileOffcanvas} className="rounded-pill"
+                <Button onClick={openProfileOffcanvas} className="rounded-pill my-3"
                 variant="outlined"
                 style={{
                   fontSize: '0.9rem',
@@ -368,13 +366,11 @@ function Header() {
             
           ) : (
           
-              <Button variant="outlined" className="rounded-pill" onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
+              <Button variant="outlined" className='my-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
            
             <LoginModalDailog open={open} handleClose={handleClose} />
           </Nav>
-          
-
         </Navbar.Collapse>
 
       </Container>
