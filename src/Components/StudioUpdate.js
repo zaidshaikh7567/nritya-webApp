@@ -618,7 +618,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         </Form.Control>
                     </td>
                     <td style={{padding:'0rem'}}>
-                      <MultiSelect value={tableData[rowKey].days && tableData[rowKey].days.split(',').filter(day => day !== '')}
+                      <MultiSelect value={tableData[rowKey] && tableData[rowKey].days && tableData[rowKey].days.split(',').filter(day => day !== '')}
                         onChange={(event) => handleTableChange(rowKey, 'days', event.target.value)}
                         options={daysOfWeek}
                         placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"
@@ -645,7 +645,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                       <Autocomplete
                         multiple
                         options={instructorNamesWithIds}
-                        value={tableData[rowKey].instructors}
+                        value={tableData[rowKey] && tableData[rowKey].instructors ? tableData[rowKey].instructors : []}
                         onChange={(_, values) => handleTableChange(rowKey, 'instructors', values)}
                         renderInput={(params) => (
                           <TextField
@@ -726,6 +726,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         </button>
                 <div>
                   <ImageUpload entityId={selectedStudioId} title={"Studio Icon"} storageFolder={STORAGES.STUDIOICON} maxImageCount={1} />
+                </div>
+                <div>
+                  <ImageUpload entityId={selectedStudioId} title={"Studio Announcement Images"} storageFolder={STORAGES.STUDIOANNOUNCEMENTS}/>
                 </div>
                 <br />
               </>

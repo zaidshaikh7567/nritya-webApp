@@ -67,6 +67,7 @@ function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
   const containerRef = useRef(null);
   const [studioData, setStudioData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
+  const [announcementImages, setAnnouncementImages] = useState([]);
   const [workshops, setWorkshops] = useState([]);
   const [openClasses, setOpenClasses] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -138,8 +139,11 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
         setStudioData(dataText);
         const responseImages = await axios.get(`${BASEURL_STUDIO}${studioId}/images/`);
         const dataImages = responseImages.data;
-        if(dataImages && dataImages.studioImages){
-          setCarouselImages(dataImages.studioImages)
+        if(dataImages && dataImages.StudioImages){
+          setCarouselImages(dataImages.StudioImages)
+        }
+        if(dataImages && dataImages.StudioAnnouncements){
+          setAnnouncementImages(dataImages.StudioAnnouncements)
         }
         console.log(studioData);
       } catch (error) {
@@ -383,6 +387,22 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Row>
       <br></br>
       <Row>
+      <Row>
+      {announcementImages.length && 
+              <Typography variant="h1" component="h2"  style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize'  }}>
+          Announcements
+        </Typography>}
+      {announcementImages.length? 
+      <CardSlider dataList={announcementImages} imgOnly={true}/>
+      :
+      <>
+      <Row>
+              <Skeleton variant="rectangular" animation="wave"  sx={{paddingRight:"0.5rem"}} width={"240"} height={300} />
+              <Skeleton variant="rectangular" animation="wave"  sx={{paddingRight:"0.5rem"}} width={"240"} height={300} />
+      </Row>
+      </>
+      }
+      </Row>
       <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize' }}>
           Amenities
         </Typography>

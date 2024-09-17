@@ -81,6 +81,7 @@ export const COLLECTIONS = {
 export const STORAGES ={
     STUDIOIMAGES:'StudioImages',
     STUDIOICON:'StudioIcon',
+    STUDIOANNOUNCEMENTS :'StudioAnnouncements',
     USERIMAGE:'UserImage',
     INSTRUCTORIMAGES: 'InstructorImages',
     WORKSHOPICON :"WorkshopIcon",
