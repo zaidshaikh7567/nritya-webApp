@@ -37,7 +37,18 @@ background-color: #f0f0f0;
 }
 
 .menu-button:hover {
-  background-color: rgba(255, 255, 255, 0.4) !important;
+  background-color: gold !important;
 }
 
-  
+.offcanvas-header {
+  background-color: black;
+  justify-content: center !important;
+}
+
+.offcanvas-header .btn-close {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+}

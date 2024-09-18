@@ -40,7 +40,7 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   return (
     <Offcanvas
       style={{
-        width: '12rem',
+        width: '20rem',
         backgroundColor: isDarkModeOn ? 'black' : 'white',
         color: isDarkModeOn ? 'white' : 'black'
       }}
