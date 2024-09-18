@@ -220,8 +220,8 @@ function LandingPage() {
               <SearchIcon style={{ color: isDarkModeOn ? "white" : "black" }} />
             }
             variant="outlined"
-            className="me-2 rounded-pill"
-            href="#/search/studio"
+            className="me-2 rounded-3"
+            href="#/search/studios"
             style={buttonStyle}
           >
             Search Studios in your city
