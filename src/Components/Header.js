@@ -248,26 +248,26 @@ function Header() {
             />;
             {currentUser ? (
               <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 my-3 rounded-3" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
                   Search
                 </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="me-2 my-3 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
               </>
             ) : (
               <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 my-3 rounded-3" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', textAlign: 'left' }}>
                   Search
                 </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="me-2 my-3 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
               </>
             )}
           </Nav>
 
           <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
-            <div className="position-relative location-dropdown-container my-3">
+            <div className="position-relative location-dropdown-container my-2">
               <Button
                 variant="outlined"
-                className="me-2 rounded-3"
+                className="btn-hover-purple-bg me-2 rounded-3"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
                 style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
                   height: '3rem', borderWidth: '2px', width: '12rem'
@@ -312,6 +312,7 @@ function Header() {
                           />
                         </>
                       )}
+                      classes={{ option: 'city-btn-hover-purple-bg' }}
                     />
                   </ThemeProvider>
 
@@ -369,7 +370,7 @@ function Header() {
             
           ) : (
           
-              <Button variant="outlined" className='my-3 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
+              <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
            
             <LoginModalDailog open={open} handleClose={handleClose} />
