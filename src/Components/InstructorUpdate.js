@@ -19,20 +19,20 @@ function InstructorUpdate({ instructors, setInstructors }) {
   const handleInstructorSelection = async (event) => {
     event.preventDefault();
     const instructorId = event.target.value;
-    console.log(instructorId);
+    ////console.log(instructorId);
     const instructorDoc = await getDoc(doc(db, COLLECTIONS.INSTRUCTORS, instructorId));
     setSelectedInstructor({
       id: instructorDoc.id,
       ...instructorDoc.data(),
     });
-    //console.log(selectedInstructor);
+    //////console.log(selectedInstructor);
   };
 
   useEffect(() => {
     if (selectedInstructor) {
-      console.log("Instructor id changes : ",selectedInstructor.id)
+      ////console.log("Instructor id changes : ",selectedInstructor.id)
       const userId = selectedInstructor.id
-      //console.log(userId)
+      //////console.log(userId)
       if (userId) {
         const storagePath = `${STORAGES.INSTRUCTORIMAGES}/${userId}`;
         const folderRef = ref(storage, storagePath);
@@ -46,13 +46,13 @@ function InstructorUpdate({ instructors, setInstructors }) {
                   .then((url) => {
                     setSelectedImage(url);
                     setToUploadImage(url);
-                    console.log("Image selected: ",selectedImage);
+                    ////console.log("Image selected: ",selectedImage);
                   })
                   .catch((error) => {
                     console.error('Error fetching studio icon:', error);
                   });
               } else {
-                console.log('No files found in the folder.');
+                ////console.log('No files found in the folder.');
                 setSelectedImage(null);
                 setToUploadImage(null);
               }
@@ -71,9 +71,9 @@ function InstructorUpdate({ instructors, setInstructors }) {
 
   // Handle image change
   const handleImageChangeUpdate = (e) => {
-    console.log("Selected file new:");
+    ////console.log("Selected file new:");
     const file = e.target.files[0];
-    console.log("Selected file:", file);
+    ////console.log("Selected file:", file);
 
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
@@ -117,10 +117,10 @@ function InstructorUpdate({ instructors, setInstructors }) {
       // Handle profile picture change
       if (selectedImage && toUploadImage) {
         const imageUrl = await handleProfilePictureChange(toUploadImage, selectedInstructor.id);
-        console.log('Profile picture uploaded:', imageUrl);
+        ////console.log('Profile picture uploaded:', imageUrl);
       }
 
-      console.log('Instructor updated successfully');
+      ////console.log('Instructor updated successfully');
       alert('Instructor updated successfully');
     } catch (error) {
       console.error('Error updating instructor', error);

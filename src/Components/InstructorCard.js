@@ -42,7 +42,7 @@ function InstructorCard({ instructor ,id}) {
     const getImageURL = async () => {
       
       if(instructor && instructor.id){
-        console.log("Instructor dp",instructor.id)
+        //console.log("Instructor dp",instructor.id)
         const storagePath = `${STORAGES.INSTRUCTORIMAGES}/${instructor.id}`;
         const folderRef = ref(storage, storagePath);
         try {
@@ -53,13 +53,13 @@ function InstructorCard({ instructor ,id}) {
               getDownloadURL(firstFileRef)
                 .then((url) => {
                   setImageURL(url);
-                  //console.log(url,imageURL)
+                  ////console.log(url,imageURL)
                 })
                 .catch((error) => {
                   console.error('Error fetching studio icon:', error);
                 });
             } else {
-              console.log('No files found in the folder.');
+              //console.log('No files found in the folder.');
             }
           })
           .catch((error) => {

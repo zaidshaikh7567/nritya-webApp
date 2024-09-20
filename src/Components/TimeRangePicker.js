@@ -2,31 +2,18 @@ import React from 'react';
 import { Modal, Form, Row, Col, Button } from 'react-bootstrap';
 
 const TimeRangePicker = ({ show, handleClose, handleSelect, defaultTime }) => {
-  console.log("TimeRangePicker",defaultTime)
+  //console.log("TimeRangePicker",defaultTime)
   const startTime_i = defaultTime.split('-')[0].trim();
   const endTime_i = defaultTime.split('-')[1]?.trim();
 
-  console.log(startTime_i,endTime_i,defaultTime)
-  const generateTimeOptions1 = () => {
-    const options = [];
-
-    for (let hours = 0; hours < 24; hours++) {
-      for (let minutes = 0; minutes < 60; minutes += 30) {
-        const formattedHours = hours.toString().padStart(2, '0');
-        const formattedMinutes = minutes.toString().padStart(2, '0');
-        options.push(`${formattedHours}:${formattedMinutes}`);
-      }
-    }
-
-    return options;
-  };
+  //console.log(startTime_i,endTime_i,defaultTime)
 
   const generateTimeOptions = () => {
     const options = [];
     let option_AM = [];
     let option_PM = [];
     for (let hours = 0; hours < 24; hours++) {
-      for (let minutes = 0; minutes < 60; minutes += 30) {
+      for (let minutes = 0; minutes < 60; minutes += 15) {
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         const timeString = `${formattedHours}:${formattedMinutes}`;
@@ -88,6 +75,9 @@ const TimeRangePicker = ({ show, handleClose, handleSelect, defaultTime }) => {
             <Form.Control
               as="select"
               onChange={(e) => handleSelect(e.target.value, null)}
+              style={{height: 'auto', // Let it adjust to content
+                lineHeight: '1.5em', // Mimics rows={1}
+                padding: '8px'}}
             >
               {renderTimeOptions(startTime_i)}
             </Form.Control>
@@ -101,6 +91,9 @@ const TimeRangePicker = ({ show, handleClose, handleSelect, defaultTime }) => {
             <Form.Control
               as="select"
               onChange={(e) => handleSelect(null, e.target.value)}
+              style={{height: 'auto', // Let it adjust to content
+                lineHeight: '1.5em', // Mimics rows={1}
+                padding: '8px'}}
             >
               {renderTimeOptions(endTime_i)}
             </Form.Control>

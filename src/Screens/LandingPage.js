@@ -58,7 +58,7 @@ function LandingPage() {
     localStorage.removeItem(FILTER_DISTANCES_KEY);
     localStorage.setItem(FILTER_DANCE_FORMS_KEY, JSON.stringify([danceName]));
     if (localStorage.getItem(FILTER_DANCE_FORMS_KEY) === danceName) {
-      console.log("API LandingPage done", danceName);
+      //console.log("API LandingPage done", danceName);
     }
     setTimeout(() => {
       navigate("/search/studios");
@@ -105,7 +105,7 @@ function LandingPage() {
         // Combine the fetched data into a single object
         const combinedData = Object.assign({}, ...allData);
         setExploreEntity(combinedData);
-        console.log("All Fetched Data:", combinedData);
+        //console.log("All Fetched Data:", combinedData);
     
         // You can now save `combinedData` to your state or perform other operations
       } catch (error) {
@@ -161,7 +161,7 @@ function LandingPage() {
         const dataImagesUrlLocal = await getAllImagesInFolder(
           "LandingPageImages"
         );
-        console.log("dataImagesUrlLocal:", dataImagesUrlLocal); // Debugging log
+        //console.log("dataImagesUrlLocal:", dataImagesUrlLocal); // Debugging log
         if (Array.isArray(dataImagesUrlLocal)) {
           const imageUrlsArray = dataImagesUrlLocal.map(
             (image) => image.fileURL
@@ -240,7 +240,7 @@ function LandingPage() {
           exploreEntity[COLLECTIONS.WORKSHOPS] && Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 0 ? (
             <>
             <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Workshops {console.log("385",exploreEntity[COLLECTIONS.WORKSHOPS])}
+              Explore Workshops 
             </h3>
             <Row>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName = {studioIdName} type={COLLECTIONS.WORKSHOPS} />
@@ -253,7 +253,7 @@ function LandingPage() {
           exploreEntity[COLLECTIONS.OPEN_CLASSES] && Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 0 ? (
             <>
             <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Open Classes {console.log("385",exploreEntity[COLLECTIONS.OPEN_CLASSES])}
+              Explore Open Classes
             </h3>
             <Row>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.OPEN_CLASSES]} studioIdName = {studioIdName} type={COLLECTIONS.OPEN_CLASSES} />
@@ -266,7 +266,7 @@ function LandingPage() {
           exploreEntity[COLLECTIONS.COURSES] && Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 0 ? (
             <>
             <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Courses {console.log("385",exploreEntity[COLLECTIONS.COURSES])}
+              Explore Courses 
             </h3>
             <Row>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.COURSES]} studioIdName = {studioIdName} type={COLLECTIONS.COURSES} />

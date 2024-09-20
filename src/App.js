@@ -32,6 +32,7 @@ import CreatorOpenClass from './Screens/CreatorOpenClass';
 import CreatorCourse from './Screens/CreatorCourse';
 import CreatorRoute from './utils/CreatorRoute';
 import SnackbarProvider from './context/SnackbarContext';
+import NrityaPolicyPages from './Screens/NrityaPolicyPages';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -39,10 +40,10 @@ function App() {
   const { currentUser } = useAuth();
   
 
-  console.log(isDarkModeOn,"From header")
+  //console.log(isDarkModeOn,"From header")
   if(currentUser ){
     const { displayName, email  } = currentUser;
-    console.log("Hii",displayName,email)
+    //console.log("Hii",displayName,email)
   }
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
@@ -56,7 +57,7 @@ function App() {
     const isNAdminRoute = window.location.pathname.includes('/n-admin');
     // You can add more routes to exclude from header and footer if needed
     setAdminLoggedIn((isNAdminRoute || JSON.parse(localStorage.getItem('adminLogin'))))
-    console.log("Admin n",adminLoggedIn)
+    //console.log("Admin n",adminLoggedIn)
   }, [adminLoggedIn]);
 
   const handleLogin = async (UserInfo,userInfoFull) => {
@@ -68,7 +69,7 @@ function App() {
     localStorage.setItem('isLoggedIn', true);
     localStorage.setItem('userInfo',JSON.stringify(UserInfo));
     localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
-    console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
+    //console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
   };
 
   return (
@@ -86,6 +87,7 @@ function App() {
                 <Route path='/st' element={<StudioFullPage/>}/>
                 <Route path='/search/:entity' element={<SearchPage/>}/>
                 <Route path='/jobs' element={<JobHire/>}/>
+                <Route path='/npolicies' element={<NrityaPolicyPages/>}/>
                 <Route element={<ProtectedRoute/>}>
                   <Route path='/profile' element={<UserPage/>}/>
                   <Route path='/kyc' element={<Kyc/>}/>

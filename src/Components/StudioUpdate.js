@@ -104,7 +104,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 });
 
   const handleTimePickerOpen = (index,time) => {
-    console.log("handleTimePickerOpen",time,index)
+    //console.log("handleTimePickerOpen",time,index)
     setDefaultTime(time)
     setSelectedRowIndex(index);
     setShowTimePicker(true);
@@ -113,7 +113,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const handleTimePickerClose = () => {
     setShowTimePicker(false);
     setSelectedRowIndex(null); 
-    console.log("---------")
+    //console.log("---------")
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -165,14 +165,14 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     const studioIdList = studiosOfUser.map((studio) => `${studio.studioName} : ${studio.id}`);
     setStudioId(studioIdList);
 
-    console.log("studio:", studio);
-    console.log("studioId", studioId);
+    //console.log("studio:", studio);
+    //console.log("studioId", studioId);
   }, []);
 
   useEffect(() => {
     // Fetch data for the selected studio when studioId changes
     if (selectedStudio) {
-      console.log("Studio Instructors Names",selectedStudio.instructorsNames)
+      //console.log("Studio Instructors Names",selectedStudio.instructorsNames)
       setSelectedInstructors((selectedStudio.instructorsNames));
       if (selectedStudio && selectedStudio.danceStyles) {
         setSelectedDanceStyles(selectedStudio.danceStyles.split(','));
@@ -199,7 +199,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
         if(studioDoc.data().geolocation){
           const  loc = studioDoc.data().geolocation;
           setSelectedLocation(loc);
-          console.log("StudioUpdate Selected location",selectedLocation,loc)
+          //console.log("StudioUpdate Selected location",selectedLocation,loc)
         }
         
         if (studioDoc.data().tableData) {
@@ -207,7 +207,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
           //selectedStudioFrozenClassRows()
           const maxIndex = Math.max(...Object.keys(tableData).map(Number));
           selectedStudioFrozenClassRows(maxIndex)
-          console.log("Yo We got...",tableData,Array.isArray(tableData),isMapOfMaps(tableData),maxIndex)
+          //console.log("Yo We got...",tableData,Array.isArray(tableData),isMapOfMaps(tableData),maxIndex)
 
         } else {
           setTableData({
@@ -241,10 +241,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     const nameIdLocal = event.target.nameId.value;
     const indexOfColon = nameIdLocal.lastIndexOf(":");
     const studioId = nameIdLocal.substring(indexOfColon + 1).trim();
-    console.log(studioId)
+    //console.log(studioId)
 
     if (!studioId) {
-      console.log("Invalid or empty studio id")
+      //console.log("Invalid or empty studio id")
       return;
     }
 
@@ -253,7 +253,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
     try {
       // Update the studio document with the new values
-      //console.log(description,geolocation)
+      ////console.log(description,geolocation)
       const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
       await updateDoc(studioRef, {
               studioName: event.target.studioName.value,
@@ -291,7 +291,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               twitter: event.target.twitter.value,
       });
 
-      console.log("Studio updated successfully");
+      //console.log("Studio updated successfully");
       alert("Studio Update successfully")
       setShowUpdateSuccessAlert(true);
       setShowUpdateErrorAlert(false);
@@ -351,7 +351,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
             <Form id="updateStudioForm" onSubmit={handleUpdateStudio}>
               <Form.Group controlId="formBasicUpdate">
                 <Form.Label>Id</Form.Label>
-                <Form.Control as="select" name="nameId" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}  onChange={handleSelectStudio}>
+                <Form.Control as="select" name="nameId" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black', height: 'auto', // Let it adjust to content
+                                                        lineHeight: '1.5em', 
+                                                        padding: '8px' }}  
+                  onChange={handleSelectStudio}>
                   <option value="">Select a studio...</option>
                   {studioId && studioId.length > 0 ? (
                     studioId.map((studioItem) => (
@@ -431,8 +434,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 />
                 </ThemeProvider>      
                 
-                <Form.Label>Number of Halls</Form.Label>
-                <Form.Control defaultValue={selectedStudio ? selectedStudio.numberOfHalls : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
+                <Form.Label>Number of Hall(s)</Form.Label>
+                <Form.Control defaultValue={selectedStudio ? selectedStudio.numberOfHalls : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall(s)" name="numberOfHalls" type="number" />
                 </Col>
                 <Col md={6}>
                 <Form.Label>Maximum Occupancy</Form.Label>
@@ -488,7 +491,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 <Form.Label>City</Form.Label>
                   <Form.Control
                       as="select"
-                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
+                      style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black',height: 'auto', // Let it adjust to content
+                        lineHeight: '1.5em', // Mimics rows={1}
+                        padding: '8px', }}
                       name="city"
                       value={selectedStudio ? selectedStudio.city : ''}
                       onChange={(e) => {
@@ -601,6 +606,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         type="text"
                         value={tableData[rowKey].className}
                         onChange={(e) => handleTableChange(rowKey, 'className', e.target.value)}
+                        style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                       />
                     </td>
                     <td style={{padding:'0rem'}}>
@@ -608,6 +614,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         as="select"
                         value={tableData[rowKey].danceForms}
                         onChange={(e) => handleTableChange(rowKey, 'danceForms', e.target.value)}
+                        style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                       >
                         <option value="">Select a dance form</option>
                         {danceStylesOptions.map((option) => (
@@ -661,6 +668,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         type="text"
                         value={tableData[rowKey].fee?tableData[rowKey].fee:""}
                         onChange={(e) => handleTableChange(rowKey, 'fee', e.target.value)}
+                        style={{height: 'auto',lineHeight: '1.5em',padding: '8px'}}
                       />
                     </td>
                     <td style={{padding:'0rem'}}>
@@ -668,6 +676,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         as="select"
                         value={tableData[rowKey].level?tableData[rowKey].level:""}
                         onChange={(e) => handleTableChange(rowKey, 'level', e.target.value)}
+                        style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                       >
                         <option value="">Select a Level</option>
                          <option value="Beginner">Beginner</option>
@@ -720,7 +729,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 </div>
                 <br />
                 <button onClick={() => {
-                            console.log("selectedLocation ",selectedLocation);
+                            //console.log("selectedLocation ",selectedLocation);
                           }}>
                           Click me
                         </button>

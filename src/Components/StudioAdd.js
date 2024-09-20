@@ -87,7 +87,7 @@ function StudioAdd({instructors}) {
 
 
 
-    //console.log("danceStyles ",danceStylesOptions)
+    ////console.log("danceStyles ",danceStylesOptions)
 
     const darkTheme = createTheme({
       palette: {
@@ -155,17 +155,17 @@ function StudioAdd({instructors}) {
       }
     };
   
-      console.log("Studio Add",newStudioId)
+      //console.log("Studio Add",newStudioId)
       const handleAddStudio = async (event) => {
         event.preventDefault();
         const title = event.target.studioName.value;
         if (!title) {
           return;
         }
-        console.log(JSON.parse(localStorage.getItem('userInfo')))
+        //console.log(JSON.parse(localStorage.getItem('userInfo')))
         const creatorRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
         let isPremium=true
-        console.log("selectedLocation to be added",selectedLocation)
+        //console.log("selectedLocation to be added",selectedLocation)
             
         const newData = tableData.reduce((accumulator, current, index) => {
           accumulator[index] = current;
@@ -213,23 +213,23 @@ function StudioAdd({instructors}) {
               visibilty:1,
 
             });
-            console.log("Studio added successfully");
+            //console.log("Studio added successfully");
             setNewStudioId(studioRef.id)
             const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
-              console.log("User there",userSnap.data());
+              //console.log("User there",userSnap.data());
               if(userSnap.data() != null){
                 await updateDoc(userRef,{
                   
                   StudioCreated: [...userSnap.data().StudioCreated,studioRef.id]
                 });
-                console.log("Studio added back successfully");
+                //console.log("Studio added back successfully");
               }else{
-                console.log("userSnap.data() null")
+                //console.log("userSnap.data() null")
               }
             } else {
-              console.log("User not found but studio created... error");
+              //console.log("User not found but studio created... error");
             }
 
             resetDraft();
@@ -545,8 +545,8 @@ function StudioAdd({instructors}) {
                   )}
                 />
                 </ThemeProvider>
-                <Form.Label>Number of Halls</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall" name="numberOfHalls" type="number" />
+                <Form.Label>Number of Hall(s)</Form.Label>
+                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall(s)" name="numberOfHalls" type="number" />
                 </Col>
                 <Col md={6}>
                 <Form.Label>Maximum Occupancy</Form.Label>
@@ -593,7 +593,7 @@ function StudioAdd({instructors}) {
                         <TextField
                           {...params}
                           variant="standard"
-                          placeholder="Select Dance Styles"
+                          placeholder="Select Instructors"
                           style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
                         />
                       )}
@@ -704,7 +704,9 @@ function StudioAdd({instructors}) {
                 <Form.Label>Street</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
                 <Form.Label>City</Form.Label>
-                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} name="city">
+                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black', height: 'auto', // Let it adjust to content
+                    lineHeight: '1.5em', // Mimics rows={1}
+                    padding: '8px', }} name="city">
                     <option value="">Select a city</option>
                     {locationOptions.map((city, index) => (
                         <option key={index} value={city}>

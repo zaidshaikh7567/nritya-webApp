@@ -49,7 +49,6 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const handleTableChange = (index, field, value) => {
     setTableData((prevData) => {
       if(field==="days"){
-        console.log("filter1",value,'inside if',Array.isArray(value) )
         value = Array.isArray(value) ? value.join(',') : value; 
       }
       const newData = [...prevData];
@@ -59,7 +58,6 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   };
 
   const handleTimePickerOpen = (index,time) => {
-    console.log("handleTimePickerOpen",time)
     setDefaultTime(time)
     setSelectedRowIndex(index);
     setShowTimePicker(true);
@@ -68,7 +66,6 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const handleTimePickerClose = () => {
     setShowTimePicker(false);
     setSelectedRowIndex(null); // Reset selected row index when closing time picker
-    console.log("---------")
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -120,7 +117,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
           {tableData.map((row, index) => (
             <tr key={index} className={selectedRow === index ? 'selected-row' : ''}>
               <td style={{padding:'0rem'}}>
-                < Form.Control style={{backgroundColor:"white"}}
+                < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   type="text"
                   value={row.className}
                   onChange={(e) => handleTableChange(index, 'className', e.target.value)}
@@ -128,7 +125,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
                 />
               </td>
               <td style={{padding:'0rem'}}>
-              < Form.Control style={{backgroundColor:"white"}}
+              < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   as="select"
                   value={row.danceForms}
                   onChange={(e) => handleTableChange(index, 'danceForms', e.target.value)}
@@ -192,7 +189,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
                 />
               </td>
               <td style={{padding:'0rem'}}>
-                < Form.Control style={{backgroundColor:"white"}}
+                < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   as="select"
                   value={row.level}
                   onChange={(e) => handleTableChange(index, 'level', e.target.value)}

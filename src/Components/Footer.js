@@ -69,6 +69,9 @@ function Footer() {
                <Typography variant="body2">
                 <a href="#/contactus" style={linkStyle}>Contact Us</a>
               </Typography>
+              <Typography variant="body2">
+                <a href="#/npolicies" style={linkStyle}>Our Policies</a>
+              </Typography>
             
             </Grid>
             <Grid item xs={12} sm={6} md={3} textAlign="center" py={1}>
@@ -80,9 +83,6 @@ function Footer() {
               </Typography>
               <Typography variant="body2">
                 <a href="#/search/studios" style={linkStyle}>Search Studios</a>
-              </Typography>
-              <Typography variant="body2">
-                <a href="#/kyc" style={linkStyle}>Creator's Account Kyc</a>
               </Typography>
               <Typography variant="body2">
                 <a href="#/modifyInstructors" style={linkStyle}>Instructor listing</a>

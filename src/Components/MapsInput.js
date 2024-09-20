@@ -11,7 +11,7 @@ function MapsInput({selectedLocation, setSelectedLocation}) {
     const [address, setAddress] = useState('');
   
     const apiKey = "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ"; // Replace with your API Key
-   console.log("selectedLocation got in MapsInput",selectedLocation,"----",center)
+   //console.log("selectedLocation got in MapsInput",selectedLocation,"----",center)
     const handleSelect = async (selectedAddress) => {
       const results = await geocodeByAddress(selectedAddress);
       const latLng = await getLatLng(results[0]);
@@ -19,20 +19,20 @@ function MapsInput({selectedLocation, setSelectedLocation}) {
       setAddress(selectedAddress);
       setCenter(latLng);
       setSelectedLocation(latLng);
-      console.log(latLng,"---",selectedLocation,'---',center,'---',address)
+      //console.log(latLng,"---",selectedLocation,'---',center,'---',address)
     };
 
     useEffect(() => {
       // Check if selectedLocation is null and set it to Delhi's coordinates
-      console.log(selectedLocation)
+      //console.log(selectedLocation)
       if (!selectedLocation) {
-        console.log("Location changing !selectedLocation",selectedLocation)
+        //console.log("Location changing !selectedLocation",selectedLocation)
       }else{
-        console.log("Location changing",selectedLocation)
+        //console.log("Location changing",selectedLocation)
         setCenter(selectedLocation)
         //setSelectedLocation()
       }
-      console.log(center,address,selectedLocation)
+      //console.log(center,address,selectedLocation)
     }, [selectedLocation]);
   
     return (
@@ -117,7 +117,6 @@ const Marker = ({ text }) => (
 const PinMarker = ({ text }) => (
     <div style={{ position: 'relative', textAlign: 'center' }}>
       <FaMapMarkerAlt style={{ color: 'green', fontSize: '24px' }} />
-      <div style={{ position: 'absolute', top: '25px', left: '-20px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>{text}</div>
     </div>
   );
 

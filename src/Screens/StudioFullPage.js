@@ -291,7 +291,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
         {studioData&&studioData.aboutFounder? 
-        <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"About Founder"}/>:""} 
+        <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"Founder"}/>:""} 
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
         <div className='socialConnectFeature'>
