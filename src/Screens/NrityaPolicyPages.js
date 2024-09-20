@@ -2,15 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box, Typography,tabsClasses } from '@mui/material';
 import policies from '../policies.json'; // Importing the policies JSON
 import { useSelector} from 'react-redux';
+import { useParams } from 'react-router-dom';
+
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
-const NrityaPolicyPages = ({initialSelectedTab = 0}) => {
-  const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
+const NrityaPolicyPages = () => {
+  const { selected } = useParams() || 0; 
+  const [selectedTab, setSelectedTab] = useState(0);
   const [policyData, setPolicyData] = useState(null);
   const isDarkModeOn = useSelector(selectDarkModeStatus); 
   useEffect(() => {
     setPolicyData(policies);
   }, []);
+
+  useEffect(() => {
+    const selectedTabValue = parseInt(selected) || 0; // Convert selected to an integer, default to 0 if NaN or undefined
+    if (selectedTabValue >= 0 && selectedTabValue <= 3) {
+      setSelectedTab(selectedTabValue); // Only allow valid values between 0 and 3
+    } else {
+      setSelectedTab(0); // Default to 0 if the value is out of range
+    }
+  }, [selected]);
+
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);

@@ -4,6 +4,7 @@ import {
   Row,
   Col,
   Card,
+  Button,
 } from "react-bootstrap";
 import {
   Skeleton,
@@ -61,7 +62,7 @@ function LandingPage() {
       //console.log("API LandingPage done", danceName);
     }
     setTimeout(() => {
-      navigate("/search/studios");
+      navigate("/search/studio");
     }, 100);
   };
 
@@ -220,7 +221,7 @@ function LandingPage() {
             }
             variant="outlined"
             className="me-2 rounded-pill"
-            href="#/search/studios"
+            href="#/search/studio"
             style={buttonStyle}
           >
             Search Studios in your city
@@ -230,17 +231,23 @@ function LandingPage() {
         <LocationComponent />
 
         <br />
-        <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-          Explore Studios
-        </h3>
-        <Row>
-          <CardSlider dataList={exploreEntity[COLLECTIONS.STUDIO]} imgOnly={false} />
-        </Row>
+          {exploreEntity[COLLECTIONS.STUDIO] && Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 0 &&
+            (
+            <>
+              <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+              Explore Studios
+              </h3>
+            <Row>
+              <CardSlider dataList={exploreEntity[COLLECTIONS.STUDIO]} imgOnly={false} />
+            </Row>
+          </>
+          )
+        }
         {
           exploreEntity[COLLECTIONS.WORKSHOPS] && Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 0 ? (
             <>
-            <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
-              Explore Workshops 
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
+              Explore Workshops
             </h3>
             <Row>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName = {studioIdName} type={COLLECTIONS.WORKSHOPS} />
@@ -252,7 +259,7 @@ function LandingPage() {
       {
           exploreEntity[COLLECTIONS.OPEN_CLASSES] && Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 0 ? (
             <>
-            <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
               Explore Open Classes
             </h3>
             <Row>
@@ -265,7 +272,7 @@ function LandingPage() {
       {
           exploreEntity[COLLECTIONS.COURSES] && Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 0 ? (
             <>
-            <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
               Explore Courses 
             </h3>
             <Row>
@@ -277,7 +284,7 @@ function LandingPage() {
 
 
         <br />
-        <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
+        <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
           BROWSE BY DANCE FORMS
         </h3>
         <Row>

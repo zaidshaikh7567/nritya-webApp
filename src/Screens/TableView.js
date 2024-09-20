@@ -121,8 +121,12 @@ const TableView = ({ studioData, studioId }) => {
             <div className='horizontal-scroll-wrapper-table' style={{backgroundColor: isDarkModeOn?'#202020':'white'}} >
               {Object.keys(studioData.tableData).map((key, index) => {
                 const classItem = studioData.tableData[key];
+                let instructors = "N/A"
+              if(classItem.instructors){
+                instructors = processInstructors(classItem.instructors);
+              }
                 return (
-                  <Card key={index} style={{ minWidth: "400px", border:'none',backgroundColor: isDarkModeOn?'#202020':'white' ,paddingRight:"1rem" }}>
+                  <Card key={index} style={{ minWidth: "400px", backgroundColor: isDarkModeOn?'#202020':'white' }}>
                   <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
                   <tbody>
                         {[
@@ -130,7 +134,7 @@ const TableView = ({ studioData, studioId }) => {
                           { label: 'Dance Forms', value: classItem.danceForms || "" },
                           { label: 'Days', value: classItem.days || "" },
                           { label: 'Time', value: classItem.time || "" },
-                          { label: 'Instructors', value: classItem.instructors || "" },
+                          { label: 'Instructors', value: instructors || "" },
                           { label: 'Level', value: classItem.level || "N/A" },
                           { label: 'Fee (₹)', value: classItem.fee || "N/A" },
                           {
@@ -196,13 +200,17 @@ const TableView = ({ studioData, studioId }) => {
           <tbody>
             {Object.keys(studioData.tableData).map((key, index) => {
               const classItem = studioData.tableData[key];
+              let instructors = "N/A"
+              if(classItem.instructors){
+                instructors = processInstructors(classItem.instructors);
+              }
               return (
                 <tr key={index}>
                   <td style={commonCellStyle}>{classItem.className ? classItem.className : ""}</td>
                   <td style={commonCellStyle}>{classItem.danceForms ? classItem.danceForms : ""}</td>
                   <td style={commonCellStyle}>{classItem.days ? classItem.days : ""}</td>
                   <td style={commonCellStyle}>{classItem.time ? classItem.time : ""}</td>
-                  <td style={commonCellStyle}>{classItem.instructors ? processInstructors(classItem.instructors) : "N/A"}</td>
+                  <td style={commonCellStyle}>{instructors}</td>
                   <td style={commonCellStyle}>{classItem.level ? classItem.level : "N/A"}</td>
                   <td style={commonCellStyle} >{classItem.fee ? classItem.fee : "N/A"}</td>
                   <td  className='custom-btn-cell' style={commonCellStyle}  onClick={() => bookFreeTrial(index)}>

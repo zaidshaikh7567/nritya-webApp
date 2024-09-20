@@ -87,7 +87,7 @@ function App() {
                 <Route path='/st' element={<StudioFullPage/>}/>
                 <Route path='/search/:entity' element={<SearchPage/>}/>
                 <Route path='/jobs' element={<JobHire/>}/>
-                <Route path='/npolicies' element={<NrityaPolicyPages/>}/>
+                <Route path='/npolicies/:selected' element={<NrityaPolicyPages/>}/>
                 <Route element={<ProtectedRoute/>}>
                   <Route path='/profile' element={<UserPage/>}/>
                   <Route path='/kyc' element={<Kyc/>}/>

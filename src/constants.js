@@ -88,6 +88,7 @@ export const STORAGES ={
     WORKSHOPIMAGES :"WorkshopImages",
     OPENCLASSICON :"OpenClassIcon",
     COURSEICON :"CourseIcon",
+    CREATORS_KYC_DOCUMENTS :"CreatorKycDocuments"
 }
 
 export const SEARCH_FILTERS ={

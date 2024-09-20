@@ -3,10 +3,11 @@ import { Form, Button, Container } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { saveDocument, updateDocumentFields, readDocument } from '../utils/firebaseUtils.js';
-import { STATUSES, COLLECTIONS } from '../constants.js';
+import { STATUSES, COLLECTIONS, STORAGES } from '../constants.js';
 import KycStepper from './KycStepper.js';
 import CryptoJS from 'crypto-js';
 import { validateField } from '../utils/validationUtils';
+import ImageUpload from './ImageUpload.js';
 
 const names_map = new Map([
   ["first_name" , "First Name"],
@@ -36,6 +37,7 @@ function Kyc() {
     gstin: '',
     comments : '',
     status: STATUSES.SUBMITTED,
+    tncAgreed: false,
     hash: '',
   });
   const [kycData, setKycData] = useState(null);
@@ -56,6 +58,13 @@ function Kyc() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+    }));
+  };
+
+  const handleTnCAgreement = (e) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      tncAgreed: e.target.checked,
     }));
   };
 
@@ -145,7 +154,7 @@ function Kyc() {
           <h1 style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'capitalize' }}>Verify yourself</h1>
           <div className="row">
             { Object.keys(formData).map((key) => (
-              key !== 'status' && key !== 'hash' && key !== 'country'&& key !== 'comments' && key !== 'UserId' && (
+              key !== 'status' && key !== 'hash' && key !== 'country'&& key !== 'tncAgreed' &&key !== 'comments' && key !== 'UserId' && (
                 <div className="col-md-6 col-lg-4" key={key}>
                   <Form.Group controlId={`formBasic${key}`}>
                     <Form.Label>{names_map.get(String(key))}</Form.Label>
@@ -163,27 +172,36 @@ function Kyc() {
               )
             ))}
           </div>
-          {formData.comments && (
-    <div className="col-md-12 col-lg-12">
-      <br/>
-      <Form.Group controlId="formBasicComments">
-        <Form.Label>{names_map.get('comments')}</Form.Label>
-        <Form.Control
-          as="textarea"
-          name="comments"
-          value={formData.comments}
-          readOnly
-          style={{
-            backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5',
-            color: isDarkModeOn ? 'white' : 'black'
-          }}
-        />
-      </Form.Group>
-    </div>
-  )}
-
+          <ImageUpload disable={formData.status === "Verified"} entityId={user_id} title={"Upload Documents"}  storageFolder={STORAGES.CREATORS_KYC_DOCUMENTS} ></ImageUpload>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="tnc-switch" checked={formData.tncAgreed}
+            onChange={handleTnCAgreement}/>
+            <label class="form-check-label" for="exampleCheck1">
+            <span>
+                I agree to the <a href="#/npolicies/1" style={{ color: isDarkModeOn ? 'lightblue' : 'blue' }}>Terms and Conditions. Click to read.</a>
+              </span>
+            </label>
+          </div>
           <br/>
-          <Button variant="success" type="submit" disabled={formData.status === "Verified"}>
+          {formData.comments && (
+            <div className="col-md-12 col-lg-12">
+              <br/>
+              <Form.Group controlId="formBasicComments">
+                <Form.Label>{names_map.get('comments')}</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="comments"
+                  value={formData.comments}
+                  readOnly
+                  style={{
+                    backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5',
+                    color: isDarkModeOn ? 'white' : 'black'
+                  }}
+                />
+              </Form.Group>
+            </div>
+          )}
+          <Button variant="success" type="submit" disabled={formData.status === "Verified" || !formData.tncAgreed}          >
             Submit
           </Button>
 

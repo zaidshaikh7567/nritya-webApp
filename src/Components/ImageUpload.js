@@ -11,7 +11,7 @@ import { useSnackbar } from "../context/SnackbarContext";
 import { STORAGES } from "../constants";
 
 
-const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode }) => {
+const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode, disable }) => {
   const showSnackbar = useSnackbar();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -19,7 +19,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
   const [deletedFiles, setDeletedFiles] = useState([]); // Track deleted files
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   //console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
-  // console.log("enitity id ",entityId)
+  console.log("Kyc enitity id ",entityId, disable)
   const filesizes = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -205,6 +205,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                                 />
                                 <IconButton
                                   aria-label="delete"
+                                  disabled={disable}
                                   onClick={() => handleDeleteSelectedFile(file.id)}
                                   style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
                                 >
@@ -236,6 +237,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                       className="btn form-submit"
                       style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}
                       onClick={handleUploadSubmit}
+                      disabled={disable}
                     >
                       Image Upload
                     </button>
@@ -279,6 +281,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
 ImageUpload.defaultProps = {
   maxImageCount: 5, // Default maximum image count
   updateMode: false,
+  disable:false,
 };
 
 export default ImageUpload;

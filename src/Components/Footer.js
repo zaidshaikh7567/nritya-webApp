@@ -70,7 +70,7 @@ function Footer() {
                 <a href="#/contactus" style={linkStyle}>Contact Us</a>
               </Typography>
               <Typography variant="body2">
-                <a href="#/npolicies" style={linkStyle}>Our Policies</a>
+                <a href="#/npolicies/0" style={linkStyle}>Our Policies</a>
               </Typography>
             
             </Grid>
