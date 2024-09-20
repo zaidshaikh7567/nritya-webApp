@@ -1,17 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Carousel, Container, Row, Col, Card, Spinner,Button,ButtonGroup,Badge,Image, Form, Stack } from 'react-bootstrap';
-import { db,storage } from '../config';
-import { getStorage, ref,listAll, getDownloadURL } from "firebase/storage";
-import { doc, getDoc, setDoc, getDocs, collection , updateDoc, where, query} from "firebase/firestore";
-import { STATUSES, COLLECTIONS, AMENITIES_ICONS } from "./../constants.js";
-import Table from 'react-bootstrap/Table';
-import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections, FaWhatsappSquare } from 'react-icons/fa';
+import { Container, Row, Col,Button,Badge, Stack } from 'react-bootstrap';
+import { db } from '../config';
+import { doc, getDoc, getDocs, collection , updateDoc, where, query} from "firebase/firestore";
+import { COLLECTIONS, AMENITIES_ICONS } from "./../constants.js";
+import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections } from 'react-icons/fa';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
-import { FaClock, FaMoneyBill, FaMapMarker, FaPhone, FaWhatsapp  } from 'react-icons/fa';
+import { FaMapMarker, FaWhatsapp  } from 'react-icons/fa';
 import Ratings from '../Components/Ratings';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import StarRating from '../Components/StarRating';
 import Skeleton from '@mui/material/Skeleton';
@@ -19,46 +17,14 @@ import '../Components/NrityaCard.css'
 import NrityaCard from '../Components/NrityaCard.js';
 import TableView from './TableView.js';
 import '../Common.css'
-import CircularCarousel from '../Components/CircularCarousel.js';
 import CardSlider from '../Components/CardSlider.js';
 import WorkshopCardSlider from '../Components/WorkshopCardSlider.js';
 import OpenClassCardSlider from '../Components/OpenClassCardSlider.js';
 import CourseCardSlider from '../Components/CourseCardSlider.js';
-import {Card as MuiCard} from '@mui/joy/Card';
-import CardCover from '@mui/joy/CardCover';
-import CardContent from '@mui/joy/CardContent';
 import Typography from '@mui/joy/Typography';
-import { Paper, List, ListItem, Chip, Grid } from '@mui/material';
-import { FaShare } from 'react-icons/fa';
+import {Chip, Grid } from '@mui/material';
 import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
-
-
-
-
-
-// Function to decode a Unicode (UTF-8) encoded string back to the original text
-const decodeUnicode = (unicodeString) => {
-  const utf8Encoded = unicodeString.split('').map((c) => c.charCodeAt(0));
-  const textDecoder = new TextDecoder();
-  return textDecoder.decode(new Uint8Array(utf8Encoded));
-};
-
-function convertToHtmlEntities(text) {
-  return text.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
-      return '&#' + i.charCodeAt(0) + ';';
-  });
-}
-
-const gradientStyles = [
-  { background: 'linear-gradient(to bottom right, #FFD700, #FFA500)', color: 'black' },
-  { background: 'linear-gradient(to bottom right, #00BFFF, #1E90FF)', color: 'black' },
-  { background: 'linear-gradient(to bottom right, #32CD32, #008000)', color: 'white' },
-  { background: 'linear-gradient(to bottom right, #FFA500, #FF4500)', color: 'black' },
-  { background: 'linear-gradient(to bottom right, #DC143C, #8B0000)', color: 'white' },
-  { background: 'linear-gradient(to bottom right, #000000, #2F4F4F)', color: 'white' },
-];
-
 
 function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
   const { studioId } = useParams();
@@ -282,7 +248,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
          </div>
          )}
         </div>
-        <div className='textWrapper'>
+        <div className='textWrapper' style={{paddingBottom:'0.5rem'}}>
             {studioData&&studioData.aboutStudio?
             <NrityaCard data={studioData.aboutStudio} type={'aboutStudio'} />:""} 
         </div>
@@ -291,7 +257,7 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
         {studioData&&studioData.aboutFounder? 
-        <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={"Founder"}/>:""} 
+        <NrityaCard data={studioData.aboutFounder} type={'aboutFounder'}  title={studioData.founderName?studioData.founderName : "No name"} subtitle={"Founder"}/>:""} 
       </Col>
       <Col lg={4} xs={12} className='d-flex'>
         <div className='socialConnectFeature'>

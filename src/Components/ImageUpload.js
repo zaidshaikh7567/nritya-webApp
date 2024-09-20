@@ -1,13 +1,14 @@
 import React, { useState,useEffect } from "react";
 import shortid from "shortid";
-import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
+import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { deleteAllImagesInFolder,deleteImages,uploadImages} from '../utils/firebaseUtils'
-import { Card, CardContent, CardMedia, IconButton } from '@mui/material';
+import { Card, CardContent, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useSnackbar } from "../context/SnackbarContext";
+import { STORAGES } from "../constants";
 
 
 const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode }) => {
@@ -168,8 +169,8 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
               <div className="kb-data-box">
                 <div className="kb-modal-data-title">
                   <div className="kb-data-title" style={{justifyContent:'center',flex: '1'}}>
-                    <h5>{title}</h5>
-                    
+                    <h4>{title}</h4>
+                    <p>Max no of image(s):{maxImageCount} {storageFolder === STORAGES.STUDIOIMAGES && <p>Add at least 5 images</p>}</p>
                   </div>
                 </div>
                 <form style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>

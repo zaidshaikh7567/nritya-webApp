@@ -7,8 +7,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
-import { Chip, Typography } from '@mui/material';
-import { useMediaQuery } from '@mui/material';
+import { Typography } from '@mui/material';
 
 
 function processInstructors(instructors) {
@@ -32,7 +31,6 @@ const TableView = ({ studioData, studioId }) => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [modalVariant, setModalVariant] = useState('success'); // or 'danger' for error
   const [loading, setLoading] = useState(false);
   const isSmallScreen =true;
   //useMediaQuery('(max-width:800px)');
@@ -65,7 +63,6 @@ const TableView = ({ studioData, studioId }) => {
     })
     .catch(error => {
       setLoading(false);
-      setModalVariant('danger');
       setModalMessage('Error occurred while booking. Please try again later.');
       console.error('Error in bookFreeTrial:', error);
     });
@@ -128,63 +125,51 @@ const TableView = ({ studioData, studioId }) => {
                   <Card key={index} style={{ minWidth: "400px", border:'none',backgroundColor: isDarkModeOn?'#202020':'white' ,paddingRight:"1rem" }}>
                   <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
                   <tbody>
-  {[
-    { label: 'Class Name', value: classItem.className || "" },
-    { label: 'Dance Forms', value: classItem.danceForms || "" },
-    { label: 'Days', value: classItem.days || "" },
-    { label: 'Time', value: classItem.time || "" },
-    { label: 'Instructors', value: classItem.instructors || "" },
-    { label: 'Level', value: classItem.level || "N/A" },
-    { label: 'Fee (₹)', value: classItem.fee || "N/A" },
-    {
-      label: 'Book Free Trial',
-      value: (
-        <Button
-          style={{
-            border: 'none',
-            background: 'none',  // Purple background
-            width: '100%',
-            height: '100%',
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',  // White text color for contrast
-            fontWeight: 'bold',
-          }}
-          onClick={() => bookFreeTrial(index)}
-        >
-          <Typography
-            sx={{
-              color: 'white',
-              '&:hover': { backgroundColor: 'darkviolet' },  // Darker purple on hover
-              width: '100%',
-              textAlign: 'center',  // Center the text inside Typography
-            }}
-          >
-            BOOK
-          </Typography>
-        </Button>
-      ),
-    },
-  ].map((item, i) => (
-    <tr key={i}>
-      <td style={{ color: "white", backgroundColor: isDarkModeOn ? "#121212" : "black" }}>
-        {item.label}
-      </td>
-      <td
-        style={{
-          backgroundColor: isDarkModeOn ? "#444" : "white",
-          color: isDarkModeOn ? "white" : "black",
-          textAlign: 'center',  // Center the content in the cell
-          padding: 0,  // Removes padding for full-cell button
-        }}
-      >
-        {item.value}
-      </td>
-    </tr>
-  ))}
-</tbody>
+                        {[
+                          { label: 'Class Name', value: classItem.className || "" },
+                          { label: 'Dance Forms', value: classItem.danceForms || "" },
+                          { label: 'Days', value: classItem.days || "" },
+                          { label: 'Time', value: classItem.time || "" },
+                          { label: 'Instructors', value: classItem.instructors || "" },
+                          { label: 'Level', value: classItem.level || "N/A" },
+                          { label: 'Fee (₹)', value: classItem.fee || "N/A" },
+                          {
+                            label: 'Book Free Trial',
+                            value: (
+                              <Button
+                                className='custom-button'
+                                onClick={() => bookFreeTrial(index)}
+                              >
+                                <Typography
+                                  sx={{
+                                    color: isDarkModeOn?'white':'black' ,
+                                    width: '100%',
+                                    textAlign: 'center',  // Center the text inside Typography
+                                  }}
+                                >
+                                  BOOK
+                                </Typography>
+                              </Button>
+                            ),
+                          },
+                        ].map((item, i) => (
+                          <tr key={i}>
+                            <td style={{ color: "white", backgroundColor: isDarkModeOn ? "#121212" : "black" }}>
+                              {item.label}
+                            </td>
+                            <td
+                              style={{
+                                backgroundColor: isDarkModeOn ? "#444" : "white",
+                                color: isDarkModeOn ? "white" : "black",
+                                textAlign: 'center',  // Center the content in the cell
+                                padding: 0,  // Removes padding for full-cell button
+                              }}
+                            >
+                              {item.value}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
 
 
                   </Table>

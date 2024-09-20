@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Row, Col, Form, Accordion, Table, Toast,Badge,Dropdown } from 'react-bootstrap';
+import {Button, Row, Col, Form, Table} from 'react-bootstrap';
 import { db } from '../config';
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
@@ -7,7 +7,7 @@ import AlertPopup from './AlertPopup';
 import ImageUpload from './ImageUpload';
 import { STORAGES } from '../constants';
 import MapsInput from './MapsInput';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import TimeRangePicker from './TimeRangePicker';
 import indianCities from '../cities.json';
@@ -19,28 +19,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { MultiSelect } from 'primereact/multiselect';
 
-const colorCombinations = [
-  { background: 'success', text: 'white' },
-  { background: 'warning', text: 'black' },
-  { background: 'danger', text: 'white' },
-  { background: 'info', text: 'black' },
-];
-
 const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
-
-function isMapOfMaps(data) {
-  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-    return false; // Not an object (map)
-  }
-
-  for (const key in data) {
-    if (typeof data[key] !== 'object' || data[key] === null || Array.isArray(data[key])) {
-      return false; // Value is not an object (map)
-    }
-  }
-
-  return true; // It's a map of maps
-}
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -725,19 +704,14 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
             {studioId && studioId.length > 0 && selectedStudioId && (
               <>
                 <div>
-                  <ImageUpload entityId={selectedStudioId} title={"Studio Images"} storageFolder={STORAGES.STUDIOIMAGES} />
+                  <ImageUpload entityId={selectedStudioId} title={"Studio Images"} storageFolder={STORAGES.STUDIOIMAGES} maxImageCount={10} />
                 </div>
                 <br />
-                <button onClick={() => {
-                            //console.log("selectedLocation ",selectedLocation);
-                          }}>
-                          Click me
-                        </button>
                 <div>
                   <ImageUpload entityId={selectedStudioId} title={"Studio Icon"} storageFolder={STORAGES.STUDIOICON} maxImageCount={1} />
                 </div>
                 <div>
-                  <ImageUpload entityId={selectedStudioId} title={"Studio Announcement Images"} storageFolder={STORAGES.STUDIOANNOUNCEMENTS}/>
+                  <ImageUpload entityId={selectedStudioId} title={"Studio Announcement Images"} storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10}/>
                 </div>
                 <br />
               </>
