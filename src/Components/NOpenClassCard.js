@@ -48,7 +48,7 @@ function OpenClassDetailsModal({
     try {
       const bookingData = {
         userId: currentUser,
-        entityType: COLLECTIONS.WORKSHOPS,
+        entityType: COLLECTIONS.OPEN_CLASSES,
         entityId: dataItemId,
         associatedStudioId: dataItem.StudioId,
         emailLearner: currentUserEmail,

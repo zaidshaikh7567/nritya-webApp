@@ -47,7 +47,7 @@ function CourseDetailsModal({
     try {
       const bookingData = {
         userId: currentUser,
-        entityType: COLLECTIONS.WORKSHOPS,
+        entityType: COLLECTIONS.COURSES,
         entityId: dataItemId,
         associatedStudioId: dataItem.StudioId,
         emailLearner: currentUserEmail,
