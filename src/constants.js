@@ -22,6 +22,11 @@ export const LEVELS = {
     ADVANCED :"Advanced"
 }
 
+export const SERVER_URLS = {
+    PROD : 'https://nrityaserver-2b241e0a97e5.herokuapp.com/',
+    LOCAL : 'http://127.0.0.1:8000/'
+}
+
 export const COLORS = {
     GREEN: { backgroundColor: "#28a745", color: "#fff" },     // Green background, white text
     BLUE: { backgroundColor: "#007bff", color: "#fff" },      // Blue background, white text

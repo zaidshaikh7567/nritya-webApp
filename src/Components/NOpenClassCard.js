@@ -23,6 +23,7 @@ import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../config";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Spinner } from "react-bootstrap";
+import { bookEntity } from "../utils/common";
 
 function OpenClassDetailsModal({
   open,
@@ -34,14 +35,47 @@ function OpenClassDetailsModal({
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [dataItem, setDataItem] = useState(null) 
+  const [personsAllowed, setPersonsAllowed] = useState(1);
 
   const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
+  const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;
 
   const handleBook = async () => {
+    if(!currentUser){
+      showSnackbar("Please login to book", "warning");
+      return;
+    }
     try {
+      const bookingData = {
+        userId: currentUser,
+        entityType: COLLECTIONS.WORKSHOPS,
+        entityId: dataItemId,
+        associatedStudioId: dataItem.StudioId,
+        emailLearner: currentUserEmail,
+        personsAllowed: personsAllowed,
+        pricePerPerson: dataItem.price || 0
+      };
       
+      const result = await bookEntity(bookingData);
+      console.log("Result ", result);
+      if (result && result['nSuccessCode'] === 200) {
+          showSnackbar("Open Class booked", "success");
+      } else if (result && result['nSuccessCode'] === 205) {
+        const timestampInSeconds = result['bookedAt'];
+        const timestampInMilliseconds = timestampInSeconds * 1000; 
+        const date = new Date(timestampInMilliseconds);
 
-      showSnackbar("OpenClass booked", "success");
+        const formattedDate = date.toLocaleString(); 
+        showSnackbar(`Open Class booked already at ${formattedDate}`, "info");
+
+      } else{
+          // Stringify the result object for display
+          const errorMessage = result 
+              ? `Error: ${JSON.stringify(result)}`  // Stringify for a complete view
+              : "An unknown error occurred.";
+          showSnackbar(errorMessage, "info");
+      }
+      
     } catch (error) {
       console.error(error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -49,6 +83,7 @@ function OpenClassDetailsModal({
       
     }
   };
+
 
   useEffect(() => {
     const fetchDataUrl = async () => {

@@ -1,10 +1,45 @@
-import { COLORS } from "../constants";
-
+import { COLORS, SERVER_URLS } from "../constants";
 
 export const getRandomColor = () => {
-  const colorKeys = Object.keys(COLORS);  // Get all color keys
-  const randomKey = colorKeys[Math.floor(Math.random() * colorKeys.length)];  // Pick a random key
-  return COLORS[randomKey];  // Return the corresponding color object
+  const colorKeys = Object.keys(COLORS);
+  const randomKey = colorKeys[Math.floor(Math.random() * colorKeys.length)];
+  return COLORS[randomKey];
+};
+
+export const bookEntity = async (bookingData) => {
+  const url = `${SERVER_URLS.PROD}bookings/bookEntity/`; 
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: bookingData.userId,
+        entityType: bookingData.entityType,
+        entityId: bookingData.entityId,
+        associatedStudioId: bookingData.associatedStudioId,
+        emailLearner: bookingData.emailLearner,
+        personsAllowed: bookingData.personsAllowed,
+        pricePerPerson: bookingData.pricePerPerson,
+      })
+    });
+
+    const result = await response.json();
+    
+    if (response.ok) {
+      console.log('Booking successful:', result);
+      return result;  // Return the successful result
+    } else {
+      console.error('Booking failed:', result);
+      return result;  // Return null or an error message
+    }
+    
+  } catch (error) {
+    console.error('Error occurred while booking:', error);
+    return null;  // Return null or an error message
+  }
 };
 
 
