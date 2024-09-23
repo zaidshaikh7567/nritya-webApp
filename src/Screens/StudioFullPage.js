@@ -25,7 +25,7 @@ import Typography from '@mui/joy/Typography';
 import {Chip, Grid } from '@mui/material';
 import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
   const { studioId } = useParams();

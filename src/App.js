@@ -33,6 +33,7 @@ import CreatorCourse from './Screens/CreatorCourse';
 import CreatorRoute from './utils/CreatorRoute';
 import SnackbarProvider from './context/SnackbarContext';
 import NrityaPolicyPages from './Screens/NrityaPolicyPages';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -73,6 +74,7 @@ function App() {
   };
 
   return (
+    <HelmetProvider>
     <HashRouter  >
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header/>
@@ -117,6 +119,7 @@ function App() {
         <Footer />
       </Box>
     </HashRouter>
+    </HelmetProvider>
   );
 }
 
