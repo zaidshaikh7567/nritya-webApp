@@ -25,6 +25,7 @@ import Typography from '@mui/joy/Typography';
 import {Chip, Grid } from '@mui/material';
 import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
+import { Helmet } from 'react-helmet';
 
 function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
   const { studioId } = useParams();
@@ -210,6 +211,10 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
 
   return (
   <Container fluid style={{backgroundColor: isDarkModeOn?'#202020':'white' ,color: isDarkModeOn?'white':'color' }}>
+      <Helmet>
+        <title>{studioData ? studioData.studioName : "Dance Studio"}</title>
+        <meta name="description" content={`Learn ${studioData ? studioData.danceStyles:''}`} />
+      </Helmet>
       <Row>
       <Col lg={8}  className='d-flex'>
       <div className='contentWrapper-main'>
