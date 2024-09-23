@@ -6,7 +6,7 @@ import {Form, Button, Col,Row, Image, Modal, FormControl, Badge, ButtonGroup,
       Container,} from "react-bootstrap";
 import { Badge as MuiBadge, Chip as MuiChip, Autocomplete as MuiAutocomplete,
   TextField as MuiTextField, createTheme,ThemeProvider, Button as MuiButton,
-  Stack as MuiStack,Grid as MuiGrid,} from "@mui/material";
+  Stack as MuiStack,Grid as MuiGrid, Box } from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
 import indianCities from "../cities.json";
@@ -36,10 +36,10 @@ const MAX_PRICE  = 10**10
 
 const distances = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const searchTypes = [
-  { name: "studio", label: "Studio", collection: COLLECTIONS.STUDIO },
-  { name: "workshop", label: "Workshop", collection: COLLECTIONS.WORKSHOPS },
-  { name: "openClass",label: "Open Class",collection: COLLECTIONS.OPEN_CLASSES},
-  { name: "course", label: "Course", collection: COLLECTIONS.COURSES },
+  { name: "studio", label: "Studios", collection: COLLECTIONS.STUDIO },
+  { name: "workshop", label: "Workshops", collection: COLLECTIONS.WORKSHOPS },
+  { name: "openClass",label: "Open Classes",collection: COLLECTIONS.OPEN_CLASSES},
+  { name: "course", label: "Courses", collection: COLLECTIONS.COURSES },
 ];
 
 const getCollectionForSearchType = (searchType) => {
@@ -256,6 +256,18 @@ const SearchPage = () => {
     }
   };
 
+  const handleSearchTypeClick = (clickedSearchType) => {
+    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, clickedSearchType);
+    localStorage.removeItem(FILTER_DISTANCES_KEY);
+
+    setSelectedDistances("");
+    setSelectedLevel(LEVELS.ALL);
+    setSelectedMaxPrice(MAX_PRICE);
+    setSelectedSearchType(clickedSearchType);
+    setActiveFilters(countActiveFilters());
+    handleSearch();
+  };
+
   const handleRemoveDistance = () => {
     setSelectedDistances(null);
     localStorage.removeItem(FILTER_DISTANCES_KEY);
@@ -338,7 +350,7 @@ const SearchPage = () => {
                     renderInput={(params) => (
                       <MuiTextField
                         {...params}
-                        label="Search"
+                        label="Search studios, workshops, open classes, courses......"
                         variant="outlined"
                         InputProps={{
                           ...params.InputProps,
@@ -380,6 +392,30 @@ const SearchPage = () => {
           <br></br>
           <Row className="align-items-center">
           <div className="horizontal-scroll-wrapper-for-filters"> 
+            {searchTypes.map((searchType) => (
+              <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
+                <MuiChip
+                  label={searchType.label}
+                  variant={selectedSearchType === searchType.name ? "outlined" : "contained"}
+                  sx={{
+                    cursor: 'pointer',
+                    bgcolor: selectedSearchType === searchType.name ? "black" : "#D9D9D9",
+                    color: selectedSearchType === searchType.name ? "white" : "black",
+                    borderRadius: '10px',
+                    "&:hover": {
+                      bgcolor: selectedSearchType === searchType.name ? "black" : "black",
+                      color: selectedSearchType === searchType.name ? "white" : "white",
+                    }
+                  }}
+                  onClick={() => handleSearchTypeClick(searchType.name)}
+                />
+            </Col>
+            ))}
+           </div>
+          </Row>
+
+          <Row className="align-items-center">
+          <div className="horizontal-scroll-wrapper-for-filters"> 
             <Col xs="auto" style={{ marginTop: "0.5rem" }}>
               <MuiBadge
                 onClick={toggleFilters}
@@ -388,6 +424,7 @@ const SearchPage = () => {
                 pill
               >
                 <MuiChip
+                  className="rounded-3"
                   color={isDarkModeOn ? "warning" : "secondary"}
                   label="&#9776; filters"
                   variant={isDarkModeOn ? "outlined" : "contained"}
@@ -395,57 +432,39 @@ const SearchPage = () => {
               </MuiBadge>
             </Col>
 
-            {selectedSearchType && (
+            {(selectedDanceForms.length || selectedDistances || (selectedLevel && selectedLevel !== LEVELS.ALL) ||(selectedMaxPrice && selectedMaxPrice !== MAX_PRICE)) && (
               <Col xs="auto" style={{ marginTop: "0.5rem" }}>
-                <MuiBadge color="warning" pill>
+                <MuiBadge
+                  color="error"
+                  onClick={handleClearFilters}
+                  style={{ cursor: "pointer" }}
+                  pill
+                >
                   <MuiChip
-                    color="warning"
-                    label={
-                      searchTypes.find(
-                        (searchType) => searchType.name === selectedSearchType
-                      ).label
-                    }
+                    color="error"
+                    label="Clear All"
+                    onDelete={handleClearFilters}
+                    style={{ cursor: "pointer" }}
                     variant={isDarkModeOn ? "outlined" : "contained"}
-                    onDelete={handleRemoveSearchType}
+                    className="rounded-3"
                   />
                 </MuiBadge>
               </Col>
             )}
 
+            <Box display="flex">
             {/* Filter Badges */}
             {selectedDistances && (
               <Col xs="auto" style={{ marginTop: "0.5rem" }}>
                 <MuiBadge color="success" pill>
                   <MuiChip
+                    className="rounded-3"
                     color="success"
                     label={`Distance: ${selectedDistances} km`}
                     variant={isDarkModeOn ? "outlined" : "contained"}
                     onDelete={handleRemoveDistance}
                   />
                 </MuiBadge>
-              </Col>
-            )}
-
-            {selectedDanceForms && (
-              <Col xs="auto">
-                {selectedDanceForms.map((danceForm, index) => (
-                  <MuiBadge
-                    key={index}
-                    color="info"
-                    style={{
-                      marginLeft: index !== 0 ? "0.25rem" : "0",
-                      marginTop: "0.5rem",
-                    }}
-                    pill
-                  >
-                    <MuiChip
-                      color="info"
-                      label={`Dance Form: ${danceForm}`}
-                      variant={isDarkModeOn ? "outlined" : "contained"}
-                      onDelete={() => handleRemoveDanceForm(danceForm)}
-                    />
-                  </MuiBadge>
-                ))}
               </Col>
             )}
 
@@ -462,6 +481,7 @@ const SearchPage = () => {
                     pill
                   >
                     <MuiChip
+                      className="rounded-3"
                       color="info"
                       label={`Level: ${selectedLevel}`}
                       variant={isDarkModeOn ? "outlined" : "contained"}
@@ -485,6 +505,7 @@ const SearchPage = () => {
                     pill
                   >
                     <MuiChip
+                      className="rounded-3"
                       color="info"
                       label={`Prices Upto: ${selectedMaxPrice}`}
                       variant={isDarkModeOn ? "outlined" : "contained"}
@@ -495,24 +516,30 @@ const SearchPage = () => {
               </Col>
             )}
 
-            {(selectedDanceForms.length || selectedDistances || (selectedLevel && selectedLevel !== LEVELS.ALL) ||(selectedMaxPrice && selectedMaxPrice !== MAX_PRICE)) && (
-              <Col xs="auto" style={{ marginTop: "0.5rem" }}>
-                <MuiBadge
-                  color="error"
-                  onClick={handleClearFilters}
-                  style={{ cursor: "pointer" }}
-                  pill
-                >
-                  <MuiChip
-                    color="error"
-                    label="Clear All"
-                    onDelete={handleClearFilters}
-                    style={{ cursor: "pointer" }}
-                    variant={isDarkModeOn ? "outlined" : "contained"}
-                  />
-                </MuiBadge>
+            {selectedDanceForms && (
+              <Col xs="auto">
+                {selectedDanceForms.map((danceForm, index) => (
+                  <MuiBadge
+                    key={index}
+                    color="info"
+                    style={{
+                      marginLeft: index !== 0 ? "0.25rem" : "0",
+                      marginTop: "0.5rem",
+                    }}
+                    pill
+                  >
+                    <MuiChip
+                      className="rounded-3"
+                      color="info"
+                      label={`Dance Form: ${danceForm}`}
+                      variant={isDarkModeOn ? "outlined" : "contained"}
+                      onDelete={() => handleRemoveDanceForm(danceForm)}
+                    />
+                  </MuiBadge>
+                ))}
               </Col>
             )}
+            </Box>
            </div>
           </Row>
         </Container>
@@ -527,16 +554,7 @@ const SearchPage = () => {
             {/* Left side for filters list */}
             <Col md={4}>
               <h5>Filter By:</h5>
-              <hr style={{ margin: "5px 0" }}></hr>
               <ul style={{ listStyleType: "none", padding: 0 }}>
-                <li
-                  style={{ cursor: "pointer", margin: "5px 0" }}
-                  onClick={() => (
-                    setShowFilterValue("searchTypes"), setShowFilters(true)
-                  )}
-                >
-                  Search Types
-                </li>
 
                 {selectedSearchType === "studio" && (
                   <>
@@ -595,27 +613,11 @@ const SearchPage = () => {
             </Col>
 
             <Col md={8}>
-              {showFilters && showFilterValue === "searchTypes" && (
-                <Form.Group controlId="filterSearchTypes">
-                  <Form.Label>Types:</Form.Label>
-                  <Form.Control
-                    as="select"
-                    value={selectedSearchType}
-                    onChange={handleSearchTypeChange}
-                  >
-                    {searchTypes.map((searchType) => (
-                      <option key={searchType.name} value={searchType.name}>
-                        {searchType.label}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </Form.Group>
-              )}
-
               {showFilters && showFilterValue === "distances" && (
                 <Form.Group controlId="filterDistances">
                   <Form.Label>Distances:</Form.Label>
                   <Form.Control
+                    className="p-0"
                     as="select"
                     value={selectedDistances}
                     onChange={(e) => setSelectedDistances(e.target.value)}
@@ -634,6 +636,7 @@ const SearchPage = () => {
                 <Form.Group controlId="filterLevel">
                   <Form.Label>Level :</Form.Label>
                   <Form.Control
+                    className="p-0"
                     as="select"
                     value={selectedLevel}
                     onChange={(e) => setSelectedLevel(e.target.value)}
@@ -652,6 +655,7 @@ const SearchPage = () => {
                 <Form.Group controlId="filterPrice">
                   <Form.Label>Prices :</Form.Label>
                   <Form.Control
+                    className="p-0"
                     as="select"
                     value={selectedMaxPrice}
                     onChange={(e) => setSelectedMaxPrice(e.target.value)}
