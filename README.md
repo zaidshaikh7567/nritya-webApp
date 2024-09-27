@@ -9,7 +9,7 @@ npm start
 ### Make some changes and push it to main
 git add . \
 git commit \
-git push \
+git push
 
 ### Generate Build & push it to gh-pages
 npm run build \
@@ -17,7 +17,7 @@ git checkout gh-pages \
 cp -r build/* . \
 git add . \
 git commit \
-git push \
+git push
 
 
 ## Available Scripts
