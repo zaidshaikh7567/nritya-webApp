@@ -119,18 +119,24 @@ function Footer() {
               <Typography variant="body2">
                 <a href="#/search/studios" style={linkStyle}>Search Studios</a>
               </Typography>
-              <Typography variant="body2">
-                <a href="#/kyc" style={linkStyle}>Creator's Account Kyc</a>
-              </Typography>
-              <Typography variant="body2">
-                <a href="#/modifyInstructors" style={linkStyle}>Instructor listing</a>
-              </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={3} py={1}>
               <Typography variant="h6" style={{ color: 'white', fontSize: 20 }}>
                 Company
               </Typography>
               <Typography variant="body2">
+                <a href="#/npolicies/0" style={linkStyle}>Privacy Policy</a>
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/npolicies/1" style={linkStyle}>Terms and Conditions</a>
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/npolicies/2" style={linkStyle}>Cancellation & Refund</a>
+              </Typography>
+              <Typography variant="body2">
+                <a href="#/npolicies/3" style={linkStyle}>Service Delivery</a>
+              </Typography>
+              <Typography hidden variant="body2">
                 <a href="#/aboutus" style={linkStyle}>About Us</a>
               </Typography>
               <Typography variant="body2">

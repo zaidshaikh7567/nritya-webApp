@@ -644,7 +644,7 @@ function StudioAdd({instructors}) {
                     <TextField
                       {...params}
                       variant="standard"
-                      placeholder="Select Dance Styles"
+                      placeholder="Select Amenities"
                       style={{backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}
                     />
                   )}
