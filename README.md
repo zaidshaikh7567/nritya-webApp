@@ -2,6 +2,24 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Useful Commands:
+git checkout main
+npm start
+
+### Make some changes and push it to main
+git add .
+git commit
+git push
+
+### Generate Build & push it to gh-pages
+npm run build
+git checkout gh-pages
+cp -r build/* .
+git add .
+git commit
+git push
+
+
 ## Available Scripts
 
 In the project directory, you can run:
