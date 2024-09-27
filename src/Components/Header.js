@@ -114,11 +114,10 @@ function Header() {
   });
 
   useEffect(() => {
-    console.log("Redux Location changed:", reduxLocation.city);
-    if (reduxLocation.city) {
-      setSelectedLocation(reduxLocation.city);
+    if (reduxLocation) {
+      setSelectedLocation(reduxLocation);
     }
-  }, [reduxLocation.city]);
+  }, [reduxLocation]);
 
   useEffect(() => {
     localStorage.setItem(FILTER_LOCATION_KEY, selectedLocation);
@@ -135,6 +134,7 @@ function Header() {
     fontSize: 10,
     textAlign: "center",
     background: 'black',
+    padding: 0
   }
 
   function getUserNameInitials() {
@@ -168,8 +168,11 @@ function Header() {
   };
 
   const handleLocationChange = (event, location) => {
-    setSelectedLocation(location);
+    if (!location) setSelectedLocation("New Delhi");
+    else setSelectedLocation(location);
+
     setShowLocationDropdown(false);
+    window.location.reload();
   };
 
   const locationOptions = indianCities.cities;
@@ -238,36 +241,33 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
-          <Nav
-            style={{ fontFamily: 'Times Roman', fontSize: 20, maxHeight: '90px' }}
-            navbarScroll
-          >
-          </Nav>
-
           <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
             <FormControlLabel
               control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
               onClick={handleToggleDarkMode}
-            />
+            />;
             {currentUser ? (
               <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studio" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
+                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', justifyContent: 'left' }}>
                   Search
                 </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
               </>
             ) : (
               <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="me-2 rounded-pill" href="#/search/studio" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>
-                  Search Studios
+                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', textAlign: 'left', justifyContent: 'left' }}>
+                  Search
                 </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="me-2 rounded-pill" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
+                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
               </>
             )}
-            <div className="position-relative location-dropdown-container">
+          </Nav>
+
+          <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
+            <div className="position-relative location-dropdown-container my-2">
               <Button
                 variant="outlined"
-                className="me-2 rounded-pill"
+                className="btn-hover-purple-bg me-2 rounded-3"
                 onClick={() => setShowLocationDropdown(!showLocationDropdown)}
                 style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
                   height: '3rem', borderWidth: '2px', width: '12rem'
@@ -312,6 +312,7 @@ function Header() {
                           />
                         </>
                       )}
+                      classes={{ option: 'city-btn-hover-purple-bg' }}
                     />
                   </ThemeProvider>
 
@@ -324,6 +325,7 @@ function Header() {
               photoURL ? (
                 <Button
                   onClick={openProfileOffcanvas}
+                  className='my-3'
                   style={{
                     borderRadius: '50%',
                     width: '3rem',
@@ -348,7 +350,7 @@ function Header() {
 
               ) :
               (
-                <Button onClick={openProfileOffcanvas} className="rounded-pill"
+                <Button onClick={openProfileOffcanvas} className="rounded-pill my-3"
                 variant="outlined"
                 style={{
                   fontSize: '0.9rem',
@@ -368,13 +370,11 @@ function Header() {
             
           ) : (
           
-              <Button variant="outlined" className="rounded-pill" onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
+              <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
            
             <LoginModalDailog open={open} handleClose={handleClose} />
           </Nav>
-          
-
         </Navbar.Collapse>
 
       </Container>

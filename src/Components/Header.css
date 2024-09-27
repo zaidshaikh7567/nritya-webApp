@@ -27,3 +27,25 @@
       width: auto; /* Make location dropdown container auto width */
     }
   }
+
+.search-box {
+  background-color: #ECE6F0 !important;
+}
+
+.search-box:hover {
+  background-color: #DBD5E0 !important;
+}
+
+.btn-hover-purple-bg:hover {
+  background-color: #735EAB !important;
+}
+
+.city-btn-hover-purple-bg:hover {
+  color: white;
+  background-color: #735EAB !important;
+}
+
+.city-btn-hover-purple-bg[aria-selected="true"] {
+  color: white;
+  background-color: #735EAB !important;
+}

@@ -113,7 +113,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
     try {
       const dbPayload = {
-        workshopName: form.name.value,
+        name: form.name.value,
         duration: form.duration.value,
         price: form.workshopFees.value,
         venue: form.workshopVenue.value,
