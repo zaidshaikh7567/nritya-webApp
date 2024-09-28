@@ -369,6 +369,7 @@ const SearchPage = () => {
                                   cursor: "pointer",
                                   color: isDarkModeOn ? "#892CDC" : "black",
                                   marginRight: 1,
+                                  width:"40px"
                                 }}
                                 onClick={handleSearch}
                               />
@@ -383,7 +384,7 @@ const SearchPage = () => {
                         }}
                       />
                     )}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1/2 }}
                   />
                 </MuiStack>
               </ThemeProvider>
@@ -403,15 +404,15 @@ const SearchPage = () => {
                     color: selectedSearchType === searchType.name ? "white" : "black",
                     borderRadius: '10px',
                     "&:hover": {
-                      bgcolor: selectedSearchType === searchType.name ? "black" : "black",
-                      color: selectedSearchType === searchType.name ? "white" : "white",
+                      bgcolor: selectedSearchType === searchType.name ? "white" : "black",
+                      color: selectedSearchType === searchType.name ? "black" : "white",
                     }
                   }}
                   onClick={() => handleSearchTypeClick(searchType.name)}
                 />
             </Col>
             ))}
-           </div>
+          </div>
           </Row>
 
           <Row className="align-items-center">
