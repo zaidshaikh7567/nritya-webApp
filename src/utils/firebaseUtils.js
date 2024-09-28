@@ -1,8 +1,8 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, where, getCountFromServer } from 'firebase/firestore';
 import { db } from '../config';
-import { getStorage,ref,listAll,getDownloadURL,uploadBytes, deleteObject  } from "firebase/storage";
+import {ref,listAll,getDownloadURL,uploadBytes, deleteObject  } from "firebase/storage";
 import { storage } from '../config';
-import { STORAGES, COLLECTIONS } from '../constants';
+import { COLLECTIONS } from '../constants';
 import secureLocalStorage from 'react-secure-storage';
 
 export const setCreatorMode = async (uid) => {

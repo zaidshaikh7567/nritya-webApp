@@ -1,23 +1,15 @@
 
-import React, {useEffect,useState} from 'react';
+import React from 'react';
 import AspectRatio from '@mui/joy/AspectRatio';
-import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
-import CardOverflow from '@mui/joy/CardOverflow';
 import Chip from '@mui/joy/Chip';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
-import Rating from '@mui/material/Rating';
 import { Stack } from '@mui/material';
-import Ratings from './Ratings';
-import StarRating from './StarRating';
-import { Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux'; // Import useSelector
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { readDocumentWithImageUrl } from '../utils/firebaseUtils';
-import { danceStylesColorChips, STORAGES } from '../constants';
+import { danceStylesColorChips } from '../constants';
 import IconButton from '@mui/joy/IconButton';
 import Favorite from '@mui/icons-material/Favorite';
 

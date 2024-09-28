@@ -359,19 +359,16 @@ const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
       <br></br>
       <Row>
       <Row>
-      {announcementImages.length && 
+      {announcementImages.length > 0 && (
+        <>
               <Typography variant="h1" component="h2"  style={{ color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize'  }}>
           Announcements
-        </Typography>}
-      {announcementImages.length? 
-      <CardSlider dataList={announcementImages} imgOnly={true}/>
-      :
-      <>
-      <Row>
-              <Skeleton variant="rectangular" animation="wave"  sx={{paddingRight:"0.5rem"}} width={"240"} height={300} />
-              <Skeleton variant="rectangular" animation="wave"  sx={{paddingRight:"0.5rem"}} width={"240"} height={300} />
-      </Row>
-      </>
+        </Typography>
+        </>)}
+      {announcementImages.length  > 0 && ( 
+        <>
+        <CardSlider dataList={announcementImages} imgOnly={true}/>
+        </>)
       }
       </Row>
       <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black',color: isDarkModeOn ? 'white' : 'black',fontSize: '20px',textTransform: 'capitalize' }}>

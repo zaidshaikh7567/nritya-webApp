@@ -32,23 +32,6 @@ const decodeUnicode = (unicodeString) => {
   return textDecoder.decode(new Uint8Array(utf8Encoded));
 };
 
-const colorCombinations = [
-  { background: 'success', text: 'white' },
-  { background: 'warning', text: 'black' },
-  { background: 'danger', text: 'white' },
-  { background: 'info', text: 'black' },
-];
-
-const optionsDays = [
-  { value: 'M', label: 'Monday' },
-  { value: 'T', label: 'Tuesday' },
-  { value: 'W', label: 'Wednessday' },
-  { value: 'Th', label: 'Thrusday' },
-  { value: 'F', label: 'Friday' },
-  { value: 'S', label: 'Saturday' },
-  { value: 'Sun', label: 'Sunday' },
-]
-
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
@@ -56,7 +39,6 @@ function StudioAdd({instructors}) {
     const [tableData, setTableData] = useState(
       [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: ''}],
     );
-    const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
     const [selectedInstructors, setSelectedInstructors] = useState([]);
@@ -80,33 +62,12 @@ function StudioAdd({instructors}) {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleRestart = () => {
-      setActiveStep(0);
-      setNewStudioId("");
-    };
-
-
-
-    ////console.log("danceStyles ",danceStylesOptions)
 
     const darkTheme = createTheme({
       palette: {
         mode: isDarkModeOn?'dark':'light',
       },
     });
-    
-
-    const handleToggleInstructor = (instructor) => {
-      setSelectedInstructors((prevSelected) => {
-        // Check if the instructor is already selected
-        const isAlreadySelected = prevSelected.some((selected) => selected.id === instructor.id);
-  
-        // If selected, remove the instructor; if not selected, add the instructor
-        return isAlreadySelected
-          ? prevSelected.filter((selected) => selected.id !== instructor.id)
-          : [...prevSelected, instructor];
-      });
-    };
 
     const handleDanceStylesChange = (event, value) => {
       setSelectedDanceStyles(value);
@@ -154,25 +115,19 @@ function StudioAdd({instructors}) {
         console.error(error);
       }
     };
-  
-      //console.log("Studio Add",newStudioId)
+
       const handleAddStudio = async (event) => {
         event.preventDefault();
         const title = event.target.studioName.value;
         if (!title) {
           return;
         }
-        //console.log(JSON.parse(localStorage.getItem('userInfo')))
-        const creatorRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
         let isPremium=true
-        //console.log("selectedLocation to be added",selectedLocation)
-            
         const newData = tableData.reduce((accumulator, current, index) => {
           accumulator[index] = current;
           return accumulator;
         }, {});
 
-        //body: event.target.body.value,
         try {
             const studioRef = await addDoc(collection(db, COLLECTIONS.STUDIO), {
               studioName: event.target.studioName.value,

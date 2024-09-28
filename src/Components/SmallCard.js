@@ -1,22 +1,16 @@
-// YourComponent.jsx
-
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Badge, ButtonGroup } from 'react-bootstrap';
-import RenderRating from './RenderRating';
-import { useNavigate } from 'react-router-dom';
+import { Card, Badge } from 'react-bootstrap';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
 import { STORAGES } from '../constants';
-import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
+import { FaMapMarker } from 'react-icons/fa';
 import StarRating from './StarRating';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import './StudioCard.css'
 
-const SmallCard = ({ studioName,studioAddress,studioTiming,studioPrice,studioInstructors,studioDanceStyles,
-    studioContactNumber,studioId,averageRating }) => {
+const SmallCard = ({ studioName,studioAddress,studioDanceStyles,studioId,averageRating }) => {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const navigate = useNavigate();
   const [studioIconUrl, setStudioIconUrl] = useState(null);
   console.log(averageRating,studioName)
   useEffect(() => {

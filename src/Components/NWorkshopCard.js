@@ -4,17 +4,10 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Chip from "@mui/joy/Chip";
 import Typography from "@mui/joy/Typography";
-import {
-  Box,
-  Grid,
-  Modal,
-  Stack,
-  Typography as MUITypography,
-  Button,
-  IconButton,
+import {Box, Grid, Modal, Stack, Typography as MUITypography, Button,IconButton,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { CHIP_LEVELS_DESIGN, COLLECTIONS, COLORS, danceStylesColorChips, STORAGES } from "../constants";
+import { CHIP_LEVELS_DESIGN, COLLECTIONS, danceStylesColorChips, STORAGES } from "../constants";
 import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
@@ -34,7 +27,7 @@ function WorkshopDetailsModal({
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [imageUrl, setImageUrl] = useState(null);
   const [dataItem, setDataItem] = useState(null) 
-  const [personsAllowed, setPersonsAllowed] = useState(1);
+  const [personsAllowed, setPersonsAllowed] = useState(1); // TODO ADDED LATER
 
   const currentUser = JSON.parse(localStorage.getItem("userInfo"))?.UserId;
   const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;

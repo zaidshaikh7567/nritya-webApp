@@ -14,14 +14,13 @@ import Order from './Screens/Order';
 import Cart from './Screens/Cart';
 import Transactions from './Components/Transactions';
 import Trail from './Components/Trail';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from './redux/selectors/darkModeSelector'; 
-import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './utils/ProtectedRoute';
 import CreatorStudio from './Screens/CreatorStudio';
 import CreatorDashboard from './Screens/CreatorDashboard';
 import CreatorInstructor from './Screens/CreatorInstructor';
-import {Box, Divider as MuiDivider} from '@mui/material';
+import {Box} from '@mui/material';
 import AboutUs from './Screens/About';
 import ContactUs from './Screens/ContactUs';
 import MyBookings from './Components/MyBookings';
@@ -36,16 +35,8 @@ import NrityaPolicyPages from './Screens/NrityaPolicyPages';
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
-  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
-  const dispatch = useDispatch(); 
-  const { currentUser } = useAuth();
-  
+  const isDarkModeOn = useSelector(selectDarkModeStatus); 
 
-  //console.log(isDarkModeOn,"From header")
-  if(currentUser ){
-    const { displayName, email  } = currentUser;
-    //console.log("Hii",displayName,email)
-  }
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
     return storedIsLoggedIn === 'true';

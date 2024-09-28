@@ -1,4 +1,4 @@
-import { storage,gMapApiKey } from '../config';
+import { gMapApiKey } from '../config';
 
 export const getBrowserLocation = () => {
     const askForLocationPermission = () => {

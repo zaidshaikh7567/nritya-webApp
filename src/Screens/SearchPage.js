@@ -1,26 +1,19 @@
 import React, { useState, useEffect } from "react";
-import StudioCard from "../Components/StudioCard";
 import { useSelector, useDispatch } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
-import {Form, Button, Col,Row, Image, Modal, FormControl, Badge, ButtonGroup,
+import {Form, Button, Col,Row, Modal, ButtonGroup,
       Container,} from "react-bootstrap";
 import { Badge as MuiBadge, Chip as MuiChip, Autocomplete as MuiAutocomplete,
-  TextField as MuiTextField, createTheme,ThemeProvider, Button as MuiButton,
+  TextField as MuiTextField, createTheme,ThemeProvider,
   Stack as MuiStack,Grid as MuiGrid, Box } from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
-import indianCities from "../cities.json";
-import { refreshLocation } from "../redux/actions/refreshLocationAction";
-import SmallCard from "../Components/SmallCard";
 import danceStyles from "../danceStyles.json";
 import CardSliderCard from "../Components/CardSliderCard";
 import './SearchPage.css';
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import { COLLECTIONS, LEVELS } from "../constants";
-import { collection,doc, query as firebaseQuery, getDoc, getDocs,where,
-} from "firebase/firestore";
-import { db } from "../config";
 import NWorkshopCard from "../Components/NWorkshopCard";
 import NOpenClassCard from "../Components/NOpenClassCard";
 import NCourseCard from "../Components/NCourseCard";

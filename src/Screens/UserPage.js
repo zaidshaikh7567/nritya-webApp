@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { Button as MUIButton } from '@mui/joy';
-import { useNavigate } from 'react-router-dom';
-import { STORAGES, COLLECTIONS } from '../constants';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { COLLECTIONS } from '../constants';
+import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { useAuth } from '../context/AuthContext';
-import { deleteAllImagesInFolder, readDocument, saveDocument, uploadOneImageAndGetURL } from '../utils/firebaseUtils';
+import { readDocument } from '../utils/firebaseUtils';
 import './UserPage.css';
 import Kyc from '../Components/Kyc';
-import {Card as MUICard,CardMedia,CardHeader,Avatar, CardContent, Typography, Tooltip} from '@mui/material';
+import {Card as MUICard,CardHeader,Avatar, CardContent, Typography, Tooltip} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditProfileModal from '../Components/EditProfileModal';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,9 +22,6 @@ import {
 import CardSlider from "../Components/CardSlider";
 import { db } from "../config";
 
-function getCurrentUnixTimestamp() {
-  return Math.floor(Date.now());
-}
 
 function UserPage() {
 
@@ -40,7 +36,7 @@ function UserPage() {
     }
   );
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
-  const navigate = useNavigate();
+
   const { currentUser } = useAuth();
   console.log("currentUser",currentUser)
   const cardData = [
@@ -98,15 +94,6 @@ function UserPage() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleSave = async (updatedProfile) => {
-    console.log('Profile updated:', updatedProfile);
-    const data = await saveDocument(COLLECTIONS.USER, currentUser.uid,updatedProfile)
-    if(data){
-      alert("Data Updated")
-    }
-  };
-  
   
   // Sort the array by the card name
   cardData.sort((a, b) => a[0].localeCompare(b[0]));

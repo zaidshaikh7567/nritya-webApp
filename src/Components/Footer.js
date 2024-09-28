@@ -1,9 +1,8 @@
 import React from 'react';
 import { Container, Grid, Typography, IconButton, Divider } from '@mui/material';
-import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import NrityaSVG from './NrityaSVG';
 import { styled } from '@mui/material/styles';
 
 
@@ -12,7 +11,6 @@ import { styled } from '@mui/material/styles';
 
 function Footer() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const isLoggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
 
   const ResponsiveTypography = styled(Typography)(({ theme }) => ({
     textTransform: 'none',

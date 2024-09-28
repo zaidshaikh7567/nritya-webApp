@@ -4,9 +4,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useAuth } from '../context/AuthContext';
 import { queryDocumentsCount } from '../utils/firebaseUtils';
 import { COLLECTIONS } from '../constants';
-import { green } from '@mui/material/colors';
-import { Card, CardContent, CardActionArea, Typography, Grid, Icon, Stack } from '@mui/material';
-import { loadCSS } from 'fg-loadcss';
+import { Card, CardContent, Typography, Grid, Icon } from '@mui/material';
 
 function CreatorDashboard() {
   const [counts, setCounts] = useState({

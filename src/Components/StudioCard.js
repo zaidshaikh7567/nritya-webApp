@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
 import { STORAGES } from '../constants';
-import { FaClock, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
+import {  FaMapMarker } from 'react-icons/fa';
 import StarRating from './StarRating';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import './StudioCard.css'
 

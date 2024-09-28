@@ -120,21 +120,6 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     setSelectedRow(selectedRowIndex);
   };
   
-
-
-  const handleToggleInstructor = (instructor) => {
-    setSelectedInstructors((prevSelected) => {
-      // Check if the instructor is already selected
-      const isAlreadySelected = prevSelected.some((selected) => selected.id === instructor.id);
-
-      // If selected, remove the instructor; if not selected, add the instructor
-      return isAlreadySelected
-        ? prevSelected.filter((selected) => selected.id !== instructor.id)
-        : [...prevSelected, instructor];
-    });
-  };
-  
-  
   useEffect(() => {
     // Fetch the list of studios created by the user from localStorage
     const studiosOfUser = JSON.parse(localStorage.getItem('StudioCreated')) || [];

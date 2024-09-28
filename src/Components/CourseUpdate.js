@@ -32,8 +32,6 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
   const [selectedInstructors, setSelectedInstructors] = useState([]);
 
   const danceStylesOptions = danceStyles.danceStyles;
-  const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
-  const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 

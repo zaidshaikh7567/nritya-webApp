@@ -3,7 +3,7 @@ import { Form, Button, Col, Row, Image } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import {doc, getDoc, updateDoc, collection, where, query, getDocs} from 'firebase/firestore';
+import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { COLLECTIONS } from '../constants';
 import { STORAGES } from '../constants';

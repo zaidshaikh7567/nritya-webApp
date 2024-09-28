@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
 import { Offcanvas, Button } from 'react-bootstrap';
-import { useAuth } from '../context/AuthContext';
 import { auth } from '../config';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import logo from './../logo.png';
 import './SideMenu.css';
 import secureLocalStorage from 'react-secure-storage';
 
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const { currentUser } = useAuth();
+
 
   const handleLogout = async () => {
     console.log("Logging out SideMenu")
@@ -31,11 +29,6 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
     { action: () => window.location.hash = '#/myBookings', name: 'Bookings',show:true },
     { action: handleLogout, name: 'Sign Out',show:true },
   ];
-
-  const handleProfile = () => {
-    // Implement your profile page navigation logic here
-    window.open('#/profile', '_blank', 'noopener noreferrer');
-  };
 
   return (
     <Offcanvas

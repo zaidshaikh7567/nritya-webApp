@@ -1,33 +1,20 @@
-import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-} from "react-bootstrap";
-import {
-  Skeleton,
-  Button as MUIButton,
-} from "@mui/material";
+import React, { useState, useEffect,lazy, Suspense } from "react";
+import { Container, Row, Col,Card} from "react-bootstrap";
+import {Skeleton,Button as MUIButton} from "@mui/material";
 import { COLLECTIONS } from "../constants";
-import {
-  faBolt,
-  faMusic,
-  faHiking,
-  faGlassCheers,
-} from "@fortawesome/free-solid-svg-icons"; // Import specific icons from Font Awesome
+import {faBolt,faMusic,faHiking,faGlassCheers,} from "@fortawesome/free-solid-svg-icons";
 import "./LandingPage.css";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
-import CardSlider from "../Components/CardSlider";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from "react-router-dom";
-import DanceCarousel from "../Components/DanceCarousel";
 import { getAllImagesInFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
-import CardSlider2 from "../Components/CardSlider2";
-import CardSliderNew from "../Components/CardSliderNew";
+
+
+const DanceCarousel = lazy(() => import("../Components/DanceCarousel"));
+const CardSlider = lazy(() => import('../Components/CardSlider'));
+const CardSliderNew = lazy(() => import('../Components/CardSliderNew'));
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -86,7 +73,6 @@ function LandingPage() {
   };
 
   useEffect(() => {
-
     const fetchAndSaveData = async (city, entities) => {
       try {
         const promises = entities.map(entity => {
@@ -100,20 +86,18 @@ function LandingPage() {
             })
             .then(data => ({ [entity]: data }));
         });
-    
+  
         const allData = await Promise.all(promises);
-    
+  
         // Combine the fetched data into a single object
         const combinedData = Object.assign({}, ...allData);
-        setExploreEntity(combinedData);
-        //console.log("All Fetched Data:", combinedData);
-    
-        // You can now save `combinedData` to your state or perform other operations
+        return combinedData;
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
+        throw error;
       }
     };
-
+  
     const fetchIdNameMp = async (city) => {
       try {
         const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
@@ -121,40 +105,47 @@ function LandingPage() {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
-        
+  
         const data = await response.json();
-        setStudioIdName(data);
-        
+        return data;
       } catch (error) {
         console.error("Error in processing:", error);
+        throw error;
       }
     };
-    
-
+  
     const fetchData = async () => {
-      
       try {
-        let filterLocation = localStorage.getItem('filterLocation');
-        if(filterLocation){
-          if(filterLocation === "null"){
-            filterLocation = 'New Delhi';
-          }
-        }else{
-          filterLocation = 'New Delhi'
+
+        let filterLocation = localStorage.getItem("filterLocation");
+        if (!filterLocation || filterLocation === "null") {
+          filterLocation = "New Delhi";
         }
-        const entities = [COLLECTIONS.STUDIO, COLLECTIONS.WORKSHOPS, 
-          COLLECTIONS.COURSES, COLLECTIONS.OPEN_CLASSES];
-        fetchIdNameMp(filterLocation)
-        fetchAndSaveData(filterLocation, entities);
+  
+        const entities = [COLLECTIONS.STUDIO,COLLECTIONS.WORKSHOPS,
+          COLLECTIONS.COURSES,COLLECTIONS.OPEN_CLASSES,
+        ];
+  
+        // Fetch both `fetchIdNameMp` and `fetchAndSaveData` concurrently
+        const [studioIdNameData, exploreEntityData] = await Promise.all([
+          fetchIdNameMp(filterLocation),        // Fetch id:name data
+          fetchAndSaveData(filterLocation, entities),  // Fetch entity data
+        ]);
+  
+        // Set the state only after both are fetched
+        setStudioIdName(studioIdNameData);
+        setExploreEntity(exploreEntityData);
+  
+        // Now you have both data fetched and saved
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
+  
+    // Trigger data fetch on component mount
     fetchData();
-
-
-    
   }, []);
+  
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -183,35 +174,21 @@ function LandingPage() {
     <div>
       <Container className="my-0">
         <Row className="pb-1 pl-0 pr-0">
-          {danceImagesUrl.length > 0 ? (
-            <DanceCarousel danceImages={danceImagesUrl} />
-          ) : (
-            <Skeleton
-              sx={{
-                width: "100%",
-                height: "40vh",
-                bgcolor: isDarkModeOn ? "#202020" : "gray",
-              }}
-              variant="rectangular"
-              animation="wave"
-            />
-          )}
-        </Row>
-
-        <Row hidden>
-          {danceImagesUrl.length > 0 ? (
-            <CardSlider2 dataList={danceImagesUrl} />
-          ) : (
-            <Skeleton
-              sx={{
-                width: "100%",
-                height: "40vh",
-                bgcolor: isDarkModeOn ? "#202020" : "gray",
-              }}
-              variant="rectangular"
-              animation="wave"
-            />
-          )}
+          <Suspense fallback={<Skeleton width="100%" height="40vh" variant="rectangular" />}>
+              {danceImagesUrl.length > 0 ? (
+                <DanceCarousel danceImages={danceImagesUrl} />
+              ) : (
+                <Skeleton
+                  sx={{
+                    width: "100%",
+                    height: "40vh",
+                    bgcolor: isDarkModeOn ? "#202020" : "gray",
+                  }}
+                  variant="rectangular"
+                  animation="wave"
+                />
+              )}
+            </Suspense>
         </Row>
 
         <Row className="d-lg-none pb-2">
@@ -231,56 +208,63 @@ function LandingPage() {
         <LocationComponent />
 
         <br />
-          {exploreEntity[COLLECTIONS.STUDIO] && Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 0 &&
-            (
-            <>
-              <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
-              Explore Studios
-              </h3>
-            <Row>
+          {/* Studios Section */}
+      {exploreEntity[COLLECTIONS.STUDIO] && Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 0 && (
+        <>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+            Explore Studios
+          </h3>
+          <Row>
+            {/* Wrap CardSlider with Suspense */}
+            <Suspense fallback={<div>Loading Studios...</div>}>
               <CardSlider dataList={exploreEntity[COLLECTIONS.STUDIO]} imgOnly={false} />
-            </Row>
-          </>
-          )
-        }
-        {
-          exploreEntity[COLLECTIONS.WORKSHOPS] && Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 0 ? (
-            <>
-            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
-              Explore Workshops
-            </h3>
-            <Row>
-              <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName = {studioIdName} type={COLLECTIONS.WORKSHOPS} />
-            </Row>
-            </>
-          ) : null
-        }
+            </Suspense>
+          </Row>
+        </>
+      )}
 
-      {
-          exploreEntity[COLLECTIONS.OPEN_CLASSES] && Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 0 ? (
-            <>
-            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
-              Explore Open Classes
-            </h3>
-            <Row>
-              <CardSliderNew dataList={exploreEntity[COLLECTIONS.OPEN_CLASSES]} studioIdName = {studioIdName} type={COLLECTIONS.OPEN_CLASSES} />
-            </Row>
-            </>
-          ) : null
-        }
+      {/* Workshops Section */}
+      {exploreEntity[COLLECTIONS.WORKSHOPS] && Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 0 && (
+        <>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+            Explore Workshops
+          </h3>
+          <Row>
+            <Suspense fallback={<div>Loading Workshops...</div>}>
+              <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName={studioIdName} type={COLLECTIONS.WORKSHOPS} />
+            </Suspense>
+          </Row>
+        </>
+      )}
 
-      {
-          exploreEntity[COLLECTIONS.COURSES] && Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 0 ? (
-            <>
-            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>
-              Explore Courses 
-            </h3>
-            <Row>
-              <CardSliderNew dataList={exploreEntity[COLLECTIONS.COURSES]} studioIdName = {studioIdName} type={COLLECTIONS.COURSES} />
-            </Row>
-            </>
-          ) : null
-        }
+      {/* Open Classes Section */}
+      {exploreEntity[COLLECTIONS.OPEN_CLASSES] && Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 0 && (
+        <>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+            Explore Open Classes
+          </h3>
+          <Row>
+            <Suspense fallback={<div>Loading Open Classes...</div>}>
+              <CardSliderNew dataList={exploreEntity[COLLECTIONS.OPEN_CLASSES]} studioIdName={studioIdName} type={COLLECTIONS.OPEN_CLASSES} />
+            </Suspense>
+          </Row>
+        </>
+      )}
+
+      {/* Courses Section */}
+      {exploreEntity[COLLECTIONS.COURSES] && Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 0 && (
+        <>
+          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+            Explore Courses
+          </h3>
+          <Row>
+            <Suspense fallback={<div>Loading Courses...</div>}>
+              <CardSliderNew dataList={exploreEntity[COLLECTIONS.COURSES]} studioIdName={studioIdName} type={COLLECTIONS.COURSES} />
+            </Suspense>
+          </Row>
+        </>
+      )}
+
 
 
         <br />

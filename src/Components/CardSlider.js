@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card as MuiCard } from '@mui/joy';
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, Button } from '@mui/material';
+import { Dialog, DialogContent, Button } from '@mui/material';
 import CardCover from '@mui/joy/CardCover';
 import ProductCard from './NStudioCard';
 
@@ -51,7 +51,7 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
               <img
                 src={entity} // Use studio.iconUrl for the image source
                 loading="lazy"
-                alt={ "Studio image"} // Use studioName for alt text
+                alt="Studio image" // Use studioName for alt text
               />
             </CardCover>
           </MuiCard>

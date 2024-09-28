@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Offcanvas, Dropdown, Image } from 'react-bootstrap';
+import { Nav, Navbar, Dropdown, Image } from 'react-bootstrap';
 import { useMediaQuery } from 'react-responsive';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import logo from './../logo.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, Link } from 'react-router-dom';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelector';
 import indianCities from '../cities.json';
@@ -15,7 +13,6 @@ import { useAuth } from '../context/AuthContext';
 import SideMenu from './SideMenu';
 import { TextField, Autocomplete, Chip } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useTheme } from '@mui/material/styles';
 import { getBrowserLocation } from '../utils/location';
 import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -24,12 +21,11 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import './Header.css';
 import LoginModalDailog from './LoginModalDailog';
-import { Apartment, PartyModeOutlined, Place, PlaceTwoTone } from '@mui/icons-material';
+import { Apartment, PlaceTwoTone } from '@mui/icons-material';
 import logoBig from '../assets/images/logo_large.png';
 import logoMobile from '../assets/images/logo_small.jpg';
 
 const FILTER_LOCATION_KEY = 'filterLocation';
-const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -86,9 +82,7 @@ function Header() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const adminLogin = useSelector((state) => state.adminLogin);
   const reduxLocation = useSelector(selectRefreshLocation);
-  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
   const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
@@ -176,13 +170,6 @@ function Header() {
   };
 
   const locationOptions = indianCities.cities;
-
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevents default form behavior of submitting
-    handleButtonClick();
-  }
-
-  const { entity } = useParams();
 
   const getLocation = (event) => {
     getBrowserLocation();

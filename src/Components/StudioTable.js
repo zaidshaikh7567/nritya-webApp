@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Table, Button, Modal, Row, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Table, Button } from 'react-bootstrap';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import './StudioTable.css'; // Import the CSS file for styling
 import  TimeRangePicker from './TimeRangePicker';
@@ -9,23 +9,8 @@ import { Autocomplete, TextField } from '@mui/material';
 import { MultiSelect } from 'primereact/multiselect';
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/saga-blue/theme.css";
-        
-
-const daysOfWeekOptions = [
-  { value: '',label:'No days'},
-  { value: 'M', label: 'Monday' },
-  { value: 'T', label: 'Tuesday' },
-  { value: 'W', label: 'Wednesday' },
-  { value: 'Th', label: 'Thursday' },
-  { value: 'F', label: 'Friday' },
-  { value: 'Sat', label: 'Saturday' },
-  { value: 'Sun', label: 'Sunday' },
-];
-
 
 const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
-
-
 
 function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const [showTimePicker, setShowTimePicker] = useState(false);
