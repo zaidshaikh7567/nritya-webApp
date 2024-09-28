@@ -1,6 +1,10 @@
 import React, { useState, useEffect,lazy, Suspense } from "react";
-import { Container, Row, Col,Card} from "react-bootstrap";
-import {Skeleton,Button as MUIButton} from "@mui/material";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import Skeleton from "@mui/material/Skeleton";
+import MUIButton from "@mui/material/Button";
 import { COLLECTIONS } from "../constants";
 import {faBolt,faMusic,faHiking,faGlassCheers,} from "@fortawesome/free-solid-svg-icons";
 import "./LandingPage.css";
