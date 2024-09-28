@@ -245,7 +245,7 @@ function Header() {
             <FormControlLabel
               control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
               onClick={handleToggleDarkMode}
-            />;
+            />
             {currentUser ? (
               <>
                 <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', justifyContent: 'left' }}>

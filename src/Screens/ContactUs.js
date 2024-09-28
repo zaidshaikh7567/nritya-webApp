@@ -69,7 +69,7 @@ const ContactUs = () => {
                 <FontAwesomeIcon icon={faPhone} />
                 <div>
                   <h4 style={headingStyle}>Phone</h4>
-                  <p style={textStyle}>571-457-2321</p>
+                  <p style={textStyle}>6392074436</p>
                 </div>
               </div>
 
@@ -77,7 +77,7 @@ const ContactUs = () => {
                 <FontAwesomeIcon icon={faEnvelope} />
                 <div>
                   <h4 style={headingStyle}>Email</h4>
-                  <p style={textStyle}>nritya.contact@gmail.com</p>
+                  <p style={textStyle}>nritya@nritya.co.in</p>
                 </div>
               </div>
             </div>
