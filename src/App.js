@@ -74,7 +74,7 @@ function App() {
     <HashRouter  >
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Suspense fallback={
-        <Box sx={{ width: '100%', height: '7vh', backgroundColor: '#f0f0f0', 
+        <Box sx={{ width: '100%', height: '7vh', backgroundColor: "black", 
           position: 'sticky', top: 0, zIndex: 1000 
         }}
       >
@@ -87,7 +87,7 @@ function App() {
         <main className='py-1 flex-grow-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
           <Container fluid>
             <SnackbarProvider>
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Skeleton variant="rectangular" animation="wave"/>}>
                 <Routes>
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
@@ -127,7 +127,7 @@ function App() {
             style={{
               width: '100%',
               height: '10vh',
-              backgroundColor: '#f0f0f0',
+              backgroundColor: "black",
             }}
           />}>
         <Footer />
