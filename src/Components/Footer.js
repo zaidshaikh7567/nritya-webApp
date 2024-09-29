@@ -137,7 +137,7 @@ function Footer() {
               <Typography hidden variant="body2">
                 <a href="#/aboutus" style={linkStyle}>About Us</a>
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{textDecoration: 'none'}}>
                 <a href="#/contactus" style={linkStyle}>Contact Us</a>
               </Typography>
             </Grid>

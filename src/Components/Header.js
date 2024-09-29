@@ -358,7 +358,7 @@ function Header() {
               )
             }
               <Suspense fallback={ <Skeleton variant="rectangular" animation="wave"
-                style={{ width: '20rem',height: '100vh',backgroundColor: isDarkModeOn ? '#333' : '#f0f0f0',
+                style={{ width: '20rem', height: '100vh', left: 0, top: 0, zIndex: 1000, backgroundColor: isDarkModeOn ? '#333' : '#f0f0f0',
                 }}
               />}>
                 <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />

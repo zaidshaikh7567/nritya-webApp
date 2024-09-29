@@ -9,7 +9,7 @@ import Box  from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import SnackbarProvider from './context/SnackbarContext';
 import { HelmetProvider } from 'react-helmet-async';
-
+import './App.css';
 
 const Header = lazy(() => import('./Components/Header'));
 const Footer = lazy(() => import('./Components/Footer'));
@@ -73,13 +73,14 @@ function App() {
     <HelmetProvider>
     <HashRouter  >
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Suspense fallback={<Skeleton variant="rectangular" animation="wave"
-            style={{
-              width: '100%',
-              height: '10vh', // 10% of the viewport height
-              backgroundColor: '#f0f0f0', // Adjust the color if needed
-            }}
-          />}>
+      <Suspense fallback={
+        <Box sx={{ width: '100%', height: '7vh', backgroundColor: '#f0f0f0', 
+          position: 'sticky', top: 0, zIndex: 1000 
+        }}
+      >
+        <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />
+      </Box>
+      }>
         <Header />
       </Suspense>
         

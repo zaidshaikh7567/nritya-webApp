@@ -7,7 +7,7 @@ import Chip from '@mui/joy/Chip';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import { Stack } from '@mui/material';
-import { useSelector } from 'react-redux'; // Import useSelector
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { danceStylesColorChips } from '../constants';
 import IconButton from '@mui/joy/IconButton';
@@ -81,7 +81,7 @@ export default function NStudioCard({img_src,data}) {
           textColor="text.primary"
           underline='none'
           overlay
-          style={{color: isDarkModeOn?'white':'black',extDecoder:"one"}}
+          style={{color: isDarkModeOn?'white':'black'}}
         >
           {data && data.studioName?data.studioName:"    "}
         </Link>
