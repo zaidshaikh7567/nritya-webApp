@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Table, Alert, Spinner } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+import Spinner from 'react-bootstrap/Spinner';
 import { db } from '../config';
 import { doc, getDoc, setDoc, addDoc, collection, getDocs } from "firebase/firestore";
 import logo from '../logo.png';
 import SubscriptionAdd from '../utils/SubscriptionAdd';
 import './CreatorPlans.css';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 
 const planIcons = {0:"fa-solid fa-paper-plane",1:"fa-solid fa-rocket",2:"fa-solid fa-satellite"}

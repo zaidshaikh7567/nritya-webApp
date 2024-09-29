@@ -4,22 +4,20 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Chip from "@mui/joy/Chip";
 import Typography from "@mui/joy/Typography";
-import {
-  Box,
-  Grid,
-  Modal,
-  Stack,
-  Typography as MUITypography,
-  Button,
-  IconButton,
-} from "@mui/material";
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Modal from '@mui/material/Modal';
+import Stack from '@mui/material/Stack';
+import MUITypography  from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Spinner from 'react-bootstrap/Spinner';
 import { useSelector } from "react-redux";
-import { CHIP_LEVELS_DESIGN, COLLECTIONS, COLORS, danceStylesColorChips, STORAGES } from "../constants";
+import { CHIP_LEVELS_DESIGN, COLLECTIONS, danceStylesColorChips, STORAGES } from "../constants";
 import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
-import { Spinner } from "react-bootstrap";
 import { bookEntity } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';

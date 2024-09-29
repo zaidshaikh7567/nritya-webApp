@@ -27,7 +27,7 @@ import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
 
-function StudioFullPage({studioContactNumber, studioWhatsAppNumber}) {
+function StudioFullPage() {
   const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
   const isDarkModeOn = useSelector(selectDarkModeStatus);

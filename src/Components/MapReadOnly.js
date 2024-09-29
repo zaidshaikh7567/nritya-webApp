@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { gMapApiKey } from '../config';
-import { FaMapMarker, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const MapReadOnly = ({selectedLocationParam}) => {
   const initialCenter = { lat: 28.6139, lng: 77.2090 };

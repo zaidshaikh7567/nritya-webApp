@@ -1,13 +1,12 @@
-/* eslint-disable jsx-a11y/img-redundant-alt */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {auth , provider}  from './../config.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { db } from '../config';
 import { doc, getDoc,setDoc } from "firebase/firestore";
-import { STATUSES,COLLECTIONS } from "./../constants.js";
+import { COLLECTIONS } from "./../constants.js";
 import {  Row, Col } from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux'; 
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Button, Container } from '@mui/material';
 import { setCreatorMode } from '../utils/firebaseUtils.js';

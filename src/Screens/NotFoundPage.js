@@ -1,6 +1,5 @@
 import React from 'react';
 import NrityaSVG from '../Components/NrityaSVG';
-import { Grid } from '@mui/material';
 
 const NotFoundPage = () => {
     return (

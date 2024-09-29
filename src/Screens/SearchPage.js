@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import {Form, Button, Col,Row, Modal, ButtonGroup,
       Container,} from "react-bootstrap";
@@ -60,7 +60,6 @@ const SearchPage = () => {
     course: [],
   });
 
-  const dispatch = useDispatch();
   const danceForms = danceStyles.danceStyles.map((danceForm) => ({
     value: danceForm,
     label: danceForm,
@@ -103,7 +102,7 @@ const SearchPage = () => {
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
     if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
     if (selectedLevel && selectedLevel !== LEVELS.ALL) count++;
-    if (selectedMaxPrice && selectedMaxPrice != MAX_PRICE) count++;
+    if (selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) count++;
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     if (storedDanceForm) count += JSON.parse(storedDanceForm).length;
     return count;
@@ -236,19 +235,6 @@ const SearchPage = () => {
     );
   };
 
-  const handleSearchTypeChange = (e) => {
-    setSelectedSearchType(e.target.value);
-    setSelectedDistances("");
-    localStorage.removeItem(FILTER_DISTANCES_KEY);
-    if(e.target.value == "studio"){
-      setSelectedMaxPrice(MAX_PRICE);
-      setSelectedLevel(LEVELS.ALL);
-    }
-    if(e.target.value == "openClass"){
-      setSelectedMaxPrice(MAX_PRICE);
-    }
-  };
-
   const handleSearchTypeClick = (clickedSearchType) => {
     localStorage.setItem(FILTER_SEARCH_TYPE_KEY, clickedSearchType);
     localStorage.removeItem(FILTER_DISTANCES_KEY);
@@ -281,12 +267,6 @@ const SearchPage = () => {
     handleSearch();
   };
 
-  const handleRemoveSearchType = () => {
-    setSelectedSearchType("studio");
-    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, "studio");
-  };
-
-  // Retrieve selected filters from local storage on component mount
   useEffect(() => {
     const storedDistances = localStorage.getItem(FILTER_DISTANCES_KEY);
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);

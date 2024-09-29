@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { storage,gMapApiKey } from '../config';
+import { useEffect } from 'react';
+import { gMapApiKey } from '../config';
 import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelector';
 import { useSelector, useDispatch } from 'react-redux';
 import { refreshLocation } from '../redux/actions/refreshLocationAction.js';

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Card, Button } from 'react-bootstrap';
+import Accordion from 'react-bootstrap/Accordion';
 import InstructorAdd from '../Components/InstructorAdd';
 import InstructorUpdate from '../Components/InstructorUpdate';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
-import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import {doc,getDoc,updateDoc,collection,where,query,getDocs} from 'firebase/firestore';
+import {collection,where,query,getDocs} from 'firebase/firestore';
 import { COLLECTIONS } from '../constants';
 import { db } from '../config';
 import InstructorCard from '../Components/InstructorCard';

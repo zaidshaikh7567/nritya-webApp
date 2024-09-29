@@ -1,17 +1,7 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { db } from "../config";
-import {
-  doc,
-  getDoc,
-  collection,
-  where,
-  getDocs,
-  query,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import {doc, getDoc, collection, where, getDocs, query, updateDoc} from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";

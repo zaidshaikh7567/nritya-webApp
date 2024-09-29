@@ -1,17 +1,18 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import React, { useState, useEffect,lazy, Suspense } from "react";
 import { Container } from 'react-bootstrap';
-import Header from './Components/Header';
-import Footer from './Components/Footer';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from './redux/selectors/darkModeSelector';
 import ProtectedRoute from './utils/ProtectedRoute';
 import CreatorRoute from './utils/CreatorRoute';
 import Box  from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 import SnackbarProvider from './context/SnackbarContext';
 import { HelmetProvider } from 'react-helmet-async';
 
 
+const Header = lazy(() => import('./Components/Header'));
+const Footer = lazy(() => import('./Components/Footer'));
 const LandingPage = lazy(() => import('./Screens/LandingPage'));
 const LoginPage = lazy(() => import('./Screens/LoginPage'));
 const StudioFullPage = lazy(() => import('./Screens/StudioFullPage'));
@@ -72,7 +73,15 @@ function App() {
     <HelmetProvider>
     <HashRouter  >
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Header/>
+      <Suspense fallback={<Skeleton variant="rectangular" animation="wave"
+            style={{
+              width: '100%',
+              height: '10vh', // 10% of the viewport height
+              backgroundColor: '#f0f0f0', // Adjust the color if needed
+            }}
+          />}>
+        <Header />
+      </Suspense>
         
         <main className='py-1 flex-grow-1' style={{backgroundColor: isDarkModeOn ? '#202020' : 'white',width: '100%'}} >
           <Container fluid>
@@ -113,7 +122,15 @@ function App() {
           </Container>
         </main>
 
+        <Suspense fallback={<Skeleton variant="rectangular" animation="wave"
+            style={{
+              width: '100%',
+              height: '10vh',
+              backgroundColor: '#f0f0f0',
+            }}
+          />}>
         <Footer />
+      </Suspense>
       </Box>
     </HashRouter>
     </HelmetProvider>

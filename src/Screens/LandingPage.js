@@ -57,8 +57,6 @@ function LandingPage() {
     }, 100);
   };
 
-  const FILTER_LOCATION_KEY = "filterLocation";
-  const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || null;
 
   const cardStyle = {
     background: isDarkModeOn ? "#333333" : "white",

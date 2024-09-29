@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense  } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Dropdown, Image } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Image from 'react-bootstrap/Image';
+import Nav from 'react-bootstrap/Nav';
 import { useMediaQuery } from 'react-responsive';
-import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
@@ -10,21 +12,25 @@ import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelecto
 import indianCities from '../cities.json';
 import { toggleDarkMode } from '../redux/actions/darkModeAction';
 import { useAuth } from '../context/AuthContext';
-import SideMenu from './SideMenu';
-import { TextField, Autocomplete, Chip } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getBrowserLocation } from '../utils/location';
-import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
+import Switch from '@mui/material/Switch';
+import Skeleton from '@mui/material/Skeleton';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import './Header.css';
-import LoginModalDailog from './LoginModalDailog';
 import { Apartment, PlaceTwoTone } from '@mui/icons-material';
 import logoBig from '../assets/images/logo_large.png';
 import logoMobile from '../assets/images/logo_small.jpg';
 
+const SideMenu = lazy(() => import('./SideMenu'));
+const LoginModalDailog = lazy(() => import('./LoginModalDailog'));
 const FILTER_LOCATION_KEY = 'filterLocation';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -351,16 +357,21 @@ function Header() {
 
               )
             }
-
-              <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+              <Suspense fallback={ <Skeleton variant="rectangular" animation="wave"
+                style={{ width: '20rem',height: '100vh',backgroundColor: isDarkModeOn ? '#333' : '#f0f0f0',
+                }}
+              />}>
+                <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+              </Suspense>
               </>
             
           ) : (
           
               <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
-           
-            <LoginModalDailog open={open} handleClose={handleClose} />
+            <Suspense fallback={<div>Loading...</div>}>
+              <LoginModalDailog open={open} handleClose={handleClose} />
+            </Suspense>
           </Nav>
         </Navbar.Collapse>
 
