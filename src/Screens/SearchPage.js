@@ -100,7 +100,7 @@ const SearchPage = () => {
   const countActiveFilters = () => {
     let count = 0;
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
-    if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
+    // if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
     if (selectedLevel && selectedLevel !== LEVELS.ALL) count++;
     if (selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) count++;
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
