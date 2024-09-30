@@ -211,7 +211,9 @@ function Header() {
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
-      {isMobile ? (
+        <div className="d-flex align-items-center">
+
+          {isMobile ? (
         <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
           <Image style={{ width: "4rem", height: "4rem" }}
             src={logoMobile}
@@ -230,11 +232,28 @@ function Header() {
           />
         </Navbar.Brand>
       )}
+        <Button
+          variant="outlined"
+          className="btn-hover-purple-bg me-2 rounded-3"
+          onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+          style={{
+            cursor: 'pointer', textTransform: 'none', color: 'white', borderColor: 'white',
+            height: '3rem', borderWidth: '2px', width: '12rem'
+          }}
+          startIcon={<PlaceTwoTone />}>
+          {selectedLocation}
+        </Button>
+        </div>
         
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
+
+
           <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
+            <div className="position-relative location-dropdown-container my-2">
+
+              <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
             <FormControlLabel
               control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
               onClick={handleToggleDarkMode}
@@ -255,20 +274,6 @@ function Header() {
               </>
             )}
           </Nav>
-
-          <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
-            <div className="position-relative location-dropdown-container my-2">
-              <Button
-                variant="outlined"
-                className="btn-hover-purple-bg me-2 rounded-3"
-                onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
-                  height: '3rem', borderWidth: '2px', width: '12rem'
-                }}
-                startIcon={<PlaceTwoTone />}
-              >
-                {selectedLocation}
-              </Button>
 
               {showLocationDropdown && (
                 <Dropdown.Menu
@@ -366,7 +371,6 @@ function Header() {
               </>
             
           ) : (
-          
               <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
           )}
             <Suspense fallback={<div>Loading...</div>}>
