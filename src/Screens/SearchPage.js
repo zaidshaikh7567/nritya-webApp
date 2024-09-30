@@ -51,7 +51,7 @@ const SearchPage = () => {
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
-  const [selectedSearchType, setSelectedSearchType] = useState("studio");
+  const [selectedSearchType, setSelectedSearchType] = useState("studio"); 
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(MAX_PRICE);
   const [searchData, setSearchData] = useState({
@@ -373,12 +373,17 @@ const SearchPage = () => {
                   variant={selectedSearchType === searchType.name ? "outlined" : "contained"}
                   sx={{
                     cursor: 'pointer',
-                    bgcolor: selectedSearchType === searchType.name ? "black" : "#D9D9D9",
+                    bgcolor: selectedSearchType === searchType.name ? "black" : "white",
                     color: selectedSearchType === searchType.name ? "white" : "black",
                     borderRadius: '10px',
+                    fontWeight: 'bold',
                     "&:hover": {
-                      bgcolor: selectedSearchType === searchType.name ? "white" : "black",
-                      color: selectedSearchType === searchType.name ? "black" : "white",
+                      bgcolor: isDarkModeOn 
+                        ? (selectedSearchType === searchType.name ? "black" : "white") 
+                        : (selectedSearchType === searchType.name ? "white" : "black"),
+                      color: isDarkModeOn 
+                        ? (selectedSearchType === searchType.name ? "white" : "black") // Change to blue in dark mode
+                        : (selectedSearchType === searchType.name ? "black" : "white"), // Ensure text is black in light mode
                     }
                   }}
                   onClick={() => handleSearchTypeClick(searchType.name)}
