@@ -129,9 +129,8 @@ const SearchPage = () => {
       selectedSearchType ||
       "studio";
 
-    const storedSelectedDanceForms = JSON.parse(localStorage.getItem(FILTER_DANCE_FORMS_KEY) || "[]");
-
-    if (query == null) {
+      
+      if (query == null) {
       setQuery("");
     }
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
@@ -143,7 +142,8 @@ const SearchPage = () => {
     if (storedSelectedSearchType) {
       apiEndpoint += `&entity=${encodeURIComponent(entity)}`;
     }
-
+    
+    const storedSelectedDanceForms = JSON.parse(localStorage.getItem(FILTER_DANCE_FORMS_KEY) || "[]");
     if (storedSelectedDanceForms.length > 0) {
       apiEndpoint += `&danceStyle=${encodeURIComponent(storedSelectedDanceForms.join(","))}`;
     }
@@ -290,7 +290,7 @@ const SearchPage = () => {
     }
     setActiveFilters(countActiveFilters());
     handleSearch();
-  }, []);
+  }, [selectedLevel, selectedMaxPrice]);
 
   return (
     <div
