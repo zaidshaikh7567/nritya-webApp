@@ -12,10 +12,14 @@
       width: 100%; /* Make buttons take full width */
     }
   
-    .location-dropdown-container {
-      width: 100%; /* Make location dropdown container take full width */
-    }
+  
   }
+
+@media (max-width: 340px) {
+  .location-dropdown-container {
+    width: 100%; /* Make location dropdown container take full width */
+  }
+}
   
   /* Align navbar elements to the right on large screens */
   @media (min-width: 769px) {
@@ -48,4 +52,54 @@
 .city-btn-hover-purple-bg[aria-selected="true"] {
   color: white;
   background-color: #735EAB !important;
+}
+
+/* to make location dropdown menu styling*/
+
+.dropdown-menu {
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white; /* default */
+  margin-left: 8px; /* Default for extra small devices */
+}
+
+.dropdown-menu.dark {
+  background-color: #181818; /* Dark mode */
+}
+
+@media (min-width: 300px) {
+  .dropdown-menu {
+    margin-left: 40px; /* Small devices */
+  }
+}
+
+@media (min-width: 406px) {
+  .dropdown-menu {
+    margin-left: 70px; /* Small devices */
+  }
+}
+
+@media (min-width: 500px) {
+  .dropdown-menu {
+    margin-left: 90px; /* Small devices */
+  }
+}
+
+@media (min-width: 576px) {
+  .dropdown-menu {
+    margin-left: 130px; /* Small devices */
+  }
+}
+
+@media (min-width: 768px) {
+  .dropdown-menu {
+    margin-left: 114px; /* Medium devices */
+  }
+}
+
+@media (min-width: 992px) {
+  .dropdown-menu {
+    margin-left: 140px; /* Large devices */
+  }
 }

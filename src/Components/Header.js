@@ -179,7 +179,12 @@ function Header() {
 
   const getLocation = (event) => {
     getBrowserLocation();
-    setSelectedLocation(localStorage.getItem('filterLocation'))
+    setSelectedLocation(localStorage.getItem('filterLocation'));
+    setTimeout(() => {
+      const currentLocation = localStorage.getItem('filterLocation');
+      setSelectedLocation(currentLocation || "New Delhi"); // Default to "New Delhi" if no location is found
+      window.location.reload(); // Reload the page
+    }, 1000); // Delay of 2000 milliseconds (2 seconds)
   };
 
   useEffect(() => {
@@ -200,7 +205,7 @@ function Header() {
 
   const handleOpen = () => {
     setOpen(true)
-    console.log("handle Open from header",open)
+    console.log("handle Open from header", open)
   }
 
   //function handle to close the form
@@ -211,40 +216,87 @@ function Header() {
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
-        <div className="d-flex align-items-center">
+        <div className="d-flex location-dropdown-container align-items-center">
+
+          {showLocationDropdown && (
+            <Dropdown.Menu
+              show={showLocationDropdown}
+              className={`dropdown-menu ${isDarkModeOn ? 'dark' : ''}`}
+
+              style={{
+                marginTop: '0.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                // marginLeft: '144px',
+                backgroundColor: isDarkModeOn ? '#181818' : 'white',
+              }}
+            >
+
+              <ThemeProvider theme={autocompleteTheme}>
+                <Autocomplete
+                  disablePortal
+                  id="locationSearch"
+                  options={locationOptions}
+                  value={selectedLocation}
+                  onChange={handleLocationChange}
+                  sx={{ width: "auto", padding: '0' }}
+                  renderInput={(params) => (
+                    <>
+                      <Chip label="🧭 Current City" sx={{
+                        cursor: 'pointer',
+                        width: "100%",
+                        marginTop: '0px',
+                        borderRadius: '0px',
+                        marginBottom: '10px'
+                      }} onClick={getLocation} />
+                      <TextField
+                        {...params}
+                        label="Location"
+                        placeholder="🔍Search..."
+                      />
+                    </>
+                  )}
+                  classes={{ option: 'city-btn-hover-purple-bg' }}
+                />
+              </ThemeProvider>
+
+            </Dropdown.Menu>
+          )}
 
           {isMobile ? (
-        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "4rem", height: "4rem" }}
-            src={logoMobile}
-            alt="Logo"
-            roundedCircle={true}
-          />
-        </Navbar.Brand>
-      ) : (
-        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "100%", height: "4rem",maxWidth: "200px", 
-          margin: 0,  
-          padding: 0,  
-          objectFit: "contain"  }}
-            src={logoBig}
-            alt="Logo"
-          />
-        </Navbar.Brand>
-      )}
-        <Button
-          variant="outlined"
-          className="btn-hover-purple-bg me-2 rounded-3"
-          onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-          style={{
-            cursor: 'pointer', textTransform: 'none', color: 'white', borderColor: 'white',
-            height: '3rem', borderWidth: '2px', width: '12rem'
-          }}
-          startIcon={<PlaceTwoTone />}>
-          {selectedLocation}
-        </Button>
+            <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+              <Image style={{ width: "4rem", height: "4rem" }}
+                src={logoMobile}
+                alt="Logo"
+                roundedCircle={true}
+              />
+            </Navbar.Brand>
+          ) : (
+            <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+              <Image style={{
+                width: "100%", height: "4rem", maxWidth: "200px",
+                margin: 0,
+                padding: 0,
+                objectFit: "contain"
+              }}
+                src={logoBig}
+                alt="Logo"
+              />
+            </Navbar.Brand>
+          )}
+          <Button
+            variant="outlined"
+            className="btn-hover-purple-bg me-2 rounded-3"
+            onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+            style={{
+              cursor: 'pointer', textTransform: 'none', color: 'white', borderColor: 'white',
+              height: '3rem', borderWidth: '2px', width: '12rem'
+            }}
+            startIcon={<PlaceTwoTone />}>
+            {selectedLocation}
+          </Button>
         </div>
-        
+
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
@@ -274,91 +326,49 @@ function Header() {
               </>
             )}
           </Nav>
-
-              {showLocationDropdown && (
-                <Dropdown.Menu
-                  show={showLocationDropdown}
-                  style={{
-                    marginTop: '0.5rem',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                    backgroundColor: isDarkModeOn ? '#181818' : 'white',
-                  }}
-                >
-
-                  <ThemeProvider theme={autocompleteTheme}>
-                    <Autocomplete
-                      disablePortal
-                      id="locationSearch"
-                      options={locationOptions}
-                      value={selectedLocation}
-                      onChange={handleLocationChange}
-                      sx={{ width: "auto", padding: '0' }}
-                      renderInput={(params) => (
-                        <>
-                          <Chip label="🧭 Current City" sx={{
-                            cursor: 'pointer',
-                            width: "100%",
-                            marginTop: '0px',
-                            borderRadius: '0px',
-                            marginBottom: '10px'
-                          }} onClick={getLocation} />
-                          <TextField
-                            {...params}
-                            label="Location"
-                            placeholder="🔍Search..."
-                          />
-                        </>
-                      )}
-                      classes={{ option: 'city-btn-hover-purple-bg' }}
-                    />
-                  </ThemeProvider>
-
-                </Dropdown.Menu>
-              )}
             </div>
             {currentUser ? (
-            <>
-            {
-              photoURL ? (
-                <Button
-                  onClick={openProfileOffcanvas}
-                  className='my-3'
-                  style={{
-                    borderRadius: '50%',
-                    width: '3rem',
-                    height: '3rem',
-                    marginRight: '0.5rem',
-                    padding: 0, // Ensure no padding around the image
-                    minWidth: '3rem', // Ensure the button size is consistent
-                    minHeight: '3rem', // Ensure the button size is consistent
-                    borderWidth: '0.2px',
-                    backgroundImage: `url(${photoURL})`,
-                    backgroundSize: 'cover', // Cover the entire button area
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    borderColor:'yellow',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: 'none', // Remove default border if needed
-                    boxShadow: 'none', // Remove default shadow if needed
-                  }}
-                />
+              <>
+                {
+                  photoURL ? (
+                    <Button
+                      onClick={openProfileOffcanvas}
+                      className='my-3'
+                      style={{
+                        borderRadius: '50%',
+                        width: '3rem',
+                        height: '3rem',
+                        marginRight: '0.5rem',
+                        padding: 0, // Ensure no padding around the image
+                        minWidth: '3rem', // Ensure the button size is consistent
+                        minHeight: '3rem', // Ensure the button size is consistent
+                        borderWidth: '0.2px',
+                        backgroundImage: `url(${photoURL})`,
+                        backgroundSize: 'cover', // Cover the entire button area
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        borderColor: 'yellow',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none', // Remove default border if needed
+                        boxShadow: 'none', // Remove default shadow if needed
+                      }}
+                    />
 
-              ) :
-              (
-                <Button onClick={openProfileOffcanvas} className="rounded-pill my-3"
-                variant="outlined"
-                style={{
-                  fontSize: '0.9rem',
-                  color: 'white', borderRadius: '50%', borderColor: "white",
-                  width: '3rem', height: '3rem', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
-                  borderWidth: '2px',
-                }}>
-                {getUserNameInitials()}
-              </Button>
+                  ) :
+                    (
+                      <Button onClick={openProfileOffcanvas} className="rounded-pill my-3"
+                        variant="outlined"
+                        style={{
+                          fontSize: '0.9rem',
+                          color: 'white', borderRadius: '50%', borderColor: "white",
+                          width: '3rem', height: '3rem', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
+                          borderWidth: '2px',
+                        }}>
+                        {getUserNameInitials()}
+                      </Button>
 
               )
             }
