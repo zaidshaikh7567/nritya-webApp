@@ -51,7 +51,7 @@ const SearchPage = () => {
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
-  const [selectedSearchType, setSelectedSearchType] = useState("studio");
+  const [selectedSearchType, setSelectedSearchType] = useState("studio"); 
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(MAX_PRICE);
   const [searchData, setSearchData] = useState({
@@ -100,7 +100,7 @@ const SearchPage = () => {
   const countActiveFilters = () => {
     let count = 0;
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
-    if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
+    // if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
     if (selectedLevel && selectedLevel !== LEVELS.ALL) count++;
     if (selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) count++;
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
@@ -129,7 +129,8 @@ const SearchPage = () => {
       selectedSearchType ||
       "studio";
 
-    if (query == null) {
+      
+      if (query == null) {
       setQuery("");
     }
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
@@ -141,9 +142,10 @@ const SearchPage = () => {
     if (storedSelectedSearchType) {
       apiEndpoint += `&entity=${encodeURIComponent(entity)}`;
     }
-
-    if (selectedDanceForms.length > 0) {
-      apiEndpoint += `&danceStyle=${encodeURIComponent(selectedDanceForms.join(","))}`;
+    
+    const storedSelectedDanceForms = JSON.parse(localStorage.getItem(FILTER_DANCE_FORMS_KEY) || "[]");
+    if (storedSelectedDanceForms.length > 0) {
+      apiEndpoint += `&danceStyle=${encodeURIComponent(storedSelectedDanceForms.join(","))}`;
     }
 
     if (entity !== COLLECTIONS.STUDIO && selectedLevel && selectedLevel !== LEVELS.ALL) {
@@ -288,7 +290,7 @@ const SearchPage = () => {
     }
     setActiveFilters(countActiveFilters());
     handleSearch();
-  }, []);
+  }, [selectedLevel, selectedMaxPrice]);
 
   return (
     <div
@@ -342,6 +344,7 @@ const SearchPage = () => {
                                   cursor: "pointer",
                                   color: isDarkModeOn ? "#892CDC" : "black",
                                   marginRight: 1,
+                                  width:"40px"
                                 }}
                                 onClick={handleSearch}
                               />
@@ -356,7 +359,7 @@ const SearchPage = () => {
                         }}
                       />
                     )}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1/2 }}
                   />
                 </MuiStack>
               </ThemeProvider>
@@ -364,7 +367,7 @@ const SearchPage = () => {
           </MuiGrid>
           <br></br>
           <Row className="align-items-center">
-          <div className="horizontal-scroll-wrapper-for-filters"> 
+          <div className="horizontal-scroll-wrapper-for-filters">        {/* Studio, Workshops, Open Classes, Courses */}
             {searchTypes.map((searchType) => (
               <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
                 <MuiChip
@@ -372,24 +375,31 @@ const SearchPage = () => {
                   variant={selectedSearchType === searchType.name ? "outlined" : "contained"}
                   sx={{
                     cursor: 'pointer',
-                    bgcolor: selectedSearchType === searchType.name ? "black" : "#D9D9D9",
+                    bgcolor: selectedSearchType === searchType.name ? "black" : "white",
                     color: selectedSearchType === searchType.name ? "white" : "black",
                     borderRadius: '10px',
+                    fontWeight: 'bold',
+                    border: `1px solid ${isDarkModeOn ? "white" : "black"}`, // Set border color based on dark mode
                     "&:hover": {
-                      bgcolor: selectedSearchType === searchType.name ? "black" : "black",
-                      color: selectedSearchType === searchType.name ? "white" : "white",
+                      bgcolor: isDarkModeOn 
+                        ? (selectedSearchType === searchType.name ? "black" : "white") 
+                        : (selectedSearchType === searchType.name ? "white" : "black"),
+                      color: isDarkModeOn 
+                        ? (selectedSearchType === searchType.name ? "white" : "black") // Change to blue in dark mode
+                        : (selectedSearchType === searchType.name ? "black" : "white"), // Ensure text is black in light mode
+                        borderColor: isDarkModeOn ? "white" : "black", // Keep border color consistent on hover
                     }
                   }}
                   onClick={() => handleSearchTypeClick(searchType.name)}
                 />
             </Col>
             ))}
-           </div>
+          </div>
           </Row>
 
           <Row className="align-items-center">
           <div className="horizontal-scroll-wrapper-for-filters"> 
-            <Col xs="auto" style={{ marginTop: "0.5rem" }}>
+            <Col xs="auto" style={{ marginTop: "0.5rem" }}>             {/* Filter */}
               <MuiBadge
                 onClick={toggleFilters}
                 badgeContent={activeFilters}

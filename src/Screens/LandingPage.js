@@ -203,7 +203,7 @@ function LandingPage() {
             href="#/search/studios"
             style={buttonStyle}
           >
-            Search Studios in your city
+            Search
           </MUIButton>
         </Row>
         
