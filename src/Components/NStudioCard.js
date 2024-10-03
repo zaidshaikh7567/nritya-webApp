@@ -76,7 +76,7 @@ export default function NStudioCard({img_src,data}) {
       <CardContent style={{padding:'10px'}}>
         <Link
           href={`#/studio/${studioId}`}
-          fontWeight="md"
+          fontWeight="bold"
           color="neutral"
           textColor="text.primary"
           underline='none'

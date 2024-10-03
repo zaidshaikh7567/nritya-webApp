@@ -427,7 +427,7 @@ export default function NCourseCard({dataItem, studioIdName}) {
         </AspectRatio>
         <CardContent style={{ padding: "10px", paddingTop: "5px" }}>
           <Box
-            fontWeight="md"
+            fontWeight="bold"
             color="neutral"
             textColor="text.primary"
             underline="none"
