@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense  } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -177,14 +177,10 @@ function Header() {
 
   const locationOptions = indianCities.cities;
 
-  const getLocation = (event) => {
-    getBrowserLocation();
-    setSelectedLocation(localStorage.getItem('filterLocation'));
-    setTimeout(() => {
-      const currentLocation = localStorage.getItem('filterLocation');
-      setSelectedLocation(currentLocation || "New Delhi"); // Default to "New Delhi" if no location is found
-      window.location.reload(); // Reload the page
-    }, 1000); // Delay of 2000 milliseconds (2 seconds)
+  const getLocation = async (event) => {
+    const city = await getBrowserLocation();
+    setSelectedLocation(city);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -306,26 +302,26 @@ function Header() {
             <div className="position-relative location-dropdown-container my-2">
 
               <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
-            <FormControlLabel
-              control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
-              onClick={handleToggleDarkMode}
-            />
-            {currentUser ? (
-              <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', justifyContent: 'left' }}>
-                  Search
-                </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
-              </>
-            ) : (
-              <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', textAlign: 'left', justifyContent: 'left' }}>
-                  Search
-                </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
-              </>
-            )}
-          </Nav>
+                <FormControlLabel
+                  control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
+                  onClick={handleToggleDarkMode}
+                />
+                {currentUser ? (
+                  <>
+                    <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px', height: '3rem', width: '12rem', justifyContent: 'left' }}>
+                      Search
+                    </Button>
+                    <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px', height: '3rem', width: '12rem' }}>List Studios</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px', height: '3rem', width: '12rem', textAlign: 'left', justifyContent: 'left' }}>
+                      Search
+                    </Button>
+                    <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px', height: '3rem', width: '12rem' }}> List Studios</Button>
+                  </>
+                )}
+              </Nav>
             </div>
             {currentUser ? (
               <>
@@ -370,19 +366,20 @@ function Header() {
                         {getUserNameInitials()}
                       </Button>
 
-              )
-            }
-              <Suspense fallback={ <Skeleton variant="rectangular" animation="wave"
-                style={{ width: '20rem', height: '100vh', left: 0, top: 0, zIndex: 1000, backgroundColor: isDarkModeOn ? '#333' : '#f0f0f0',
-                }}
-              />}>
-                <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
-              </Suspense>
+                    )
+                }
+                <Suspense fallback={<Skeleton variant="rectangular" animation="wave"
+                  style={{
+                    width: '20rem', height: '100vh', left: 0, top: 0, zIndex: 1000, backgroundColor: isDarkModeOn ? '#333' : '#f0f0f0',
+                  }}
+                />}>
+                  <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+                </Suspense>
               </>
-            
-          ) : (
-              <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
-          )}
+
+            ) : (
+              <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem', width: '12rem', borderWidth: '2px' }}>Sign In</Button>
+            )}
             <Suspense fallback={<div>Loading...</div>}>
               <LoginModalDailog open={open} handleClose={handleClose} />
             </Suspense>
