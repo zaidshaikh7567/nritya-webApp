@@ -17,6 +17,7 @@ import { COLLECTIONS, LEVELS } from "../constants";
 import NWorkshopCard from "../Components/NWorkshopCard";
 import NOpenClassCard from "../Components/NOpenClassCard";
 import NCourseCard from "../Components/NCourseCard";
+import { useMediaQuery } from '@mui/material';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
@@ -292,6 +293,27 @@ const SearchPage = () => {
     handleSearch();
   }, [selectedLevel, selectedMaxPrice]);
 
+  const [label, setLabel] = useState('Search studios, workshops, open classes, courses...');
+
+  // Function to update label based on window width
+  const updateLabel = () => {
+    if (window.innerWidth < 600) {
+      setLabel('Search...');
+    } else {
+      setLabel('Search studios, workshops, open classes, courses...');
+    }
+  };
+
+  // Update label on component mount and window resize
+  useEffect(() => {
+    updateLabel(); // Set initial label
+    window.addEventListener('resize', updateLabel); // Listen for resize
+
+    return () => {
+      window.removeEventListener('resize', updateLabel); // Clean up listener
+    };
+  }, []);
+
   return (
     <div
       style={{
@@ -324,8 +346,9 @@ const SearchPage = () => {
                     getOptionLabel={(option) => option.toString()}
                     renderInput={(params) => (
                       <MuiTextField
+                      className="autocomplete-input" // Style for Css
                         {...params}
-                        label="Search studios, workshops, open classes, courses......"
+                        label={label}
                         variant="outlined"
                         InputProps={{
                           ...params.InputProps,
@@ -359,7 +382,7 @@ const SearchPage = () => {
                         }}
                       />
                     )}
-                    style={{ flex: 1/2 }}
+                    style={{ flex: 1/1 }}
                   />
                 </MuiStack>
               </ThemeProvider>
@@ -367,39 +390,37 @@ const SearchPage = () => {
           </MuiGrid>
           <br></br>
           <Row className="align-items-center">
-          <div className="horizontal-scroll-wrapper-for-filters">        {/* Studio, Workshops, Open Classes, Courses */}
-            {searchTypes.map((searchType) => (
-              <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
-                <MuiChip
-                  label={searchType.label}
-                  variant={selectedSearchType === searchType.name ? "outlined" : "contained"}
-                  sx={{
-                    cursor: 'pointer',
-                    bgcolor: selectedSearchType === searchType.name ? "black" : "white",
-                    color: selectedSearchType === searchType.name ? "white" : "black",
-                    borderRadius: '10px',
-                    fontWeight: 'bold',
-                    border: `1px solid ${isDarkModeOn ? "white" : "black"}`, // Set border color based on dark mode
-                    "&:hover": {
-                      bgcolor: isDarkModeOn 
-                        ? (selectedSearchType === searchType.name ? "black" : "white") 
-                        : (selectedSearchType === searchType.name ? "white" : "black"),
-                      color: isDarkModeOn 
-                        ? (selectedSearchType === searchType.name ? "white" : "black") // Change to blue in dark mode
-                        : (selectedSearchType === searchType.name ? "black" : "white"), // Ensure text is black in light mode
-                        borderColor: isDarkModeOn ? "white" : "black", // Keep border color consistent on hover
-                    }
-                  }}
-                  onClick={() => handleSearchTypeClick(searchType.name)}
-                />
-            </Col>
-            ))}
-          </div>
+            <div className="horizontal-scroll-wrapper-for-filters">
+              {/* Studio, Workshops, Open Classes, Courses */}
+              {searchTypes.map((searchType) => (
+                <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
+                  <button
+                    onClick={() => handleSearchTypeClick(searchType.name)} // Add this line
+                    style={{
+                      cursor: 'pointer',
+                      backgroundColor: selectedSearchType === searchType.name
+                        ? (isDarkModeOn ? "white" : "black")
+                        : (isDarkModeOn ? "black" : "white"),
+                      color: selectedSearchType === searchType.name
+                        ? (isDarkModeOn ? "black" : "white")
+                        : (isDarkModeOn ? "white" : "black"),
+                      borderRadius: '10px',
+                      fontWeight: 'bold',
+                      border: `1px solid ${isDarkModeOn ? "white" : "black"}`,
+                      padding: '5px 10px',
+                      transition: 'background-color 0.3s, color 0.3s',
+                    }}
+                  >
+                    {searchType.label}
+                  </button>
+                </Col>
+              ))}
+            </div>
           </Row>
 
           <Row className="align-items-center">
           <div className="horizontal-scroll-wrapper-for-filters"> 
-            <Col xs="auto" style={{ marginTop: "0.5rem" }}>             {/* Filter */}
+            <Col xs="auto" style={{ marginTop: "0.5rem" }}>
               <MuiBadge
                 onClick={toggleFilters}
                 badgeContent={activeFilters}

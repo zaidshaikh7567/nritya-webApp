@@ -11,3 +11,21 @@
   .horizontal-scroll-wrapper-for-filters::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+
+  .autocomplete-input {
+    width: 50%; /* Default width for larger screens */
+    margin: 0 auto; /* Center the input */
+    transition: width 0.3s; /* Smooth transition */
+  }
+  
+  @media (max-width: 770px) {
+    .autocomplete-input {
+      width: 100%; /* Full width for screens below 750px */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    #responsiveInput::placeholder {
+    content: "Small Screen Placeholder";
+    }
+    }
