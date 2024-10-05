@@ -561,12 +561,14 @@ function StudioAdd({instructors}) {
                 <hr></hr>   
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
-                <span>Time Table Of dance classes</span>
-                <StudioTable
-                  tableData={tableData}
-                  setTableData={setTableData}
-                  instructorNamesWithIds={instructorNamesWithIds}
-                />
+                  <span>Time Table Of dance classes</span>
+                  
+                  <StudioTable
+                    tableData={tableData}
+                    setTableData={setTableData}
+                    instructorNamesWithIds={instructorNamesWithIds}
+                  />
+    
 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>

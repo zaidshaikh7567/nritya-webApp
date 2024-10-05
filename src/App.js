@@ -36,6 +36,7 @@ const CreatorWorkshop = lazy(() => import('./Screens/CreatorWorkshop'));
 const CreatorOpenClass = lazy(() => import('./Screens/CreatorOpenClass'));
 const CreatorCourse = lazy(() => import('./Screens/CreatorCourse'));
 const NrityaPolicyPages = lazy(() => import('./Screens/NrityaPolicyPages'));
+const NrityaStudioPolicyPages = lazy(() => import('./Screens/NrityaStudioPolicyPages'));
 
 
 
@@ -96,6 +97,7 @@ function App() {
                   <Route path='/search/:entity' element={<SearchPage/>}/>
                   <Route path='/jobs' element={<JobHire/>}/>
                   <Route path='/npolicies/:selected' element={<NrityaPolicyPages/>}/>
+                  <Route path='/npoliciesStudio/' element={<NrityaStudioPolicyPages/>}/>
                   <Route element={<ProtectedRoute/>}>
                     <Route path='/profile' element={<UserPage/>}/>
                     <Route path='/kyc' element={<Kyc/>}/>

@@ -11,7 +11,6 @@ import { setCreatorMode } from '../utils/firebaseUtils';
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
-
   const handleLogout = async () => {
     console.log("Logging out SideMenu")
     try {
@@ -26,16 +25,20 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
 
   const trySetCreatorMode = () => {
     let attempts = 0;
+    const userInfoFull = JSON.parse(localStorage.getItem('userInfoFull'));
+    const userId = userInfoFull?.uid;
+
     while (attempts < 2) {
-      const creatorMode = secureLocalStorage.getItem('CreatorMode');
-      console.log("creatorMode",creatorMode)
-      if (creatorMode == null) {
-        setCreatorMode();
-        attempts += 1;
-      } else {
-        break;
+          const creatorMode = secureLocalStorage.getItem('CreatorMode');
+
+          if (creatorMode == null) {
+            setCreatorMode(userId);
+            attempts += 1;
+          } else {
+            break;
+          }
+        
       }
-    }
   };
 
   useEffect(() => {

@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from "react-router-dom";
-import { getAllImagesInFolder } from "../utils/firebaseUtils";
+import { getAllFilesFromFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
 
 
@@ -152,7 +152,7 @@ function LandingPage() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const dataImagesUrlLocal = await getAllImagesInFolder(
+        const dataImagesUrlLocal = await getAllFilesFromFolder(
           "LandingPageImages"
         );
         //console.log("dataImagesUrlLocal:", dataImagesUrlLocal); // Debugging log
@@ -266,8 +266,6 @@ function LandingPage() {
           </Row>
         </>
       )}
-
-
 
         <br />
         <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none"  }}>

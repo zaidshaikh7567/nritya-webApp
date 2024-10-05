@@ -226,7 +226,7 @@ function UserPage() {
       })}
     </Row>
     <Kyc/>
-    <Row>
+      <Row hidden>
           {recentlyWatchedStudios.length > 0 && (
             <h4 style={{ color: isDarkModeOn ? "white" : "black" }}>
               {" "}

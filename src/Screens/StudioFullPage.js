@@ -38,7 +38,6 @@ function StudioFullPage() {
   const [openClasses, setOpenClasses] = useState([]);
   const [courses, setCourses] = useState([]);
 
-
   // Function to update the recently watched studios in Firebase
   const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
     try {
@@ -216,24 +215,35 @@ function StudioFullPage() {
       <Row>
         <Col lg={8} className='d-flex'>
           <div className='contentWrapper-main'>
-            <div className='headerArea'>
-              <div className='title-m'>
-                <Typography variant="h1" component="h1" style={{ color: isDarkModeOn ? 'white' : 'black', fontSize: '24px', textTransform: 'none' }}>
-                  {studioData ? studioData.studioName : ""}
-                </Typography>
-              </div>
-              <div style={{ color: isDarkModeOn ? 'white' : 'black', fontSize: '16px' }}>
-                {studioData && studioData.avgRating && studioData.ratedBy ? (
-                  <>
-                    <span style={{ color: 'goldenrod' }}>⭐{studioData.avgRating}</span>
-                    <span style={{ color: isDarkModeOn ? 'white' : 'black' }}> ({studioData.ratedBy})</span>
-                  </>
-                ) : ""}
-              </div>
-            </div>
+          
+          <Row>
+            <Col sm={11} xs={12}>
+              <Typography
+                variant="h2"
+                component="h2"
+                style={{
+                  color: isDarkModeOn ? 'white' : 'black',
+                  fontSize: '1.5rem',
+                  textTransform: 'none',
+                }}
+              >
+                {studioData ? studioData.studioName : ""}
+              </Typography>
+            </Col>
+            <Col sm ={1} xs={12} className="d-flex align-items-center justify-content-end">
+              {studioData && studioData.avgRating && studioData.ratedBy ? (
+                <>
+                  <span style={{ color: 'goldenrod' }}>⭐{studioData.avgRating.toFixed(1)}</span>
+                  <span style={{ color: isDarkModeOn ? 'white' : 'black' }}> ({studioData.ratedBy})</span>
+                </>
+              ) : ""}
+            </Col>
+          </Row>
+   
 
             <div className='socialRatings'>
               {studioData && (studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
+                <>
                 <div style={{ display: 'flex', justifyContent: 'left' }}>
                   {studioData.youtube && (
                     <a href={studioData.youtube} target="_blank" rel="noopener noreferrer">
@@ -256,6 +266,7 @@ function StudioFullPage() {
                     </a>
                   )}
                 </div>
+              </>
               )}
             </div>
             <div className='textWrapper' style={{ paddingBottom: '0.5rem' }}>
@@ -408,9 +419,6 @@ function StudioFullPage() {
                 />
               );
             })}
-
-
-
         </Col>
       </Row>
       <br></br>
