@@ -8,6 +8,7 @@ import KycStepper from './KycStepper.js';
 import CryptoJS from 'crypto-js';
 import { validateField } from '../utils/validationUtils';
 import './Kyc.css';
+import { Typography } from '@mui/material';
 
 const names_map = new Map([
   ["first_name" , "First Name"],
@@ -280,7 +281,7 @@ function Kyc() {
               return availableField ? (
                   <div className="col-md-6 col-lg-4" key={availableField}>
                       <Form.Group controlId={`formBasic${availableField}`}>
-                          <Form.Label>{names_map.get(availableField)}</Form.Label>
+                          <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>{names_map.get(availableField)}</Typography>
                           <Form.Control
                               type={availableField === 'age' || availableField === 'phone_number' ? 'number' : 'text'}
                               placeholder={`Enter ${names_map.get(availableField)}`}
@@ -304,7 +305,7 @@ function Kyc() {
           <div className="row">
             <div className="col-md-6 col-lg-4">
               <Form.Group controlId="formBasicAadhar">
-                <Form.Label>Aadhar</Form.Label>
+                <Form.Label style={{color: isDarkModeOn ? 'white' : 'black'}}>Aadhar</Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     type="text"
@@ -346,7 +347,7 @@ function Kyc() {
                       Download GST Document
                   </Button>
               ) : (
-                newFilesAadhar?.name || <p>No new GST file uploaded.</p>
+               <p style={{color: isDarkModeOn ? 'white' : 'black'}}>{newFilesAadhar?.name || "No new GST file uploaded."}</p>
               )}
               </Form.Group>
               {errors['aadhar'] && <span style={{ color: 'red' }}>{errors['aadhar']}</span>}
@@ -363,7 +364,7 @@ function Kyc() {
           <div className="row">         
             <div className="col-md-6 col-lg-4">
               <Form.Group controlId="formBasicGst">
-                <Form.Label>GST</Form.Label>
+                <Form.Label style={{color: isDarkModeOn ? 'white' : 'black'}}>GST</Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     type="text"
@@ -405,7 +406,7 @@ function Kyc() {
                       Download GST Document
                   </Button>
               ) : (
-                  newFilesGst?.name || <p>No new GST file uploaded.</p>
+                   <p style={{color: isDarkModeOn ? 'white' : 'black'}}> {newFilesGst?.name || "No new GST file uploaded."}</p>
               )}
               </Form.Group>
               {errors['gstin'] && <span style={{ color: 'red' }}>{errors['gstin']}</span>}
@@ -423,7 +424,7 @@ function Kyc() {
             <input type="checkbox" class="form-check-input" id="tnc-switch" checked={formData.tncAgreed}
             onChange={handleTnCAgreement}/>
             <label class="form-check-label" for="exampleCheck1">
-            <span>
+            <span style={{color: isDarkModeOn ? 'white' : 'black'}}>
                 I agree to the <a href="#/npoliciesStudio" style={{ color: isDarkModeOn ? 'lightblue' : 'blue' }}>Terms and Conditions. Click to read.</a>
               </span>
             </label>
