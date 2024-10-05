@@ -2,6 +2,11 @@ h2 {
   color: 'white';
 }
 
+
+.no-important a {
+  text-decoration: underline !important;
+}
+
 .scrolling-wrapper {
   overflow-x: scroll;
   overflow-y: hidden;

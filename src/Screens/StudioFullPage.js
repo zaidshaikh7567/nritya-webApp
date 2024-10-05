@@ -11,7 +11,6 @@ import { FaMapMarker, FaWhatsapp } from 'react-icons/fa';
 import Ratings from '../Components/Ratings';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import StarRating from '../Components/StarRating';
 import Skeleton from '@mui/material/Skeleton';
 import '../Components/NrityaCard.css'
 import NrityaCard from '../Components/NrityaCard.js';
@@ -219,11 +218,18 @@ function StudioFullPage() {
           <div className='contentWrapper-main'>
             <div className='headerArea'>
               <div className='title-m'>
-                <Typography variant="h1" component="h1" style={{ color: isDarkModeOn ? 'white' : 'black', fontSize: '24px' }}>
+                <Typography variant="h1" component="h1" style={{ color: isDarkModeOn ? 'white' : 'black', fontSize: '24px', textTransform: 'none' }}>
                   {studioData ? studioData.studioName : ""}
                 </Typography>
               </div>
-              <div className='userRating'>{studioData && studioData.avgRating ? <StarRating rating={studioData.avgRating} viewMode={true} /> : ""}</div>
+              <div style={{ color: isDarkModeOn ? 'white' : 'black', fontSize: '16px' }}>
+                {studioData && studioData.avgRating && studioData.ratedBy ? (
+                  <>
+                    <span style={{ color: 'goldenrod' }}>⭐{studioData.avgRating}</span>
+                    <span style={{ color: isDarkModeOn ? 'white' : 'black' }}> ({studioData.ratedBy})</span>
+                  </>
+                ) : ""}
+              </div>
             </div>
 
             <div className='socialRatings'>
@@ -506,7 +512,9 @@ function StudioFullPage() {
       <br></br>
       <Row className="justify-content-center">
         <Col xs="auto">
+       { JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId && (
           <Ratings userID={JSON.parse(localStorage.getItem('userInfo')) ? JSON.parse(localStorage.getItem('userInfo')).UserId : null} studioID={studioId}></Ratings>
+        )}
         </Col>
       </Row>
       <br></br>

@@ -126,7 +126,7 @@ const TableView = ({ studioData, studioId }) => {
                 instructors = processInstructors(classItem.instructors);
               }
                 return (
-                  <Card key={index} style={{ minWidth: "400px", backgroundColor: isDarkModeOn?'#202020':'white' }}>
+                  <Card key={index} style={{ minWidth: "400px",paddingLeft:"0.5rem",border:'none', backgroundColor: isDarkModeOn?'#202020':'white' }}>
                   <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
                   <tbody>
                         {[
@@ -158,15 +158,15 @@ const TableView = ({ studioData, studioId }) => {
                           },
                         ].map((item, i) => (
                           <tr key={i}>
-                            <td style={{ color: "white", backgroundColor: isDarkModeOn ? "#121212" : "black" }}>
+                            <td style={{ color: "white",textAlign: 'center', backgroundColor: isDarkModeOn ? "#121212" : "black" }}>
                               {item.label}
                             </td>
                             <td
                               style={{
-                                backgroundColor: isDarkModeOn ? "#444" : "white",
+                                backgroundColor: isDarkModeOn ? "#444" : "#f0f0f0",
                                 color: isDarkModeOn ? "white" : "black",
-                                textAlign: 'center',  // Center the content in the cell
-                                padding: 0,  // Removes padding for full-cell button
+                                textAlign: 'center',
+                                padding: item.label === 'Book Free Trial' ? 0 :'',
                               }}
                             >
                               {item.value}

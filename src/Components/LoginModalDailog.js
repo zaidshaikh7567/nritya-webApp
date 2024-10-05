@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles';
 import LoginModalForm from "./LoginModalForm";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import useLocalStorageListener from './useLocalStorageListener'; 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {

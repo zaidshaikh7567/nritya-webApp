@@ -4,7 +4,9 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useSelector } from 'react-redux';
 import logo from './../logo.png';
 import './SideMenu.css';
+import {useEffect} from "react";
 import secureLocalStorage from 'react-secure-storage';
+import { setCreatorMode } from '../utils/firebaseUtils';
 
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -21,6 +23,24 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
       console.error('Error during logout:', error.message);
     }
   };
+
+  const trySetCreatorMode = () => {
+    let attempts = 0;
+    while (attempts < 2) {
+      const creatorMode = secureLocalStorage.getItem('CreatorMode');
+      console.log("creatorMode",creatorMode)
+      if (creatorMode == null) {
+        setCreatorMode();
+        attempts += 1;
+      } else {
+        break;
+      }
+    }
+  };
+
+  useEffect(() => {
+    trySetCreatorMode();
+  }, []);
 
   const regularMenuItems = [
     { action: () => window.location.hash = '#/profile', name: 'Profile', show: true },

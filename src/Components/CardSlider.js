@@ -6,10 +6,10 @@ import CardCover from '@mui/joy/CardCover';
 import ProductCard from './NStudioCard';
 
 const CardSlider = ({ dataList, imgOnly = false }) => {
-  console.log("Debug from CardSlider", imgOnly);
-  console.log(dataList);
+  //console.log("Debug from CardSlider", imgOnly);
+  //console.log(dataList);
   const formattedDataList = Array.isArray(dataList) ? dataList : Object.values(dataList);
-  console.log(formattedDataList)
+  //console.log(formattedDataList)
 
   const [open, setOpen] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState(null);
@@ -30,11 +30,10 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
   };
 
   return (
-    <div className="horizontal-scroll-wrapper">
+    <div className="horizontal-scroll-wrapper no-important">
       {formattedDataList.map((entity, index) => (
         imgOnly ? (
-          // Image-only case with anchor <a> no link just to make card UI look proper
-          <a key={index} onClick={() => handleOpen(entity)}>
+          <a className="no-important" key={index} onClick={() => handleOpen(entity)}>
           <MuiCard
             key={index}
             style={{ marginRight: "0.5rem" }}
