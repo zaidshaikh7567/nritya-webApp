@@ -7,7 +7,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
-import { Typography } from '@mui/material';
+import { Typography,Tooltip } from '@mui/material';
 
 
 function processInstructors(instructors) {
@@ -25,7 +25,7 @@ function processInstructors(instructors) {
 
 
 const TableView = ({ studioData, studioId }) => {
-  //console.log("TableView",studioData,studioId)
+  console.log("TableView",studioData,studioId)
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -137,25 +137,51 @@ const TableView = ({ studioData, studioId }) => {
                           { label: 'Instructors', value: instructors || "" },
                           { label: 'Level', value: classItem.level || "N/A" },
                           { label: 'Fee (₹)', value: classItem.fee || "N/A" },
+                          { label: 'Categories', value: Array.isArray(classItem.classCategory) ? (classItem.classCategory.join(', ') ): (classItem.classCategory || "N/A")},
                           {
                             label: 'Book Free Trial',
                             value: (
-                              <Button
-                                className='custom-button'
-                                onClick={() => bookFreeTrial(index)}
+                              <Tooltip
+                                title={
+                                  classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
+                                    ? "Free trial is not available"
+                                    : "Click to book your free trial"
+                                }
+                                arrow
                               >
-                                <Typography
-                                  sx={{
-                                    color: isDarkModeOn?'white':'black' ,
-                                    width: '100%',
-                                    textAlign: 'center',  // Center the text inside Typography
-                                  }}
-                                >
-                                  BOOK
-                                </Typography>
-                              </Button>
+                                <span> {/* Wrapping in span to allow Tooltip on unclickable button */}
+                                  <Button
+                                    className='custom-button'
+                                    onClick={() => {
+                                      if (classItem?.freeTrial && classItem.freeTrial !== "false" && classItem.freeTrial !== "") {
+                                        bookFreeTrial(index);  // Only trigger booking if free trial is available
+                                      }
+                                    }}
+                                    sx={{
+                                      backgroundColor: classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
+                                        ? (isDarkModeOn ? '#666666' : '#dddddd')  // Change background color if unavailable
+                                        : (isDarkModeOn ? '#000000' : '#ffffff'),
+                                      cursor: classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "") 
+                                        ? 'not-allowed'  // Not allowed cursor if unavailable
+                                        : 'pointer',
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        color: 'white',  // Keep text white regardless of mode when free trial is unavailable
+                                        width: '100%',
+                                        textAlign: 'center',
+                                      }}
+                                    >
+                                      {classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
+                                        ? "Free Trial Unavailable"
+                                        : "BOOK"}
+                                    </Typography>
+                                  </Button>
+                                </span>
+                              </Tooltip>
                             ),
-                          },
+                          },                                                   
                         ].map((item, i) => (
                           <tr key={i}>
                             <td style={{ color: "white",textAlign: 'center', backgroundColor: isDarkModeOn ? "#121212" : "black" }}>

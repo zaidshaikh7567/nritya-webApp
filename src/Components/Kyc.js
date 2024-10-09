@@ -344,7 +344,7 @@ function Kyc() {
                       style={{ color: '#007bff', textDecoration: 'none' }} 
                       onClick={() => window.open(filesAadhar[0].fileURL, '_blank')}
                   >
-                      Download GST Document
+                      Download Aadhar Document
                   </Button>
               ) : (
                <p style={{color: isDarkModeOn ? 'white' : 'black'}}>{newFilesAadhar?.name || "No new GST file uploaded."}</p>

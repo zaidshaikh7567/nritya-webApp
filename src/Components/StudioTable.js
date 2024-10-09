@@ -11,6 +11,16 @@ import "primereact/resources/primereact.css";
 import "primereact/resources/themes/saga-blue/theme.css";
 
 const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
+const categoryMap = {
+  Kids: "Kids",
+  Adults: "Adults",
+  Women_Only: "Women Only",
+  Men_Only: "Men Only",
+  Seniors: "Seniors",
+  All: "All Ages, Open to All",
+  Couples: "Couples",
+  Families: "Families"
+};
 
 function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -20,7 +30,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00")
 
   const handleAddRow = () => {
-    setTableData((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: [], fee:'',level:'' ,status: '' }]);
+    setTableData((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: [], fee:'',level:'' ,status: '',freeTrial: false, classCategory: []  }]);
   };
 
   const handleRemoveRow = (index) => {
@@ -36,6 +46,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
       if(field==="days"){
         value = Array.isArray(value) ? value.join(',') : value; 
       }
+      console.log(tableData)
       const newData = [...prevData];
       newData[index][field] = value;
       return newData;
@@ -83,25 +94,27 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
     <>
       <Table bordered variant="light">
         <thead>
-          <tr >
-          <th style={{padding:'0.6rem'}}>Class Name</th>
-            <th style={{padding:'0.6rem'}}>Dance Forms</th>
-            <th style={{padding:'0.6rem'}}>Days</th>
-            <th style={{padding:'0.6rem'}}>Time</th>
-            <th style={{padding:'0.6rem'}}>Instructors</th>
-            <th style={{padding:'0.6rem'}}>Fee</th>
-            <th style={{padding:'0.6rem'}}>Level</th>
-            <th style={{padding:'0.6rem'}}>
+          <tr style={{border: '1px solid black'}}>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Class Name</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'10rem', border: '1px solid black'}}>Dance Form</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Days</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Time</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'20rem', border: '1px solid black'}}>Instructors</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'8rem', border: '1px solid black'}}>Fee (₹)</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'10rem', border: '1px solid black'}}>Level</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'8rem', border: '1px solid black'}}>Free Trial</th>
+            <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Class Category</th>
+            <th style={{padding:'0rem'}}>
               <Button variant="primary" onClick={handleAddRow}>
                 <FaPlus />
               </Button>
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{border: '1px solid black'}}>
           {tableData.map((row, index) => (
             <tr key={index} className={selectedRow === index ? 'selected-row' : ''}>
-              <td style={{padding:'0rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black'}}>
                 < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   type="text"
                   value={row.className}
@@ -109,7 +122,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
                   
                 />
               </td>
-              <td style={{padding:'0rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black'}}>
               < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   as="select"
                   value={row.danceForms}
@@ -125,14 +138,14 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
 
               </td>
               
-              <td style={{ padding: '0rem'}} className="m-0 p-0">
+              <td style={{ padding:'0rem',minWidth:'15rem', border: '1px solid black'}} className="m-0 p-0">
                 <MultiSelect value={row.days && row.days.split(',').filter(day => day !== '') } 
                     onChange={(event) => handleTableChange(index, 'days', event.target.value)}
                     options={daysOfWeek}
                     placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"
                   />
               </td>
-              <td style={{padding:'0rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black'}}>
                 < Form.Control style={{backgroundColor:"white"}}
                   type="text"
                   value={row.time}
@@ -150,7 +163,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
               )}
 
               </td>
-              <td style={{padding:'0rem', width:'20rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black', width:'20rem'}}>
                 <Autocomplete
                   multiple
                   id="tags-standard"
@@ -166,14 +179,14 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
                   )}
                 />
               </td>
-              <td style={{padding:'0rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black'}}>
                 < Form.Control style={{backgroundColor:"white"}}
                   type="text"
                   value={row.fee}
                   onChange={(e) => handleTableChange(index, 'fee', e.target.value)}
                 />
               </td>
-              <td style={{padding:'0rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black'}}>
                 < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   as="select"
                   value={row.level}
@@ -186,8 +199,39 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
 
                   </Form.Control>
               </td>
-              
-              <td style={{padding:'0.6rem'}}>
+              <td style={{padding:'0rem',border: '1px solid black'}}>
+                < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
+                  as="select"
+                  value={row.level}
+                  onChange={(e) => handleTableChange(index, 'level', e.target.value)}
+                >     <option value="">Select a value</option>
+                      <option value={true}>Yes</option>
+                      <option value={false}>No</option>
+                  </Form.Control>
+              </td>
+              <td style={{padding:'0rem', width:'20rem'}}>
+                <Autocomplete
+                  multiple
+                  id="tags-standard"
+                  options={Object.values(categoryMap)} 
+                  value={row.classCategory.map(key => categoryMap[key])} 
+                  onChange={(_, values) => {
+
+                    const selectedKeys = values.map(value => 
+                      Object.keys(categoryMap).find(key => categoryMap[key] === value)
+                    );
+                    handleTableChange(index, 'classCategory', selectedKeys);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder="Select Class Category"
+                    />
+                  )}
+                />
+              </td>
+              <td style={{padding:'0rem'}}>
                 <Button variant="danger" onClick={() => handleRemoveRow(index)}>
                   <FaMinus />
                 </Button>

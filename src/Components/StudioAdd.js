@@ -37,7 +37,7 @@ const DRAFT_INTERVAL_TIME = 1000 * 10;
 function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
-      [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: ''}],
+      [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: '' ,freeTrial:false ,classCategory: []}],
     );
     const [selectedLocation, setSelectedLocation] = useState(null);
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
@@ -279,7 +279,8 @@ function StudioAdd({instructors}) {
                 time: "",
                 instructors: [],
                 fee: "",
-                level: "",
+                level: "",freeTrial:false, 
+                classCategory: []
               },
             },
             buildingName: form.buildingName.value,
@@ -562,29 +563,22 @@ function StudioAdd({instructors}) {
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
                   <span>Time Table Of dance classes</span>
-                  
-                  <StudioTable
-                    tableData={tableData}
-                    setTableData={setTableData}
-                    instructorNamesWithIds={instructorNamesWithIds}
-                  />
-    
-
+                    <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', scrollbarColor: isDarkModeOn ? '#888 #333' : '#ccc #fff', }}>
+                      <StudioTable
+                        tableData={tableData}
+                        setTableData={setTableData}
+                        instructorNamesWithIds={instructorNamesWithIds}
+                      />
+                    </div>
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
-                <Col md={4}>
-                  <Form.Label>Owner's Aadhar Number</Form.Label>
-                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
-                  
-                
-                </Col>
                 <Col md={4}>
                   <Form.Label>GST Number</Form.Label>
                   <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="GST Number" name="gstNumber" />
                   
                   
                 </Col>
-                <Col md={4}>
+                <Col md={8}>
                 <Form.Label>Add Amenities</Form.Label>
                   
                   <ThemeProvider theme={darkTheme}>
