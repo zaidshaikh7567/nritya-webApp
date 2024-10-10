@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { Button as MUIButton } from '@mui/joy';
 import { COLLECTIONS } from '../constants';
-import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { useAuth } from '../context/AuthContext';
 import { readDocument } from '../utils/firebaseUtils';
