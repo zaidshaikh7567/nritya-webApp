@@ -347,7 +347,7 @@ function Kyc() {
                       Download Aadhar Document
                   </Button>
               ) : (
-               <p style={{color: isDarkModeOn ? 'white' : 'black'}}>{newFilesAadhar?.name || "No new GST file uploaded."}</p>
+               <p style={{color: isDarkModeOn ? 'white' : 'black'}}>{newFilesAadhar?.name || "No new Aadhar file uploaded."}</p>
               )}
               </Form.Group>
               {errors['aadhar'] && <span style={{ color: 'red' }}>{errors['aadhar']}</span>}
