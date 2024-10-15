@@ -176,12 +176,12 @@ function OpenClassFullPage() {
   return (
     <Box
       sx={{
-        padding: "2rem",
+        padding: "0rem",
         minHeight: "100vh",
         color: isDarkModeOn ? "white" : "black",
       }}
     >
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         {/* Workshop Image */}
         <Grid item xs={12} lg={8}>
           <Box

@@ -176,12 +176,12 @@ function WorkShopFullPage() {
   return (
     <Box
       sx={{
-        padding: "2rem",
+        padding: "0rem",
         minHeight: "100vh",
         color: isDarkModeOn ? "white" : "black",
       }}
     >
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         {/* Workshop Image */}
         <Grid item xs={12} lg={8}>
           <Box
@@ -210,7 +210,7 @@ function WorkShopFullPage() {
               justifyContent: "space-between",
             }}
           >
-            {/* Workshop Info */}
+
             <Box>
               <MUITypography variant="h4" style={{color: isDarkModeOn ? 'white' : 'black', textTransform: 'none',textDecoration: 'none'}}>
                 {dataItem.workshopName || "Workshop Name"}
@@ -226,7 +226,6 @@ function WorkShopFullPage() {
               </MUITypography>
             </Box>
 
-            {/* Booking Section */}
             <Box
               sx={{
                 mt: "2rem",
