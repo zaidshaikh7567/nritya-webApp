@@ -131,6 +131,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
         city: selectedCity,
+        youtubeId: form.youtubeId.value,
       };
 
       setIsSubmitting(true);
@@ -538,6 +539,26 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
             </Row>
 
             <br />
+
+            <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    defaultValue={
+                      selectedOpenClass ? selectedOpenClass.youtubeId : ""
+                    }
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube videoId"
+                    name="youtubeId"
+                  />
+                </Col>
+              </Row>
+
             <hr></hr>
 
             <Row>

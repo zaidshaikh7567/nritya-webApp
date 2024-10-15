@@ -94,7 +94,6 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
     if (
       !form.workshopName.value ||
       !form.workshopFees.value ||
-      !form.workshopVenue.value ||
       !form.description.value ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
@@ -170,6 +169,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
         description: event.target.description.value,
         city: selectedCity,
         active: true,
+        youtubeId: event.target.youtubeId.value,
       };
 
       setIsSubmitting(true);
@@ -690,9 +690,23 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
                   />
                 </Col>
               </Row>
-              <hr></hr>
-
               <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube videoId"
+                    name="youtubeId"
+                  />
+                </Col>
+              </Row>
+              <Row>
+              <hr></hr>
                 <Col xs={6}></Col>
                 <Col xs={6} className="d-flex justify-content-end">
                   <MuiButton

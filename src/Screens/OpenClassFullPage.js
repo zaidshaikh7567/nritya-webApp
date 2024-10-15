@@ -34,6 +34,7 @@ import { bookEntity } from "../utils/common";
 
 import whatsAppImage from "../assets/images/whatsapp.png";
 import callImage from "../assets/images/india_11009487.png";
+import MediaDisplay from "../Components/MediaDisplay";
 
 function OpenClassFullPage() {
   const { openClassId } = useParams();
@@ -184,17 +185,11 @@ function OpenClassFullPage() {
       <Grid container spacing={2}>
         {/* Workshop Image */}
         <Grid item xs={12} lg={8}>
-          <Box
-            component="img"
-            src={imageUrl}
-            alt={dataItem.openClassName || "Open Class Name Image"}
-            sx={{
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-              borderRadius: "8px",
-            }}
-          />
+        <MediaDisplay 
+            youtubeId={dataItem.youtubeId} 
+            imageUrl={imageUrl} 
+            altText={dataItem.openClassName} 
+            />
         </Grid>
 
         {/* Workshop Details */}

@@ -36,6 +36,7 @@ import { bookEntity } from "../utils/common";
 
 import whatsAppImage from "../assets/images/whatsapp.png";
 import callImage from "../assets/images/india_11009487.png";
+import MediaDisplay from "../Components/MediaDisplay";
 
 function WorkShopFullPage() {
   const { workshopId } = useParams();
@@ -182,22 +183,14 @@ function WorkShopFullPage() {
       }}
     >
       <Grid container spacing={2}>
-        {/* Workshop Image */}
-        <Grid item xs={12} lg={8}>
-          <Box
-            component="img"
-            src={imageUrl}
-            alt={dataItem.workshopName || "Workshop Image"}
-            sx={{
-              width: "100%",
-              height: "auto",
-              objectFit: "cover",
-              borderRadius: "8px",
-            }}
-          />
+      <Grid item xs={12} lg={8}>
+            <MediaDisplay 
+            youtubeId={dataItem.youtubeId} 
+            imageUrl={imageUrl} 
+            altText={dataItem.workshopName} 
+            />
         </Grid>
 
-        {/* Workshop Details */}
         <Grid item xs={12} lg={4}>
           <Box
             sx={{

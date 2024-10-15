@@ -169,6 +169,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         description: event.target.description.value,
         city: selectedCity,
         active: true,
+        youtubeId: event.target.youtubeId.value,
       };
 
       setIsSubmitting(true);
@@ -675,7 +676,23 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                 <Col md={6}></Col>
               </Row>
 
-              <hr />
+             
+              <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube videoId"
+                    name="youtubeId"
+                  />
+                </Col>
+              </Row>
+              <hr></hr>
 
               <Row>
                 <Col xs={6}></Col>

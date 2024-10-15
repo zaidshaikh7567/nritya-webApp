@@ -111,7 +111,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
     try {
       const dbPayload = {
-        name: form.name.value,
+        courseName: form.name.value,
         duration: form.duration.value,
         price: form.workshopFees.value,
         venue: form.workshopVenue.value,
@@ -133,6 +133,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
         city: selectedCity,
+        youtubeId: form.youtubeId.value,
       };
 
       setIsSubmitting(true);
@@ -574,6 +575,26 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
               </Col>
             </Row>
 
+            <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    defaultValue={
+                      selectedWorkshop ? selectedWorkshop.youtubeId : ""
+                    }
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube videoId"
+                    name="youtubeId"
+                  />
+                </Col>
+              </Row>
+
+            <hr></hr>
             <hr></hr>
 
             <Row>

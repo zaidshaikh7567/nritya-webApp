@@ -149,7 +149,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
     try {
       const dbPayload = {
-        name: event.target.name.value,
+        courseName: event.target.name.value,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -172,6 +172,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         description: event.target.description.value,
         city: selectedCity,
         active: true,
+        youtubeId: event.target.youtubeId.value,
       };
 
       setIsSubmitting(true);
@@ -707,6 +708,23 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                   />
                 </Col>
               </Row>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube videoId"
+                    name="youtubeId"
+                  />
+                </Col>
+              </Row>
+
               <hr></hr>
 
               <Row>
