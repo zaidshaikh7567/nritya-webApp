@@ -360,10 +360,8 @@ export default function NCourseCard({dataItem, studioIdName}) {
         variant="solid"
         sx={{
           ...cardStyle,
-          "&:hover": cardHoverStyle,
           flex: "none",
         }}
-        onClick={handleCourseDetailsModalOpen}
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img

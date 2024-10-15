@@ -354,10 +354,9 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
         variant="solid"
         sx={{
           ...cardStyle,
-          "&:hover": cardHoverStyle,
           flex: "none",
         }}
-        onClick={handleWorkshopDetailsModalOpen}
+      
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img

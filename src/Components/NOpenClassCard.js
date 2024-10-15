@@ -362,10 +362,10 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
         variant="solid"
         sx={{
           ...cardStyle,
-          "&:hover": cardHoverStyle,
+          
           flex: "none",
         }}
-        onClick={handleOpenClassDetailsModalOpen}
+        
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img
