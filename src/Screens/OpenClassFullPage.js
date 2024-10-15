@@ -260,10 +260,11 @@ function OpenClassFullPage() {
                     height: '40px', // Set the height for uniformity
                     border: '1px solid',
                     borderColor: isDarkModeOn ? 'white' : 'black',
-                    color: isDarkModeOn ? 'white' : 'black',
-                    backgroundColor: 'red',
+                    color: 'black',
+                    backgroundColor: '#fce4ec',
                     '&:hover': {
-                        backgroundColor: 'darkred',
+                        backgroundColor: '#fce4ff',
+                        color: 'black',
                     },
                     }}
                 >
@@ -298,10 +299,11 @@ function OpenClassFullPage() {
                     height: '40px',
                     border: '1px solid',
                     borderColor: isDarkModeOn ? 'white' : 'black',
-                    color: isDarkModeOn ? 'white' : 'black',
-                    backgroundColor: 'green',
+                    color: 'black',
+                    backgroundColor: '#fce4ec',
                     '&:hover': {
-                        backgroundColor: 'darkgreen',
+                        backgroundColor: '#fce4ff',
+                        color: 'black',
                     },
                     }}
                 >
