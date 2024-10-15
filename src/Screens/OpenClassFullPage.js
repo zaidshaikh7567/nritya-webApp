@@ -19,10 +19,9 @@ import {
   CircularProgress,
   Chip,
 } from "@mui/material";
-import { Remove, Add } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { CHIP_LEVELS_DESIGN, COLLECTIONS, STORAGES } from "../constants"; // Adjust the import paths as necessary
+import { CHIP_LEVELS_DESIGN, COLLECTIONS, ENTITY_FLAG, STORAGES } from "../constants"; // Adjust the import paths as necessary
 import {
   readDocument,
   readDocumentWithImageUrl,
@@ -292,8 +291,8 @@ function OpenClassFullPage() {
 
                 <Button
                     variant="contained"
-                    onClick={() => setPersonsAllowed((prev) => Math.min(prev + 1, 2))}
-                    disabled={personsAllowed >= 2}
+                    onClick={() => setPersonsAllowed((prev) => Math.min(prev + 1, ENTITY_FLAG.OPEN_CLASSES_BOOKING_LIMIT))}
+                    disabled={personsAllowed >= ENTITY_FLAG.OPEN_CLASSES_BOOKING_LIMIT}
                     sx={{
                     flex: 1,
                     height: '40px',

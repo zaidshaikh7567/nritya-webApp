@@ -21,10 +21,9 @@ import {
   Chip,
   
 } from "@mui/material";
-import { Remove, Add } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { COLLECTIONS, STORAGES, INTERNET_CONV_CHARGES, CHIP_LEVELS_DESIGN } from "../constants"; // Adjust the import paths as necessary
+import { COLLECTIONS, STORAGES, ENTITY_FLAG, CHIP_LEVELS_DESIGN } from "../constants"; // Adjust the import paths as necessary
 import {
   readDocument,
   readDocumentWithImageUrl,
@@ -56,7 +55,7 @@ function WorkShopFullPage() {
   // Calculate Total Price
   const totalPrice =
     dataItem && personsAllowed
-      ? dataItem.price * personsAllowed + INTERNET_CONV_CHARGES
+      ? dataItem.price * personsAllowed + ENTITY_FLAG.INTERNET_CONV_CHARGES_WORKSHOPS_COURSES_INR
       : 0;
 
   const handleBook = async () => {
@@ -74,7 +73,7 @@ function WorkShopFullPage() {
         emailLearner: currentUserEmail,
         personsAllowed: personsAllowed,
         pricePerPerson: dataItem.price,
-        internetConvCharges: INTERNET_CONV_CHARGES,
+        internetConvCharges: ENTITY_FLAG.INTERNET_CONV_CHARGES_WORKSHOPS_COURSES_INR,
         totalPrice: totalPrice,
         // Add other necessary fields here
       };
@@ -290,8 +289,8 @@ function WorkShopFullPage() {
 
                 <Button
                     variant="contained"
-                    onClick={() => setPersonsAllowed((prev) => Math.min(prev + 1, 4))}
-                    disabled={personsAllowed >= 4}
+                    onClick={() => setPersonsAllowed((prev) => Math.min(prev + 1, ENTITY_FLAG.WORKSHOPS_BOOKING_LIMIT))}
+                    disabled={personsAllowed >= ENTITY_FLAG.WORKSHOPS_BOOKING_LIMIT}
                     sx={{
                     flex: 1,
                     height: '40px',
@@ -457,7 +456,7 @@ function WorkShopFullPage() {
               </TableRow>
               <TableRow>
                 <TableCell>Internet Convenience Charges</TableCell>
-                <TableCell align="right">{INTERNET_CONV_CHARGES}</TableCell>
+                <TableCell align="right">{ENTITY_FLAG.INTERNET_CONV_CHARGES_WORKSHOPS_COURSES_INR}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell><strong>Total Price</strong></TableCell>
