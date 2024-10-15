@@ -345,7 +345,7 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
     transform: "scale(1.01)",
     cursor: "pointer",
   };
-
+  console.log(studioIdName,"=====",dataItem.StudioId)
   return (
     <>
       <Card

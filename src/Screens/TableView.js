@@ -46,7 +46,7 @@ const TableView = ({ studioData, studioId }) => {
     }
     setShowModal(true);
     setLoading(true);
-
+    console.log("bookFreeTrial")
     axios.post(endpoint_url, {
       studioId: studioId,
       classIndex: classIndex,
@@ -141,15 +141,7 @@ const TableView = ({ studioData, studioId }) => {
                           {
                             label: 'Book Free Trial',
                             value: (
-                              <Tooltip
-                                title={
-                                  classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
-                                    ? "Free trial is not available"
-                                    : "Click to book your free trial"
-                                }
-                                arrow
-                              >
-                                <span> {/* Wrapping in span to allow Tooltip on unclickable button */}
+                              
                                   <Button
                                     className='custom-button'
                                     onClick={() => {
@@ -157,18 +149,11 @@ const TableView = ({ studioData, studioId }) => {
                                         bookFreeTrial(index);  // Only trigger booking if free trial is available
                                       }
                                     }}
-                                    sx={{
-                                      backgroundColor: classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
-                                        ? (isDarkModeOn ? '#666666' : '#dddddd')  // Change background color if unavailable
-                                        : (isDarkModeOn ? '#000000' : '#ffffff'),
-                                      cursor: classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "") 
-                                        ? 'not-allowed'  // Not allowed cursor if unavailable
-                                        : 'pointer',
-                                    }}
+                                    
                                   >
                                     <Typography
                                       sx={{
-                                        color: 'white',  // Keep text white regardless of mode when free trial is unavailable
+                                        color: isDarkModeOn?'white':'black',  
                                         width: '100%',
                                         textAlign: 'center',
                                       }}
@@ -178,8 +163,7 @@ const TableView = ({ studioData, studioId }) => {
                                         : "BOOK"}
                                     </Typography>
                                   </Button>
-                                </span>
-                              </Tooltip>
+                               
                             ),
                           },                                                   
                         ].map((item, i) => (

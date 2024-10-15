@@ -7,7 +7,7 @@ import NOpenClassCard from './NOpenClassCard';
 const CardSliderNew = ({ dataList,studioIdName, type = COLLECTIONS.WORKSHOPS }) => {
   console.log(dataList);
   const formattedDataList = Array.isArray(dataList) ? dataList : Object.values(dataList);
-  console.log(formattedDataList)
+  console.log(formattedDataList,studioIdName)
 
   return (
     <div className="horizontal-scroll-wrapper">

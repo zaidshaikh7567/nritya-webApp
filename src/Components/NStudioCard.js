@@ -9,7 +9,7 @@ import Typography from '@mui/joy/Typography';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { danceStylesColorChips } from '../constants';
+import { CHIP_LEVELS_DESIGN, COLORS, danceStylesColorChips } from '../constants';
 import IconButton from '@mui/joy/IconButton';
 import Favorite from '@mui/icons-material/Favorite';
 
@@ -72,6 +72,30 @@ export default function NStudioCard({img_src,data}) {
 
         </Stack>
 
+        <Stack
+            direction="row"
+            spacing={2}
+            style={{ position: "absolute", top: 0, left: 0, padding: "1px", paddingTop: "1px" }}
+          >
+            {data && data.freeTrialAvailable &&(
+            
+                <Chip
+                  key={1}
+                 
+                  sx={{
+                    marginLeft: "10px",
+                    marginBottom: "10px",
+                    fontSize: "0.8rem",
+                    bgcolor: COLORS.LIME.backgroundColor,  // Set the background color
+                    color: COLORS.LIME.color,  // Set the text color
+                  }}
+                >
+                  {'Free Trial Available'}
+                </Chip>
+              
+            )}
+          </Stack>
+
         </AspectRatio>
       <CardContent style={{padding:'10px'}}>
         <Link
@@ -103,7 +127,13 @@ export default function NStudioCard({img_src,data}) {
         >
           <Favorite />
         </IconButton>
-        <Typography style={{color: isDarkModeOn?'white':'black'}}>⭐ {data && data.avgRating? data.avgRating.toFixed(1):" Not rated yet"}</Typography>
+        <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
+            <span>⭐ {data && data.avgRating ? data.avgRating.toFixed(1) : "Not rated yet"}</span>
+            {data && data.minFee && (
+              <span style={{position: "absolute", right: 2}}>  Starts @₹{data.minFee}</span>
+            )}
+          </Typography>
+
       </CardContent>
     </Card>
   );
