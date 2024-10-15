@@ -192,7 +192,7 @@ function CourseFullPage() {
         <Grid item xs={12} lg={4}>
           <Box
             sx={{
-              bgcolor: isDarkModeOn ? "#333333" : "#efefef",
+              bgcolor: isDarkModeOn ? "black" : "#efefef",
               p: 3,
               borderRadius: "8px",
               display: "flex",
