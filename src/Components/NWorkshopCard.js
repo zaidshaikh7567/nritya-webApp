@@ -347,7 +347,9 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
   };
   console.log(studioIdName,"=====",dataItem.StudioId)
   return (
-    <>
+    <a
+    href={`#/workshop/${dataItem.id}`}
+    style={{ textDecoration: 'none', color: isDarkModeOn ? 'white' : 'black' }}>
       <Card
         variant="solid"
         sx={{
@@ -467,6 +469,6 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
         open={isWorkshopDetailsModalOpen}
         handleClose={handleWorkshopDetailsModalClose}
       />
-    </>
+    </a>
   );
 }

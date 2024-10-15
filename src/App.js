@@ -37,7 +37,9 @@ const CreatorOpenClass = lazy(() => import('./Screens/CreatorOpenClass'));
 const CreatorCourse = lazy(() => import('./Screens/CreatorCourse'));
 const NrityaPolicyPages = lazy(() => import('./Screens/NrityaPolicyPages'));
 const NrityaStudioPolicyPages = lazy(() => import('./Screens/NrityaStudioPolicyPages'));
-
+const WorkShopFullPage = lazy(()=> import('././Screens/WorkShopFullPage'));
+const OpenClassFullPage = lazy(()=> import('././Screens/OpenClassFullPage'));
+const CourseFullPage = lazy(()=> import('././Screens/CourseFullPage'));
 
 
 function App() {
@@ -93,6 +95,9 @@ function App() {
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
                   <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
+                  <Route path='/workshop/:workshopId' element={<WorkShopFullPage/>}/>
+                  <Route path='/openClass/:openClassId' element={<OpenClassFullPage/>}/>
+                  <Route path='/course/:courseId' element={<CourseFullPage/>}/>
                   <Route path='/st' element={<StudioFullPage/>}/>
                   <Route path='/search/:entity' element={<SearchPage/>}/>
                   <Route path='/jobs' element={<JobHire/>}/>

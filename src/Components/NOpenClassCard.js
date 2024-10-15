@@ -355,7 +355,9 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
 
 
   return (
-    <>
+    <a
+    href={`#/openClass/${dataItem.id}`}
+    style={{ textDecoration: 'none', color: isDarkModeOn ? 'white' : 'black' }}>
       <Card
         variant="solid"
         sx={{
@@ -470,6 +472,6 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
         open={isOpenClassDetailsModalOpen}
         handleClose={handleOpenClassDetailsModalClose}
       />
-    </>
+    </a>
   );
 }

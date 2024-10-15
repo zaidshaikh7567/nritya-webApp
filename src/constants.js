@@ -21,7 +21,7 @@ export const LEVELS = {
     INTERMEDIATE :"Intermediate", 
     ADVANCED :"Advanced"
 }
-
+export const INTERNET_CONV_CHARGES = 30;
 export const SERVER_URLS = {
     PROD : 'https://nrityaserver-2b241e0a97e5.herokuapp.com/',
     LOCAL : 'http://127.0.0.1:8000/'

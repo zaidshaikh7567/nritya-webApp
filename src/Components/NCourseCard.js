@@ -354,7 +354,8 @@ export default function NCourseCard({dataItem, studioIdName}) {
 
 
   return (
-    <>
+    <a href={`#/course/${dataItem.id}`}
+    style={{ textDecoration: 'none', color: isDarkModeOn ? 'white' : 'black' }}>
       <Card
         variant="solid"
         sx={{
@@ -474,6 +475,6 @@ export default function NCourseCard({dataItem, studioIdName}) {
         open={isCourseDetailsModalOpen}
         handleClose={handleCourseDetailsModalClose}
       />
-    </>
+    </a>
   );
 }
