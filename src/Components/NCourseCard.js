@@ -461,6 +461,11 @@ export default function NCourseCard({dataItem, studioIdName}) {
           >
             {dataItem.date || ""} | {dataItem.time || ""}
           </Typography>
+          <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
+            {dataItem && dataItem.price && (
+              <span> ₹{dataItem.price}</span>
+            )}
+          </Typography>
         </CardContent>
       </Card>
 
