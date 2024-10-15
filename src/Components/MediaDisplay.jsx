@@ -14,7 +14,7 @@ const MediaDisplay = ({ youtubeId, imageUrl, altText }) => {
     >
       <Box
         component="iframe"
-        src={`https://www.youtube.com/embed/${youtubeId}`}
+        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1`}
         title={altText || "Workshop Video"}
         sx={{
           position: "absolute",
