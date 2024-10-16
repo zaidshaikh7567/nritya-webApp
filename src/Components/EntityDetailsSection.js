@@ -1,11 +1,11 @@
 import React from "react";
 import { Grid, Typography as MUITypography, Box, IconButton, Chip, Button } from "@mui/material";
-import LocationOnIcon from '@mui/icons-material/LocationOn'
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import whatsAppImage from "../assets/images/whatsapp.png";
 import callImage from "../assets/images/india_11009487.png";
 import { CHIP_LEVELS_DESIGN } from "../constants";
 import { useSelector } from "react-redux";
+import { FaDirections } from "react-icons/fa";
 
 
 function EntityDetailsSection({dataItem, whatsappMessage}) {
@@ -24,7 +24,7 @@ function EntityDetailsSection({dataItem, whatsappMessage}) {
               </>
             )}
           </MUITypography>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+
             <Chip
               sx={{
                 marginLeft: "10px",
@@ -35,22 +35,7 @@ function EntityDetailsSection({dataItem, whatsappMessage}) {
               label={dataItem.level}
             />
 
-            {/* Show the 'Get Directions' button only if lat and lng are defined */}
-            {dataItem?.studioDetails?.geolocation?.lat !== undefined && dataItem?.studioDetails?.geolocation?.lng !== undefined && (
-              <Button
-                variant="contained"
-                color="primary"
-                href={`https://www.google.com/maps/dir/?api=1&destination=${dataItem?.studioDetails?.geolocation?.lat},${dataItem?.studioDetails?.geolocation?.lng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{ marginLeft: "10px" }}
-                startIcon={<LocationOnIcon />}
-              >
-                Get Directions
-              </Button>
-            )}
-          </Box>
-
+            
           <Box sx={{ display: "flex", gap: "0.5rem", mb: "1rem" , color: isDarkModeOn ? 'white' : 'black'}}>
             {dataItem.studioDetails?.whatsappNumber && (
               <IconButton
@@ -88,6 +73,20 @@ function EntityDetailsSection({dataItem, whatsappMessage}) {
           <MUITypography variant="body1 " style={{color: isDarkModeOn ? 'white' : 'black'}}>
             {dataItem.description || "Workshop Description"}
           </MUITypography>
+          <br/>
+          {dataItem?.studioDetails?.geolocation?.lat !== undefined && dataItem?.studioDetails?.geolocation?.lng !== undefined && (
+              <Button
+                variant="contained"
+                color="primary"
+                href={`https://www.google.com/maps/dir/?api=1&destination=${dataItem?.studioDetails?.geolocation?.lat},${dataItem?.studioDetails?.geolocation?.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ marginLeft: "10px" }}
+                startIcon={<FaDirections style={{ color: isDarkModeOn ? 'white' : 'black' }} />}
+              >
+                Directions
+              </Button>
+            )}
         </Grid>
   )
 }
