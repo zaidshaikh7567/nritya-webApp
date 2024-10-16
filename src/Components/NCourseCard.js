@@ -20,7 +20,7 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Spinner } from "react-bootstrap";
-import { bookEntity } from "../utils/common";
+import { bookEntity, getYoutubeVideoId } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
@@ -351,8 +351,12 @@ export default function NCourseCard({dataItem, studioIdName}) {
     transform: "scale(1.01)",
     cursor: "pointer",
   };
-
-
+  let video_id = null;
+  let thumbnail_url = null;
+  video_id = getYoutubeVideoId(dataItem.youtubeViedoLink)
+  if(video_id){
+    thumbnail_url = `https://img.youtube.com/vi/${video_id}/maxresdefault.jpg`
+  }
   return (
     <a href={`#/course/${dataItem.id}`}
     style={{ textDecoration: 'none', color: isDarkModeOn ? 'white' : 'black' }}>
@@ -365,7 +369,7 @@ export default function NCourseCard({dataItem, studioIdName}) {
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img
-            src={dataItem.iconUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+            src={ thumbnail_url || dataItem.iconUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
             loading="lazy"
             alt="Studio Image"
             style={{ maxWidth: "100%", objectFit: "cover", overflow: "hidden" }}

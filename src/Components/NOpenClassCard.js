@@ -18,7 +18,7 @@ import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
-import { bookEntity } from "../utils/common";
+import { bookEntity, getYoutubeVideoId } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
@@ -353,6 +353,12 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
     cursor: "pointer",
   };
 
+  let video_id = null;
+  let thumbnail_url = null;
+  video_id = getYoutubeVideoId(dataItem.youtubeViedoLink)
+  if(video_id){
+    thumbnail_url = `https://img.youtube.com/vi/${video_id}/maxresdefault.jpg`
+  }
 
   return (
     <a
@@ -369,9 +375,9 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img
-            src={dataItem.iconUrl}
+            src={thumbnail_url || dataItem.iconUrl}
             loading="lazy"
-            alt="Studio Image"
+            alt="Open Class Image"
             style={{ maxWidth: "100%", objectFit: "cover", overflow: "hidden" }}
           />
           <Stack
