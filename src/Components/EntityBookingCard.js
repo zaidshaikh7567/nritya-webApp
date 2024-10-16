@@ -73,8 +73,12 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
               {dataItem.time}
             </MUITypography>
             <MUITypography variant="body1" sx={{ mt: "1rem", color: isDarkModeOn ? 'white' : 'black' }}>
-              {dataItem.city || "City"}
+              {`${dataItem?.studioDetails?.buildingName || ''}${dataItem?.studioDetails?.buildingName ? ', ' : ''}${dataItem?.studioDetails?.street || ''}`}
+              <br />
+              {dataItem?.studioDetails?.city || 'Address'}
             </MUITypography>
+
+
           </Box>
 
           {/* Booking Section */}
