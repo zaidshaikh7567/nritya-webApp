@@ -4,6 +4,7 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import { COLLECTIONS, ENTITY_FLAG } from "../constants";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { useSelector } from "react-redux";
+import logoMobile from '../assets/images/logo_small.jpg';
 
 const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
   totalPrice, handleBook, entityType,}) => {
@@ -58,10 +59,10 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
             justifyContent: "space-between",
           }}
         >
-          {/* Workshop Info */}
+          {/* Entity Info */}
           <Box>
             <MUITypography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'none', textDecoration: 'none' }}>
-              {dataItem.courseName || dataItem.workshopName || "Open Class Name"}
+              {dataItem.courseName || dataItem.workshopName || dataItem.openClassName|| "Open Class Name"}
             </MUITypography>
             <br />
             <MUITypography variant="subtitle" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
@@ -233,38 +234,58 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
         onClose={handleCloseModal}
         fullWidth
         maxWidth="sm"
+        PaperProps={{
+            sx: {
+              backgroundColor: isDarkModeOn ? '#333' : '#fff',
+              color: isDarkModeOn ? '#fff' : '#000',
+              position: 'relative', 
+            },
+          }}
       >
-        <DialogTitle>Price Breakdown</DialogTitle>
+        <Box
+            sx={{ position: 'absolute', top: '1rem',left: '50%',transform: 'translateX(-50%)',
+                width: '60px',  height: '60px', backgroundColor: '#735EAB',
+                borderRadius: '50%', display: 'flex', justifyContent: 'center',
+                alignItems: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            }}
+        >
+            <img src={logoMobile} alt="Icon"
+                style={{ width: '4rem', height: '4rem',borderRadius: '50%'
+            }}
+            />
+        </Box>
+        <DialogTitle sx={{ color: isDarkModeOn ? '#fff' : '#000', marginTop: '5rem',textAlign: 'center', textDecoration: 'none', textTransform: 'none'  }}>Price Breakdown for {dataItem.courseName || dataItem.workshopName || dataItem.openClassName}</DialogTitle>
         <DialogContent>
+            
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><strong>Item</strong></TableCell>
-                <TableCell align="right"><strong>Amount (₹)</strong></TableCell>
+                <TableCell sx={{ color: isDarkModeOn ? '#fff' : '#000' }}><strong>Item</strong></TableCell>
+                <TableCell align="right" sx={{ color: isDarkModeOn ? '#fff' : '#000' }}><strong>Amount (₹)</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>Price per Person</TableCell>
-                <TableCell align="right">{dataItem.price}</TableCell>
+                <TableCell sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>Price per Person</TableCell>
+                <TableCell align="right" sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>{dataItem.price}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Number of Persons</TableCell>
-                <TableCell align="right">{personsAllowed}</TableCell>
+                <TableCell sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>Number of Persons</TableCell>
+                <TableCell align="right" sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>{personsAllowed}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Subtotal</TableCell>
-                <TableCell align="right">
+                <TableCell sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>Subtotal</TableCell>
+                <TableCell align="right" sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>
                   {dataItem.price * personsAllowed}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Internet Convenience Charges</TableCell>
-                <TableCell align="right">{INTERNET_CONV_CHARGES_INR}</TableCell>
+                <TableCell sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>Internet Convenience Charges</TableCell>
+                <TableCell align="right" sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>{INTERNET_CONV_CHARGES_INR}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell><strong>Total Price</strong></TableCell>
-                <TableCell align="right">
+                <TableCell sx={{ color: isDarkModeOn ? '#fff' : '#000' }}><strong>Total Price</strong></TableCell>
+                <TableCell align="right" sx={{ color: isDarkModeOn ? '#fff' : '#000' }}>
                   <strong>₹{totalPrice}</strong>
                 </TableCell>
               </TableRow>
@@ -272,7 +293,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
           </Table>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} variant="outlined">
+          <Button onClick={handleCloseModal} variant="contained">
             Close
           </Button>
         </DialogActions>
