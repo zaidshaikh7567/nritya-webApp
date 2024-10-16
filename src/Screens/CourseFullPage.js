@@ -145,7 +145,7 @@ function CourseFullPage() {
         {/* Workshop Image */}
         <Grid item xs={12} lg={8}>
           <MediaDisplay 
-            youtubeId={dataItem.youtubeId} 
+            youtubeViedoLink={dataItem.youtubeViedoLink} 
             imageUrl={imageUrl} 
             altText={dataItem.courseName || dataItem.workshopName} 
             />

@@ -82,7 +82,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
     let validationFailed = true;
     if (
       !form.openClassName.value ||
-      !form.openClassVenue.value ||
+      !form.capacity.value ||
       !form.description.value ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
@@ -112,7 +112,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
     try {
       const dbPayload = {
         openClassName: form.openClassName.value,
-        venue: form.openClassVenue.value,
+        capacity: form.capacity.value,
         description: form.description.value,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
@@ -131,7 +131,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
         city: selectedCity,
-        youtubeId: form.youtubeId.value,
+        youtubeViedoLink: form.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
@@ -444,19 +444,19 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
 
             <Row>
               <Col md={6}>
-                <Form.Label>Venue</Form.Label>
+                <Form.Label>Maximum capacity</Form.Label>
                 <Form.Control
                   rows={1}
                   defaultValue={
-                    selectedOpenClass ? selectedOpenClass.venue : ""
+                    selectedOpenClass ? selectedOpenClass.capacity : 0
                   }
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
                   type="text"
-                  placeholder="Enter Venue"
-                  name="openClassVenue"
+                  placeholder="Enter capacity"
+                  name="capacity"
                 />
               </Col>
               <Col md={6}>
@@ -542,19 +542,19 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
 
             <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     defaultValue={
-                      selectedOpenClass ? selectedOpenClass.youtubeId : ""
+                      selectedOpenClass ? selectedOpenClass.youtubeViedoLink : ""
                     }
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     type="text"
-                    placeholder="Enter youtube videoId"
-                    name="youtubeId"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>

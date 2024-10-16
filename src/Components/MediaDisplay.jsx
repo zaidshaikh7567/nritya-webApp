@@ -1,8 +1,20 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Box } from '@mui/material';
+import { getYoutubeVideoId } from '../utils/common';
 
-const MediaDisplay = ({ youtubeId, imageUrl, altText }) => {
-  return youtubeId ? (
+const MediaDisplay = ({ youtubeViedoLink, imageUrl, altText }) => {
+  const [youtubeId, setYoutubeId] = useState(null);
+
+  useEffect(() => {
+    if (youtubeViedoLink) {
+      console.log("MediaDisplay", youtubeViedoLink)
+      const videoId  = getYoutubeVideoId(youtubeViedoLink);
+      console.log("MediaDisplay", videoId)
+      setYoutubeId(videoId);
+    }
+  }, [youtubeViedoLink]);
+  
+  return youtubeViedoLink && youtubeId ? (
     <Box
       sx={{
         position: "relative",

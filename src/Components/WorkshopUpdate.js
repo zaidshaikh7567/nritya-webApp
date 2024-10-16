@@ -113,7 +113,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
       const dbPayload = {
         workshopName: form.workshopName.value,
         price: form.workshopFees.value,
-        venue: form.workshopVenue.value,
+        capacity: form.capacity.value,
         description: form.description.value,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
@@ -132,7 +132,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
         city: selectedCity,
-        youtubeId: form.youtubeId.value,
+        youtubeViedoLink: form.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
@@ -460,17 +460,17 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                 />
               </Col>
               <Col md={6}>
-                <Form.Label>Venue</Form.Label>
+                <Form.Label>Maximum capacity</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.venue : ""}
+                  defaultValue={selectedWorkshop ? selectedWorkshop.capacity : 0}
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
-                  type="text"
-                  placeholder="Enter Venue"
-                  name="workshopVenue"
+                  type="number"
+                  placeholder="Enter capacity"
+                  name="capacity"
                 />
               </Col>
             </Row>
@@ -559,19 +559,19 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
             <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Label>Youtube video Link</Form.Label>
                   <Form.Control
                     rows={1}
                     defaultValue={
-                      selectedWorkshop ? selectedWorkshop.youtubeId : ""
+                      selectedWorkshop ? selectedWorkshop.youtubeViedoLink : ""
                     }
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     type="text"
-                    placeholder="Enter youtube videoId"
-                    name="youtubeId"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>

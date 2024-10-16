@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {Box, Grid,CircularProgress} from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { COLLECTIONS, ENTITY_FLAG, STORAGES } from "../constants"; // Adjust the import paths as necessary
+import { COLLECTIONS, STORAGES } from "../constants"; // Adjust the import paths as necessary
 import {
   readDocument,
   readDocumentWithImageUrl,
@@ -151,7 +151,7 @@ function OpenClassFullPage() {
         {/* Workshop Image */}
         <Grid item xs={12} lg={8}>
         <MediaDisplay 
-            youtubeId={dataItem.youtubeId} 
+            youtubeViedoLink={dataItem.youtubeViedoLink} 
             imageUrl={imageUrl} 
             altText={dataItem.openClassName} 
             />

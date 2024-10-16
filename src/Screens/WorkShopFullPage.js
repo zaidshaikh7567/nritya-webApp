@@ -118,6 +118,7 @@ function WorkShopFullPage() {
       fetchImage();
     }
   }, [workshopId, showSnackbar]);
+  
 
   if (!dataItem) {
     return (
@@ -149,7 +150,7 @@ function WorkShopFullPage() {
       <Grid container spacing={2}>
       <Grid item xs={12} lg={8}>
             <MediaDisplay 
-            youtubeId={dataItem.youtubeId} 
+            youtubeViedoLink={dataItem.youtubeViedoLink} 
             imageUrl={imageUrl} 
             altText={dataItem.workshopName} 
             />

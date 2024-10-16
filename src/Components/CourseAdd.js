@@ -172,7 +172,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         description: event.target.description.value,
         city: selectedCity,
         active: true,
-        youtubeId: event.target.youtubeId.value,
+        youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
@@ -711,7 +711,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
               <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
@@ -719,8 +719,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     type="text"
-                    placeholder="Enter youtube videoId"
-                    name="youtubeId"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>

@@ -133,7 +133,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
         city: selectedCity,
-        youtubeId: form.youtubeId.value,
+        youtubeViedoLink: form.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
@@ -577,19 +577,19 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
             <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     defaultValue={
-                      selectedWorkshop ? selectedWorkshop.youtubeId : ""
+                      selectedWorkshop ? selectedWorkshop.youtubeViedoLink : ""
                     }
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     type="text"
-                    placeholder="Enter youtube videoId"
-                    name="youtubeId"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>

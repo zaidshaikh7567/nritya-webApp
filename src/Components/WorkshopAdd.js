@@ -35,7 +35,7 @@ import cities from '../cities.json';
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
-function StudioAdd({ instructors, studioId, setWorkshop }) {
+function WorkshopAdd({ instructors, studioId, setWorkshop }) {
   const showSnackbar = useSnackbar();
   const [newWorkshopId, setNewWorkshopId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -165,11 +165,11 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
         price: event.target.workshopFees.value,
-        venue: event.target.workshopVenue.value,
+        capacity: event.target.capacity.value,
         description: event.target.description.value,
         city: selectedCity,
         active: true,
-        youtubeId: event.target.youtubeId.value,
+        youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
@@ -260,7 +260,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
 
           form.workshopName.value = foundWorkshop?.workshopName || "";
           form.workshopFees.value = foundWorkshop?.price || 0;
-          form.workshopVenue.value = foundWorkshop?.venue || "";
+          form.capacity.value = foundWorkshop?.capacity || 0;
           form.description.value = foundWorkshop?.description || "";
 
           setSelectedDanceStyles(
@@ -295,7 +295,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS), {
             workshopName: form.workshopName?.value || "",
             price: form.workshopFees?.value || 0,
-            venue: form.workshopVenue?.value || "",
+            venue: form.capacity?.value || 0,
             description: form.description?.value || "",
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -365,7 +365,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
               await updateDoc(workshopRef, {
                 workshopName: form.workshopName?.value || "",
                 price: form.workshopFees?.value || 0,
-                venue: form.workshopVenue?.value || "",
+                venue: form.capacity?.value || 0,
                 description: form.description?.value || "",
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
@@ -603,16 +603,16 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
 
               <Row>
                 <Col md={6}>
-                  <Form.Label>Venue</Form.Label>
+                  <Form.Label>Maximum capacity</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    type="text"
-                    placeholder="Enter Venue"
-                    name="workshopVenue"
+                    type="number"
+                    placeholder="Enter capacity"
+                    name="capacity"
                   />
                 </Col>
                 <Col md={6}>
@@ -692,7 +692,7 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
               </Row>
               <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
@@ -700,8 +700,8 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     type="text"
-                    placeholder="Enter youtube videoId"
-                    name="youtubeId"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>
@@ -759,4 +759,4 @@ function StudioAdd({ instructors, studioId, setWorkshop }) {
   );
 }
 
-export default StudioAdd;
+export default WorkshopAdd;

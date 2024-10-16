@@ -94,7 +94,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
     if (
       !form.openClassName.value ||
-      !form.openClassVenue.value ||
+      !form.capacity.value ||
       !form.description.value ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
@@ -165,11 +165,11 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         level: selectedLevel,
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
-        venue: event.target.openClassVenue.value,
+        capacity: event.target.capacity.value,
         description: event.target.description.value,
         city: selectedCity,
         active: true,
-        youtubeId: event.target.youtubeId.value,
+        youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
@@ -259,7 +259,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           let foundOpenClass = openClasses[0];
 
           form.openClassName.value = foundOpenClass?.openClassName || "";
-          form.openClassVenue.value = foundOpenClass?.venue || "";
+          form.capacity.value = foundOpenClass?.capacity || 0;
           form.description.value = foundOpenClass?.description || "";
 
           setSelectedDanceStyles(
@@ -295,7 +295,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
             openClassName: form.openClassName?.value || "",
-            venue: form.openClassVenue?.value || "",
+            capacity : form.capacity?.value || 0,
             description: form.description?.value || "",
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -364,7 +364,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
             try {
               await updateDoc(openClassRef, {
                 openClassName: form.openClassName?.value || "",
-                venue: form.openClassVenue?.value || "",
+                capacity: form.capacity?.value || 0,
                 description: form.description?.value || "",
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
@@ -582,16 +582,16 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                   </ThemeProvider>
                 </Col>
                 <Col md={6}>
-                  <Form.Label>Venue</Form.Label>
+                  <Form.Label>Maximum capacity</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    type="text"
-                    placeholder="Enter Venue"
-                    name="openClassVenue"
+                    type="number"
+                    placeholder="Enter capacity"
+                    name="capacity"
                   />
                 </Col>
               </Row>
@@ -679,7 +679,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
              
               <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video Id</Form.Label>
+                  <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
@@ -687,8 +687,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                       color: isDarkModeOn ? "white" : "black",
                     }}
                     type="text"
-                    placeholder="Enter youtube videoId"
-                    name="youtubeId"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>
