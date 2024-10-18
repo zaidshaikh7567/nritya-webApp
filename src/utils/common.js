@@ -1,4 +1,33 @@
-import { COLORS, SERVER_URLS } from "../constants";
+import { COLORS, SERVER_URLS,BASEURL_DEV,BASEURL_PROD } from "../constants";
+
+export async function postData(instructorData, collection_name, notify) {
+  const BASEURL = BASEURL_PROD;
+  const endpoint = 'crud/newEntity/'; // Define your endpoint here
+
+  try {
+    const response = await fetch(BASEURL + endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: instructorData,
+        collection_name: collection_name,
+        notify: notify,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('Error in postData:', error);
+    throw error;
+  }
+}
+
 
 export const getRandomColor = () => {
   const colorKeys = Object.keys(COLORS);

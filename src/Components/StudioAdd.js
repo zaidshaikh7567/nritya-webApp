@@ -19,6 +19,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {Stepper,Step,StepLabel} from '@mui/material';
 import SuccessMessage from './SucessPage';
+import { postData } from '../utils/common';
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -129,8 +130,9 @@ function StudioAdd({instructors}) {
         }, {});
 
         try {
-            const studioRef = await addDoc(collection(db, COLLECTIONS.STUDIO), {
-              studioName: event.target.studioName.value,
+          const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;
+          const studioData = {
+            studioName: event.target.studioName.value,
               aboutStudio: event.target.aboutStudio.value,
               founderName: event.target.founderName.value,
               aboutFounder: event.target.aboutFounder.value,
@@ -151,7 +153,6 @@ function StudioAdd({instructors}) {
               state: event.target.state.value,
               country: "India",
               geolocation : selectedLocation,
-              aadharNumber: event.target.aadharNumber.value ,
               gstNumber: event.target.gstNumber.value,
               enrolledId:[],
               reviews:[],
@@ -160,36 +161,36 @@ function StudioAdd({instructors}) {
               isPremium: isPremium,
               addAmenities: selectedAmenities.join(","),
               enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
-              creatorEmail: JSON.parse(localStorage.getItem('userInfo')).email,
+              creatorEmail: currentUserEmail,
               instagram: event.target.instagram.value,
               facebook: event.target.facebook.value,
               youtube: event.target.youtube.value,
               twitter: event.target.twitter.value,
               visibilty:1,
-
-            });
-            //console.log("Studio added successfully");
-            setNewStudioId(studioRef.id)
-            const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-              //console.log("User there",userSnap.data());
-              if(userSnap.data() != null){
-                await updateDoc(userRef,{
-                  
-                  StudioCreated: [...userSnap.data().StudioCreated,studioRef.id]
-                });
-                //console.log("Studio added back successfully");
-              }else{
-                //console.log("userSnap.data() null")
+          };
+        
+            const notifyEmails = currentUserEmail
+            const response = await postData(studioData,COLLECTIONS.STUDIO, notifyEmails) ;
+            if (response.ok) {
+              const result = await response.json();
+              setNewStudioId(result.id)
+              const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
+              const userSnap = await getDoc(userRef);
+              if (userSnap.exists()) {
+                if(userSnap.data() != null){
+                  await updateDoc(userRef,{
+                    
+                    StudioCreated: [...userSnap.data().StudioCreated,result.id]
+                  });
+                }else{
+                }
+              } else {
+                console.log("User not found but studio created... error");
               }
-            } else {
-              //console.log("User not found but studio created... error");
+
+              resetDraft();
+              handleNext();
             }
-
-            resetDraft();
-            handleNext();
-
         } catch (error) {
           console.error("Error adding studio: ", error);
         }

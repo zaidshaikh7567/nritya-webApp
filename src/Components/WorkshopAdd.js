@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import { postData } from "../utils/common";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -136,7 +137,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     }
   };
 
-  const handleAddStudio = async (event) => {
+  const handleAddWorkshop = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -146,6 +147,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     }
 
     try {
+      const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
       const dbPayload = {
         workshopName: event.target.workshopName.value,
         danceStyles: selectedDanceStyles,
@@ -156,7 +158,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           : null,
         author: JSON.parse(localStorage.getItem("userInfo")).displayName,
         UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
-        creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+        creatorEmail: currentUserEmail,
         StudioId: selectedStudio
           ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
           : null,
@@ -173,36 +175,35 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
       };
 
       setIsSubmitting(true);
+      const notifyEmails = currentUserEmail; 
+      const response = await postData(dbPayload, COLLECTIONS.WORKSHOPS, notifyEmails) ;
+      if (response.ok) {
+        const result = await response.json();
+        setNewWorkshopId(result.id);
+        setWorkshop((prev) => [...prev, { id: result.id, ...dbPayload }]);
 
-      const workshopRef = await addDoc(
-        collection(db, COLLECTIONS.WORKSHOPS),
-        dbPayload
-      );
-
-      setNewWorkshopId(workshopRef.id);
-      setWorkshop((prev) => [...prev, { id: workshopRef.id, ...dbPayload }]);
-
-      const userRef = doc(
-        db,
-        "User",
-        JSON.parse(localStorage.getItem("userInfo")).UserId
-      );
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            WorkshopCreated: [
-              ...userSnap.data().WorkshopCreated,
-              workshopRef.id,
-            ],
-          });
+        const userRef = doc(
+          db,
+          "User",
+          JSON.parse(localStorage.getItem("userInfo")).UserId
+        );
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          if (userSnap.data() != null) {
+            await updateDoc(userRef, {
+              WorkshopCreated: [
+                ...userSnap.data().WorkshopCreated,
+                result.id,
+              ],
+            });
+          }
         }
-      }
 
-      clearForm(form);
-      resetDraft();
-      showSnackbar("Workshop successfully added.", "success");
-      setStep((prev) => prev + 1);
+        clearForm(form);
+        resetDraft();
+        showSnackbar("Workshop successfully added.", "success");
+        setStep((prev) => prev + 1);
+      }
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -413,7 +414,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
       {step === 1 && (
         <Form
           id="addStudioForm"
-          onSubmit={handleAddStudio}
+          onSubmit={handleAddWorkshop}
           style={{
             backgroundColor: isDarkModeOn ? "#202020" : "",
             color: isDarkModeOn ? "white" : "black",
