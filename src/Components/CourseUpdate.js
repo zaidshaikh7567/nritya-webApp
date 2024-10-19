@@ -23,7 +23,7 @@ import cities from '../cities.json';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
-function CourseUpdate({ workshopId, instructors, studioId }) {
+function CourseUpdate({ courseId, instructors, studioId }) {
   const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
 
   const showSnackbar = useSnackbar();
@@ -254,8 +254,8 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
             onChange={handleSelectStudio}
           >
             <option value="">Select a course...</option>
-            {workshopId && workshopId.length > 0 ? (
-              workshopId.map((workshopItem) => (
+            {courseId && courseId.length > 0 ? (
+              courseId.map((workshopItem) => (
                 <option key={workshopItem} value={workshopItem}>
                   {workshopItem}
                 </option>

@@ -83,8 +83,10 @@ function InstructorAdd() {
         ownedBy: null,
       };
       const notifyEmails = currentUserEmail; 
-      
-      const response = await postData(instructorData,COLLECTIONS.INSTRUCTORS, notifyEmails) 
+      const metaData = {
+        entity_name: e.target.name.value
+      }
+      const response = await postData(instructorData,COLLECTIONS.INSTRUCTORS, notifyEmails, metaData) 
       
       if (response.ok) {
         const result = await response.json();

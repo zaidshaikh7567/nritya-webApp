@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
 import {
@@ -31,13 +31,14 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import { postData } from "../utils/common";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const showSnackbar = useSnackbar();
-  const [newWorkshopId, setNewWorkshopId] = useState("");
+  const [newWorkshopId, setNewOpenClassId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
@@ -137,7 +138,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     }
   };
 
-  const handleAddStudio = async (event) => {
+  const handleAddOpenClass = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -147,6 +148,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     }
 
     try {
+      const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
       const dbPayload = {
         openClassName: event.target.openClassName.value,
         danceStyles: selectedDanceStyles,
@@ -157,7 +159,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           : null,
         author: JSON.parse(localStorage.getItem("userInfo")).displayName,
         UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
-        creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+        creatorEmail: currentUserEmail,
         StudioId: selectedStudio
           ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
           : null,
@@ -174,37 +176,26 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
       setIsSubmitting(true);
 
-      const workshopRef = await addDoc(
-        collection(db, COLLECTIONS.OPEN_CLASSES),
-        dbPayload
-      );
-
-      setNewWorkshopId(workshopRef.id);
-      setOpenClass((prev) => [...prev, { id: workshopRef.id, ...dbPayload }]);
-
-      const userRef = doc(
-        db,
-        "User",
-        JSON.parse(localStorage.getItem("userInfo")).UserId
-      );
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            OpenClassCreated: [
-              ...(userSnap.data()?.OpenClassCreated || []),
-              workshopRef.id,
-            ],
-          });
-        }
+      const notifyEmails = currentUserEmail;
+      const metaData = {
+        entity_name: dbPayload.openClassName,
+        time: dbPayload.time,
+        date: dbPayload.date,
+        StudioId : dbPayload.StudioId
+      } 
+      const response = await postData(dbPayload, COLLECTIONS.COURSES, notifyEmails, metaData) ;
+      if (response.ok) {
+        const result = await response.json();
+        setNewOpenClassId(result.id);
+        setOpenClass((prev) => [...prev, { id: result.id, ...dbPayload }]);
+        clearForm(form);
+        resetDraft();
+        showSnackbar("Open class successfully added.", "success");
+        setStep((prev) => prev + 1);
       }
 
-      clearForm(form);
-      resetDraft();
-      showSnackbar("Open class successfully added.", "success");
-      setStep((prev) => prev + 1);
     } catch (error) {
-      console.error("Error adding workshop: ", error);
+      console.error("Error adding open class: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -411,7 +402,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
       {step === 1 && (
         <Form
           id="addStudioForm"
-          onSubmit={handleAddStudio}
+          onSubmit={handleAddOpenClass}
           style={{
             backgroundColor: isDarkModeOn ? "#202020" : "",
             color: isDarkModeOn ? "white" : "black",
@@ -714,7 +705,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           </Form.Group>
         </Form>
       )}
-
+      {isSubmitting && <LinearProgress />}
       {step === 2 && (
         <>
           <Row>

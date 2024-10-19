@@ -1,23 +1,26 @@
 import { COLORS, SERVER_URLS,BASEURL_DEV,BASEURL_PROD } from "../constants";
 
-export async function postData(instructorData, collection_name, notify) {
+export async function postData(instructorData, collection_name, notify, metadata) {
   const BASEURL = BASEURL_PROD;
   const endpoint = 'crud/newEntity/'; // Define your endpoint here
-
+  const authToken = localStorage.getItem("authToken");
   try {
     const response = await fetch(BASEURL + endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
       },
       body: JSON.stringify({
         data: instructorData,
         collection_name: collection_name,
         notify: notify,
+        metadata : metadata,
       }),
     });
 
     if (!response.ok) {
+      console.log('Error in postData:', response);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     

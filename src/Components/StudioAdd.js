@@ -1,6 +1,6 @@
 import React from 'react'
 import { Row, Col , Form } from 'react-bootstrap';
-import {Button as MuiButton} from '@mui/material';
+import {LinearProgress, Button as MuiButton} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { db } from '../config';
 import { doc, getDoc,addDoc,updateDoc,collection,where,getDocs,query, deleteDoc } from "firebase/firestore";
@@ -47,7 +47,7 @@ function StudioAdd({instructors}) {
     const [selectedAmenities, setSelectedAmenities] = useState([]);
     const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
     const [isReady, setIsReady] = useState(false);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
@@ -132,7 +132,7 @@ function StudioAdd({instructors}) {
         try {
           const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;
           const studioData = {
-            studioName: event.target.studioName.value,
+              studioName: event.target.studioName.value,
               aboutStudio: event.target.aboutStudio.value,
               founderName: event.target.founderName.value,
               aboutFounder: event.target.aboutFounder.value,
@@ -168,31 +168,23 @@ function StudioAdd({instructors}) {
               twitter: event.target.twitter.value,
               visibilty:1,
           };
-        
+            setIsSubmitting(true);
             const notifyEmails = currentUserEmail
-            const response = await postData(studioData,COLLECTIONS.STUDIO, notifyEmails) ;
+            const metaData = {
+              entity_name: studioData.studioName,
+              city: studioData.city ,
+            }
+            const response = await postData(studioData,COLLECTIONS.STUDIO, notifyEmails, metaData) ;
             if (response.ok) {
               const result = await response.json();
               setNewStudioId(result.id)
-              const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
-              const userSnap = await getDoc(userRef);
-              if (userSnap.exists()) {
-                if(userSnap.data() != null){
-                  await updateDoc(userRef,{
-                    
-                    StudioCreated: [...userSnap.data().StudioCreated,result.id]
-                  });
-                }else{
-                }
-              } else {
-                console.log("User not found but studio created... error");
-              }
-
               resetDraft();
               handleNext();
             }
         } catch (error) {
           console.error("Error adding studio: ", error);
+        } finally {
+          setIsSubmitting(false);
         }
       };
 
@@ -697,7 +689,7 @@ function StudioAdd({instructors}) {
                   </Col>
                   <Col xs={6} className="d-flex justify-content-end">
                     
-                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black", color:'white'}} type="submit">
+                    <MuiButton variant="contained" disabled={isSubmitting} style={{backgroundColor:isDarkModeOn?"#892cdc":"black", color:'white'}} type="submit">
                       Add Studio & Next
                     </MuiButton>
                   </Col>
@@ -708,7 +700,7 @@ function StudioAdd({instructors}) {
                 
                 </Form.Group>
             </Form>
-            
+            {isSubmitting && <LinearProgress />}
             {
               newStudioId === ""?(""):(<p>New Studio Created with id {newStudioId}. Now u can upload images regarding them</p>)
             }

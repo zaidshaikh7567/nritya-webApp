@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
 import {
@@ -176,29 +176,18 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
       setIsSubmitting(true);
       const notifyEmails = currentUserEmail; 
-      const response = await postData(dbPayload, COLLECTIONS.WORKSHOPS, notifyEmails) ;
+      const metaData = {
+        entity_name: dbPayload.workshopName,
+        time: dbPayload.time,
+        date: dbPayload.date,
+        StudioId : dbPayload.StudioId
+      }
+      const response = await postData(dbPayload, COLLECTIONS.WORKSHOPS, notifyEmails, metaData) ;
       if (response.ok) {
         const result = await response.json();
         setNewWorkshopId(result.id);
         setWorkshop((prev) => [...prev, { id: result.id, ...dbPayload }]);
-
-        const userRef = doc(
-          db,
-          "User",
-          JSON.parse(localStorage.getItem("userInfo")).UserId
-        );
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          if (userSnap.data() != null) {
-            await updateDoc(userRef, {
-              WorkshopCreated: [
-                ...userSnap.data().WorkshopCreated,
-                result.id,
-              ],
-            });
-          }
-        }
-
+        
         clearForm(form);
         resetDraft();
         showSnackbar("Workshop successfully added.", "success");
@@ -727,7 +716,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           </Form.Group>
         </Form>
       )}
-
+      {isSubmitting && <LinearProgress />}
       {step === 2 && (
         <>
           <Row>
