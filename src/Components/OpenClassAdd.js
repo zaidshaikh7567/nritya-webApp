@@ -183,7 +183,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         date: dbPayload.date,
         StudioId : dbPayload.StudioId
       } 
-      const response = await postData(dbPayload, COLLECTIONS.COURSES, notifyEmails, metaData) ;
+      const response = await postData(dbPayload, COLLECTIONS.OPEN_CLASSES, notifyEmails, metaData) ;
       if (response.ok) {
         const result = await response.json();
         setNewOpenClassId(result.id);
