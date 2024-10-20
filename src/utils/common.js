@@ -1,6 +1,6 @@
 import { COLORS, SERVER_URLS,BASEURL_DEV,BASEURL_PROD } from "../constants";
 
-export async function postData(instructorData, collection_name, notify, metadata) {
+export async function postData(dbPayload, collection_name, notify, metadata) {
   const BASEURL = BASEURL_PROD;
   const endpoint = 'crud/newEntity/'; // Define your endpoint here
   const authToken = localStorage.getItem("authToken");
@@ -12,7 +12,7 @@ export async function postData(instructorData, collection_name, notify, metadata
         'Authorization': `Bearer ${authToken}`
       },
       body: JSON.stringify({
-        data: instructorData,
+        data: dbPayload,
         collection_name: collection_name,
         notify: notify,
         metadata : metadata,

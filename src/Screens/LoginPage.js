@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Button, Container } from '@mui/material';
 import { setCreatorMode } from '../utils/firebaseUtils.js';
+import { postData } from '../utils/common.js';
 
 
 
@@ -29,7 +30,7 @@ function LoginPage({onLogin,setIsLoggedIn}) {
         } else {
           // docSnap.data() will be undefined in this case
           console.log("No such document!");
-          await setDoc(doc(db, COLLECTIONS.USER, user.uid), {
+          const dbPayload = {
             Name: user.displayName,
             Email: user.email,
             DoB: null, // You may want to add user's date of birth here
@@ -43,8 +44,17 @@ function LoginPage({onLogin,setIsLoggedIn}) {
             premiumTill: false,
             TransactionIDs:[],
             recentlyWatched:{0:"",1:"",2:"",3:"",4:""},
-          });
-          console.log("User added successfully");
+          }
+          const notifyEmails = user.email
+          const metadata = {
+            "user_id":user.uid
+          }
+          const response = await postData(dbPayload, COLLECTIONS.USER, notifyEmails, metadata) ;
+          if (response.ok) {
+            console.log("User added successfully");
+          }else{
+            console.error(response);
+          }
         }
 
         const userRef2 = doc(db, COLLECTIONS.USER, user.uid);
