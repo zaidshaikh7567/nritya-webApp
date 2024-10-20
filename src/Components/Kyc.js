@@ -8,7 +8,7 @@ import KycStepper from './KycStepper.js';
 import CryptoJS from 'crypto-js';
 import { validateField } from '../utils/validationUtils';
 import './Kyc.css';
-import { Typography } from '@mui/material';
+import { LinearProgress, Typography } from '@mui/material';
 
 const names_map = new Map([
   ["first_name" , "First Name"],
@@ -63,6 +63,7 @@ function Kyc() {
   const [hasTextChanged, setHasTextChanged] = useState(false);
   const [progressAadhar, setProgressAadhar] = useState(-1);
   const [progressGst, setProgressGst] = useState(-1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   const calculateHash = (data) => {
@@ -109,6 +110,7 @@ function Kyc() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
     try {
 
       const formFields = Object.keys(formData).filter(
@@ -221,6 +223,8 @@ function Kyc() {
       event.target.reset();
     } catch (error) {
       console.error("Error processing KYC: ", error);
+    } finally{
+      setIsSubmitting(false);
     }
   };
 
@@ -453,6 +457,7 @@ function Kyc() {
           </Button>
 
         </Form>
+        {isSubmitting && <LinearProgress/>}
         <br/>
         <>
           {formData.hash && <KycStepper kycId={kycId} status={formData.status} />}
