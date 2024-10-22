@@ -38,7 +38,7 @@ const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const showSnackbar = useSnackbar();
-  const [newWorkshopId, setNewOpenClassId] = useState("");
+  const [newOpenClassId, setNewOpenClassId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
@@ -711,7 +711,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           <Row>
             <Col>
               <ImageUpload
-                entityId={newWorkshopId}
+                entityId={newOpenClassId}
                 title={"Open Class Images"}
                 storageFolder={STORAGES.OPENCLASSICON}
                 maxImageCount={1}

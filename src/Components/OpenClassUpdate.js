@@ -23,7 +23,7 @@ import cities from '../cities.json';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
-function OpenClassUpdate({ workshopId, instructors, studioId }) {
+function OpenClassUpdate({ openClassId, instructors, studioId }) {
   const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
 
   const showSnackbar = useSnackbar();
@@ -74,7 +74,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
         setSelectedOpenClass(null);
       }
     } catch (error) {
-      console.error("Error fetching workshop data:", error, selectedId);
+      console.error("Error fetching Open Class data:", error, selectedId);
     }
   };
 
@@ -143,7 +143,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
       clearForm(form);
       showSnackbar("Open class successfully updated.", "success");
     } catch (error) {
-      console.error("Error updating workshop: ", error);
+      console.error("Error updating Open Class: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -252,10 +252,10 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
             onChange={handleSelectStudio}
           >
             <option value="">Select a open class...</option>
-            {workshopId && workshopId.length > 0 ? (
-              workshopId.map((workshopItem) => (
-                <option key={workshopItem} value={workshopItem}>
-                  {workshopItem}
+            {openClassId && openClassId.length > 0 ? (
+              openClassId.map((openClassItem) => (
+                <option key={openClassItem} value={openClassItem}>
+                  {openClassItem}
                 </option>
               ))
             ) : (
