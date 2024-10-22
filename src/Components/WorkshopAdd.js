@@ -32,6 +32,8 @@ import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
 import { postData } from "../utils/common";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -58,6 +60,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState('');
   const [step, setStep] = useState(1);
 
   const darkTheme = createTheme({
@@ -95,9 +98,9 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     if (
       !form.workshopName.value ||
       !form.workshopFees.value ||
-      !form.description.value ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
+      !description ||
       !selectedStudio ||
       !selectedDuration ||
       !selectedLevel ||
@@ -165,10 +168,11 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
         duration: selectedDuration,
         level: selectedLevel,
         time: workshopTime,
+        description: description,
         date: workshopDate.format("YYYY-MM-DD"),
         price: event.target.workshopFees.value,
         capacity: event.target.capacity.value,
-        description: event.target.description.value,
+        // venue: event.target.workshopVenue.value,
         city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
@@ -211,6 +215,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     setWorkshopTime("");
     setWorkshopDate(dayjs(new Date()));
     setSelectedCity('');
+    setDescription('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -251,7 +256,8 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           form.workshopName.value = foundWorkshop?.workshopName || "";
           form.workshopFees.value = foundWorkshop?.price || 0;
           form.capacity.value = foundWorkshop?.capacity || 0;
-          form.description.value = foundWorkshop?.description || "";
+          // form.workshopVenue.value = foundWorkshop?.venue || "";
+          setDescription(foundWorkshop?.description || "");
 
           setSelectedDanceStyles(
             foundWorkshop?.danceStyles?.length ? foundWorkshop.danceStyles : []
@@ -285,8 +291,9 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS), {
             workshopName: form.workshopName?.value || "",
             price: form.workshopFees?.value || 0,
-            venue: form.capacity?.value || 0,
-            description: form.description?.value || "",
+            // venue: form.capacity?.value || 0,
+            // venue: form.workshopVenue?.value || "",
+            description: description,
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
               ? selectedInstructors?.map?.(
@@ -355,8 +362,9 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
               await updateDoc(workshopRef, {
                 workshopName: form.workshopName?.value || "",
                 price: form.workshopFees?.value || 0,
-                venue: form.capacity?.value || 0,
-                description: form.description?.value || "",
+                // venue: form.capacity?.value || 0,
+                // venue: form.workshopVenue?.value || "",
+                description: description,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -390,6 +398,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     isReady,
     selectedDanceStyles,
     selectedInstructors,
+    description,
     selectedStudio,
     selectedDuration,
     selectedLevel,
@@ -397,6 +406,20 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     workshopDate,
     selectedCity,
   ]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";      
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div>
@@ -668,7 +691,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                 </Col>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
-                  <Form.Control
+                  {/* <Form.Control
                     rows={3}
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
@@ -677,7 +700,16 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                     as="textarea"
                     placeholder="Enter Description"
                     name="description"
+                  /> */}
+
+
+                  <ReactQuill
+                    theme="snow"
+                    placeholder="Enter Description"
+                    value={description}
+                    onChange={setDescription}
                   />
+
                 </Col>
               </Row>
               <Row>
@@ -696,7 +728,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                 </Col>
               </Row>
               <Row>
-              <hr></hr>
+                <hr></hr>
                 <Col xs={6}></Col>
                 <Col xs={6} className="d-flex justify-content-end">
                   <MuiButton

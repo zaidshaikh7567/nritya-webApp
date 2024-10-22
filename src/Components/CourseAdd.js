@@ -32,13 +32,15 @@ import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
 import { postData } from "../utils/common";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function CourseAdd({ instructors, studioId, setCourses }) {
   const showSnackbar = useSnackbar();
-  const [newWorkshopId, setNewCourseId] = useState("");
+  const [newCourseId, setNewCourseId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
@@ -59,6 +61,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
   const [courseDate, setCourseDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [description, setDescription] = useState('');
 
   const darkTheme = createTheme({
     palette: {
@@ -95,9 +98,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     if (
       !form.name.value ||
       !form.duration.value ||
-      !form.workshopFees.value ||
-      !form.workshopVenue.value ||
-      !form.description.value ||
+      !form.courseFees.value ||
+      !form.courseVenue.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -169,9 +172,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         level: selectedLevel,
         time: courseTime,
         date: courseDate.format("YYYY-MM-DD"),
-        price: event.target.workshopFees.value,
-        venue: event.target.workshopVenue.value,
-        description: event.target.description.value,
+        price: event.target.courseFees.value,
+        venue: event.target.courseVenue.value,
+        description: description,
         city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
@@ -215,6 +218,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     setCourseTime("");
     setCourseDate(dayjs(Date.now()));
     setSelectedCity('');
+    setDescription('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -253,10 +257,10 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           let foundCourse = courses[0];
 
           form.name.value = foundCourse.name;
-          form.workshopFees.value = foundCourse.price;
-          form.workshopVenue.value = foundCourse.venue;
-          form.description.value = foundCourse.description;
+          form.courseFees.value = foundCourse.price;
+          form.courseVenue.value = foundCourse.venue;
           form.duration.value = foundCourse.duration;
+          setDescription(foundCourse?.description || "");
 
           setSelectedDanceStyles(
             foundCourse?.danceStyles?.length ? foundCourse.danceStyles : []
@@ -287,9 +291,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_COURSES), {
             name: form.name?.value || "",
             duration: form.duration?.value || "",
-            price: form.workshopFees?.value || "",
-            venue: form.workshopVenue?.value || "",
-            description: form.description?.value || "",
+            price: form.courseFees?.value || "",
+            venue: form.courseVenue?.value || "",
+            description: description ,
 
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -358,9 +362,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
             try {
               await updateDoc(openClassRef, {
                 name: form.name?.value || "",
-                price: form.workshopFees?.value || "",
-                venue: form.workshopVenue?.value || "",
-                description: form.description?.value || "",
+                price: form.courseFees?.value || "",
+                venue: form.courseVenue?.value || "",
+                description: description,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -401,7 +405,22 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     courseTime,
     courseDate,
     selectedCity,
+    description
   ]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";      
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div>
@@ -606,7 +625,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     }}
                     type="number"
                     placeholder="Enter fees/price"
-                    name="workshopFees"
+                    name="courseFees"
                   />
                 </Col>
               </Row>
@@ -624,7 +643,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     }}
                     type="text"
                     placeholder="Enter Venue"
-                    name="workshopVenue"
+                    name="courseVenue"
                   />
                 </Col>
                 <Col md={6}>
@@ -690,15 +709,11 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 </Col>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
-                  <Form.Control
-                    rows={3}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    as="textarea"
+                  <ReactQuill
+                    theme="snow"
                     placeholder="Enter Description"
-                    name="description"
+                    value={description}
+                    onChange={setDescription}
                   />
                 </Col>
               </Row>
@@ -747,7 +762,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           <Row>
             <Col>
               <ImageUpload
-                entityId={newWorkshopId}
+                entityId={newCourseId}
                 title={"Course Images"}
                 storageFolder={STORAGES.COURSEICON}
                 maxImageCount={1}

@@ -20,10 +20,12 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
-function OpenClassUpdate({ workshopId, instructors, studioId }) {
+function OpenClassUpdate({ openClassId, instructors, studioId }) {
   const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
 
   const showSnackbar = useSnackbar();
@@ -41,6 +43,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState('');
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -74,7 +77,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
         setSelectedOpenClass(null);
       }
     } catch (error) {
-      console.error("Error fetching workshop data:", error, selectedId);
+      console.error("Error fetching Open Class data:", error, selectedId);
     }
   };
 
@@ -83,7 +86,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
     if (
       !form.openClassName.value ||
       !form.capacity.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -113,7 +116,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
       const dbPayload = {
         openClassName: form.openClassName.value,
         capacity: form.capacity.value,
-        description: form.description.value,
+        description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -143,7 +146,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
       clearForm(form);
       showSnackbar("Open class successfully updated.", "success");
     } catch (error) {
-      console.error("Error updating workshop: ", error);
+      console.error("Error updating Open Class: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -163,6 +166,7 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
     setSelectedCity('');
     setSelectedOpenClass(null);
     setSelectedOpenClassId("");
+    setDescription('');
   };
 
   const handleDurationChange = (event, value) => {
@@ -228,9 +232,24 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
       }
 
       setSelectedCity(selectedOpenClass?.city || '');
+      setDescription(selectedOpenClass?.description || '');
     }
   }, [selectedOpenClass]);
 
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";
+    }
+  }, [isDarkModeOn]);
+  
   return (
     <div
       style={{
@@ -252,10 +271,10 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
             onChange={handleSelectStudio}
           >
             <option value="">Select a open class...</option>
-            {workshopId && workshopId.length > 0 ? (
-              workshopId.map((workshopItem) => (
-                <option key={workshopItem} value={workshopItem}>
-                  {workshopItem}
+            {openClassId && openClassId.length > 0 ? (
+              openClassId.map((openClassItem) => (
+                <option key={openClassItem} value={openClassItem}>
+                  {openClassItem}
                 </option>
               ))
             ) : (
@@ -522,18 +541,11 @@ function OpenClassUpdate({ workshopId, instructors, studioId }) {
               </Col>
               <Col md={6}>
                 <Form.Label>Brief Description</Form.Label>
-                <Form.Control
-                  rows={3}
-                  defaultValue={
-                    selectedOpenClass ? selectedOpenClass.description : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  as="textarea"
+                <ReactQuill
+                  theme="snow"
                   placeholder="Enter Description"
-                  name="description"
+                  value={description}
+                  onChange={setDescription}
                 />
               </Col>
             </Row>

@@ -20,6 +20,8 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
@@ -38,9 +40,10 @@ function CourseUpdate({ courseId, instructors, studioId }) {
   const [selectedDurationUnit, setSelectedDurationUnit] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedCity, setSelectedCity] = useState(currentCity);
-  const [workshopTime, setWorkshopTime] = useState("");
-  const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
+  const [courseTime, setCourseTime] = useState("");
+  const [courseDate, setCourseDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState('');
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -56,24 +59,24 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     setSelectedDanceStyles(value);
   };
 
-  const [selectedWorkshopId, setSelectedWorkshopId] = useState("");
-  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const isValidInputs = (form) => {
     let validationFailed = true;
     if (
       !form.name.value ||
-      !form.workshopVenue.value ||
-      !form.workshopFees.value ||
+      !form.courseVenue.value ||
+      !form.courseFees.value ||
       !form.duration.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
       !selectedDurationUnit ||
       !selectedLevel ||
-      !workshopTime ||
-      !workshopDate ||
+      !courseTime ||
+      !courseDate ||
       !selectedCity
     )
       validationFailed = false;
@@ -85,16 +88,16 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     event.preventDefault();
     const selected = event.target.value;
     const selectedId = selected.split(":").pop().trim();
-    setSelectedWorkshopId(selectedId);
+    setSelectedCourseId(selectedId);
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.COURSES, selectedId));
       if (studioDoc.exists) {
-        setSelectedWorkshop(studioDoc.data());
+        setSelectedCourse(studioDoc.data());
       } else {
-        setSelectedWorkshop(null);
+        setSelectedCourse(null);
       }
     } catch (error) {
-      console.error("Error fetching workshop data:", error, selectedId);
+      console.error("Error fetching course data:", error, selectedId);
     }
   };
 
@@ -102,7 +105,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     event.preventDefault();
     const form = event.target;
 
-    if (!selectedWorkshopId) return;
+    if (!selectedCourseId) return;
 
     if (!isValidInputs(form)) {
       showSnackbar("Please fill all the fields.", "error");
@@ -113,9 +116,9 @@ function CourseUpdate({ courseId, instructors, studioId }) {
       const dbPayload = {
         courseName: form.name.value,
         duration: form.duration.value,
-        price: form.workshopFees.value,
-        venue: form.workshopVenue.value,
-        description: form.description.value,
+        price: form.courseFees.value,
+        venue: form.courseVenue.value,
+        description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -130,22 +133,22 @@ function CourseUpdate({ courseId, instructors, studioId }) {
           : null,
         durationUnit: selectedDurationUnit,
         level: selectedLevel,
-        time: workshopTime,
-        date: workshopDate.format("YYYY-MM-DD"),
+        time: courseTime,
+        date: courseDate.format("YYYY-MM-DD"),
         city: selectedCity,
         youtubeViedoLink: form.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
 
-      const studioRef = doc(db, COLLECTIONS.COURSES, selectedWorkshopId);
+      const studioRef = doc(db, COLLECTIONS.COURSES, selectedCourseId);
 
       await updateDoc(studioRef, dbPayload);
 
       clearForm(form);
       showSnackbar("Open class successfully updated.", "success");
     } catch (error) {
-      console.error("Error updating workshop: ", error);
+      console.error("Error updating course: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -160,11 +163,12 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     setSelectedStudio(null);
     setSelectedDurationUnit("");
     setSelectedLevel("");
-    setWorkshopTime("");
-    setWorkshopDate(dayjs(new Date()));
+    setCourseTime("");
+    setCourseDate(dayjs(new Date()));
     setSelectedCity('');
-    setSelectedWorkshop(null);
-    setSelectedWorkshopId("");
+    setSelectedCourse(null);
+    setSelectedCourseId("");
+    setDescription('');
   };
 
   const handleDurationUnitChange = (event, value) => {
@@ -188,50 +192,65 @@ function CourseUpdate({ courseId, instructors, studioId }) {
   };
 
   const handleTimeSelect = (startTime, endTime) => {
-    const [currentStartTime, currentEndTime] = workshopTime.split(" - ");
+    const [currentStartTime, currentEndTime] = courseTime.split(" - ");
     let newTime = `${currentStartTime} - ${currentEndTime}`;
 
     if (startTime !== null) newTime = `${startTime} - ${currentEndTime}`;
     if (endTime !== null) newTime = `${currentStartTime} - ${endTime}`;
 
-    setWorkshopTime(newTime);
+    setCourseTime(newTime);
   };
 
   useEffect(() => {
-    if (selectedWorkshop) {
+    if (selectedCourse) {
       const addedInstructors = instructors
         .filter((instructor) =>
-          selectedWorkshop.instructors.includes(instructor.id)
+          selectedCourse.instructors.includes(instructor.id)
         )
         .map((instructor) => `${instructor.name} - ${instructor.id}`);
 
       setSelectedInstructors(addedInstructors);
-      if (selectedWorkshop && selectedWorkshop.danceStyles)
-        setSelectedDanceStyles(selectedWorkshop.danceStyles);
+      if (selectedCourse && selectedCourse.danceStyles)
+        setSelectedDanceStyles(selectedCourse.danceStyles);
 
-      if (selectedWorkshop && selectedWorkshop.durationUnit)
-        setSelectedDurationUnit(selectedWorkshop.durationUnit);
+      if (selectedCourse && selectedCourse.durationUnit)
+        setSelectedDurationUnit(selectedCourse.durationUnit);
 
-      if (selectedWorkshop && selectedWorkshop.level)
-        setSelectedLevel(selectedWorkshop.level);
+      if (selectedCourse && selectedCourse.level)
+        setSelectedLevel(selectedCourse.level);
 
-      if (selectedWorkshop && selectedWorkshop.time)
-        setWorkshopTime(selectedWorkshop.time);
+      if (selectedCourse && selectedCourse.time)
+        setCourseTime(selectedCourse.time);
 
-      if (selectedWorkshop && selectedWorkshop.date)
-        setWorkshopDate(dayjs(selectedWorkshop.date));
+      if (selectedCourse && selectedCourse.date)
+        setCourseDate(dayjs(selectedCourse.date));
 
-      if (selectedWorkshop && selectedWorkshop.StudioId) {
+      if (selectedCourse && selectedCourse.StudioId) {
         const studios = studioId.map((studio) => studio.split(":")[1].trim());
         const currentStudioIndex = studios.findIndex(
-          (studio) => studio === selectedWorkshop.StudioId
+          (studio) => studio === selectedCourse.StudioId
         );
         setSelectedStudio(studioId[currentStudioIndex] || null);
       }
 
-      setSelectedCity(selectedWorkshop?.city || '');
+      setSelectedCity(selectedCourse?.city || '');
+      setDescription(selectedCourse?.description || '');
     }
-  }, [selectedWorkshop]);
+  }, [selectedCourse]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div
@@ -255,9 +274,9 @@ function CourseUpdate({ courseId, instructors, studioId }) {
           >
             <option value="">Select a course...</option>
             {courseId && courseId.length > 0 ? (
-              courseId.map((workshopItem) => (
-                <option key={workshopItem} value={workshopItem}>
-                  {workshopItem}
+              courseId.map((courseItem) => (
+                <option key={courseItem} value={courseItem}>
+                  {courseItem}
                 </option>
               ))
             ) : (
@@ -269,7 +288,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
             <Row>
               <Col md={6}>
                 <ImageUpload
-                  entityId={selectedWorkshopId}
+                  entityId={selectedCourseId}
                   title={"Course Images"}
                   storageFolder={STORAGES.COURSEICON}
                   maxImageCount={1}
@@ -281,7 +300,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                 <Form.Label>Course Name</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.name : ""}
+                  defaultValue={selectedCourse ? selectedCourse.name : ""}
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
@@ -361,7 +380,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                     <Form.Label>Duration</Form.Label>
                     <Form.Control
                       defaultValue={
-                        selectedWorkshop ? selectedWorkshop.duration : ""
+                        selectedCourse ? selectedCourse.duration : ""
                       }
                       rows={1}
                       style={{
@@ -406,7 +425,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
 
               <Col md={6}>
                 <TimeRange
-                  defaultTime={workshopTime || "00:00-00:00"}
+                  defaultTime={courseTime || "00:00-00:00"}
                   handleSelect={handleTimeSelect}
                 />
               </Col>
@@ -423,8 +442,8 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                       <CssBaseline />
                       <DatePicker
                         sx={{ width: "100%" }}
-                        value={workshopDate}
-                        onChange={(newValue) => setWorkshopDate(newValue)}
+                        value={courseDate}
+                        onChange={(newValue) => setCourseDate(newValue)}
                       />
                     </ThemeProvider>
                   </DemoContainer>
@@ -467,28 +486,28 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                 <Form.Label>Fees/Price</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.price : ""}
+                  defaultValue={selectedCourse ? selectedCourse.price : ""}
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
                   type="number"
                   placeholder="Enter fees/price"
-                  name="workshopFees"
+                  name="courseFees"
                 />
               </Col>
               <Col md={6}>
                 <Form.Label>Venue</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.venue : ""}
+                  defaultValue={selectedCourse ? selectedCourse.venue : ""}
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
                   type="text"
                   placeholder="Enter Venue"
-                  name="workshopVenue"
+                  name="courseVenue"
                 />
               </Col>
             </Row>
@@ -559,29 +578,19 @@ function CourseUpdate({ courseId, instructors, studioId }) {
             <Row>
               <Col md={6}>
                 <Form.Label>Brief Description</Form.Label>
-                <Form.Control
-                  rows={3}
-                  defaultValue={
-                    selectedWorkshop ? selectedWorkshop.description : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  as="textarea"
+                <ReactQuill
+                  theme="snow"
                   placeholder="Enter Description"
-                  name="description"
+                  value={description}
+                  onChange={setDescription}
                 />
               </Col>
-            </Row>
-
-            <Row>
-                <Col md={6}>
-                  <Form.Label>Youtube video link</Form.Label>
+              <Col md={6}>
+              <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     defaultValue={
-                      selectedWorkshop ? selectedWorkshop.youtubeViedoLink : ""
+                      selectedCourse ? selectedCourse.youtubeViedoLink : ""
                     }
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
@@ -591,8 +600,8 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                     placeholder="Enter youtube video link"
                     name="youtubeViedoLink"
                   />
-                </Col>
-              </Row>
+              </Col>
+            </Row>
 
             <hr></hr>
             <hr></hr>
