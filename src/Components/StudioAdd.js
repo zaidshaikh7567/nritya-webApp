@@ -20,6 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import {Stepper,Step,StepLabel} from '@mui/material';
 import SuccessMessage from './SucessPage';
 import { postData } from '../utils/common';
+import { isEqual } from 'lodash';
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -284,7 +285,7 @@ function StudioAdd({instructors}) {
             state: form.state.value,
             country: "India",
             geolocation: selectedLocation,
-            aadharNumber: form.aadharNumber.value,
+            
             gstNumber: form.gstNumber.value,
             enrolledId: [],
             reviews: [],
@@ -313,6 +314,7 @@ function StudioAdd({instructors}) {
 
   useEffect(() => {
     let intervalId = null;
+    let previousState = null; 
 
     async function main() {
       const form = document.getElementById("addStudioForm");
@@ -345,13 +347,13 @@ function StudioAdd({instructors}) {
           );
           
           intervalId = setInterval(async () => {
+            
             try {
               const newData = tableData.reduce((accumulator, current, index) => {
                 accumulator[index] = current;
                 return accumulator;
               }, {});
-
-              await updateDoc(studioRef, {
+              const currentState = { 
                 studioName: form.studioName.value,
                 aboutStudio: form.aboutStudio.value,
                 founderName: form.founderName.value,
@@ -373,7 +375,7 @@ function StudioAdd({instructors}) {
                 state: form.state.value,
                 country: "India",
                 geolocation: selectedLocation,
-                aadharNumber: form.aadharNumber.value,
+                
                 gstNumber: form.gstNumber.value,
                 enrolledId: [],
                 reviews: [],
@@ -391,8 +393,21 @@ function StudioAdd({instructors}) {
                 facebook: form.facebook.value,
                 youtube: form.youtube.value,
                 twitter: form.twitter.value,
-                visibilty: 1,
-              });
+                visibilty: 1,}
+              
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(studioRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                console.log("Nothing for Autosave to save")
+            }
+
             } catch (error) {
               console.error(error);
             }

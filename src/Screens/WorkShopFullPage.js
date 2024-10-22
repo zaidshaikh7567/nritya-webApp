@@ -15,6 +15,7 @@ import { bookEntity } from "../utils/common";
 import MediaDisplay from "../Components/MediaDisplay";
 import EntityDetailsSection from "../Components/EntityDetailsSection";
 import EntityBookingCard from "../Components/EntityBookingCard";
+import EntityVenueBox from "../Components/EntityVenueBox";
 
 function WorkShopFullPage() {
   const { workshopId } = useParams();
@@ -148,19 +149,26 @@ function WorkShopFullPage() {
       }}
     >
       <Grid container spacing={2}>
-      <Grid item xs={12} lg={8}>
+        <Grid item xs={12} lg={8}>
             <MediaDisplay 
             youtubeViedoLink={dataItem.youtubeViedoLink} 
             imageUrl={imageUrl} 
             altText={dataItem.workshopName} 
             />
         </Grid>
-
+        <Grid item xs={12} lg={4}>
         <EntityBookingCard dataItem={dataItem} personsAllowed={personsAllowed} setPersonsAllowed={setPersonsAllowed}
                 totalPrice={totalPrice} handleBook={handleBook} entityType={COLLECTIONS.WORKSHOPS}/>
-
+        </Grid>
+        <br/>
         {/* Additional Workshop Details */}
+        <Grid item xs={12} lg={8}>
         <EntityDetailsSection dataItem={dataItem} whatsappMessage={whatsappMessage}/>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <EntityVenueBox dataItem={dataItem}/>
+        </Grid>
+
       </Grid>
       
     </Box>

@@ -465,6 +465,7 @@ function Kyc() {
       </Container>
       <br />
     </div>
+    
   );
 }
 

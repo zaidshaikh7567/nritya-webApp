@@ -29,6 +29,8 @@
         "google-map-react": "^2.2.1",
         "install": "^0.13.0",
         "jspdf": "^2.5.1",
+        "lodash": "^4.17.21",
+        "lodash.isequal": "^4.5.0",
         "moment-timezone": "^0.5.44",
         "npm": "^9.6.5",
         "papaparse": "^5.4.1",

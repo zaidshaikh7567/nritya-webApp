@@ -34,6 +34,7 @@ import cities from '../cities.json';
 import { postData } from "../utils/common";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { isEqual } from 'lodash';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -324,7 +325,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
   useEffect(() => {
     let intervalId = null;
-
+    let previousState = null;
     async function main() {
       const form = document.getElementById("addStudioForm");
 
@@ -357,7 +358,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
           intervalId = setInterval(async () => {
             try {
-              await updateDoc(openClassRef, {
+              const currentState ={
                 openClassName: form.openClassName?.value || "",
                 capacity: form.capacity?.value || 0,
                 description: description ,
@@ -376,7 +377,20 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                 time: openClassTime,
                 date: openClassDate.format("YYYY-MM-DD"),
                 city: selectedCity,
-              });
+              }
+
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(openClassRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                  console.log("Nothing for Autosave to save")
+              }
             } catch (error) {
               console.error(error);
             }

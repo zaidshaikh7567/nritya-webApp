@@ -67,6 +67,7 @@ const TimeRange = ({ defaultTime, handleSelect }) => {
               background: "transparent",
               borderWidth: 1,
               borderColor: isDarkModeOn ? "white" : "black",
+              height: 'auto',
             }}
           >
             {renderTimeOptions(startTime_i)}
@@ -83,6 +84,7 @@ const TimeRange = ({ defaultTime, handleSelect }) => {
               background: "transparent",
               borderWidth: 1,
               borderColor: isDarkModeOn ? "white" : "black",
+              height: 'auto',
             }}
           >
             {renderTimeOptions(endTime_i)}

@@ -5,6 +5,16 @@ import { COLLECTIONS, ENTITY_FLAG } from "../constants";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { useSelector } from "react-redux";
 import logoMobile from '../assets/images/logo_small.jpg';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import RoomIcon from '@mui/icons-material/Room';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import inrIcon from '../assets/images/inr.png'; // Adjust the path as necessary
+import locationIcon from '../assets/images/location.png';
+import clockIcon from '../assets/images/clock.png';
+
 
 const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
   totalPrice, handleBook, entityType,}) => {
@@ -47,10 +57,11 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
   };
   return (
     <>
-      <Grid item xs={12} lg={4}>
+      
         <Box
           sx={{
-            bgcolor: isDarkModeOn ? "black" : "#efefef",
+            bgcolor: isDarkModeOn ? "black" : "",
+            boxShadow: '3',
             p: 3,
             borderRadius: "8px",
             display: "flex",
@@ -65,19 +76,79 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
               {dataItem.courseName || dataItem.workshopName || dataItem.openClassName|| "Open Class Name"}
             </MUITypography>
             <br />
-            <MUITypography variant="subtitle" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-              {dataItem.date}
-            </MUITypography>
-            <br />
-            <MUITypography variant="subtitle" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-              {dataItem.time}
-            </MUITypography>
-            <MUITypography variant="body1" sx={{ mt: "1rem", color: isDarkModeOn ? 'white' : 'black' }}>
-              {`${dataItem?.studioDetails?.buildingName || ''}${dataItem?.studioDetails?.buildingName ? ', ' : ''}${dataItem?.studioDetails?.street || ''}`}
-              <br />
-              {dataItem?.studioDetails?.city || 'Address'}
-            </MUITypography>
 
+          <Box >
+              <Grid container spacing={2} alignItems="center">
+                  <Grid item>
+                      <CalendarMonthOutlinedIcon sx={{ color: '#735eab' }} />
+                  </Grid>
+                  <Grid item>
+                      <MUITypography variant="subtitle1" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                          {dataItem.date}
+                      </MUITypography>
+                  </Grid>
+              </Grid>
+              <Grid style={{paddingTop:'0.5rem'}} container spacing={2} alignItems="center">
+                  <Grid item>
+                  {clockIcon ? (
+                      <img 
+                          src={clockIcon} 
+                          alt="Location" 
+                          style={{ width: 24, height: 24 }} // Adjust size as needed
+                      />
+                  ) : (
+                    <AccessTimeOutlinedIcon style={{  color: '#735eab' }} />
+                  )}
+                      
+                  </Grid>
+                  <Grid item>
+                      <MUITypography variant="subtitle1" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                          {dataItem.time}
+                      </MUITypography>
+                  </Grid>
+              </Grid>
+              <Grid style={{paddingTop:'0.5rem'}} container spacing={2} alignItems="center">
+                  <Grid item>
+                  {locationIcon ? (
+                      <img 
+                          src={locationIcon} 
+                          alt="Location" 
+                          style={{ width: 24, height: 24 }} // Adjust size as needed
+                      />
+                  ) : (
+                    <RoomIcon sx={{ color: '#735eab' }} />
+                  )}
+                      
+                  </Grid>
+                  <Grid item>
+                      <MUITypography
+                          variant="body1"
+                          sx={{ color: isDarkModeOn ? 'white' : 'black' }}
+                      >
+                          {`${dataItem?.studioDetails?.buildingName || ''}${dataItem?.studioDetails?.buildingName ? ', ' : ''}${dataItem?.studioDetails?.street || ''}${dataItem?.studioDetails?.street ? ', ' : ''}${dataItem?.studioDetails?.city || 'Address'}`}
+                      </MUITypography>
+                  </Grid>
+              </Grid>
+              <Grid  style={{paddingTop:'0.5rem'}} container spacing={2} alignItems="center">
+                  <Grid item>
+                  {inrIcon ? (
+                      <img 
+                          src={inrIcon} 
+                          alt="INR" 
+                          style={{ width: 24, height: 24 }} // Adjust size as needed
+                      />
+                  ) : (
+                    <FontAwesomeIcon style={{paddingLeft:'0.35rem', color: '#735eab' }} icon={faIndianRupeeSign} />
+                  )}
+                      
+                  </Grid>
+                  <Grid item>
+                      <MUITypography variant="body1" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                          {`${dataItem.price} per person`}
+                      </MUITypography>
+                  </Grid>
+              </Grid>
+          </Box>
 
           </Box>
 
@@ -193,14 +264,15 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                 textTransform: "none",
                 fontSize: 16,
                 padding: "8px 16px",
-                backgroundColor: isDarkModeOn ? "white" : "black",
-                color: isDarkModeOn ? "black" : "white",
+                backgroundColor: "#735EAB",
+                color:"white",
+                fontWeight: 'bold',
                 "&:hover": {
-                  backgroundColor: isDarkModeOn ? "#f0f0f0" : "#333333",
+                  backgroundColor: "#96ab5e",
                 },
               }}
             >
-              {currentUser ? `Book Now @${totalPrice}` : "Login to Book"}
+              {currentUser ? `Book Now @₹${totalPrice}` : `Login to Book @₹${totalPrice}`}
             </Button>
             <Button
               hidden={totalPrice === 0}
@@ -210,13 +282,11 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                 textTransform: 'none',
                 fontSize: 16,
                 color: isDarkModeOn ? 'white' : 'black',
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                  textDecoration: 'none',
-                },
+                
               }}
+              endIcon={<UnfoldMoreIcon />}
             >
-              Price Breakdown (i)
+              Price Breakdown
             </Button>
 
             {/* Payment Info */}
@@ -230,7 +300,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
             )}
           </Box>
         </Box>
-      </Grid>
+      
 
       {/* Price Breakdown Dialog */}
       <Dialog

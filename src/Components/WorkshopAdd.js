@@ -34,6 +34,7 @@ import cities from '../cities.json';
 import { postData } from "../utils/common";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { isEqual } from 'lodash';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -326,7 +327,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
   useEffect(() => {
     let intervalId = null;
-
+    let previousState = null; // Keep track of the previous form state.
     async function main() {
       const form = document.getElementById("addStudioForm");
 
@@ -359,7 +360,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
           intervalId = setInterval(async () => {
             try {
-              await updateDoc(workshopRef, {
+              const currentState = {
                 workshopName: form.workshopName?.value || "",
                 price: form.workshopFees?.value || 0,
                 // venue: form.capacity?.value || 0,
@@ -380,7 +381,19 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                 time: workshopTime,
                 date: workshopDate.format("YYYY-MM-DD"),
                 city: selectedCity
-              });
+              }
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(workshopRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                  console.log("Nothing for Autosave to save")
+              }
             } catch (error) {
               console.error(error);
             }

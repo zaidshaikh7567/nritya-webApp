@@ -34,6 +34,7 @@ import cities from '../cities.json';
 import { postData } from "../utils/common";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { isEqual } from 'lodash';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -99,7 +100,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
       !form.name.value ||
       !form.duration.value ||
       !form.courseFees.value ||
-      !form.courseVenue.value ||
       !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
@@ -173,7 +173,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         time: courseTime,
         date: courseDate.format("YYYY-MM-DD"),
         price: event.target.courseFees.value,
-        venue: event.target.courseVenue.value,
         description: description,
         city: selectedCity,
         active: true,
@@ -258,7 +257,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
           form.name.value = foundCourse.name;
           form.courseFees.value = foundCourse.price;
-          form.courseVenue.value = foundCourse.venue;
           form.duration.value = foundCourse.duration;
           setDescription(foundCourse?.description || "");
 
@@ -292,7 +290,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
             name: form.name?.value || "",
             duration: form.duration?.value || "",
             price: form.courseFees?.value || "",
-            venue: form.courseVenue?.value || "",
             description: description ,
 
             danceStyles: selectedDanceStyles,
@@ -327,7 +324,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
   useEffect(() => {
     let intervalId = null;
-
+    let previousState = null; // Keep track of the previous form state.
     async function main() {
       const form = document.getElementById("addStudioForm");
 
@@ -360,10 +357,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
           intervalId = setInterval(async () => {
             try {
-              await updateDoc(openClassRef, {
+              const currentState = {
                 name: form.name?.value || "",
                 price: form.courseFees?.value || "",
-                venue: form.courseVenue?.value || "",
                 description: description,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
@@ -381,7 +377,20 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 time: courseTime,
                 date: courseDate.format("YYYY-MM-DD"),
                 city: selectedCity,
-              });
+              };
+    
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(openClassRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                  console.log("Nothing for Autosave to save")
+              }
             } catch (error) {
               console.error(error);
             }
@@ -633,19 +642,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
               <br />
 
               <Row>
-                <Col md={6}>
-                  <Form.Label>Venue</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    type="text"
-                    placeholder="Enter Venue"
-                    name="courseVenue"
-                  />
-                </Col>
                 <Col md={6}>
                   <Form.Label>City</Form.Label>
                   <ThemeProvider theme={darkTheme}>

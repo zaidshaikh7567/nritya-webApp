@@ -11,6 +11,7 @@ import { bookEntity } from "../utils/common";
 import MediaDisplay from "../Components/MediaDisplay";
 import EntityDetailsSection from "../Components/EntityDetailsSection";
 import EntityBookingCard from "../Components/EntityBookingCard";
+import EntityVenueBox from "../Components/EntityVenueBox";
 
 function CourseFullPage() {
   const { courseId } = useParams();
@@ -150,12 +151,16 @@ function CourseFullPage() {
             altText={dataItem.courseName || dataItem.workshopName} 
             />
         </Grid>
+        <Grid item xs={12} lg={4}>
         <EntityBookingCard dataItem={dataItem} personsAllowed={personsAllowed} setPersonsAllowed={setPersonsAllowed}
                 totalPrice={totalPrice} handleBook={handleBook} entityType={COLLECTIONS.COURSES}/>
-        {/* Workshop Details */}
-
-        {/* Additional Workshop Details */}
+       </Grid>
+       <Grid item xs={12} lg={8}>
         <EntityDetailsSection dataItem={dataItem} whatsappMessage={whatsappMessage}/>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <EntityVenueBox dataItem={dataItem}/>
+        </Grid>
       </Grid>
 
     </Box>

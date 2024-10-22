@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { db } from "../config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS, LEVELS } from "../constants";
@@ -59,6 +59,12 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     setSelectedDanceStyles(value);
   };
 
+  const baseStyles = {
+    backgroundColor: isDarkModeOn ? "#333333" : "",
+    color: isDarkModeOn ? "white" : "black",
+    height: 'auto',
+  };
+
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedCourse, setSelectedCourse] = useState(null);
 
@@ -66,7 +72,6 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     let validationFailed = true;
     if (
       !form.name.value ||
-      !form.courseVenue.value ||
       !form.courseFees.value ||
       !form.duration.value ||
       !description ||
@@ -117,7 +122,6 @@ function CourseUpdate({ courseId, instructors, studioId }) {
         courseName: form.name.value,
         duration: form.duration.value,
         price: form.courseFees.value,
-        venue: form.courseVenue.value,
         description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
@@ -267,8 +271,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
             as="select"
             name="nameId"
             style={{
-              backgroundColor: isDarkModeOn ? "#333333" : "",
-              color: isDarkModeOn ? "white" : "black",
+              ...baseStyles,
             }}
             onChange={handleSelectStudio}
           >
@@ -300,10 +303,9 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                 <Form.Label>Course Name</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedCourse ? selectedCourse.name : ""}
+                  defaultValue={selectedCourse ? selectedCourse.courseName : ""}
                   style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
+                    ...baseStyles,
                   }}
                   type="textarea"
                   placeholder="Enter course name"
@@ -318,8 +320,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     multiple
                     id="tags-standard"
@@ -332,8 +333,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Dance Styles"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -347,8 +347,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                   <CssBaseline />
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     multiple
                     id="tags-standard"
@@ -361,8 +360,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Instructors"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -384,8 +382,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                       }
                       rows={1}
                       style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
+                        ...baseStyles,
                       }}
                       type="number"
                       placeholder="Enter Duration"
@@ -399,8 +396,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
 
                       <Autocomplete
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                         id="tags-standard"
                         options={["Months", "Weeks", "Days"]}
@@ -412,8 +408,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                             variant="standard"
                             placeholder="Select Duration In Units"
                             style={{
-                              backgroundColor: isDarkModeOn ? "#333333" : "",
-                              color: isDarkModeOn ? "white" : "black",
+                              ...baseStyles,
                             }}
                           />
                         )}
@@ -456,8 +451,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     id="tags-standard"
                     options={[LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]}
@@ -469,8 +463,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Level"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -488,26 +481,11 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                   rows={1}
                   defaultValue={selectedCourse ? selectedCourse.price : ""}
                   style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
+                    ...baseStyles,
                   }}
                   type="number"
                   placeholder="Enter fees/price"
                   name="courseFees"
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Venue</Form.Label>
-                <Form.Control
-                  rows={1}
-                  defaultValue={selectedCourse ? selectedCourse.venue : ""}
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  type="text"
-                  placeholder="Enter Venue"
-                  name="courseVenue"
                 />
               </Col>
             </Row>
@@ -522,8 +500,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     id="tags-standard"
                     options={cities.cities}
@@ -535,8 +512,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select City"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -550,8 +526,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     id="tags-standard"
                     options={studioId}
@@ -563,8 +538,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Studio"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -593,8 +567,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                       selectedCourse ? selectedCourse.youtubeViedoLink : ""
                     }
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     type="text"
                     placeholder="Enter youtube video link"
@@ -612,8 +585,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                 <MuiButton
                   variant="contained"
                   style={{
-                    color: "white",
-                    backgroundColor: isDarkModeOn ? "#892cdc" : "black",
+                    ...baseStyles,
                   }}
                   type="submit"
                   disabled={isSubmitting}
@@ -624,6 +596,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
             </Row>
           </div>
         </Form.Group>
+        {isSubmitting && <LinearProgress />}
       </Form>
     </div>
   );

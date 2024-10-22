@@ -18,6 +18,9 @@ import {
     RedditIcon,
     TelegramIcon,
 } from 'react-share';
+import ShareIcon from '@mui/icons-material/Share';
+import {Button as MuiButton} from '@mui/material';
+
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
 const ShareButton = ({ shareUrl }) => {
@@ -36,21 +39,22 @@ const ShareButton = ({ shareUrl }) => {
         <>
 
             {/* Share Button */}
-            <button
-                style={{
-                    alignSelf: 'center',
-                    borderRadius: 12,
-                    padding: '2px 10px',
-                    backgroundColor: isDarkModeOn ? "white" : "black",
-                    color: isDarkModeOn ? "black" : "white"
-                }} onClick={handleShow}>
-                Share
-            </button>
+            <ShareIcon
+                variant="filled" 
+                onClick={handleShow}
+                sx={{
+                    color: isDarkModeOn ? "white" : "black",
+                    '&:hover': {
+                        color: isDarkModeOn ? "grey.400" : "grey.700",
+                    },
+                }}
+            />
 
+    
             {/* Share Popup Modal */}
             <Modal show={show} onHide={handleClose} backdrop={false} centered style={{zIndex:50}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Share this video</Modal.Title>
+                    <Modal.Title style={{textTransform: 'none' }}>Share with your friends</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
 

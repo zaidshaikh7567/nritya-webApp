@@ -14,6 +14,7 @@ import { bookEntity } from "../utils/common";
 import MediaDisplay from "../Components/MediaDisplay";
 import EntityDetailsSection from "../Components/EntityDetailsSection";
 import EntityBookingCard from "../Components/EntityBookingCard";
+import EntityVenueBox from "../Components/EntityVenueBox";
 
 function OpenClassFullPage() {
   const { openClassId } = useParams();
@@ -148,7 +149,7 @@ function OpenClassFullPage() {
       }}
     >
       <Grid container spacing={2}>
-        {/* Workshop Image */}
+        {/* OpenClass Image */}
         <Grid item xs={12} lg={8}>
         <MediaDisplay 
             youtubeViedoLink={dataItem.youtubeViedoLink} 
@@ -156,13 +157,17 @@ function OpenClassFullPage() {
             altText={dataItem.openClassName} 
             />
         </Grid>
-
-        {/* Workshop Details */}
+        <Grid item xs={12} lg={4}>
+        {/* OpenClass Details */}
         <EntityBookingCard dataItem={dataItem} personsAllowed={personsAllowed} setPersonsAllowed={setPersonsAllowed}
                 totalPrice={totalPrice} handleBook={handleBook} entityType={COLLECTIONS.OPEN_CLASSES}/>
-
-        {/* Additional Workshop Details */}
+        </Grid>
+        <Grid item xs={12} lg={8}>
         <EntityDetailsSection dataItem={dataItem} whatsappMessage={whatsappMessage}/>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <EntityVenueBox dataItem={dataItem}/>
+        </Grid>
       </Grid>
 
     </Box>

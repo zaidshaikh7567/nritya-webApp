@@ -451,13 +451,6 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
             </span>
           </Box>
           <Typography
-            style={{ color: isDarkModeOn ? "white" : "black" }}
-            level="body-xs"
-            noWrap
-          >
-            By {dataItem && studioIdName[dataItem.StudioId] ? studioIdName[dataItem.StudioId] : ""}
-          </Typography>
-          <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
             level="body-xs"
             noWrap
