@@ -143,10 +143,11 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                       
                   </Grid>
                   <Grid item>
-                      <MUITypography variant="body1" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-                          {`${dataItem.price} per person`}
-                      </MUITypography>
+                    <MUITypography variant="body1" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                      {dataItem?.price ? `${dataItem.price} per person` : 'Free'}
+                    </MUITypography>
                   </Grid>
+
               </Grid>
           </Box>
 
@@ -164,18 +165,6 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
           >
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
-                <tr>
-                  <td style={{ padding: '8px', color: isDarkModeOn ? 'white' : 'black' }}>
-                    {dataItem && dataItem.price && (
-                      <span>Price per person</span>
-                    )}
-                  </td>
-                  <td style={{ padding: '8px', color: isDarkModeOn ? 'white' : 'black' }}>
-                    {dataItem && dataItem.price && (
-                      <span> ₹{dataItem.price}</span>
-                    )}
-                  </td>
-                </tr>
                 <tr>
                   <td style={{ padding: '8px', color: isDarkModeOn ? 'white' : 'black' }}>
                     <span>Person(s)</span>
