@@ -15,6 +15,28 @@ import inrIcon from '../assets/images/inr.png'; // Adjust the path as necessary
 import locationIcon from '../assets/images/location.png';
 import clockIcon from '../assets/images/clock.png';
 
+function formatDateString(dateString) {
+  // Split the input date string
+  const [year, month, day] = dateString.split('-');
+
+  // Create an array of month names
+  const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  // Determine the ordinal suffix for the day
+  const daySuffix = (day) => {
+      const lastDigit = day % 10;
+      const suffix = (lastDigit === 1 && day !== '11') ? 'st' :
+                     (lastDigit === 2 && day !== '12') ? 'nd' :
+                     (lastDigit === 3 && day !== '13') ? 'rd' : 'th';
+      return `${day}${suffix}`;
+  };
+
+  // Format and return the final date string
+  return `${daySuffix(day)} ${monthNames[parseInt(month) - 1]}, ${year}`;
+}
 
 const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
   totalPrice, handleBook, entityType,}) => {
@@ -72,7 +94,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
         >
           {/* Entity Info */}
           <Box>
-            <MUITypography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'none', textDecoration: 'none' }}>
+            <MUITypography variant="h4" style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'none',textTransform: 'none', textDecoration: 'none' }}>
               {dataItem.courseName || dataItem.workshopName || dataItem.openClassName|| "Open Class Name"}
             </MUITypography>
             <br />
@@ -83,8 +105,8 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                       <CalendarMonthOutlinedIcon sx={{ color: '#735eab' }} />
                   </Grid>
                   <Grid item>
-                      <MUITypography variant="subtitle1" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-                          {dataItem.date}
+                      <MUITypography variant="subtitle1" style={{ color: isDarkModeOn ? 'white' : 'black',textTransform: 'none', textDecoration:'none' }}>
+                          {dataItem.date && formatDateString(dataItem.date) }
                       </MUITypography>
                   </Grid>
               </Grid>

@@ -40,9 +40,8 @@ function EntityDetailsSection({ dataItem, whatsappMessage }) {
       style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'none' }}
       gutterBottom
     >
-      By {dataItem.studioDetails?.studioName || "Studio Name"}
       {dataItem.danceStyles && dataItem.danceStyles.length > 0 && (
-        <> | {dataItem.danceStyles.join(", ")}</>
+        <>  {dataItem.danceStyles.join(", ")}</>
       )}
     </MUITypography>
   </Grid>
