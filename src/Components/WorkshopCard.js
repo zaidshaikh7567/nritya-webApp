@@ -96,7 +96,7 @@ function WorkshopDetailsModal({
 
   const isBooked = userDetails?.BookedWorkshops?.includes?.(dataItem?.id);
 
-  const shareUrl = window.location.href;
+  const shareUrl = `${window.location.host}/nritya-webApp#/workshop/${dataItem.id}`;
   
   return (
     <Modal

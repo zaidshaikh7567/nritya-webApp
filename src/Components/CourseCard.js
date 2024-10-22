@@ -23,6 +23,7 @@ import { db } from "../config";
 import { useSnackbar } from "../context/SnackbarContext";
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
+import ShareButton from "./ShareButton";
 
 function WorkshopDetailsModal({
   open,
@@ -96,12 +97,15 @@ function WorkshopDetailsModal({
 
   const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
 
+  const shareUrl = `${window.location.host}/nritya-webApp#/course/${dataItem.id}`;
+
   return (
     <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      style={{zIndex:40}}
     >
       <Box
         sx={{
@@ -228,14 +232,17 @@ function WorkshopDetailsModal({
             </MUITypography>}
           </Grid>
           <Grid item sx={{ mt: 1 }}>
-            <MUITypography
-              variant="h5"
-              component="p"
-              sx={{ color: isDarkModeOn ? "white" : "black" }}
-            >
-              {dataItem.name || ""}
-              {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
-            </MUITypography>
+            <Box sx={{ display: 'flex', columnGap: 2 }}>
+              <MUITypography
+                variant="h5"
+                component="p"
+                sx={{ color: isDarkModeOn ? "white" : "black" }}
+              >
+                {dataItem.name || ""}
+                {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
+              </MUITypography>
+              <ShareButton shareUrl={shareUrl} />
+            </Box>
             <MUITypography
               variant="body1"
               component="p"
