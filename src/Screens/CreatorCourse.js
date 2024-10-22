@@ -153,7 +153,7 @@ function CreatorCourse() {
       );
       const querySnapshot = await getDocs(q);
       const coursesOfUserPromise = querySnapshot.docs
-        .filter((doc) => doc.data().name)
+        .filter((doc) => doc.data().courseName)
         .map((doc) => {
           const data = doc.data();
           return {
@@ -170,7 +170,7 @@ function CreatorCourse() {
       setCourses(coursesOfUser);
       setCoursesId(
         coursesOfUser.map(
-          (courses) => String(courses.name) + " :" + String(courses.id)
+          (courses) => String(courses.courseName) + " :" + String(courses.id)
         )
       );
     };
@@ -184,7 +184,7 @@ function CreatorCourse() {
       setCourses(coursesOfUser);
 
     const coursesIdList = coursesOfUser.map(
-      (courses) => `${courses.name} : ${courses.id}`
+      (courses) => `${courses.courseName} : ${courses.id}`
     );
     setCoursesId(coursesIdList);
   }, [setCoursesId]);
