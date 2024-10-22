@@ -172,7 +172,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
         date: workshopDate.format("YYYY-MM-DD"),
         price: event.target.workshopFees.value,
         capacity: event.target.capacity.value,
-        venue: event.target.workshopVenue.value,
+        // venue: event.target.workshopVenue.value,
         city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
@@ -256,7 +256,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           form.workshopName.value = foundWorkshop?.workshopName || "";
           form.workshopFees.value = foundWorkshop?.price || 0;
           form.capacity.value = foundWorkshop?.capacity || 0;
-          form.workshopVenue.value = foundWorkshop?.venue || "";
+          // form.workshopVenue.value = foundWorkshop?.venue || "";
           setDescription(foundWorkshop?.description || "");
 
           setSelectedDanceStyles(
@@ -291,8 +291,8 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS), {
             workshopName: form.workshopName?.value || "",
             price: form.workshopFees?.value || 0,
-            venue: form.capacity?.value || 0,
-            venue: form.workshopVenue?.value || "",
+            // venue: form.capacity?.value || 0,
+            // venue: form.workshopVenue?.value || "",
             description: description,
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -362,8 +362,8 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
               await updateDoc(workshopRef, {
                 workshopName: form.workshopName?.value || "",
                 price: form.workshopFees?.value || 0,
-                venue: form.capacity?.value || 0,
-                venue: form.workshopVenue?.value || "",
+                // venue: form.capacity?.value || 0,
+                // venue: form.workshopVenue?.value || "",
                 description: description,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
