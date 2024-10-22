@@ -117,7 +117,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         workshopName: form.workshopName.value,
         price: form.workshopFees.value,
         capacity: form.capacity.value,
-        venue: form.workshopVenue.value,
+        // venue: form.workshopVenue.value,
         description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
