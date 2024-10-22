@@ -253,13 +253,14 @@ function WorkshopDetailsModal({
                 </IconButton>
               )}
             </MUITypography>
-            <MUITypography
+            {/* <MUITypography
               variant="body1"
               component="p"
               sx={{ mt: 2, color: isDarkModeOn ? "white" : "black" }}
             >
               {dataItem.description || ""}
-            </MUITypography>
+            </MUITypography> */}
+            <div style={{ color: isDarkModeOn ? 'white ' : 'black' }} className="description-box" dangerouslySetInnerHTML={{ __html: dataItem.description || "Course Description" }}></div>
           </Grid>
         </Grid>
 

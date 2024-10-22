@@ -20,6 +20,8 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
@@ -41,6 +43,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
   const [courseTime, setCourseTime] = useState("");
   const [courseDate, setCourseDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState('');
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -66,7 +69,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
       !form.courseVenue.value ||
       !form.courseFees.value ||
       !form.duration.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -115,7 +118,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
         duration: form.duration.value,
         price: form.courseFees.value,
         venue: form.courseVenue.value,
-        description: form.description.value,
+        description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -165,6 +168,7 @@ function CourseUpdate({ courseId, instructors, studioId }) {
     setSelectedCity('');
     setSelectedCourse(null);
     setSelectedCourseId("");
+    setDescription('');
   };
 
   const handleDurationUnitChange = (event, value) => {
@@ -230,8 +234,23 @@ function CourseUpdate({ courseId, instructors, studioId }) {
       }
 
       setSelectedCity(selectedCourse?.city || '');
+      setDescription(selectedCourse?.description || '');
     }
   }, [selectedCourse]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div
@@ -559,25 +578,15 @@ function CourseUpdate({ courseId, instructors, studioId }) {
             <Row>
               <Col md={6}>
                 <Form.Label>Brief Description</Form.Label>
-                <Form.Control
-                  rows={3}
-                  defaultValue={
-                    selectedCourse ? selectedCourse.description : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  as="textarea"
+                <ReactQuill
+                  theme="snow"
                   placeholder="Enter Description"
-                  name="description"
+                  value={description}
+                  onChange={setDescription}
                 />
               </Col>
-            </Row>
-
-            <Row>
-                <Col md={6}>
-                  <Form.Label>Youtube video link</Form.Label>
+              <Col md={6}>
+              <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     defaultValue={
@@ -591,8 +600,8 @@ function CourseUpdate({ courseId, instructors, studioId }) {
                     placeholder="Enter youtube video link"
                     name="youtubeViedoLink"
                   />
-                </Col>
-              </Row>
+              </Col>
+            </Row>
 
             <hr></hr>
             <hr></hr>

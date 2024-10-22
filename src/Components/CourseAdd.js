@@ -32,6 +32,8 @@ import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
 import { postData } from "../utils/common";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -59,6 +61,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
   const [courseDate, setCourseDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [description, setDescription] = useState('');
 
   const darkTheme = createTheme({
     palette: {
@@ -97,7 +100,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
       !form.duration.value ||
       !form.courseFees.value ||
       !form.courseVenue.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -171,7 +174,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
         date: courseDate.format("YYYY-MM-DD"),
         price: event.target.courseFees.value,
         venue: event.target.courseVenue.value,
-        description: event.target.description.value,
+        description: description,
         city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
@@ -215,6 +218,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     setCourseTime("");
     setCourseDate(dayjs(Date.now()));
     setSelectedCity('');
+    setDescription('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -255,8 +259,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           form.name.value = foundCourse.name;
           form.courseFees.value = foundCourse.price;
           form.courseVenue.value = foundCourse.venue;
-          form.description.value = foundCourse.description;
           form.duration.value = foundCourse.duration;
+          setDescription(foundCourse?.description || "");
 
           setSelectedDanceStyles(
             foundCourse?.danceStyles?.length ? foundCourse.danceStyles : []
@@ -289,7 +293,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
             duration: form.duration?.value || "",
             price: form.courseFees?.value || "",
             venue: form.courseVenue?.value || "",
-            description: form.description?.value || "",
+            description: description ,
 
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -360,7 +364,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 name: form.name?.value || "",
                 price: form.courseFees?.value || "",
                 venue: form.courseVenue?.value || "",
-                description: form.description?.value || "",
+                description: description,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -401,7 +405,22 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     courseTime,
     courseDate,
     selectedCity,
+    description
   ]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";      
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div>
@@ -690,15 +709,11 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 </Col>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
-                  <Form.Control
-                    rows={3}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    as="textarea"
+                  <ReactQuill
+                    theme="snow"
                     placeholder="Enter Description"
-                    name="description"
+                    value={description}
+                    onChange={setDescription}
                   />
                 </Col>
               </Row>

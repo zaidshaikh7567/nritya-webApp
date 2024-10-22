@@ -20,6 +20,8 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
@@ -41,6 +43,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState('');
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -83,7 +86,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
     if (
       !form.openClassName.value ||
       !form.capacity.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -113,7 +116,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
       const dbPayload = {
         openClassName: form.openClassName.value,
         capacity: form.capacity.value,
-        description: form.description.value,
+        description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -163,6 +166,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
     setSelectedCity('');
     setSelectedOpenClass(null);
     setSelectedOpenClassId("");
+    setDescription('');
   };
 
   const handleDurationChange = (event, value) => {
@@ -228,9 +232,24 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
       }
 
       setSelectedCity(selectedOpenClass?.city || '');
+      setDescription(selectedOpenClass?.description || '');
     }
   }, [selectedOpenClass]);
 
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";
+    }
+  }, [isDarkModeOn]);
+  
   return (
     <div
       style={{
@@ -522,18 +541,11 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
               </Col>
               <Col md={6}>
                 <Form.Label>Brief Description</Form.Label>
-                <Form.Control
-                  rows={3}
-                  defaultValue={
-                    selectedOpenClass ? selectedOpenClass.description : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  as="textarea"
+                <ReactQuill
+                  theme="snow"
                   placeholder="Enter Description"
-                  name="description"
+                  value={description}
+                  onChange={setDescription}
                 />
               </Col>
             </Row>

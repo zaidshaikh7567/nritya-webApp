@@ -32,6 +32,8 @@ import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
 import { postData } from "../utils/common";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -59,6 +61,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [description, setDescription] = useState('');
 
   const darkTheme = createTheme({
     palette: {
@@ -96,7 +99,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     if (
       !form.openClassName.value ||
       !form.capacity.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -168,7 +171,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
         capacity: event.target.capacity.value,
-        description: event.target.description.value,
+        description: description,
         city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
@@ -212,6 +215,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     setOpenClassTime("");
     setOpenClassDate(dayjs(new Date()));
     setSelectedCity('');
+    setDescription('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -251,7 +255,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
           form.openClassName.value = foundOpenClass?.openClassName || "";
           form.capacity.value = foundOpenClass?.capacity || 0;
-          form.description.value = foundOpenClass?.description || "";
+          setDescription(foundOpenClass?.description || "");
 
           setSelectedDanceStyles(
             foundOpenClass?.danceStyles?.length
@@ -287,7 +291,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
             openClassName: form.openClassName?.value || "",
             capacity : form.capacity?.value || 0,
-            description: form.description?.value || "",
+            description: description ,
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
               ? selectedInstructors?.map?.(
@@ -356,7 +360,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
               await updateDoc(openClassRef, {
                 openClassName: form.openClassName?.value || "",
                 capacity: form.capacity?.value || 0,
-                description: form.description?.value || "",
+                description: description ,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -395,7 +399,22 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     openClassTime,
     openClassDate,
     selectedCity,
+    description
   ]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";      
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div>
@@ -653,24 +672,15 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
               <Row>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
-                  <Form.Control
-                    rows={3}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    as="textarea"
+                  <ReactQuill
+                    theme="snow"
                     placeholder="Enter Description"
-                    name="description"
+                    value={description}
+                    onChange={setDescription}
                   />
                 </Col>
-                <Col md={6}></Col>
-              </Row>
-
-             
-              <Row>
                 <Col md={6}>
-                  <Form.Label>Youtube video link</Form.Label>
+                <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
@@ -683,6 +693,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                   />
                 </Col>
               </Row>
+
               <hr></hr>
 
               <Row>
