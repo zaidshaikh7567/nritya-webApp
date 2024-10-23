@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { Grid, Typography as MUITypography, Box, IconButton,Button, Chip, Divider } from "@mui/material";
+import { Grid, Typography as MUITypography, Box, Chip, Divider } from "@mui/material";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { useSelector } from "react-redux";
 import ShareButton from "./ShareButton";
+import { CHIP_LEVELS_DESIGN } from "../constants";
 
 function EntityDetailsSection({ dataItem, whatsappMessage }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -16,9 +17,9 @@ function EntityDetailsSection({ dataItem, whatsappMessage }) {
   }, [isDarkModeOn]);
 
   return (
-    <Grid container>
+    <Grid container spacing={1}>
   {/* Row 1: About with Share Button */}
-  <Grid item xs={12}>
+  <Grid item xs={12} >
     <Box sx={{ display: 'flex', alignItems: 'center', columnGap: 2 }}>
       <MUITypography
         variant="h4"
@@ -33,17 +34,31 @@ function EntityDetailsSection({ dataItem, whatsappMessage }) {
     </Box>
   </Grid>
 
-  {/* Row 2: By New Studio | Kuchipudi */}
-  <Grid item xs={12}>
-    <MUITypography
-      variant="subtitle1"
-      style={{ color: isDarkModeOn ? 'white' : 'black', textTransform: 'none' }}
-      gutterBottom
-    >
-      {dataItem.danceStyles && dataItem.danceStyles.length > 0 && (
-        <>  {dataItem.danceStyles.join(", ")}</>
-      )}
-    </MUITypography>
+  {/* Row 2: Kuchipudi */}
+  <Grid item xs={12} >
+  {dataItem.danceStyles && dataItem.danceStyles.length > 0 && (
+  <>
+    {dataItem.danceStyles.map((style, index) => (
+      <Chip
+        key={index}
+        label={style}
+        sx={{
+          bgcolor: index % 2 === 0 ? '#44367d'   // purple
+                          : index % 2 === 1 ? '#96ab5e'   // 
+                       
+                          : '#64b5f6',                     // Blue
+          color: 'white',
+          marginRight: '0.5rem',
+          fontSize: '0.8rem',
+          fontWeight: 'bold' ,
+          "&:hover":{
+          transform: 'translate(0.3rem, -0.1rem)'
+        }
+        }}
+      />
+    ))}
+  </>
+    )}
   </Grid>
 
   {/* Row 3: Level */}
@@ -53,8 +68,9 @@ function EntityDetailsSection({ dataItem, whatsappMessage }) {
         marginLeft: "10px",
         marginBottom: "10px",
         fontSize: "0.8rem",
-        bgcolor: "#735eab",
-        color: 'white',
+        bgcolor: CHIP_LEVELS_DESIGN[dataItem.level]?.backgroundColor,  // Set the background color
+        color: CHIP_LEVELS_DESIGN[dataItem.level]?.color,  // Set the text color
+        fontWeight: 'bold', 
       }}
       label={dataItem.level}
     />
