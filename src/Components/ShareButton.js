@@ -94,11 +94,6 @@ const ShareButton = ({ shareUrl }) => {
                         </button>
                     </InputGroup>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="dark" onClick={handleClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
             </Modal>
         </>
     )
