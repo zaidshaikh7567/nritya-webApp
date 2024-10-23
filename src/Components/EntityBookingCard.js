@@ -189,7 +189,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
               <tbody>
                 <tr>
                   <td style={{ padding: '8px', color: isDarkModeOn ? 'white' : 'black' }}>
-                    <span>Person(s)</span>
+                    <MUITypography sx={{fontWeight:'bold', fontSize:'1rem'}}>Person(s)</MUITypography>
                   </td>
                   <td style={{ padding: '8px' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -200,7 +200,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                           disabled={personsAllowed <= 1}
                           sx={{
                             flex: 1,
-                            height: '40px',
+                            height: '30px',
                             border: '1px solid',
                             borderColor: isDarkModeOn ? 'white' : 'black',
                             color: 'white',
@@ -222,7 +222,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                           variant="contained"
                           sx={{
                             flex: 1,
-                            height: '40px',
+                            height: '30px',
                             border: '1px solid',
                             borderColor: isDarkModeOn ? 'white' : 'black',
                             color: isDarkModeOn ? 'white' : 'black',
@@ -242,7 +242,7 @@ const EntityBookingCard = ({dataItem, personsAllowed, setPersonsAllowed,
                           disabled={personsAllowed >= BOOKING_LIMIT}
                           sx={{
                             flex: 1,
-                            height: '40px',
+                            height: '30px',
                             border: '1px solid',
                             borderColor: isDarkModeOn ? 'white' : 'black',
                             color: 'white',
