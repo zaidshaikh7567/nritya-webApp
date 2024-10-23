@@ -17,6 +17,7 @@ import {
     LinkedinIcon,
     RedditIcon,
     TelegramIcon,
+    XIcon
 } from 'react-share';
 import ShareIcon from '@mui/icons-material/Share';
 import {Button as MuiButton} from '@mui/material';
@@ -64,7 +65,7 @@ const ShareButton = ({ shareUrl }) => {
                         </FacebookShareButton>
 
                         <TwitterShareButton url={shareUrl} title="Check out this video!">
-                            <TwitterIcon size={35} round />
+                            <XIcon size={35} round />
                         </TwitterShareButton>
 
                         <WhatsappShareButton url={shareUrl}>
