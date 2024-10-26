@@ -365,6 +365,9 @@ export default function NCourseCard({dataItem, studioIdName}) {
         sx={{
           ...cardStyle,
           flex: "none",
+          '&:hover': {
+            transform: "scale(1.01)",    
+          }
         }}
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>

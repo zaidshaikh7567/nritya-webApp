@@ -368,8 +368,10 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
         variant="solid"
         sx={{
           ...cardStyle,
-          
           flex: "none",
+          '&:hover': {
+            transform: "scale(1.01)",    
+          }
         }}
         
       >

@@ -362,6 +362,9 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
         sx={{
           ...cardStyle,
           flex: "none",
+          '&:hover': {
+            transform: "scale(1.01)",    
+          }
         }}
       
       >
