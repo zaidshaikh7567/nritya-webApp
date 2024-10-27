@@ -7,7 +7,7 @@ import { db } from '../config';
 import { Modal, Row, Col, Card, Container } from 'react-bootstrap';
 import Ticket from './Ticket';
 import QRCode from 'react-qr-code';
-import { BASEURL_PROD, COLLECTIONS } from '../constants';
+import { BASEURL_PROD, BASEURL_DEV, COLLECTIONS } from '../constants';
 import { Tab, Tabs, Box, Typography } from '@mui/material';
 import axios from 'axios';
 
@@ -21,9 +21,10 @@ function MyBookings() {
   const [userBookings, setUserBookings] = useState([]);
   const [tabIndex, setTabIndex] = useState(0); // For tab selection
   const handleTabChange = (event, newValue) => setTabIndex(newValue);
-  
+  const BASEURL = BASEURL_PROD;
+
   useEffect(() => {
-    const endpoint_url2 = `${BASEURL_PROD}bookings/getUserBookings/${userId}`;
+    const endpoint_url2 = `${BASEURL}bookings/getUserBookings/${userId}`;
     console.log(endpoint_url2);
 
     const fetchBookings = async () => {
@@ -177,7 +178,7 @@ function MyBookings() {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  const endpoint_url = BASEURL_PROD+"bookings/availFreeTrial/"
+  const endpoint_url = BASEURL+"bookings/availFreeTrial/"
 
   const colorstyles = {
     color: isDarkModeOn ? 'white' : 'black',

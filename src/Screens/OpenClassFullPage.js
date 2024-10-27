@@ -48,7 +48,7 @@ function OpenClassFullPage() {
       const bookingData = {
         userId: currentUser,
         entityType: COLLECTIONS.OPEN_CLASSES,
-        openClassId: openClassId,
+        entityId: openClassId,
         associatedStudioId: dataItem.StudioId,
         emailLearner: currentUserEmail,
         personsAllowed: personsAllowed,
@@ -57,7 +57,9 @@ function OpenClassFullPage() {
         totalPrice: totalPrice,
         // Add other necessary fields here
       };
-
+      if (!bookingData.entityId) {
+        showSnackbar("Error", "error");
+      }
       const result = await bookEntity(bookingData);
       if (result && result.nSuccessCode === 200) {
         showSnackbar("Workshop booked", "success");

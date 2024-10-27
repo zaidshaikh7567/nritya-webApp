@@ -42,7 +42,7 @@ function CourseFullPage() {
       const bookingData = {
         userId: currentUser,
         entityType: COLLECTIONS.COURSES,
-        courseId: courseId,
+        entityId: courseId,
         associatedStudioId: dataItem.StudioId,
         emailLearner: currentUserEmail,
         personsAllowed: personsAllowed,
