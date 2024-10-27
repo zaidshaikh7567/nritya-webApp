@@ -22,6 +22,7 @@ import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { putData } from "../utils/common";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
@@ -139,12 +140,14 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
 
       setIsSubmitting(true);
 
-      const studioRef = doc(db, COLLECTIONS.OPEN_CLASSES, selectedOpenClassId);
+      const response = await putData(dbPayload, COLLECTIONS.OPEN_CLASSES, selectedOpenClassId) 
+      if (response.ok) {
+        clearForm(form);
+        showSnackbar("Open class successfully updated.", "success");
+      }else{
+        showSnackbar(`Error ${response}.`, "error");
+      }
 
-      await updateDoc(studioRef, dbPayload);
-
-      clearForm(form);
-      showSnackbar("Open class successfully updated.", "success");
     } catch (error) {
       console.error("Error updating Open Class: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -267,6 +270,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
             style={{
               backgroundColor: isDarkModeOn ? "#333333" : "",
               color: isDarkModeOn ? "white" : "black",
+              height: 'auto',
             }}
             onChange={handleSelectStudio}
           >
@@ -473,7 +477,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
-                  type="text"
+                  type="number"
                   placeholder="Enter capacity"
                   name="capacity"
                 />

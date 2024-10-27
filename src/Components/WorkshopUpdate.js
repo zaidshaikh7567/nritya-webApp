@@ -22,6 +22,7 @@ import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { putData } from "../utils/common";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
@@ -138,15 +139,17 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         city: selectedCity,
         youtubeViedoLink: form.youtubeViedoLink.value,
       };
-
+      console.log(dbPayload)
       setIsSubmitting(true);
 
-      const studioRef = doc(db, COLLECTIONS.WORKSHOPS, selectedWorkshopId);
+      const response = await putData(dbPayload, COLLECTIONS.WORKSHOPS, selectedWorkshopId) 
+      if (response.ok) {
+        clearForm(form);
+        showSnackbar("Workshop successfully updated.", "success");
+      }else{
+        showSnackbar(`Error ${response}.`, "error");
+      }
 
-      await updateDoc(studioRef, dbPayload);
-
-      clearForm(form);
-      showSnackbar("Workshop successfully updated.", "success");
     } catch (error) {
       console.error("Error updating workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -269,6 +272,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
             style={{
               backgroundColor: isDarkModeOn ? "#333333" : "",
               color: isDarkModeOn ? "white" : "black",
+              height: 'auto',
             }}
             onChange={handleSelectStudio}
           >
@@ -483,7 +487,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                 <Form.Label>Maximum capacity</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.capacity : 0}
+                  defaultValue={selectedWorkshop ? selectedWorkshop.price : 0}
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",

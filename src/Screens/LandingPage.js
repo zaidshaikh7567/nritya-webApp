@@ -75,78 +75,78 @@ function LandingPage() {
   };
 
   useEffect(() => {
-    const fetchAndSaveData = async (city, entities) => {
-      try {
-        const promises = entities.map(entity => {
-          const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?&city=${city}&entity=${entity}`;
-          return fetch(apiEndpoint)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`Network response for ${entity} was not ok`);
-              }
-              return response.json();
-            })
-            .then(data => ({ [entity]: data }));
-        });
-  
-        const allData = await Promise.all(promises);
-  
-        // Combine the fetched data into a single object
-        const combinedData = Object.assign({}, ...allData);
-        return combinedData;
-      } catch (error) {
-        console.error("Fetch error:", error);
-        throw error;
-      }
-    };
-  
-    const fetchIdNameMp = async (city) => {
-      try {
-        const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
-        const response = await fetch(apiEndpoint);
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
+    const retryFetch = async (url, options = {}, retries = 10, delay = 1000) => {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (i < retries - 1) {
+                    console.warn(`Retrying after ${delay} fetch (${i + 1}/${retries}) for ${url} due to error:`, error);
+                    await new Promise(res => setTimeout(res, delay)); // wait before retrying
+                    delay *= 1.5;
+                } else {
+                    throw error; // Throw error after exhausting retries
+                }
+            }
         }
-  
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Error in processing:", error);
-        throw error;
-      }
     };
-  
-    const fetchData = async () => {
-      try {
 
-        let filterLocation = localStorage.getItem("filterLocation");
-        if (!filterLocation || filterLocation === "null") {
-          filterLocation = "New Delhi";
+    const fetchAndSaveData = async (city, entities) => {
+        try {
+            const promises = entities.map(entity => {
+                const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?&city=${city}&entity=${entity}`;
+                return retryFetch(apiEndpoint)
+                    .then(data => ({ [entity]: data }));
+            });
+
+            const allData = await Promise.all(promises);
+            const combinedData = Object.assign({}, ...allData);
+            return combinedData;
+        } catch (error) {
+            console.error("Fetch error:", error);
+            throw error;
         }
-  
-        const entities = [COLLECTIONS.STUDIO,COLLECTIONS.WORKSHOPS,
-          COLLECTIONS.COURSES,COLLECTIONS.OPEN_CLASSES,
-        ];
-  
-        // Fetch both `fetchIdNameMp` and `fetchAndSaveData` concurrently
-        const [studioIdNameData, exploreEntityData] = await Promise.all([
-          fetchIdNameMp(filterLocation),        // Fetch id:name data
-          fetchAndSaveData(filterLocation, entities),  // Fetch entity data
-        ]);
-  
-        // Set the state only after both are fetched
-        setStudioIdName(studioIdNameData);
-        setExploreEntity(exploreEntityData);
-  
-        // Now you have both data fetched and saved
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
     };
-  
-    // Trigger data fetch on component mount
+
+    const fetchIdNameMp = async (city) => {
+        try {
+            const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
+            return await retryFetch(apiEndpoint);
+        } catch (error) {
+            console.error("Error in processing:", error);
+            throw error;
+        }
+    };
+
+    const fetchData = async () => {
+        try {
+            let filterLocation = localStorage.getItem("filterLocation");
+            if (!filterLocation || filterLocation === "null") {
+                filterLocation = "New Delhi";
+            }
+
+            const entities = [COLLECTIONS.STUDIO, COLLECTIONS.WORKSHOPS, COLLECTIONS.COURSES, COLLECTIONS.OPEN_CLASSES];
+
+            // Fetch both `fetchIdNameMp` and `fetchAndSaveData` concurrently
+            const [studioIdNameData, exploreEntityData] = await Promise.all([
+                fetchIdNameMp(filterLocation),
+                fetchAndSaveData(filterLocation, entities),
+            ]);
+
+            setStudioIdName(studioIdNameData);
+            setExploreEntity(exploreEntityData);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
     fetchData();
-  }, []);
+}, []);
+
   
 
   useEffect(() => {

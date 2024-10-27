@@ -31,6 +31,36 @@ export async function postData(dbPayload, collection_name, notify, metadata) {
   }
 }
 
+export async function putData(dbPayload, collection_name, entity_id, notify = null, metadata = null) {
+  const BASEURL = BASEURL_PROD;
+  const endpoint = `crud/updateEntity/${entity_id}`;
+  const authToken = localStorage.getItem("authToken");
+  try {
+    const response = await fetch(BASEURL + endpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify({
+        data: dbPayload,
+        collection_name: collection_name,
+        notify: notify,
+        metadata : metadata,
+      }),
+    });
+
+    if (!response.ok) {
+      console.log('Error in postData:', response);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('Error in postData:', error);
+    throw error;
+  }
+}
 
 export const getRandomColor = () => {
   const colorKeys = Object.keys(COLORS);

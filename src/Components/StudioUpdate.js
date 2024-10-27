@@ -18,6 +18,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { MultiSelect } from 'primereact/multiselect';
+import { putData } from '../utils/common';
 
 const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
 const categoryMap = {
@@ -232,47 +233,51 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     try {
       // Update the studio document with the new values
       ////console.log(description,geolocation)
-      const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
-      console.log(tableData)
-      await updateDoc(studioRef, {
-              studioName: event.target.studioName.value,
-              aboutStudio: event.target.aboutStudio.value,
-              founderName: event.target.founderName.value,
-              aboutFounder: event.target.aboutFounder.value,
-              mobileNumber: event.target.mobileNumber.value,
-              whatsappNumber: event.target.whatsappNumber.value,
-              mailAddress: event.target.mailAddress.value,
-              danceStyles: selectedDanceStyles.join(","),
-              numberOfHalls: event.target.numberOfHalls.value,
-              maximumOccupancy: event.target.maximumOccupancy.value,
-              instructorsNames: selectedInstructors,
-              status: 'OPEN',
-              tableData: tableData,
-              buildingName: event.target.buildingName.value,
-              street: event.target.street.value,
-              city: event.target.city.value,
-              landmark: event.target.landmark.value,
-              pincode: event.target.pincode.value,
-              state: event.target.state.value,
-              country: "India",
-              geolocation : selectedLocation,
-              gstNumber: event.target.gstNumber.value,
-              enrolledId:[],
-              reviews:[],
-              author: JSON.parse(localStorage.getItem('userInfo')).displayName,
-              UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
-              addAmenities: selectedAmenities.join(","),
-              enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
-              instagram: event.target.instagram.value,
-              facebook: event.target.facebook.value,
-              youtube: event.target.youtube.value,
-              twitter: event.target.twitter.value,
-      });
-
-      //console.log("Studio updated successfully");
-      alert("Studio Update successfully")
-      setShowUpdateSuccessAlert(true);
-      setShowUpdateErrorAlert(false);
+        const dbPayload ={
+          studioName: event.target.studioName.value,
+          aboutStudio: event.target.aboutStudio.value,
+          founderName: event.target.founderName.value,
+          aboutFounder: event.target.aboutFounder.value,
+          mobileNumber: event.target.mobileNumber.value,
+          whatsappNumber: event.target.whatsappNumber.value,
+          mailAddress: event.target.mailAddress.value,
+          danceStyles: selectedDanceStyles.join(","),
+          numberOfHalls: event.target.numberOfHalls.value,
+          maximumOccupancy: event.target.maximumOccupancy.value,
+          instructorsNames: selectedInstructors,
+          status: 'OPEN',
+          tableData: tableData,
+          buildingName: event.target.buildingName.value,
+          street: event.target.street.value,
+          city: event.target.city.value,
+          landmark: event.target.landmark.value,
+          pincode: event.target.pincode.value,
+          state: event.target.state.value,
+          country: "India",
+          geolocation : selectedLocation,
+          gstNumber: event.target.gstNumber.value,
+          enrolledId:[],
+          reviews:[],
+          author: JSON.parse(localStorage.getItem('userInfo')).displayName,
+          UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
+          addAmenities: selectedAmenities.join(","),
+          enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
+          instagram: event.target.instagram.value,
+          facebook: event.target.facebook.value,
+          youtube: event.target.youtube.value,
+          twitter: event.target.twitter.value,
+      }
+      
+      const response = await putData(dbPayload, COLLECTIONS.STUDIO, studioId) 
+      if (response.ok) {
+        //console.log("Studio updated successfully");
+        alert("Studio Update successfully")
+        setShowUpdateSuccessAlert(true);
+        setShowUpdateErrorAlert(false);
+      }else{
+        setShowUpdateSuccessAlert(false);
+        setShowUpdateErrorAlert(true);
+      }
     } catch (error) {
       console.error("Error updating studio: ", error);
       setShowUpdateSuccessAlert(false);
