@@ -4,12 +4,18 @@ import { useAuth } from '../context/AuthContext';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { db } from '../config';
-import { Modal, Row, Col, Card, Container } from 'react-bootstrap';
-import Ticket from './Ticket';
-import QRCode from 'react-qr-code';
-import { BASEURL_PROD, BASEURL_DEV, COLLECTIONS } from '../constants';
+import { Row, Col, Card, Container } from 'react-bootstrap';
+import { BASEURL_PROD, COLLECTIONS } from '../constants';
 import { Tab, Tabs, Box, Typography } from '@mui/material';
+import { BASEURL_PROD, COLLECTIONS } from '../constants';
+import { Tab, Tabs, Box, Typography} from '@mui/material';
 import axios from 'axios';
+import BookingLists from './BookingLists';
+import BookingInformation from './BookingInformation';
+import WorkshopInformation from './WorkshopInformation';
+import WorkshopList from './WorkshopList';
+import OpenClassList from './OpenClassList';
+import OpenClassInformation from './OpenClassInformation';
 
 function MyBookings() {
   const { currentUser } = useAuth();
@@ -20,6 +26,9 @@ function MyBookings() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [userBookings, setUserBookings] = useState([]);
   const [tabIndex, setTabIndex] = useState(0); // For tab selection
+  const [currentClickTicket , setCurrentClickTicket] = useState(null);
+  const [workshopClickTicket, setWorkshopClickTicket] = useState(null);
+  const [openClassClickTicket, setOpenClassClickTicket] = useState(null);
   const handleTabChange = (event, newValue) => setTabIndex(newValue);
   const BASEURL = BASEURL_PROD;
 
@@ -175,10 +184,16 @@ function MyBookings() {
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-  const endpoint_url = BASEURL+"bookings/availFreeTrial/"
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  // };
+  // const endpoint_url = BASEURL+"bookings/availFreeTrial/"
+
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  // };
+
+  const endpoint_url = BASEURL_PROD+"bookings/availFreeTrial/"
 
   const colorstyles = {
     color: isDarkModeOn ? 'white' : 'black',
@@ -206,118 +221,25 @@ function MyBookings() {
             ) : (
               <div>
                 {
-                  bookings.map((bookingData) => (
-                    <div key={bookingData.id}>
-                      <Container fluid>
-
-                      <Card
-                        style={{
-                          backgroundColor: isDarkModeOn ? "black" : "white",
-                          color: isDarkModeOn ? "white" : "black",
-                          borderBlockColor: isDarkModeOn ? "white" : "black",
-                        }}
-                        onClick={() => handleOpenModal(bookingData)}
-                      >
-                        <Row className="row-3 text-center">
-                          <Col md={2} className="text-center">
-                            <div style={{
-                              background: "#E60023",
-                              color: "white",
-                              alignItems: "center", // corrected syntax
-                              width: "100%", // corrected syntax
-                              height: "100%",
-                            }}>
-          
-          
-                            <p style={{ fontSize: 'small' }}>
-                              Booked On
-                              <br />
-                              <span style={{ fontSize: '3rem' }}>
-                                {new Date(bookingData.timestamp * 1000).getDate()}
-                              </span>
-                              <br/>
-                              <span style={{ fontSize: 'small' }}>
-                                {new Date(bookingData.timestamp * 1000).toLocaleDateString('en-US', {
-                                  month: 'short',
-                                  year: 'numeric',
-                                  timeZone: 'Asia/Kolkata', 
-                                })}
-                              </span>
-                            </p>
-                            </div>
-                          </Col>
-          
-                          <Col md={4} className="text-center">
-                            <p>{bookingData.name_class}</p>
-                            <p>{bookingData.name_studio}</p>
-                            <p>{bookingData.studio_address}</p>
-                          </Col>
-                          <Col md={2} className="text-center">
-                            <div style={{ justifyContent: "center",
-                              alignItems: "center",
-                              display: "flex",
-                              paddingTop: "1rem"
-                                  }}>
-                              <QRCode value={(endpoint_url+bookingData.id)} size={100} />
-                            </div>
-                          </Col>
-                          <Col md={4}>
-                            <p>{bookingData.name_learner}</p>
-                            <p>Admit One for Once</p>
-                            <h5 style={{ color: bookingData.used ? 'green' : 'inherit' }}>
-                              {bookingData.used && 'Free class Availed'}
-                            </h5>
-                          </Col>
-                        </Row>
-          
-                      </Card>
-                      <p style={{ textDecoration: 'none' }}>
-                          <a 
-                            href={`https://nritya-official.github.io/nritya-webApp/#/studio/${bookingData.studio_id}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            style={{ textDecoration: 'none', color: isDarkModeOn? 'cyan':"black" }}
-                          >
-                            Check out the latest class timings?
-                          </a>
-                        </p>
-
-                      </Container>
-                      <br></br>
-                    </div>
-                  ))
+                  currentClickTicket ?
+                  <BookingInformation currentClickTicket={currentClickTicket} setCurrentClickTicket={setCurrentClickTicket}/>
+                   : <>
+                  {bookings.map((bookingData) => (
+                    <BookingLists key={bookingData.id} bookingData={bookingData} setCurrentClickTicket={setCurrentClickTicket}/>
+                  ))}
+                  </>
                 }
 
               </div>
               
             )}
 
-
-            <Modal show={showModal} onHide={handleCloseModal} >
-              <Modal.Header closeButton>
-                <Modal.Title>Ticket Details</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                {selectedBooking && (
-                  <Ticket
-                    studioName={selectedBooking.name_studio}
-                    className={selectedBooking.name_class}
-                    address={selectedBooking.studio_address}
-                    timing={selectedBooking.studio_timing}
-                    days={selectedBooking.studio_days}
-                    customerName={selectedBooking.name_learner}
-                    timestamp={selectedBooking.timestamp}
-                    bookingId={selectedBooking.id}
-                  />
-                )}
-              </Modal.Body>
-            </Modal>
           </div>
           </Box> )
         }
         {tabIndex === 1 && (
         <Box p={3}>
-          {bookingCategories.Workshops.length > 0 ? (
+          {/* {bookingCategories.Workshops.length > 0 ? (
             bookingCategories.Workshops.map((booking) =>(
 
                 renderBookingCard(booking, 'Workshop')
@@ -327,13 +249,21 @@ function MyBookings() {
             <Typography style={{ color: isDarkModeOn ? "white" : "black" }}>
               No Workshop bookings available.
             </Typography>
-          )}
+          )} */}
+          {
+            workshopClickTicket?<WorkshopInformation workshopClickTicket={workshopClickTicket} setWorkshopClickTicket={setWorkshopClickTicket}/> 
+            :<>
+            {bookings.map((bookingData) => (
+              <WorkshopList  key={bookingData.id} bookingData={bookingData} setWorkshopClickTicket={setWorkshopClickTicket}/>
+            ))}
+            </>   
+          }
         </Box>
       )}
 
       {tabIndex === 2 && (
         <Box p={3}>
-          {bookingCategories.OpenClasses.length > 0 ? (
+          {/* {bookingCategories.OpenClasses.length > 0 ? (
             bookingCategories.OpenClasses.map((booking) =>
               renderBookingCard(booking, 'OpenClass')
             )
@@ -341,7 +271,15 @@ function MyBookings() {
             <Typography style={{ color: isDarkModeOn ? "white" : "black" }}>
               No Open Classes bookings available.
             </Typography>
-          )}
+          )} */}
+          {
+            openClassClickTicket? <OpenClassInformation setOpenClassClickTicket={setOpenClassClickTicket}/>:
+            <>
+            {bookings.map((bookingData) => (
+              <OpenClassList key={bookingData.id} bookingData={bookingData} setOpenClassClickTicket={setOpenClassClickTicket}/>
+            ))}
+            </>    
+          }
         </Box>
       )}
 
