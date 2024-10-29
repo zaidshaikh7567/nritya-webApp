@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import logo from './../logo.png';
+import React from 'react';
 import './Ticket.css';
 import moment from 'moment-timezone';
 import html2canvas from 'html2canvas';

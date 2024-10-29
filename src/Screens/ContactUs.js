@@ -11,6 +11,11 @@ const ContactUs = () => {
   const [headingStyle, setHeadingStyle] = useState({});
   const [textStyle, setTextStyle] = useState({});
   const [formControl, setFormControl] = useState({});
+  const [formData, setFormData] = useState({
+    name: '',
+    message: ''
+  });
+
 
   useEffect(() => {
     setContainerStyle({
@@ -32,14 +37,28 @@ const ContactUs = () => {
     });
   }, [isDarkModeOn]);
 
-  const handleSendEmail = () => {
-    const recipientEmail = 'nritya.contact@gmail.com';
-    const subject = 'Subject of the email';
-    const body = 'Content of the email';
-  
-    const mailtoUrl = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoUrl;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
+
+  const handleSendEmail = (e) => {
+    e.preventDefault();
+    const recipient = 'nritya@nritya.co.in';
+    const subject = 'New Contact Form Submission';
+    const body = `Name: ${formData.name}
+
+    Message:
+    ${formData.message}`;
+  
+    const mailToUrl = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailToUrl;
+
+  };
+
   
 
   return (
@@ -69,7 +88,7 @@ const ContactUs = () => {
                 <FontAwesomeIcon icon={faPhone} />
                 <div>
                   <h4 style={headingStyle}>Phone</h4>
-                  <p style={textStyle}>571-457-2321</p>
+                  <p style={textStyle}>6392074436</p>
                 </div>
               </div>
 
@@ -77,32 +96,47 @@ const ContactUs = () => {
                 <FontAwesomeIcon icon={faEnvelope} />
                 <div>
                   <h4 style={headingStyle}>Email</h4>
-                  <p style={textStyle}>nritya.contact@gmail.com</p>
+                  <p style={textStyle}>nritya@nritya.co.in</p>
                 </div>
               </div>
             </div>
           </Col>
           <Col>
-            <div>
-              <Form style={containerStyle} onSubmit={handleSendEmail}>
-                <h2 style={headingStyle}>Send Message</h2>
-                <Form.Group controlId="fullname">
-                  <Form.Label style={textStyle}>Name</Form.Label>
-                  <Form.Control required type="text" placeholder="Full Name" style={formControl} />
-                </Form.Group>
-                <Form.Group controlId="email">
-                  <Form.Label style={textStyle}>Email</Form.Label>
-                  <Form.Control required type="email" placeholder="Email" style={formControl} />
-                </Form.Group>
-                <Form.Group controlId="message">
-                  <Form.Label style={textStyle}>Message</Form.Label>
-                  <Form.Control required as="textarea" placeholder="Type your Message..." rows={4} style={formControl} />
-                </Form.Group>
-                <Button type="submit" rounded className="me-2 rounded-pill" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }}>
-                  Send
-                </Button>
-              </Form>
-            </div>
+          <div>
+          <Form style={containerStyle} onSubmit={handleSendEmail}>
+            <h2 style={headingStyle}>Send Message</h2>
+            <Form.Group controlId="fullname">
+              <Form.Label style={textStyle}>Name</Form.Label>
+              <Form.Control 
+                required 
+                type="text" 
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Full Name" 
+                style={formControl} 
+              />
+            </Form.Group>
+            
+            <Form.Group controlId="message">
+              <Form.Label style={textStyle}>Message</Form.Label>
+              <Form.Control 
+                required 
+                as="textarea" 
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                placeholder="Type your Message..." 
+                rows={4} 
+                style={formControl} 
+              />
+            </Form.Group>
+            <Button type="submit" rounded className="me-2 rounded-pill" style={{ textTransform: 'none', backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white' }}>
+              Send
+            </Button>
+          </Form>
+        </div>
+
           </Col>
         </Row>
       </Container>

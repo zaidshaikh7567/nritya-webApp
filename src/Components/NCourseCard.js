@@ -20,7 +20,7 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Spinner } from "react-bootstrap";
-import { bookEntity } from "../utils/common";
+import { bookEntity, getYoutubeVideoId } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
@@ -351,22 +351,28 @@ export default function NCourseCard({dataItem, studioIdName}) {
     transform: "scale(1.01)",
     cursor: "pointer",
   };
-
-
+  let video_id = null;
+  let thumbnail_url = null;
+  video_id = getYoutubeVideoId(dataItem.youtubeViedoLink)
+  if(video_id){
+    thumbnail_url = `https://img.youtube.com/vi/${video_id}/maxresdefault.jpg`
+  }
   return (
-    <>
+    <a href={`#/course/${dataItem.id}`}
+    style={{ textDecoration: 'none', color: isDarkModeOn ? 'white' : 'black' }}>
       <Card
         variant="solid"
         sx={{
           ...cardStyle,
-          "&:hover": cardHoverStyle,
           flex: "none",
+          '&:hover': {
+            transform: "scale(1.01)",    
+          }
         }}
-        onClick={handleCourseDetailsModalOpen}
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img
-            src={dataItem.iconUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+            src={ thumbnail_url || dataItem.iconUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
             loading="lazy"
             alt="Studio Image"
             style={{ maxWidth: "100%", objectFit: "cover", overflow: "hidden" }}
@@ -427,7 +433,7 @@ export default function NCourseCard({dataItem, studioIdName}) {
         </AspectRatio>
         <CardContent style={{ padding: "10px", paddingTop: "5px" }}>
           <Box
-            fontWeight="md"
+            fontWeight="bold"
             color="neutral"
             textColor="text.primary"
             underline="none"
@@ -442,13 +448,6 @@ export default function NCourseCard({dataItem, studioIdName}) {
             </span>
           </Box>
           <Typography
-            style={{ color: isDarkModeOn ? "white" : "black" }}
-            level="body-xs"
-            noWrap
-          >
-            By {dataItem && studioIdName[dataItem.StudioId] ? studioIdName[dataItem.StudioId] : ""}
-          </Typography>
-          <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
             level="body-xs"
             noWrap
@@ -461,6 +460,11 @@ export default function NCourseCard({dataItem, studioIdName}) {
           >
             {dataItem.date || ""} | {dataItem.time || ""}
           </Typography>
+          <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
+            {dataItem && dataItem.price && (
+              <span> ₹{dataItem.price}</span>
+            )}
+          </Typography>
         </CardContent>
       </Card>
 
@@ -469,6 +473,6 @@ export default function NCourseCard({dataItem, studioIdName}) {
         open={isCourseDetailsModalOpen}
         handleClose={handleCourseDetailsModalClose}
       />
-    </>
+    </a>
   );
 }

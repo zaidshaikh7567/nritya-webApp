@@ -6,3 +6,9 @@
   .genericHoverEffect:hover {
     transform: translate(5px, 5px); 
   }
+
+  .separator {
+    height: 10px;
+    background-color: red;
+    border: none;
+  }

@@ -19,6 +19,16 @@ git add . \
 git commit \
 git push
 
+### Generate Build for domain & push it to build-branch
+Remove "homepage" line from package.json \
+npm run build \
+git checkout . \
+cp -r build ../ \
+git checkout build-branch \
+Run this to see changes node server.js \
+git add . \
+git commit \
+git push
 
 ## Available Scripts
 

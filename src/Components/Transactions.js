@@ -51,7 +51,7 @@ function Transactions() {
     }
 
     getTransactions();
-  }, []);
+  }, [currentUser?.uid]);
 
   return (
     <div style={{minHeight:"75vh"}}>

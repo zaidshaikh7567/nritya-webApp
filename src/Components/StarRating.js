@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaStar, FaStarHalf } from 'react-icons/fa';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 
 const sizeMapping = {
@@ -58,8 +58,6 @@ const StarRating = ({ rating, onRatingChange, viewMode,  starSize = 'small' }) =
 
   const renderStars = () => {
     const stars = [];
-    const wholeNumberPart = Math.floor(rating);
-    const decimalPart = rating - wholeNumberPart;
 
     for (let i = 1; i <= 5; i++) {
       stars.push(renderStar(i));

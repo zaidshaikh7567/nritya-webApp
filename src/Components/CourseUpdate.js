@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { db } from "../config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS, LEVELS } from "../constants";
@@ -20,10 +20,13 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { putData } from "../utils/common";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
-function CourseUpdate({ workshopId, instructors, studioId }) {
+function CourseUpdate({ courseId, instructors, studioId }) {
   const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
 
   const showSnackbar = useSnackbar();
@@ -32,17 +35,16 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
   const [selectedInstructors, setSelectedInstructors] = useState([]);
 
   const danceStylesOptions = danceStyles.danceStyles;
-  const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
-  const [showUpdateErrorAlert, setShowUpdateErrorAlert] = useState(false);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const [selectedDurationUnit, setSelectedDurationUnit] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedCity, setSelectedCity] = useState(currentCity);
-  const [workshopTime, setWorkshopTime] = useState("");
-  const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
+  const [courseTime, setCourseTime] = useState("");
+  const [courseDate, setCourseDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [description, setDescription] = useState('');
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -58,24 +60,29 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
     setSelectedDanceStyles(value);
   };
 
-  const [selectedWorkshopId, setSelectedWorkshopId] = useState("");
-  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const baseStyles = {
+    backgroundColor: isDarkModeOn ? "#333333" : "",
+    color: isDarkModeOn ? "white" : "black",
+    height: 'auto',
+  };
+
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const isValidInputs = (form) => {
     let validationFailed = true;
     if (
       !form.name.value ||
-      !form.workshopVenue.value ||
-      !form.workshopFees.value ||
+      !form.courseFees.value ||
       !form.duration.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
       !selectedDurationUnit ||
       !selectedLevel ||
-      !workshopTime ||
-      !workshopDate ||
+      !courseTime ||
+      !courseDate ||
       !selectedCity
     )
       validationFailed = false;
@@ -87,16 +94,16 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
     event.preventDefault();
     const selected = event.target.value;
     const selectedId = selected.split(":").pop().trim();
-    setSelectedWorkshopId(selectedId);
+    setSelectedCourseId(selectedId);
     try {
       const studioDoc = await getDoc(doc(db, COLLECTIONS.COURSES, selectedId));
       if (studioDoc.exists) {
-        setSelectedWorkshop(studioDoc.data());
+        setSelectedCourse(studioDoc.data());
       } else {
-        setSelectedWorkshop(null);
+        setSelectedCourse(null);
       }
     } catch (error) {
-      console.error("Error fetching workshop data:", error, selectedId);
+      console.error("Error fetching course data:", error, selectedId);
     }
   };
 
@@ -104,7 +111,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
     event.preventDefault();
     const form = event.target;
 
-    if (!selectedWorkshopId) return;
+    if (!selectedCourseId) return;
 
     if (!isValidInputs(form)) {
       showSnackbar("Please fill all the fields.", "error");
@@ -113,11 +120,10 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
     try {
       const dbPayload = {
-        name: form.name.value,
+        courseName: form.name.value,
         duration: form.duration.value,
-        price: form.workshopFees.value,
-        venue: form.workshopVenue.value,
-        description: form.description.value,
+        price: form.courseFees.value,
+        description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -132,21 +138,24 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
           : null,
         durationUnit: selectedDurationUnit,
         level: selectedLevel,
-        time: workshopTime,
-        date: workshopDate.format("YYYY-MM-DD"),
+        time: courseTime,
+        date: courseDate.format("YYYY-MM-DD"),
         city: selectedCity,
+        youtubeViedoLink: form.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
 
-      const studioRef = doc(db, COLLECTIONS.COURSES, selectedWorkshopId);
+      const response = await putData(dbPayload, COLLECTIONS.COURSES, selectedCourseId) 
+      if (response.ok) {
+        clearForm(form);
+        showSnackbar("Open class successfully updated.", "success");
+      }else{
+        showSnackbar(`Error ${response}.`, "error");
+      }
 
-      await updateDoc(studioRef, dbPayload);
-
-      clearForm(form);
-      showSnackbar("Open class successfully updated.", "success");
     } catch (error) {
-      console.error("Error updating workshop: ", error);
+      console.error("Error updating course: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -161,11 +170,12 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
     setSelectedStudio(null);
     setSelectedDurationUnit("");
     setSelectedLevel("");
-    setWorkshopTime("");
-    setWorkshopDate(dayjs(new Date()));
+    setCourseTime("");
+    setCourseDate(dayjs(new Date()));
     setSelectedCity('');
-    setSelectedWorkshop(null);
-    setSelectedWorkshopId("");
+    setSelectedCourse(null);
+    setSelectedCourseId("");
+    setDescription('');
   };
 
   const handleDurationUnitChange = (event, value) => {
@@ -189,50 +199,65 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
   };
 
   const handleTimeSelect = (startTime, endTime) => {
-    const [currentStartTime, currentEndTime] = workshopTime.split(" - ");
+    const [currentStartTime, currentEndTime] = courseTime.split(" - ");
     let newTime = `${currentStartTime} - ${currentEndTime}`;
 
     if (startTime !== null) newTime = `${startTime} - ${currentEndTime}`;
     if (endTime !== null) newTime = `${currentStartTime} - ${endTime}`;
 
-    setWorkshopTime(newTime);
+    setCourseTime(newTime);
   };
 
   useEffect(() => {
-    if (selectedWorkshop) {
+    if (selectedCourse) {
       const addedInstructors = instructors
         .filter((instructor) =>
-          selectedWorkshop.instructors.includes(instructor.id)
+          selectedCourse.instructors.includes(instructor.id)
         )
         .map((instructor) => `${instructor.name} - ${instructor.id}`);
 
       setSelectedInstructors(addedInstructors);
-      if (selectedWorkshop && selectedWorkshop.danceStyles)
-        setSelectedDanceStyles(selectedWorkshop.danceStyles);
+      if (selectedCourse && selectedCourse.danceStyles)
+        setSelectedDanceStyles(selectedCourse.danceStyles);
 
-      if (selectedWorkshop && selectedWorkshop.durationUnit)
-        setSelectedDurationUnit(selectedWorkshop.durationUnit);
+      if (selectedCourse && selectedCourse.durationUnit)
+        setSelectedDurationUnit(selectedCourse.durationUnit);
 
-      if (selectedWorkshop && selectedWorkshop.level)
-        setSelectedLevel(selectedWorkshop.level);
+      if (selectedCourse && selectedCourse.level)
+        setSelectedLevel(selectedCourse.level);
 
-      if (selectedWorkshop && selectedWorkshop.time)
-        setWorkshopTime(selectedWorkshop.time);
+      if (selectedCourse && selectedCourse.time)
+        setCourseTime(selectedCourse.time);
 
-      if (selectedWorkshop && selectedWorkshop.date)
-        setWorkshopDate(dayjs(selectedWorkshop.date));
+      if (selectedCourse && selectedCourse.date)
+        setCourseDate(dayjs(selectedCourse.date));
 
-      if (selectedWorkshop && selectedWorkshop.StudioId) {
+      if (selectedCourse && selectedCourse.StudioId) {
         const studios = studioId.map((studio) => studio.split(":")[1].trim());
         const currentStudioIndex = studios.findIndex(
-          (studio) => studio === selectedWorkshop.StudioId
+          (studio) => studio === selectedCourse.StudioId
         );
         setSelectedStudio(studioId[currentStudioIndex] || null);
       }
 
-      setSelectedCity(selectedWorkshop?.city || '');
+      setSelectedCity(selectedCourse?.city || '');
+      setDescription(selectedCourse?.description || '');
     }
-  }, [selectedWorkshop]);
+  }, [selectedCourse]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div
@@ -249,16 +274,15 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
             as="select"
             name="nameId"
             style={{
-              backgroundColor: isDarkModeOn ? "#333333" : "",
-              color: isDarkModeOn ? "white" : "black",
+              ...baseStyles,
             }}
             onChange={handleSelectStudio}
           >
             <option value="">Select a course...</option>
-            {workshopId && workshopId.length > 0 ? (
-              workshopId.map((workshopItem) => (
-                <option key={workshopItem} value={workshopItem}>
-                  {workshopItem}
+            {courseId && courseId.length > 0 ? (
+              courseId.map((courseItem) => (
+                <option key={courseItem} value={courseItem}>
+                  {courseItem}
                 </option>
               ))
             ) : (
@@ -270,7 +294,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
             <Row>
               <Col md={6}>
                 <ImageUpload
-                  entityId={selectedWorkshopId}
+                  entityId={selectedCourseId}
                   title={"Course Images"}
                   storageFolder={STORAGES.COURSEICON}
                   maxImageCount={1}
@@ -282,10 +306,9 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                 <Form.Label>Course Name</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.name : ""}
+                  defaultValue={selectedCourse ? selectedCourse.courseName : ""}
                   style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
+                    ...baseStyles,
                   }}
                   type="textarea"
                   placeholder="Enter course name"
@@ -300,8 +323,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     multiple
                     id="tags-standard"
@@ -314,8 +336,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Dance Styles"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -329,8 +350,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                   <CssBaseline />
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     multiple
                     id="tags-standard"
@@ -343,8 +363,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Instructors"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -362,12 +381,11 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                     <Form.Label>Duration</Form.Label>
                     <Form.Control
                       defaultValue={
-                        selectedWorkshop ? selectedWorkshop.duration : ""
+                        selectedCourse ? selectedCourse.duration : ""
                       }
                       rows={1}
                       style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
+                        ...baseStyles,
                       }}
                       type="number"
                       placeholder="Enter Duration"
@@ -381,8 +399,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
                       <Autocomplete
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                         id="tags-standard"
                         options={["Months", "Weeks", "Days"]}
@@ -394,8 +411,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                             variant="standard"
                             placeholder="Select Duration In Units"
                             style={{
-                              backgroundColor: isDarkModeOn ? "#333333" : "",
-                              color: isDarkModeOn ? "white" : "black",
+                              ...baseStyles,
                             }}
                           />
                         )}
@@ -407,7 +423,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
               <Col md={6}>
                 <TimeRange
-                  defaultTime={workshopTime || "00:00-00:00"}
+                  defaultTime={courseTime || "00:00-00:00"}
                   handleSelect={handleTimeSelect}
                 />
               </Col>
@@ -424,8 +440,8 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                       <CssBaseline />
                       <DatePicker
                         sx={{ width: "100%" }}
-                        value={workshopDate}
-                        onChange={(newValue) => setWorkshopDate(newValue)}
+                        value={courseDate}
+                        onChange={(newValue) => setCourseDate(newValue)}
                       />
                     </ThemeProvider>
                   </DemoContainer>
@@ -438,8 +454,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     id="tags-standard"
                     options={[LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]}
@@ -451,8 +466,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Level"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -468,28 +482,13 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                 <Form.Label>Fees/Price</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.price : ""}
+                  defaultValue={selectedCourse ? selectedCourse.price : ""}
                   style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
+                    ...baseStyles,
                   }}
                   type="number"
                   placeholder="Enter fees/price"
-                  name="workshopFees"
-                />
-              </Col>
-              <Col md={6}>
-                <Form.Label>Venue</Form.Label>
-                <Form.Control
-                  rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.venue : ""}
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  type="text"
-                  placeholder="Enter Venue"
-                  name="workshopVenue"
+                  name="courseFees"
                 />
               </Col>
             </Row>
@@ -504,8 +503,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     id="tags-standard"
                     options={cities.cities}
@@ -517,8 +515,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select City"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -532,8 +529,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
 
                   <Autocomplete
                     style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
+                      ...baseStyles,
                     }}
                     id="tags-standard"
                     options={studioId}
@@ -545,8 +541,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                         variant="standard"
                         placeholder="Select Studio"
                         style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
+                          ...baseStyles,
                         }}
                       />
                     )}
@@ -560,22 +555,31 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
             <Row>
               <Col md={6}>
                 <Form.Label>Brief Description</Form.Label>
-                <Form.Control
-                  rows={3}
-                  defaultValue={
-                    selectedWorkshop ? selectedWorkshop.description : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  as="textarea"
+                <ReactQuill
+                  theme="snow"
                   placeholder="Enter Description"
-                  name="description"
+                  value={description}
+                  onChange={setDescription}
                 />
+              </Col>
+              <Col md={6}>
+              <Form.Label>Youtube video link</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    defaultValue={
+                      selectedCourse ? selectedCourse.youtubeViedoLink : ""
+                    }
+                    style={{
+                      ...baseStyles,
+                    }}
+                    type="text"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
+                  />
               </Col>
             </Row>
 
+            <hr></hr>
             <hr></hr>
 
             <Row>
@@ -584,8 +588,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
                 <MuiButton
                   variant="contained"
                   style={{
-                    color: "white",
-                    backgroundColor: isDarkModeOn ? "#892cdc" : "black",
+                    ...baseStyles,
                   }}
                   type="submit"
                   disabled={isSubmitting}
@@ -596,6 +599,7 @@ function CourseUpdate({ workshopId, instructors, studioId }) {
             </Row>
           </div>
         </Form.Group>
+        {isSubmitting && <LinearProgress />}
       </Form>
     </div>
   );

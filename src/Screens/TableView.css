@@ -67,7 +67,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  padding: 10px 0; 
+  padding: 0px 0; 
   height: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */

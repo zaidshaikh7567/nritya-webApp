@@ -1,12 +1,12 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, where, getCountFromServer } from 'firebase/firestore';
 import { db } from '../config';
-import { getStorage,ref,listAll,getDownloadURL,uploadBytes, deleteObject  } from "firebase/storage";
+import {ref,listAll,getDownloadURL,uploadBytes, deleteObject, uploadBytesResumable  } from "firebase/storage";
 import { storage } from '../config';
-import { STORAGES, COLLECTIONS } from '../constants';
+import { COLLECTIONS } from '../constants';
 import secureLocalStorage from 'react-secure-storage';
 
 export const setCreatorMode = async (uid) => {
-  console.log("setCreatorMode ",uid)
+  console.log("creatorMode uid",uid)
   try{
   const userRef = doc(db, COLLECTIONS.USER, uid);
   const userSnap = await getDoc(userRef);
@@ -24,7 +24,7 @@ export const setCreatorMode = async (uid) => {
     console.log("User not found");
   }
   }catch(error){
-    console.log(" error");
+    console.log(" error",error);
   }
 }
 
@@ -134,8 +134,26 @@ export  const deleteAllImagesInFolder = async (storageFolder, entityId) => {
     }));
   };
 
+    // Function to delete all images in a folder
+  export  const deleteAllImagesInFolder2 = async (storageFolder, entityId,subfolder) => {
+    /*
+    Description: Deletes all images in the specified folder associated with the given entityId.
+
+    Args:
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: The unique identifier of the entity whose images are to be deleted eg UserId,StudioId like thing.
+    */
+    const folderPath = `${storageFolder}/${entityId}/${subfolder}`;
+    const folderRef = ref(storage, folderPath);
+    const fileList = await listAll(folderRef);
+
+    await Promise.all(fileList.items.map(async (fileRef) => {
+      await deleteObject(fileRef);
+    }));
+  };
+
   // Function to delete images
-export const deleteImages = async (storageFolder,imagesToDelete,entityId) => {
+export const deleteImages = async (storageFolder,imagesToDelete,entityId,setProgress,thirdFolder=null) => {
     /*
     Description: Deletes specific images associated with the given entityId.
 
@@ -144,14 +162,22 @@ export const deleteImages = async (storageFolder,imagesToDelete,entityId) => {
       storageFolder <string>: The folder path in the storage where the images are stored.
       entityId <string>: UserId,StudioId like thing.
     */
+    const total = imagesToDelete.length;
+    let done = 0;
     await Promise.all(imagesToDelete.map(async (file) => {
-      const fileRefToDelete = ref(storage, `${storageFolder}/${entityId}/${file.filename}`);
+      let folderPath = `${storageFolder}/${entityId}/${file.filename}`;
+      if (thirdFolder){
+         folderPath = `${storageFolder}/${entityId}/${thirdFolder}/${file.filename}`;
+      }
+      const fileRefToDelete = ref(storage, folderPath);
       await deleteObject(fileRefToDelete);
+      done += 1;
+      setProgress((done / total) * 100);
     }));
   };
 
   // Function to upload new images
-export const uploadImages = async (storageFolder, newImages, entityId) => {
+export const uploadImages = async (storageFolder, newImages, entityId,setProgress,thirdFolder=null) => {
     /*
     Description: Uploads new images associated with the given entityId.
 
@@ -161,12 +187,162 @@ export const uploadImages = async (storageFolder, newImages, entityId) => {
       entityId <string>: UserId,StudioId like thing.
     */
    console.log(storageFolder,entityId)
+   const total = newImages.length;
+    let done = 0;
     await Promise.all(newImages.map(async (newFileData) => {
-      const folderPath = `${storageFolder}/${entityId}`;
+      let folderPath = `${storageFolder}/${entityId}`;
+      if (thirdFolder){
+         folderPath = `${storageFolder}/${entityId}/${thirdFolder}`;
+      }
       const fileRef = ref(storage, `${folderPath}/${newFileData.file.name}`);
       await uploadBytes(fileRef, newFileData.file);
+      done += 1;
+      setProgress((done / total) * 100);
     }));
   };
+
+  export const uploadImages2 = async (storageFolder, newImages, entityId, thirdFolder = null) => {
+    /*
+    Description: Uploads new images associated with the given entityId.
+  
+    Args:
+      newImages <FileList or Array>: An array of File objects to be uploaded.
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: UserId, StudioId, etc.
+      thirdFolder <string|null>: Optional subfolder.
+    */
+
+    let folderPath = `${storageFolder}/${entityId}`;
+    if (thirdFolder){
+      folderPath = `${storageFolder}/${entityId}/${thirdFolder}`;
+    }
+    console.log(newImages.name)
+    const storageRef =  ref(storage, `${folderPath}/${newImages.name}`);
+    uploadBytesResumable(storageRef, newImages).then((snapshot) => {
+      console.log('Uploaded a blob or file!');
+    });
+  };
+
+  export const uploadImages3 = async (storageFolder, newImages, entityId, thirdFolder = null) => {
+    /*
+    Description: Uploads new images associated with the given entityId.
+  
+    Args:
+      newImages <FileList or Array>: An array of File objects to be uploaded.
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: UserId, StudioId, etc.
+      thirdFolder <string|null>: Optional subfolder.
+    */
+
+    let folderPath = `${storageFolder}/${entityId}`;
+    if (thirdFolder){
+      folderPath = `${storageFolder}/${entityId}/${thirdFolder}`;
+    }
+    console.log(newImages.name)
+    const storageRef =  ref(storage, `${folderPath}/${newImages.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, newImages);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
+      }, 
+      (error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+          case 'storage/unknown':
+            // Unknown error occurred, inspect error.serverResponse
+            break;
+        }
+      }, 
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+        });
+      }
+    );
+    
+  };
+
+
+  export const uploadImages4 = async (storageFolder, newImages, entityId, thirdFolder = null, onProgress, onComplete) => {
+    /*
+    Description: Uploads new images associated with the given entityId.
+  
+    Args:
+      newImages <FileList or Array>: An array of File objects to be uploaded.
+      storageFolder <string>: The folder path in the storage where the images are stored.
+      entityId <string>: UserId, StudioId, etc.
+      thirdFolder <string|null>: Optional subfolder.
+    */
+
+    let folderPath = `${storageFolder}/${entityId}`;
+    if (thirdFolder){
+      folderPath = `${storageFolder}/${entityId}/${thirdFolder}`;
+    }
+    console.log(newImages,newImages.name)
+    const storageRef =  ref(storage, `${folderPath}/${newImages.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, newImages);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const totalBytes = snapshot.totalBytes;
+        const bytesTransferred = snapshot.bytesTransferred;
+        const progress = totalBytes > 0 ? ((bytesTransferred / totalBytes) * 100).toFixed(2) : -1;
+        onProgress(progress);
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
+      }, 
+      (error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+          case 'storage/unknown':
+            // Unknown error occurred, inspect error.serverResponse
+            break;
+        }
+      }, 
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+          onComplete(downloadURL);
+        });
+
+      }
+    );
+    
+  };
+
 
  export const uploadOneImageAndGetURL = async (storageFolder, file, entityId) => {
     try {
@@ -185,7 +361,7 @@ export const uploadImages = async (storageFolder, newImages, entityId) => {
     }
   };
   
-  export const getAllImagesInFolder = async (storageFolder) => {
+  export const getAllFilesFromFolder = async (storageFolder) => {
     const folderPath = `${storageFolder}`;
     const folderRef = ref(storage, folderPath);
     

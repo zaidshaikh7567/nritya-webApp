@@ -1,6 +1,5 @@
 import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
-import { getCreatorMode } from './firebaseUtils'
 import secureLocalStorage from 'react-secure-storage';
 
 function CreatorRoute() {

@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from "react";
-import StudioCard from "../Components/StudioCard";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
-import {Form, Button, Col,Row, Image, Modal, FormControl, Badge, ButtonGroup,
+import {Form, Button, Col,Row, Modal, ButtonGroup,
       Container,} from "react-bootstrap";
 import { Badge as MuiBadge, Chip as MuiChip, Autocomplete as MuiAutocomplete,
-  TextField as MuiTextField, createTheme,ThemeProvider, Button as MuiButton,
+  TextField as MuiTextField, createTheme,ThemeProvider,
   Stack as MuiStack,Grid as MuiGrid, Box } from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
-import indianCities from "../cities.json";
-import { refreshLocation } from "../redux/actions/refreshLocationAction";
-import SmallCard from "../Components/SmallCard";
 import danceStyles from "../danceStyles.json";
 import CardSliderCard from "../Components/CardSliderCard";
 import './SearchPage.css';
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import { COLLECTIONS, LEVELS } from "../constants";
-import { collection,doc, query as firebaseQuery, getDoc, getDocs,where,
-} from "firebase/firestore";
-import { db } from "../config";
 import NWorkshopCard from "../Components/NWorkshopCard";
 import NOpenClassCard from "../Components/NOpenClassCard";
 import NCourseCard from "../Components/NCourseCard";
+import { useMediaQuery } from '@mui/material';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
@@ -58,7 +52,7 @@ const SearchPage = () => {
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
-  const [selectedSearchType, setSelectedSearchType] = useState("studio");
+  const [selectedSearchType, setSelectedSearchType] = useState("studio"); 
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(MAX_PRICE);
   const [searchData, setSearchData] = useState({
@@ -67,7 +61,6 @@ const SearchPage = () => {
     course: [],
   });
 
-  const dispatch = useDispatch();
   const danceForms = danceStyles.danceStyles.map((danceForm) => ({
     value: danceForm,
     label: danceForm,
@@ -108,9 +101,9 @@ const SearchPage = () => {
   const countActiveFilters = () => {
     let count = 0;
     if (localStorage.getItem(FILTER_DISTANCES_KEY)) count++;
-    if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
+    // if (localStorage.getItem(FILTER_SEARCH_TYPE_KEY)) count++;
     if (selectedLevel && selectedLevel !== LEVELS.ALL) count++;
-    if (selectedMaxPrice && selectedMaxPrice != MAX_PRICE) count++;
+    if (selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) count++;
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     if (storedDanceForm) count += JSON.parse(storedDanceForm).length;
     return count;
@@ -137,7 +130,8 @@ const SearchPage = () => {
       selectedSearchType ||
       "studio";
 
-    if (query == null) {
+      
+      if (query == null) {
       setQuery("");
     }
     let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
@@ -149,9 +143,10 @@ const SearchPage = () => {
     if (storedSelectedSearchType) {
       apiEndpoint += `&entity=${encodeURIComponent(entity)}`;
     }
-
-    if (selectedDanceForms.length > 0) {
-      apiEndpoint += `&danceStyle=${encodeURIComponent(selectedDanceForms.join(","))}`;
+    
+    const storedSelectedDanceForms = JSON.parse(localStorage.getItem(FILTER_DANCE_FORMS_KEY) || "[]");
+    if (storedSelectedDanceForms.length > 0) {
+      apiEndpoint += `&danceStyle=${encodeURIComponent(storedSelectedDanceForms.join(","))}`;
     }
 
     if (entity !== COLLECTIONS.STUDIO && selectedLevel && selectedLevel !== LEVELS.ALL) {
@@ -243,19 +238,6 @@ const SearchPage = () => {
     );
   };
 
-  const handleSearchTypeChange = (e) => {
-    setSelectedSearchType(e.target.value);
-    setSelectedDistances("");
-    localStorage.removeItem(FILTER_DISTANCES_KEY);
-    if(e.target.value == "studio"){
-      setSelectedMaxPrice(MAX_PRICE);
-      setSelectedLevel(LEVELS.ALL);
-    }
-    if(e.target.value == "openClass"){
-      setSelectedMaxPrice(MAX_PRICE);
-    }
-  };
-
   const handleSearchTypeClick = (clickedSearchType) => {
     localStorage.setItem(FILTER_SEARCH_TYPE_KEY, clickedSearchType);
     localStorage.removeItem(FILTER_DISTANCES_KEY);
@@ -288,12 +270,6 @@ const SearchPage = () => {
     handleSearch();
   };
 
-  const handleRemoveSearchType = () => {
-    setSelectedSearchType("studio");
-    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, "studio");
-  };
-
-  // Retrieve selected filters from local storage on component mount
   useEffect(() => {
     const storedDistances = localStorage.getItem(FILTER_DISTANCES_KEY);
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
@@ -315,6 +291,27 @@ const SearchPage = () => {
     }
     setActiveFilters(countActiveFilters());
     handleSearch();
+  }, [selectedLevel, selectedMaxPrice]);
+
+  const [label, setLabel] = useState('Search studios, workshops, open classes, courses...');
+
+  // Function to update label based on window width
+  const updateLabel = () => {
+    if (window.innerWidth < 600) {
+      setLabel('Search...');
+    } else {
+      setLabel('Search studios, workshops, open classes, courses...');
+    }
+  };
+
+  // Update label on component mount and window resize
+  useEffect(() => {
+    updateLabel(); // Set initial label
+    window.addEventListener('resize', updateLabel); // Listen for resize
+
+    return () => {
+      window.removeEventListener('resize', updateLabel); // Clean up listener
+    };
   }, []);
 
   return (
@@ -349,8 +346,9 @@ const SearchPage = () => {
                     getOptionLabel={(option) => option.toString()}
                     renderInput={(params) => (
                       <MuiTextField
+                      className="autocomplete-input" // Style for Css
                         {...params}
-                        label="Search studios, workshops, open classes, courses......"
+                        label={label}
                         variant="outlined"
                         InputProps={{
                           ...params.InputProps,
@@ -384,7 +382,7 @@ const SearchPage = () => {
                         }}
                       />
                     )}
-                    style={{ flex: 1/2 }}
+                    style={{ flex: 1/1 }}
                   />
                 </MuiStack>
               </ThemeProvider>
@@ -392,27 +390,32 @@ const SearchPage = () => {
           </MuiGrid>
           <br></br>
           <Row className="align-items-center">
-          <div className="horizontal-scroll-wrapper-for-filters"> 
-            {searchTypes.map((searchType) => (
-              <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
-                <MuiChip
-                  label={searchType.label}
-                  variant={selectedSearchType === searchType.name ? "outlined" : "contained"}
-                  sx={{
-                    cursor: 'pointer',
-                    bgcolor: selectedSearchType === searchType.name ? "black" : "#D9D9D9",
-                    color: selectedSearchType === searchType.name ? "white" : "black",
-                    borderRadius: '10px',
-                    "&:hover": {
-                      bgcolor: selectedSearchType === searchType.name ? "white" : "black",
-                      color: selectedSearchType === searchType.name ? "black" : "white",
-                    }
-                  }}
-                  onClick={() => handleSearchTypeClick(searchType.name)}
-                />
-            </Col>
-            ))}
-          </div>
+            <div className="horizontal-scroll-wrapper-for-filters">
+              {/* Studio, Workshops, Open Classes, Courses */}
+              {searchTypes.map((searchType) => (
+                <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
+                  <button
+                    onClick={() => handleSearchTypeClick(searchType.name)} // Add this line
+                    style={{
+                      cursor: 'pointer',
+                      backgroundColor: selectedSearchType === searchType.name
+                        ? (isDarkModeOn ? "white" : "black")
+                        : (isDarkModeOn ? "black" : "white"),
+                      color: selectedSearchType === searchType.name
+                        ? (isDarkModeOn ? "black" : "white")
+                        : (isDarkModeOn ? "white" : "black"),
+                      borderRadius: '10px',
+                      fontWeight: 'bold',
+                      border: `1px solid ${isDarkModeOn ? "white" : "black"}`,
+                      padding: '5px 10px',
+                      transition: 'background-color 0.3s, color 0.3s',
+                    }}
+                  >
+                    {searchType.label}
+                  </button>
+                </Col>
+              ))}
+            </div>
           </Row>
 
           <Row className="align-items-center">

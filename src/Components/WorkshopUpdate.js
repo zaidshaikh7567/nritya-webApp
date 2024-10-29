@@ -20,6 +20,9 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { putData } from "../utils/common";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 
@@ -38,6 +41,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedCity, setSelectedCity] = useState(currentCity);
+  const [description, setDescription] = useState('');
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,8 +87,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
     if (
       !form.workshopName.value ||
       !form.workshopFees.value ||
-      !form.workshopVenue.value ||
-      !form.description.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -114,8 +117,9 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
       const dbPayload = {
         workshopName: form.workshopName.value,
         price: form.workshopFees.value,
-        venue: form.workshopVenue.value,
-        description: form.description.value,
+        capacity: form.capacity.value,
+        // venue: form.workshopVenue.value,
+        description: description,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -133,16 +137,19 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
         city: selectedCity,
+        youtubeViedoLink: form.youtubeViedoLink.value,
       };
-
+      console.log(dbPayload)
       setIsSubmitting(true);
 
-      const studioRef = doc(db, COLLECTIONS.WORKSHOPS, selectedWorkshopId);
+      const response = await putData(dbPayload, COLLECTIONS.WORKSHOPS, selectedWorkshopId) 
+      if (response.ok) {
+        clearForm(form);
+        showSnackbar("Workshop successfully updated.", "success");
+      }else{
+        showSnackbar(`Error ${response}.`, "error");
+      }
 
-      await updateDoc(studioRef, dbPayload);
-
-      clearForm(form);
-      showSnackbar("Workshop successfully updated.", "success");
     } catch (error) {
       console.error("Error updating workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
@@ -164,6 +171,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
     setSelectedCity('');
     setSelectedWorkshop(null);
     setSelectedWorkshopId("");
+    setDescription('');
   };
 
   const handleDurationChange = (event, value) => {
@@ -229,8 +237,23 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
       }
 
       setSelectedCity(selectedWorkshop?.city || '');
+      setDescription(selectedWorkshop?.description || '');
     }
   }, [selectedWorkshop]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div
@@ -249,6 +272,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
             style={{
               backgroundColor: isDarkModeOn ? "#333333" : "",
               color: isDarkModeOn ? "white" : "black",
+              height: 'auto',
             }}
             onChange={handleSelectStudio}
           >
@@ -460,17 +484,17 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                 />
               </Col>
               <Col md={6}>
-                <Form.Label>Venue</Form.Label>
+                <Form.Label>Maximum capacity</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.venue : ""}
+                  defaultValue={selectedWorkshop ? selectedWorkshop.price : 0}
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
-                  type="text"
-                  placeholder="Enter Venue"
-                  name="workshopVenue"
+                  type="number"
+                  placeholder="Enter capacity"
+                  name="capacity"
                 />
               </Col>
             </Row>
@@ -541,22 +565,48 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
             <Row>
               <Col md={6}>
                 <Form.Label>Brief Description</Form.Label>
+                <ReactQuill
+                  theme="snow"
+                  placeholder="Enter Description"
+                  value={description}
+                  onChange={setDescription}
+                />
+              </Col>
+              <Col md={6}>
+                <Form.Label>Youtube video Id</Form.Label>
                 <Form.Control
-                  rows={3}
+                  rows={1}
                   defaultValue={
-                    selectedWorkshop ? selectedWorkshop.description : ""
+                    selectedWorkshop ? selectedWorkshop.youtubeId : ""
                   }
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
                   }}
-                  as="textarea"
-                  placeholder="Enter Description"
-                  name="description"
+                  type="text"
+                  placeholder="Enter youtube videoId"
+                  name="youtubeId"
                 />
               </Col>
             </Row>
-
+            <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video Link</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    defaultValue={
+                      selectedWorkshop ? selectedWorkshop.youtubeViedoLink : ""
+                    }
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
+                  />
+                </Col>
+              </Row>
             <hr></hr>
 
             <Row>

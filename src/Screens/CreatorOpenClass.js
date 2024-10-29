@@ -1,17 +1,7 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { db } from "../config";
-import {
-  doc,
-  getDoc,
-  collection,
-  where,
-  getDocs,
-  query,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import {doc, getDoc, collection, where, getDocs, query, updateDoc} from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
@@ -27,8 +17,8 @@ import CardSlider from "../Components/OpenClassCardSlider";
 
 function CreatorOpenClass() {
   const [studioId, setStudioId] = useState([]);
-  const [workshop, setWorkshop] = useState([]);
-  const [workshopId, setWorkshopId] = useState([]);
+  const [openClass, setOpenClass] = useState([]);
+  const [openClassId, setOpenClassId] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [instructors, setInstructors] = useState([]);
   const [isCreator, setIsCreator] = useState(false);
@@ -45,9 +35,9 @@ function CreatorOpenClass() {
       const docRef = doc(db, COLLECTIONS.OPEN_CLASSES, openClassId);
       await updateDoc(docRef, { active: true });
 
-      setWorkshop((prev) =>
-        prev.map((workshop) =>
-          workshop.id === openClassId ? { ...workshop, active: true } : workshop
+      setOpenClass((prev) =>
+        prev.map((openClass) =>
+          openClass.id === openClassId ? { ...openClass, active: true } : openClass
         )
       );
     } catch (error) {
@@ -60,11 +50,11 @@ function CreatorOpenClass() {
       const docRef = doc(db, COLLECTIONS.OPEN_CLASSES, openClassId);
       await updateDoc(docRef, { active: false });
 
-      setWorkshop((prev) =>
-        prev.map((workshop) =>
-          workshop.id === openClassId
-            ? { ...workshop, active: false }
-            : workshop
+      setOpenClass((prev) =>
+        prev.map((openClass) =>
+          openClass.id === openClassId
+            ? { ...openClass, active: false }
+            : openClass
         )
       );
     } catch (error) {
@@ -154,7 +144,7 @@ function CreatorOpenClass() {
   }, []);
 
   useEffect(() => {
-    const getWorkshopCreated = async () => {
+    const getOpenClassCreated = async () => {
       const q = query(
         collection(db, COLLECTIONS.OPEN_CLASSES),
         where(
@@ -164,7 +154,7 @@ function CreatorOpenClass() {
         )
       );
       const querySnapshot = await getDocs(q);
-      const workshopsOfUserPromise = querySnapshot.docs
+      const openClassesOfUserPromise = querySnapshot.docs
         .filter((doc) => doc.data().openClassName)
         .map((doc) => {
           const data = doc.data();
@@ -172,35 +162,35 @@ function CreatorOpenClass() {
             id: doc.id,
             ...data,
           };
-        }).map(async (workshop) => {
-          const docRef = doc(db, COLLECTIONS.STUDIO, workshop?.StudioId);
+        }).map(async (openClass) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, openClass?.StudioId);
           const docSnap = await getDoc(docRef);
-          return { ...workshop, studioDetails: docSnap.data() };
+          return { ...openClass, studioDetails: docSnap.data() };
         });
-      const workshopsOfUser = await Promise.all(workshopsOfUserPromise)
-      localStorage.setItem("OpenCLassCreated", JSON.stringify(workshopsOfUser));
-      setWorkshop(workshopsOfUser);
-      setWorkshopId(
-        workshopsOfUser.map(
-          (workshop) =>
-            String(workshop.openClassName) + " :" + String(workshop.id)
+      const openClassesOfUser = await Promise.all(openClassesOfUserPromise)
+      localStorage.setItem("OpenCLassCreated", JSON.stringify(openClassesOfUser));
+      setOpenClass(openClassesOfUser);
+      setOpenClassId(
+        openClassesOfUser.map(
+          (openClass) =>
+            String(openClass.openClassName) + " :" + String(openClass.id)
         )
       );
     };
 
-    getWorkshopCreated();
-  }, [setWorkshop]);
+    getOpenClassCreated();
+  }, [setOpenClass]);
 
   useEffect(() => {
-    const workshopsOfUser =
+    const openClassesOfUser =
       JSON.parse(localStorage.getItem("OpenClassCreated")) || [];
-    setWorkshop(workshopsOfUser);
+      setOpenClass(openClassesOfUser);
 
-    const workshopIdList = workshopsOfUser.map(
-      (workshop) => `${workshop.openClassName} : ${workshop.id}`
+    const openClassIdList = openClassesOfUser.map(
+      (openClass) => `${openClass.openClassName} : ${openClass.id}`
     );
-    setWorkshopId(workshopIdList);
-  }, [setWorkshopId]);
+    setOpenClassId(openClassIdList);
+  }, [setOpenClassId]);
 
   return (
     <div>
@@ -231,14 +221,14 @@ function CreatorOpenClass() {
                 <OpenClassAdd
                   instructors={instructors}
                   studioId={studioId}
-                  setOpenClass={setWorkshop}
+                  setOpenClass={setOpenClass}
                 />
               </TabPanel>
               <TabPanel value="2">
                 <>
                   <OpenClassUpdate
                     instructors={instructors}
-                    workshopId={workshopId}
+                    openClassId={openClassId}
                     studioId={studioId}
                   />
                 </>
@@ -250,13 +240,13 @@ function CreatorOpenClass() {
         ""
       )}
 
-      {workshop.length > 0 && (
+      {openClass.length > 0 && (
         <>
           <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
             Your Open Classes:
           </h3>
           <CardSlider
-            dataList={workshop}
+            dataList={openClass}
             activateOpenClass={activateOpenClass}
             deactivateOpenClass={deactivateOpenClass}
             actionsAllowed

@@ -4,9 +4,8 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useAuth } from '../context/AuthContext';
 import { queryDocumentsCount } from '../utils/firebaseUtils';
 import { COLLECTIONS } from '../constants';
-import { green } from '@mui/material/colors';
-import { Card, CardContent, CardActionArea, Typography, Grid, Icon, Stack } from '@mui/material';
-import { loadCSS } from 'fg-loadcss';
+import { Card, CardContent, Typography, Grid, Icon } from '@mui/material';
+import CreatorDataTable from '../Components/CreatorDataTable.js';
 
 function CreatorDashboard() {
   const [counts, setCounts] = useState({
@@ -51,7 +50,7 @@ function CreatorDashboard() {
 
   return (
     <div style={{ minHeight: "75vh" }}>
-      <Typography variant="h4" style={{ color: isDarkModeOn ? "white" : "black", textTransform: 'capitalize' }}>
+      <Typography variant="h4" sx={{ color: isDarkModeOn ? "white" : "black", textTransform: 'capitalize' }}>
         Dashboard
       </Typography>
 
@@ -75,6 +74,8 @@ function CreatorDashboard() {
           </Grid>
         ))}
       </Grid>
+      <br/>
+      <CreatorDataTable/>
     </div>
   );
 }

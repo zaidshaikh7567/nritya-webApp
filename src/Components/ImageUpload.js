@@ -19,6 +19,9 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
   const [deletedFiles, setDeletedFiles] = useState([]); // Track deleted files
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   //console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
+  const [progressDelete, setProgressDelete] = useState(-1);
+  const [progressUpdate, setProgressUpdate] = useState(-1);
+
   console.log("Kyc enitity id ",entityId, disable)
   const filesizes = (bytes, decimals = 2) => {
     if (bytes === 0) return "0 Bytes";
@@ -102,18 +105,18 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
 
         // Delete images if there are any
         if (imagesToDelete.length > 0) {
-          await deleteImages(storageFolder, imagesToDelete, entityId);
+          await deleteImages(storageFolder, imagesToDelete, entityId, setProgressDelete);
         }
 
         // Upload new images if there are any
         if (newImages.length > 0) {
-          await uploadImages(storageFolder, newImages, entityId);
+          await uploadImages(storageFolder, newImages, entityId, setProgressUpdate);
         }
 
       }
 
       // alert("Images Uploaded/Deleted");
-      showSnackbar("Images Uploaded/Deleted", "success");
+      //showSnackbar("Images Uploaded/Deleted", "success");
     } catch (error) {
       console.error("Error uploading/deleting images:", error);
     }
@@ -269,7 +272,41 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                   </div>
                 )}
               </div>
-            </div>
+              { progressDelete >= 0 && (
+                    <div>
+                        <p style={{ color: isDarkModeOn ? '#fff' : '#000' }}>
+                            Deleting images... {progressDelete.toFixed(2)}%
+                        </p>
+                        <progress 
+                            value={progressDelete} 
+                            max="100" 
+                            style={{
+                                color: isDarkModeOn ? '#fff' : '#000'
+                            }}
+                        >
+                            {progressDelete.toFixed(2)}%
+                        </progress>
+                    </div>
+                )}
+
+                { progressUpdate >= 0 && (
+                    <div>
+                        <p style={{ color: isDarkModeOn ? '#fff' : '#000' }}>
+                            Uploading images... {progressUpdate.toFixed(2)}%
+                        </p>
+                        <progress 
+                            value={progressUpdate} 
+                            max="100" 
+                            style={{
+                                color: isDarkModeOn ? '#fff' : '#000'
+                            }}
+                        >
+                            {progressUpdate.toFixed(2)}%
+                        </progress>
+                    </div>
+                )}
+
+                            </div>
           </div>
         </div>
       </div>

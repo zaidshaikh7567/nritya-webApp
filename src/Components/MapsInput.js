@@ -2,7 +2,7 @@ import React, { useState, useEffect }from 'react';
 import GoogleMapReact from 'google-map-react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { LoadScript } from '@react-google-maps/api';
-import { FaMapMarker, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const libraries = ['places'];
 
@@ -108,13 +108,7 @@ function MapsInput({selectedLocation, setSelectedLocation}) {
     );
 }
 
-const Marker = ({ text }) => (
-    <div style={{ color: 'red', fontWeight: 'bold' }}>
-      {text}
-    </div>
-  );
-
-const PinMarker = ({ text }) => (
+const PinMarker = () => (
     <div style={{ position: 'relative', textAlign: 'center' }}>
       <FaMapMarkerAlt style={{ color: 'green', fontSize: '24px' }} />
     </div>

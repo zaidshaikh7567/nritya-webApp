@@ -4,23 +4,21 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Chip from "@mui/joy/Chip";
 import Typography from "@mui/joy/Typography";
-import {
-  Box,
-  Grid,
-  Modal,
-  Stack,
-  Typography as MUITypography,
-  Button,
-  IconButton,
-} from "@mui/material";
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Modal from '@mui/material/Modal';
+import Stack from '@mui/material/Stack';
+import MUITypography  from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Spinner from 'react-bootstrap/Spinner';
 import { useSelector } from "react-redux";
-import { CHIP_LEVELS_DESIGN, COLLECTIONS, COLORS, danceStylesColorChips, STORAGES } from "../constants";
+import { CHIP_LEVELS_DESIGN, COLLECTIONS, danceStylesColorChips, STORAGES } from "../constants";
 import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
-import { Spinner } from "react-bootstrap";
-import { bookEntity } from "../utils/common";
+import { bookEntity, getYoutubeVideoId } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
@@ -355,23 +353,33 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
     cursor: "pointer",
   };
 
+  let video_id = null;
+  let thumbnail_url = null;
+  video_id = getYoutubeVideoId(dataItem.youtubeViedoLink)
+  if(video_id){
+    thumbnail_url = `https://img.youtube.com/vi/${video_id}/maxresdefault.jpg`
+  }
 
   return (
-    <>
+    <a
+    href={`#/openClass/${dataItem.id}`}
+    style={{ textDecoration: 'none', color: isDarkModeOn ? 'white' : 'black' }}>
       <Card
         variant="solid"
         sx={{
           ...cardStyle,
-          "&:hover": cardHoverStyle,
           flex: "none",
+          '&:hover': {
+            transform: "scale(1.01)",    
+          }
         }}
-        onClick={handleOpenClassDetailsModalOpen}
+        
       >
         <AspectRatio ratio="1.78" style={{ position: "relative" }}>
           <img
-            src={dataItem.iconUrl}
+            src={thumbnail_url || dataItem.iconUrl}
             loading="lazy"
-            alt="Studio Image"
+            alt="Open Class Image"
             style={{ maxWidth: "100%", objectFit: "cover", overflow: "hidden" }}
           />
           <Stack
@@ -430,7 +438,7 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
         </AspectRatio>
         <CardContent style={{ padding: "10px", paddingTop: "5px" }}>
           <Box
-            fontWeight="md"
+            fontWeight="bold"
             color="neutral"
             textColor="text.primary"
             underline="none"
@@ -444,13 +452,6 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
               {dataItem && dataItem.openClassName ? dataItem.openClassName : ""}
             </span>
           </Box>
-          <Typography
-            style={{ color: isDarkModeOn ? "white" : "black" }}
-            level="body-xs"
-            noWrap
-          >
-            By {dataItem && studioIdName[dataItem.StudioId] ? studioIdName[dataItem.StudioId] : ""}
-          </Typography>
           <Typography
             style={{ marginTop: 10, color: isDarkModeOn ? "white" : "black" }}
             level="body-xs"
@@ -472,6 +473,6 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
         open={isOpenClassDetailsModalOpen}
         handleClose={handleOpenClassDetailsModalClose}
       />
-    </>
+    </a>
   );
 }

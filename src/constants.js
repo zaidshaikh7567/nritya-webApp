@@ -21,6 +21,13 @@ export const LEVELS = {
     INTERMEDIATE :"Intermediate", 
     ADVANCED :"Advanced"
 }
+export const ENTITY_FLAG = {
+    INTERNET_CONV_CHARGES_WORKSHOPS_COURSES_INR : 30,
+    WORKSHOPS_BOOKING_LIMIT : 10,
+    OPEN_CLASSES_BOOKING_LIMIT : 2,
+    COURSES_BOOKING_LIMIT : 10,
+}
+
 
 export const SERVER_URLS = {
     PROD : 'https://nrityaserver-2b241e0a97e5.herokuapp.com/',

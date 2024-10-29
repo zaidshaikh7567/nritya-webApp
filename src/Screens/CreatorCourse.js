@@ -1,17 +1,7 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { db } from "../config";
-import {
-  doc,
-  getDoc,
-  collection,
-  where,
-  getDocs,
-  query,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import {doc,getDoc,collection,where,getDocs,query,updateDoc} from "firebase/firestore";
 import { COLLECTIONS } from "../constants";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
@@ -27,8 +17,8 @@ import CourseUpdate from "../Components/CourseUpdate";
 
 function CreatorCourse() {
   const [studioId, setStudioId] = useState([]);
-  const [workshop, setWorkshop] = useState([]);
-  const [workshopId, setWorkshopId] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [coursesId, setCoursesId] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [instructors, setInstructors] = useState([]);
   const [isCreator, setIsCreator] = useState(false);
@@ -45,9 +35,9 @@ function CreatorCourse() {
       const docRef = doc(db, COLLECTIONS.COURSES, courseId);
       await updateDoc(docRef, { active: true });
 
-      setWorkshop((prev) =>
-        prev.map((workshop) =>
-          workshop.id === courseId ? { ...workshop, active: true } : workshop
+      setCourses((prev) =>
+        prev.map((courses) =>
+          courses.id === courseId ? { ...courses, active: true } : courses
         )
       );
     } catch (error) {
@@ -60,9 +50,9 @@ function CreatorCourse() {
       const docRef = doc(db, COLLECTIONS.COURSES, courseId);
       await updateDoc(docRef, { active: false });
 
-      setWorkshop((prev) =>
-        prev.map((workshop) =>
-          workshop.id === courseId ? { ...workshop, active: false } : workshop
+      setCourses((prev) =>
+        prev.map((courses) =>
+          courses.id === courseId ? { ...courses, active: false } : courses
         )
       );
     } catch (error) {
@@ -152,7 +142,7 @@ function CreatorCourse() {
   }, []);
 
   useEffect(() => {
-    const getWorkshopCreated = async () => {
+    const getCoursesCreated = async () => {
       const q = query(
         collection(db, COLLECTIONS.COURSES),
         where(
@@ -162,42 +152,42 @@ function CreatorCourse() {
         )
       );
       const querySnapshot = await getDocs(q);
-      const workshopsOfUserPromise = querySnapshot.docs
-        .filter((doc) => doc.data().name)
+      const coursesOfUserPromise = querySnapshot.docs
+        .filter((doc) => doc.data().courseName)
         .map((doc) => {
           const data = doc.data();
           return {
             id: doc.id,
             ...data,
           };
-        }).map(async (workshop) => {
-          const docRef = doc(db, COLLECTIONS.STUDIO, workshop?.StudioId);
+        }).map(async (courses) => {
+          const docRef = doc(db, COLLECTIONS.STUDIO, courses?.StudioId);
           const docSnap = await getDoc(docRef);
-          return { ...workshop, studioDetails: docSnap.data() };
+          return { ...courses, studioDetails: docSnap.data() };
         });
-      const workshopsOfUser = await Promise.all(workshopsOfUserPromise);
-      localStorage.setItem("CourseCreated", JSON.stringify(workshopsOfUser));
-      setWorkshop(workshopsOfUser);
-      setWorkshopId(
-        workshopsOfUser.map(
-          (workshop) => String(workshop.name) + " :" + String(workshop.id)
+      const coursesOfUser = await Promise.all(coursesOfUserPromise);
+      localStorage.setItem("CourseCreated", JSON.stringify(coursesOfUser));
+      setCourses(coursesOfUser);
+      setCoursesId(
+        coursesOfUser.map(
+          (courses) => String(courses.courseName) + " :" + String(courses.id)
         )
       );
     };
 
-    getWorkshopCreated();
-  }, [setWorkshop]);
+    getCoursesCreated();
+  }, [setCourses]);
 
   useEffect(() => {
-    const workshopsOfUser =
+    const coursesOfUser =
       JSON.parse(localStorage.getItem("CourseCreated")) || [];
-    setWorkshop(workshopsOfUser);
+      setCourses(coursesOfUser);
 
-    const workshopIdList = workshopsOfUser.map(
-      (workshop) => `${workshop.name} : ${workshop.id}`
+    const coursesIdList = coursesOfUser.map(
+      (courses) => `${courses.courseName} : ${courses.id}`
     );
-    setWorkshopId(workshopIdList);
-  }, [setWorkshopId]);
+    setCoursesId(coursesIdList);
+  }, [setCoursesId]);
 
   return (
     <div>
@@ -228,14 +218,14 @@ function CreatorCourse() {
                 <CourseAdd
                   instructors={instructors}
                   studioId={studioId}
-                  setCourses={setWorkshop}
+                  setCourses={setCourses}
                 />
               </TabPanel>
               <TabPanel value="2">
                 <>
                   <CourseUpdate
                     instructors={instructors}
-                    workshopId={workshopId}
+                    courseId={coursesId}
                     studioId={studioId}
                   />
                 </>
@@ -247,14 +237,14 @@ function CreatorCourse() {
         ""
       )}
 
-      {workshop.length > 0 && (
+      {courses.length > 0 && (
         <>
           <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>
             Your Courses
           </h3>
 
           <CardSlider
-            dataList={workshop}
+            dataList={courses}
             activateCourse={activateCourse}
             deactivateCourse={deactivateCourse}
             actionsAllowed

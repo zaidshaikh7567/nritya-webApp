@@ -1,23 +1,15 @@
 
-import React, {useEffect,useState} from 'react';
+import React from 'react';
 import AspectRatio from '@mui/joy/AspectRatio';
-import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
-import CardOverflow from '@mui/joy/CardOverflow';
 import Chip from '@mui/joy/Chip';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
-import Rating from '@mui/material/Rating';
 import { Stack } from '@mui/material';
-import Ratings from './Ratings';
-import StarRating from './StarRating';
-import { Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux'; // Import useSelector
+import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { readDocumentWithImageUrl } from '../utils/firebaseUtils';
-import { danceStylesColorChips, STORAGES } from '../constants';
+import { CHIP_LEVELS_DESIGN, COLORS, danceStylesColorChips } from '../constants';
 import IconButton from '@mui/joy/IconButton';
 import Favorite from '@mui/icons-material/Favorite';
 
@@ -80,16 +72,40 @@ export default function NStudioCard({img_src,data}) {
 
         </Stack>
 
+        <Stack
+            direction="row"
+            spacing={2}
+            style={{ position: "absolute", top: 0, left: 0, padding: "1px", paddingTop: "1px" }}
+          >
+            {data && data.freeTrialAvailable &&(
+            
+                <Chip
+                  key={1}
+                 
+                  sx={{
+                    marginLeft: "10px",
+                    marginBottom: "10px",
+                    fontSize: "0.8rem",
+                    bgcolor: COLORS.LIME.backgroundColor,  // Set the background color
+                    color: COLORS.LIME.color,  // Set the text color
+                  }}
+                >
+                  {'Free Trial Available'}
+                </Chip>
+              
+            )}
+          </Stack>
+
         </AspectRatio>
       <CardContent style={{padding:'10px'}}>
         <Link
           href={`#/studio/${studioId}`}
-          fontWeight="md"
+          fontWeight="bold"
           color="neutral"
           textColor="text.primary"
           underline='none'
           overlay
-          style={{color: isDarkModeOn?'white':'black',extDecoder:"one"}}
+          style={{color: isDarkModeOn?'white':'black'}}
         >
           {data && data.studioName?data.studioName:"    "}
         </Link>
@@ -111,7 +127,13 @@ export default function NStudioCard({img_src,data}) {
         >
           <Favorite />
         </IconButton>
-        <Typography style={{color: isDarkModeOn?'white':'black'}}>⭐ {data && data.avgRating? data.avgRating.toFixed(1):" Not rated yet"}</Typography>
+        <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
+            <span>⭐ {data && data.avgRating ? data.avgRating.toFixed(1) : "Not rated yet"}</span>
+            {data && data.minFee && (
+              <span style={{position: "absolute", right: 2}}>  Starts @₹{data.minFee}</span>
+            )}
+          </Typography>
+
       </CardContent>
     </Card>
   );

@@ -1,35 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Container from 'react-bootstrap/Container';
-import { Nav, Navbar, Offcanvas, Dropdown, Image } from 'react-bootstrap';
+import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Image from 'react-bootstrap/Image';
+import Nav from 'react-bootstrap/Nav';
 import { useMediaQuery } from 'react-responsive';
-import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import logo from './../logo.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, Link } from 'react-router-dom';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../redux/selectors/refreshLocationSelector';
 import indianCities from '../cities.json';
 import { toggleDarkMode } from '../redux/actions/darkModeAction';
 import { useAuth } from '../context/AuthContext';
-import SideMenu from './SideMenu';
-import { TextField, Autocomplete, Chip } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useTheme } from '@mui/material/styles';
 import { getBrowserLocation } from '../utils/location';
-import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
+import Switch from '@mui/material/Switch';
+import Skeleton from '@mui/material/Skeleton';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import './Header.css';
-import LoginModalDailog from './LoginModalDailog';
-import { Apartment, PartyModeOutlined, Place, PlaceTwoTone } from '@mui/icons-material';
+import { Apartment, PlaceTwoTone } from '@mui/icons-material';
 import logoBig from '../assets/images/logo_large.png';
 import logoMobile from '../assets/images/logo_small.jpg';
 
+const SideMenu = lazy(() => import('./SideMenu'));
+const LoginModalDailog = lazy(() => import('./LoginModalDailog'));
 const FILTER_LOCATION_KEY = 'filterLocation';
-const FILTER_DANCE_FORMS_KEY = 'filterDanceForms';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -86,9 +88,7 @@ function Header() {
   const { currentUser } = useAuth();
   const dispatch = useDispatch();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const adminLogin = useSelector((state) => state.adminLogin);
   const reduxLocation = useSelector(selectRefreshLocation);
-  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
   const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
@@ -177,16 +177,10 @@ function Header() {
 
   const locationOptions = indianCities.cities;
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevents default form behavior of submitting
-    handleButtonClick();
-  }
-
-  const { entity } = useParams();
-
-  const getLocation = (event) => {
-    getBrowserLocation();
-    setSelectedLocation(localStorage.getItem('filterLocation'))
+  const getLocation = async (event) => {
+    const city = await getBrowserLocation();
+    setSelectedLocation(city);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -207,7 +201,7 @@ function Header() {
 
   const handleOpen = () => {
     setOpen(true)
-    console.log("handle Open from header",open)
+    console.log("handle Open from header", open)
   }
 
   //function handle to close the form
@@ -218,162 +212,177 @@ function Header() {
   return (
     <Navbar style={styleObj} expand="lg" collapseOnSelect>
       <Container fluid>
-      {isMobile ? (
-        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "4rem", height: "4rem" }}
-            src={logoMobile}
-            alt="Logo"
-            roundedCircle={true}
-          />
-        </Navbar.Brand>
-      ) : (
-        <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
-          <Image style={{ width: "100%", height: "4rem",maxWidth: "200px", 
-          margin: 0,  
-          padding: 0,  
-          objectFit: "contain"  }}
-            src={logoBig}
-            alt="Logo"
-          />
-        </Navbar.Brand>
-      )}
-        
+        <div className="d-flex location-dropdown-container align-items-center">
+
+          {showLocationDropdown && (
+            <Dropdown.Menu
+              show={showLocationDropdown}
+              className={`dropdown-menu ${isDarkModeOn ? 'dark' : ''}`}
+
+              style={{
+                marginTop: '0.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                // marginLeft: '144px',
+                backgroundColor: isDarkModeOn ? '#181818' : 'white',
+              }}
+            >
+
+              <ThemeProvider theme={autocompleteTheme}>
+                <Autocomplete
+                  disablePortal
+                  id="locationSearch"
+                  options={locationOptions}
+                  value={selectedLocation}
+                  onChange={handleLocationChange}
+                  sx={{ width: "auto", padding: '0' }}
+                  renderInput={(params) => (
+                    <>
+                      <Chip label="🧭 Current City" sx={{
+                        cursor: 'pointer',
+                        width: "100%",
+                        marginTop: '0px',
+                        borderRadius: '0px',
+                        marginBottom: '10px'
+                      }} onClick={getLocation} />
+                      <TextField
+                        {...params}
+                        label="Location"
+                        placeholder="🔍Search..."
+                      />
+                    </>
+                  )}
+                  classes={{ option: 'city-btn-hover-purple-bg' }}
+                />
+              </ThemeProvider>
+
+            </Dropdown.Menu>
+          )}
+
+          {isMobile ? (
+            <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+              <Image style={{ width: "4rem", height: "4rem" }}
+                src={logoMobile}
+                alt="Logo"
+                roundedCircle={true}
+              />
+            </Navbar.Brand>
+          ) : (
+            <Navbar.Brand href="/nritya-webApp" style={{ textTransform: 'none' }}>
+              <Image style={{
+                width: "100%", height: "4rem", maxWidth: "200px",
+                margin: 0,
+                padding: 0,
+                objectFit: "contain"
+              }}
+                src={logoBig}
+                alt="Logo"
+              />
+            </Navbar.Brand>
+          )}
+          <Button
+            variant="outlined"
+            className="btn-hover-purple-bg me-2 rounded-3"
+            onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+            style={{
+              cursor: 'pointer', textTransform: 'none', color: 'white', borderColor: 'white',
+              height: '3rem', borderWidth: '2px', width: '12rem'
+            }}
+            startIcon={<PlaceTwoTone />}>
+            {selectedLocation}
+          </Button>
+        </div>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <MenuOutlinedIcon style={{ color: "white" }} /> </Navbar.Toggle>
 
         <Navbar.Collapse id="navbarScroll" className="justify-content-center">
-          <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
-            <FormControlLabel
-              control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
-              onClick={handleToggleDarkMode}
-            />;
-            {currentUser ? (
-              <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', justifyContent: 'left' }}>
-                  Search
-                </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}>List Studios</Button>
-              </>
-            ) : (
-              <>
-                <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px',height: '3rem',  width: '12rem', textAlign: 'left', justifyContent: 'left' }}>
-                  Search
-                </Button>
-                <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px',height: '3rem',  width: '12rem' }}> List Studios</Button>
-              </>
-            )}
-          </Nav>
+
 
           <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
             <div className="position-relative location-dropdown-container my-2">
-              <Button
-                variant="outlined"
-                className="btn-hover-purple-bg me-2 rounded-3"
-                onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                style={{cursor: 'pointer',textTransform: 'none', color: 'white', borderColor: 'white',
-                  height: '3rem', borderWidth: '2px', width: '12rem'
-                }}
-                startIcon={<PlaceTwoTone />}
-              >
-                {selectedLocation}
-              </Button>
 
-              {showLocationDropdown && (
-                <Dropdown.Menu
-                  show={showLocationDropdown}
-                  style={{
-                    marginTop: '0.5rem',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                    backgroundColor: isDarkModeOn ? '#181818' : 'white',
-                  }}
-                >
-
-                  <ThemeProvider theme={autocompleteTheme}>
-                    <Autocomplete
-                      disablePortal
-                      id="locationSearch"
-                      options={locationOptions}
-                      value={selectedLocation}
-                      onChange={handleLocationChange}
-                      sx={{ width: "auto", padding: '0' }}
-                      renderInput={(params) => (
-                        <>
-                          <Chip label="🧭 Current City" sx={{
-                            cursor: 'pointer',
-                            width: "100%",
-                            marginTop: '0px',
-                            borderRadius: '0px',
-                            marginBottom: '10px'
-                          }} onClick={getLocation} />
-                          <TextField
-                            {...params}
-                            label="Location"
-                            placeholder="🔍Search..."
-                          />
-                        </>
-                      )}
-                      classes={{ option: 'city-btn-hover-purple-bg' }}
-                    />
-                  </ThemeProvider>
-
-                </Dropdown.Menu>
-              )}
+              <Nav className="ms-auto justify-content-lg-end align-items-center flex-grow-1">
+                <FormControlLabel
+                  control={<MaterialUISwitch sx={{ m: 1 }} checked={isDarkModeOn ? true : false} />}
+                  onClick={handleToggleDarkMode}
+                />
+                {currentUser ? (
+                  <>
+                    <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px', height: '3rem', width: '12rem', justifyContent: 'left' }}>
+                      Search
+                    </Button>
+                    <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px', height: '3rem', width: '12rem' }}>List Studios</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px', height: '3rem', width: '12rem', textAlign: 'left', justifyContent: 'left' }}>
+                      Search
+                    </Button>
+                    <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px', height: '3rem', width: '12rem' }}> List Studios</Button>
+                  </>
+                )}
+              </Nav>
             </div>
             {currentUser ? (
-            <>
-            {
-              photoURL ? (
-                <Button
-                  onClick={openProfileOffcanvas}
-                  className='my-3'
+              <>
+                {
+                  photoURL ? (
+                    <Button
+                      onClick={openProfileOffcanvas}
+                      className='my-3'
+                      style={{
+                        borderRadius: '50%',
+                        width: '3rem',
+                        height: '3rem',
+                        marginRight: '0.5rem',
+                        padding: 0, // Ensure no padding around the image
+                        minWidth: '3rem', // Ensure the button size is consistent
+                        minHeight: '3rem', // Ensure the button size is consistent
+                        borderWidth: '0.2px',
+                        backgroundImage: `url(${photoURL})`,
+                        backgroundSize: 'cover', // Cover the entire button area
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        borderColor: 'yellow',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: 'none', // Remove default border if needed
+                        boxShadow: 'none', // Remove default shadow if needed
+                      }}
+                    />
+
+                  ) :
+                    (
+                      <Button onClick={openProfileOffcanvas} className="rounded-pill my-3"
+                        variant="outlined"
+                        style={{
+                          fontSize: '0.9rem',
+                          color: 'white', borderRadius: '50%', borderColor: "white",
+                          width: '3rem', height: '3rem', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
+                          borderWidth: '2px',
+                        }}>
+                        {getUserNameInitials()}
+                      </Button>
+
+                    )
+                }
+                <Suspense fallback={<Skeleton variant="rectangular" animation="wave"
                   style={{
-                    borderRadius: '50%',
-                    width: '3rem',
-                    height: '3rem',
-                    marginRight: '0.5rem',
-                    padding: 0, // Ensure no padding around the image
-                    minWidth: '3rem', // Ensure the button size is consistent
-                    minHeight: '3rem', // Ensure the button size is consistent
-                    borderWidth: '0.2px',
-                    backgroundImage: `url(${photoURL})`,
-                    backgroundSize: 'cover', // Cover the entire button area
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    borderColor:'yellow',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: 'none', // Remove default border if needed
-                    boxShadow: 'none', // Remove default shadow if needed
+                    width: '20rem', height: '100vh', left: 0, top: 0, zIndex: 1000, backgroundColor: isDarkModeOn ? '#333' : '#f0f0f0',
                   }}
-                />
-
-              ) :
-              (
-                <Button onClick={openProfileOffcanvas} className="rounded-pill my-3"
-                variant="outlined"
-                style={{
-                  fontSize: '0.9rem',
-                  color: 'white', borderRadius: '50%', borderColor: "white",
-                  width: '3rem', height: '3rem', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
-                  borderWidth: '2px',
-                }}>
-                {getUserNameInitials()}
-              </Button>
-
-              )
-            }
-
-              <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+                />}>
+                  <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
+                </Suspense>
               </>
-            
-          ) : (
-          
-              <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem',width:'12rem', borderWidth: '2px' }}>Sign In</Button>
-          )}
-           
-            <LoginModalDailog open={open} handleClose={handleClose} />
+
+            ) : (
+              <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem', width: '12rem', borderWidth: '2px' }}>Sign In</Button>
+            )}
+            <Suspense fallback={<div>Loading...</div>}>
+              <LoginModalDailog open={open} handleClose={handleClose} />
+            </Suspense>
           </Nav>
         </Navbar.Collapse>
 

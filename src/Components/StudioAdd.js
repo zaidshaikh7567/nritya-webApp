@@ -1,6 +1,6 @@
 import React from 'react'
 import { Row, Col , Form } from 'react-bootstrap';
-import {Button as MuiButton} from '@mui/material';
+import {LinearProgress, Button as MuiButton} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { db } from '../config';
 import { doc, getDoc,addDoc,updateDoc,collection,where,getDocs,query, deleteDoc } from "firebase/firestore";
@@ -19,6 +19,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {Stepper,Step,StepLabel} from '@mui/material';
 import SuccessMessage from './SucessPage';
+import { postData } from '../utils/common';
+import { isEqual } from 'lodash';
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -32,31 +34,13 @@ const decodeUnicode = (unicodeString) => {
   return textDecoder.decode(new Uint8Array(utf8Encoded));
 };
 
-const colorCombinations = [
-  { background: 'success', text: 'white' },
-  { background: 'warning', text: 'black' },
-  { background: 'danger', text: 'white' },
-  { background: 'info', text: 'black' },
-];
-
-const optionsDays = [
-  { value: 'M', label: 'Monday' },
-  { value: 'T', label: 'Tuesday' },
-  { value: 'W', label: 'Wednessday' },
-  { value: 'Th', label: 'Thrusday' },
-  { value: 'F', label: 'Friday' },
-  { value: 'S', label: 'Saturday' },
-  { value: 'Sun', label: 'Sunday' },
-]
-
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
-      [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: ''}],
+      [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: '' ,freeTrial:false ,classCategory: []}],
     );
-    const [showToast, setShowToast] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
     const [selectedInstructors, setSelectedInstructors] = useState([]);
@@ -64,7 +48,7 @@ function StudioAdd({instructors}) {
     const [selectedAmenities, setSelectedAmenities] = useState([]);
     const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
     const [isReady, setIsReady] = useState(false);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
@@ -80,33 +64,12 @@ function StudioAdd({instructors}) {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleRestart = () => {
-      setActiveStep(0);
-      setNewStudioId("");
-    };
-
-
-
-    ////console.log("danceStyles ",danceStylesOptions)
 
     const darkTheme = createTheme({
       palette: {
         mode: isDarkModeOn?'dark':'light',
       },
     });
-    
-
-    const handleToggleInstructor = (instructor) => {
-      setSelectedInstructors((prevSelected) => {
-        // Check if the instructor is already selected
-        const isAlreadySelected = prevSelected.some((selected) => selected.id === instructor.id);
-  
-        // If selected, remove the instructor; if not selected, add the instructor
-        return isAlreadySelected
-          ? prevSelected.filter((selected) => selected.id !== instructor.id)
-          : [...prevSelected, instructor];
-      });
-    };
 
     const handleDanceStylesChange = (event, value) => {
       setSelectedDanceStyles(value);
@@ -154,27 +117,22 @@ function StudioAdd({instructors}) {
         console.error(error);
       }
     };
-  
-      //console.log("Studio Add",newStudioId)
+
       const handleAddStudio = async (event) => {
         event.preventDefault();
         const title = event.target.studioName.value;
         if (!title) {
           return;
         }
-        //console.log(JSON.parse(localStorage.getItem('userInfo')))
-        const creatorRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
         let isPremium=true
-        //console.log("selectedLocation to be added",selectedLocation)
-            
         const newData = tableData.reduce((accumulator, current, index) => {
           accumulator[index] = current;
           return accumulator;
         }, {});
 
-        //body: event.target.body.value,
         try {
-            const studioRef = await addDoc(collection(db, COLLECTIONS.STUDIO), {
+          const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;
+          const studioData = {
               studioName: event.target.studioName.value,
               aboutStudio: event.target.aboutStudio.value,
               founderName: event.target.founderName.value,
@@ -196,7 +154,6 @@ function StudioAdd({instructors}) {
               state: event.target.state.value,
               country: "India",
               geolocation : selectedLocation,
-              aadharNumber: event.target.aadharNumber.value ,
               gstNumber: event.target.gstNumber.value,
               enrolledId:[],
               reviews:[],
@@ -205,38 +162,30 @@ function StudioAdd({instructors}) {
               isPremium: isPremium,
               addAmenities: selectedAmenities.join(","),
               enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
-              creatorEmail: JSON.parse(localStorage.getItem('userInfo')).email,
+              creatorEmail: currentUserEmail,
               instagram: event.target.instagram.value,
               facebook: event.target.facebook.value,
               youtube: event.target.youtube.value,
               twitter: event.target.twitter.value,
               visibilty:1,
-
-            });
-            //console.log("Studio added successfully");
-            setNewStudioId(studioRef.id)
-            const userRef = doc(db, "User", JSON.parse(localStorage.getItem('userInfo')).UserId);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-              //console.log("User there",userSnap.data());
-              if(userSnap.data() != null){
-                await updateDoc(userRef,{
-                  
-                  StudioCreated: [...userSnap.data().StudioCreated,studioRef.id]
-                });
-                //console.log("Studio added back successfully");
-              }else{
-                //console.log("userSnap.data() null")
-              }
-            } else {
-              //console.log("User not found but studio created... error");
+          };
+            setIsSubmitting(true);
+            const notifyEmails = currentUserEmail
+            const metaData = {
+              entity_name: studioData.studioName,
+              city: studioData.city ,
             }
-
-            resetDraft();
-            handleNext();
-
+            const response = await postData(studioData,COLLECTIONS.STUDIO, notifyEmails, metaData) ;
+            if (response.ok) {
+              const result = await response.json();
+              setNewStudioId(result.id)
+              resetDraft();
+              handleNext();
+            }
         } catch (error) {
           console.error("Error adding studio: ", error);
+        } finally {
+          setIsSubmitting(false);
         }
       };
 
@@ -324,7 +273,8 @@ function StudioAdd({instructors}) {
                 time: "",
                 instructors: [],
                 fee: "",
-                level: "",
+                level: "",freeTrial:false, 
+                classCategory: []
               },
             },
             buildingName: form.buildingName.value,
@@ -335,7 +285,7 @@ function StudioAdd({instructors}) {
             state: form.state.value,
             country: "India",
             geolocation: selectedLocation,
-            aadharNumber: form.aadharNumber.value,
+            
             gstNumber: form.gstNumber.value,
             enrolledId: [],
             reviews: [],
@@ -364,6 +314,7 @@ function StudioAdd({instructors}) {
 
   useEffect(() => {
     let intervalId = null;
+    let previousState = null; 
 
     async function main() {
       const form = document.getElementById("addStudioForm");
@@ -396,13 +347,13 @@ function StudioAdd({instructors}) {
           );
           
           intervalId = setInterval(async () => {
+            
             try {
               const newData = tableData.reduce((accumulator, current, index) => {
                 accumulator[index] = current;
                 return accumulator;
               }, {});
-
-              await updateDoc(studioRef, {
+              const currentState = { 
                 studioName: form.studioName.value,
                 aboutStudio: form.aboutStudio.value,
                 founderName: form.founderName.value,
@@ -424,7 +375,7 @@ function StudioAdd({instructors}) {
                 state: form.state.value,
                 country: "India",
                 geolocation: selectedLocation,
-                aadharNumber: form.aadharNumber.value,
+                
                 gstNumber: form.gstNumber.value,
                 enrolledId: [],
                 reviews: [],
@@ -442,8 +393,21 @@ function StudioAdd({instructors}) {
                 facebook: form.facebook.value,
                 youtube: form.youtube.value,
                 twitter: form.twitter.value,
-                visibilty: 1,
-              });
+                visibilty: 1,}
+              
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(studioRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                console.log("Nothing for Autosave to save")
+            }
+
             } catch (error) {
               console.error(error);
             }
@@ -606,28 +570,23 @@ function StudioAdd({instructors}) {
                 <hr></hr>   
                 
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
-                <span>Time Table Of dance classes</span>
-                <StudioTable
-                  tableData={tableData}
-                  setTableData={setTableData}
-                  instructorNamesWithIds={instructorNamesWithIds}
-                />
-
+                  <span>Time Table Of dance classes</span>
+                    <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', scrollbarColor: isDarkModeOn ? '#888 #333' : '#ccc #fff', }}>
+                      <StudioTable
+                        tableData={tableData}
+                        setTableData={setTableData}
+                        instructorNamesWithIds={instructorNamesWithIds}
+                      />
+                    </div>
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
-                <Col md={4}>
-                  <Form.Label>Owner's Aadhar Number</Form.Label>
-                  <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
-                  
-                
-                </Col>
                 <Col md={4}>
                   <Form.Label>GST Number</Form.Label>
                   <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="text" rows={1} placeholder="GST Number" name="gstNumber" />
                   
                   
                 </Col>
-                <Col md={4}>
+                <Col md={8}>
                 <Form.Label>Add Amenities</Form.Label>
                   
                   <ThemeProvider theme={darkTheme}>
@@ -745,7 +704,7 @@ function StudioAdd({instructors}) {
                   </Col>
                   <Col xs={6} className="d-flex justify-content-end">
                     
-                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black", color:'white'}} type="submit">
+                    <MuiButton variant="contained" disabled={isSubmitting} style={{backgroundColor:isDarkModeOn?"#892cdc":"black", color:'white'}} type="submit">
                       Add Studio & Next
                     </MuiButton>
                   </Col>
@@ -756,7 +715,7 @@ function StudioAdd({instructors}) {
                 
                 </Form.Group>
             </Form>
-            
+            {isSubmitting && <LinearProgress />}
             {
               newStudioId === ""?(""):(<p>New Studio Created with id {newStudioId}. Now u can upload images regarding them</p>)
             }

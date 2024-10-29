@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
 import {
@@ -31,13 +31,17 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import { postData } from "../utils/common";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { isEqual } from 'lodash';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function CourseAdd({ instructors, studioId, setCourses }) {
   const showSnackbar = useSnackbar();
-  const [newWorkshopId, setNewWorkshopId] = useState("");
+  const [newCourseId, setNewCourseId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
@@ -54,10 +58,11 @@ function CourseAdd({ instructors, studioId, setCourses }) {
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedCity, setSelectedCity] = useState(currentCity);
-  const [workshopTime, setWorkshopTime] = useState("");
-  const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
+  const [courseTime, setCourseTime] = useState("");
+  const [courseDate, setCourseDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [description, setDescription] = useState('');
 
   const darkTheme = createTheme({
     palette: {
@@ -94,16 +99,15 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     if (
       !form.name.value ||
       !form.duration.value ||
-      !form.workshopFees.value ||
-      !form.workshopVenue.value ||
-      !form.description.value ||
+      !form.courseFees.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
       !selectedDurationUnit ||
       !selectedLevel ||
-      !workshopTime ||
-      !workshopDate ||
+      !courseTime ||
+      !courseDate ||
       !selectedCity
     )
       validationFailed = false;
@@ -138,7 +142,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     }
   };
 
-  const handleAddStudio = async (event) => {
+  const handleAddCourse = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -148,8 +152,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     }
 
     try {
+      const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
       const dbPayload = {
-        name: event.target.name.value,
+        courseName: event.target.name.value,
         danceStyles: selectedDanceStyles,
         instructors: selectedInstructors
           ? selectedInstructors?.map?.(
@@ -158,52 +163,44 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           : null,
         author: JSON.parse(localStorage.getItem("userInfo")).displayName,
         UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
-        creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+        creatorEmail: currentUserEmail,
         StudioId: selectedStudio
           ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
           : null,
         duration: event.target.duration.value,
         durationUnit: selectedDurationUnit,
         level: selectedLevel,
-        time: workshopTime,
-        date: workshopDate.format("YYYY-MM-DD"),
-        price: event.target.workshopFees.value,
-        venue: event.target.workshopVenue.value,
-        description: event.target.description.value,
+        time: courseTime,
+        date: courseDate.format("YYYY-MM-DD"),
+        price: event.target.courseFees.value,
+        description: description,
         city: selectedCity,
         active: true,
+        youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
 
-      const workshopRef = await addDoc(
-        collection(db, COLLECTIONS.COURSES),
-        dbPayload
-      );
-
-      setNewWorkshopId(workshopRef.id);
-      setCourses((prev) => [...prev, { id: workshopRef.id, ...dbPayload }]);
-
-      const userRef = doc(
-        db,
-        "User",
-        JSON.parse(localStorage.getItem("userInfo")).UserId
-      );
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            CourseCreated: [...userSnap.data().CourseCreated, workshopRef.id],
-          });
-        }
+      const notifyEmails = currentUserEmail; 
+      const metaData = {
+        entity_name: dbPayload.courseName,
+        time: dbPayload.time,
+        date: dbPayload.date,
+        StudioId : dbPayload.StudioId
+      }
+      const response = await postData(dbPayload, COLLECTIONS.COURSES, notifyEmails,metaData) ;
+      if (response.ok) {
+        const result = await response.json();
+        setNewCourseId(result.id);
+        setCourses((prev) => [...prev, { id: result.id, ...dbPayload }]);
+        clearForm(form);
+        resetDraft();
+        showSnackbar("Course successfully added.", "success");
+        setStep((prev) => prev + 1);
       }
 
-      clearForm(form);
-      resetDraft();
-      showSnackbar("Course successfully added.", "success");
-      setStep((prev) => prev + 1);
     } catch (error) {
-      console.error("Error adding workshop: ", error);
+      console.error("Error adding course: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -217,19 +214,20 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     setSelectedStudio(null);
     setSelectedDurationUnit("");
     setSelectedLevel("");
-    setWorkshopTime("");
-    setWorkshopDate(dayjs(Date.now()));
+    setCourseTime("");
+    setCourseDate(dayjs(Date.now()));
     setSelectedCity('');
+    setDescription('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
-    const [currentStartTime, currentEndTime] = workshopTime.split(" - ");
+    const [currentStartTime, currentEndTime] = courseTime.split(" - ");
     let newTime = `${currentStartTime} - ${currentEndTime}`;
 
     if (startTime !== null) newTime = `${startTime} - ${currentEndTime}`;
     if (endTime !== null) newTime = `${currentStartTime} - ${endTime}`;
 
-    setWorkshopTime(newTime);
+    setCourseTime(newTime);
   };
 
   useEffect(() => {
@@ -258,10 +256,9 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           let foundCourse = courses[0];
 
           form.name.value = foundCourse.name;
-          form.workshopFees.value = foundCourse.price;
-          form.workshopVenue.value = foundCourse.venue;
-          form.description.value = foundCourse.description;
+          form.courseFees.value = foundCourse.price;
           form.duration.value = foundCourse.duration;
+          setDescription(foundCourse?.description || "");
 
           setSelectedDanceStyles(
             foundCourse?.danceStyles?.length ? foundCourse.danceStyles : []
@@ -285,16 +282,15 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           setSelectedDurationUnit(foundCourse.durationUnit);
 
           setSelectedLevel(foundCourse?.level || "");
-          setWorkshopTime(foundCourse?.time || "");
-          setWorkshopDate(dayjs(foundCourse?.date || Date.now()));
+          setCourseTime(foundCourse?.time || "");
+          setCourseDate(dayjs(foundCourse?.date || Date.now()));
           setSelectedCity(foundCourse?.city || '');
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_COURSES), {
             name: form.name?.value || "",
             duration: form.duration?.value || "",
-            price: form.workshopFees?.value || "",
-            venue: form.workshopVenue?.value || "",
-            description: form.description?.value || "",
+            price: form.courseFees?.value || "",
+            description: description ,
 
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
@@ -311,8 +307,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
               : null,
             durationUnit: selectedDurationUnit,
             level: selectedLevel,
-            time: workshopTime,
-            date: workshopDate.format("YYYY-MM-DD"),
+            time: courseTime,
+            date: courseDate.format("YYYY-MM-DD"),
             city: selectedCity,
           });
         }
@@ -328,7 +324,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
   useEffect(() => {
     let intervalId = null;
-
+    let previousState = null; // Keep track of the previous form state.
     async function main() {
       const form = document.getElementById("addStudioForm");
 
@@ -361,11 +357,10 @@ function CourseAdd({ instructors, studioId, setCourses }) {
 
           intervalId = setInterval(async () => {
             try {
-              await updateDoc(openClassRef, {
+              const currentState = {
                 name: form.name?.value || "",
-                price: form.workshopFees?.value || "",
-                venue: form.workshopVenue?.value || "",
-                description: form.description?.value || "",
+                price: form.courseFees?.value || "",
+                description: description,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -379,10 +374,23 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 duration: form.duration?.value || "",
                 durationUnit: selectedDurationUnit,
                 level: selectedLevel,
-                time: workshopTime,
-                date: workshopDate.format("YYYY-MM-DD"),
+                time: courseTime,
+                date: courseDate.format("YYYY-MM-DD"),
                 city: selectedCity,
-              });
+              };
+    
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(openClassRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                  console.log("Nothing for Autosave to save")
+              }
             } catch (error) {
               console.error(error);
             }
@@ -403,17 +411,32 @@ function CourseAdd({ instructors, studioId, setCourses }) {
     selectedStudio,
     selectedDurationUnit,
     selectedLevel,
-    workshopTime,
-    workshopDate,
+    courseTime,
+    courseDate,
     selectedCity,
+    description
   ]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";      
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div>
       {step === 1 && (
         <Form
           id="addStudioForm"
-          onSubmit={handleAddStudio}
+          onSubmit={handleAddCourse}
           style={{
             backgroundColor: isDarkModeOn ? "#202020" : "",
             color: isDarkModeOn ? "white" : "black",
@@ -549,7 +572,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
               <Row>
                 <Col md={6}>
                   <TimeRange
-                    defaultTime={workshopTime || "00:00-00:00"}
+                    defaultTime={courseTime || "00:00-00:00"}
                     handleSelect={handleTimeSelect}
                   />
                 </Col>
@@ -561,8 +584,8 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                         <CssBaseline />
                         <DatePicker
                           sx={{ width: "100%" }}
-                          value={workshopDate}
-                          onChange={(newValue) => setWorkshopDate(newValue)}
+                          value={courseDate}
+                          onChange={(newValue) => setCourseDate(newValue)}
                         />
                       </ThemeProvider>
                     </DemoContainer>
@@ -611,7 +634,7 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                     }}
                     type="number"
                     placeholder="Enter fees/price"
-                    name="workshopFees"
+                    name="courseFees"
                   />
                 </Col>
               </Row>
@@ -619,19 +642,6 @@ function CourseAdd({ instructors, studioId, setCourses }) {
               <br />
 
               <Row>
-                <Col md={6}>
-                  <Form.Label>Venue</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    type="text"
-                    placeholder="Enter Venue"
-                    name="workshopVenue"
-                  />
-                </Col>
                 <Col md={6}>
                   <Form.Label>City</Form.Label>
                   <ThemeProvider theme={darkTheme}>
@@ -695,18 +705,31 @@ function CourseAdd({ instructors, studioId, setCourses }) {
                 </Col>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
+                  <ReactQuill
+                    theme="snow"
+                    placeholder="Enter Description"
+                    value={description}
+                    onChange={setDescription}
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
-                    rows={3}
+                    rows={1}
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    as="textarea"
-                    placeholder="Enter Description"
-                    name="description"
+                    type="text"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>
+
               <hr></hr>
 
               <Row>
@@ -729,13 +752,13 @@ function CourseAdd({ instructors, studioId, setCourses }) {
           </Form.Group>
         </Form>
       )}
-
+      {isSubmitting && <LinearProgress />}
       {step === 2 && (
         <>
           <Row>
             <Col>
               <ImageUpload
-                entityId={newWorkshopId}
+                entityId={newCourseId}
                 title={"Course Images"}
                 storageFolder={STORAGES.COURSEICON}
                 maxImageCount={1}

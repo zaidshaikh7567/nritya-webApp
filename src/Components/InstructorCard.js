@@ -1,9 +1,9 @@
 import React, {useState,useEffect} from 'react';
-import { Card, Badge, Button, Row, Col } from 'react-bootstrap';
+import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { ref, getDownloadURL, uploadBytes, listAll,deleteObject } from 'firebase/storage';
+import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
 import { STORAGES } from '../constants';
 

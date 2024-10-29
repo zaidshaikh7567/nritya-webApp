@@ -1,25 +1,14 @@
 import React from 'react';
-import { Card, Button, Row, Col , Form,Table,Toast } from 'react-bootstrap';
- 
-import { useNavigate } from 'react-router-dom';
+import { Row, Col  } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import StudioCard from '../Components/StudioCard';
 import { db } from '../config';
-import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } from "firebase/firestore";
+import { doc, getDoc,collection,where,getDocs,query } from "firebase/firestore";
 import { COLLECTIONS } from '../constants';
 import StudioAdd from '../Components/StudioAdd';
 import StudioUpdate from '../Components/StudioUpdate';
-import { useSelector, useDispatch } from 'react-redux'; // Import useSelector and useDispatch
+import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { useAuth } from '../context/AuthContext';
-import Instructors from './CreatorInstructor';
-import NrityaCard from '../Components/NrityaCard';
-import { queryDocumentsCount } from '../utils/firebaseUtils';
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from '@mui/joy/Typography';
-import { FaPlus } from 'react-icons/fa';
 import CardSliderCard from '../Components/CardSliderCard';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';

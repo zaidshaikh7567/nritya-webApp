@@ -23,6 +23,7 @@ import { db } from "../config";
 import { useSnackbar } from "../context/SnackbarContext";
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
+import ShareButton from "./ShareButton";
 
 function WorkshopDetailsModal({
   open,
@@ -95,12 +96,15 @@ function WorkshopDetailsModal({
 
   const isBooked = userDetails?.BookedWorkshops?.includes?.(dataItem?.id);
 
+  const shareUrl = `${window.location.host}/nritya-webApp#/workshop/${dataItem.id}`;
+  
   return (
     <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      style={{zIndex:40}}
     >
       <Box
         sx={{
@@ -150,7 +154,7 @@ function WorkshopDetailsModal({
                   component="p"
                   sx={{ color: isDarkModeOn ? "white" : "black" }}
                 >
-                  {dayjs(dataItem.date).format("LL")}
+                  {dayjs(dataItem.date).format("DD/MM/YYYY")}
                 </MUITypography>
 
                 <MUITypography
@@ -219,14 +223,17 @@ function WorkshopDetailsModal({
             </MUITypography>}
           </Grid>
           <Grid item sx={{ mt: 1 }}>
+            <Box sx={{ display: 'flex', columnGap: 2 }}>
             <MUITypography
               variant="h5"
               component="p"
               sx={{ color: isDarkModeOn ? "white" : "black" }}
             >
               {dataItem.workshopName || ""}
-              {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
-            </MUITypography>
+              {dataItem.danceStyles.map((dance) => ` | ${dance}`)}          
+              </MUITypography>
+              <ShareButton shareUrl={shareUrl} />
+            </Box>
             <MUITypography
               variant="body1"
               component="p"
@@ -244,13 +251,7 @@ function WorkshopDetailsModal({
                 </IconButton>
               )}
             </MUITypography>
-            <MUITypography
-              variant="body1"
-              component="p"
-              sx={{ mt: 2, color: isDarkModeOn ? "white" : "black" }}
-            >
-              {dataItem.description || ""}
-            </MUITypography>
+            <div style={{ color: isDarkModeOn ? 'white ' : 'black' }} className="description-box" dangerouslySetInnerHTML={{ __html: dataItem.description || "Workshop Description" }}></div>
           </Grid>
         </Grid>
 

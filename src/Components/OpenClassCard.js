@@ -23,6 +23,7 @@ import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useSnackbar } from "../context/SnackbarContext";
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
+import ShareButton from "./ShareButton";
 
 function WorkshopDetailsModal({
   open,
@@ -95,12 +96,15 @@ function WorkshopDetailsModal({
 
   const isBooked = userDetails?.BookedOpenClasses?.includes?.(dataItem?.id);
 
+  const shareUrl = `${window.location.host}/nritya-webApp#/openClass/${dataItem.id}`;
+
   return (
     <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      style={{zIndex:40}}
     >
       <Box
         sx={{
@@ -209,14 +213,17 @@ function WorkshopDetailsModal({
             </MUITypography>}
           </Grid>
           <Grid item sx={{ mt: 1, }}>
-            <MUITypography
-              variant="h5"
-              component="p"
-              sx={{ color: isDarkModeOn ? "white" : "black" }}
-            >
-              {dataItem.openClassName || ""}
-              {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
-            </MUITypography>
+            <Box sx={{ display: 'flex', columnGap: 2 }}>
+              <MUITypography
+                variant="h5"
+                component="p"
+                sx={{ color: isDarkModeOn ? "white" : "black" }}
+              >
+                {dataItem.openClassName || ""}
+                {dataItem.danceStyles.map((dance) => ` | ${dance}`)}
+              </MUITypography>
+              <ShareButton shareUrl={shareUrl} />
+            </Box>
             <MUITypography
               variant="body1"
               component="p"
@@ -234,13 +241,14 @@ function WorkshopDetailsModal({
                 </IconButton>
               )}
             </MUITypography>
-            <MUITypography
+            {/* <MUITypography
               variant="body1"
               component="p"
               sx={{ mt: 2, color: isDarkModeOn ? "white" : "black" }}
             >
               {dataItem.description || ""}
-            </MUITypography>
+            </MUITypography> */}
+            <div style={{ color: isDarkModeOn ? 'white ' : 'black' }} className="description-box" dangerouslySetInnerHTML={{ __html: dataItem.description || "Open Class Description" }}></div>
           </Grid>
         </Grid>
 

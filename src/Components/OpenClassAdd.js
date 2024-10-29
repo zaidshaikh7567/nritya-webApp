@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
 import {
@@ -31,13 +31,17 @@ import dayjs from "dayjs";
 import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
 import cities from '../cities.json';
+import { postData } from "../utils/common";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { isEqual } from 'lodash';
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const showSnackbar = useSnackbar();
-  const [newWorkshopId, setNewWorkshopId] = useState("");
+  const [newOpenClassId, setNewOpenClassId] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
@@ -58,6 +62,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [description, setDescription] = useState('');
 
   const darkTheme = createTheme({
     palette: {
@@ -94,8 +99,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
     if (
       !form.openClassName.value ||
-      !form.openClassVenue.value ||
-      !form.description.value ||
+      !form.capacity.value ||
+      !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
       !selectedStudio ||
@@ -137,7 +142,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     }
   };
 
-  const handleAddStudio = async (event) => {
+  const handleAddOpenClass = async (event) => {
     event.preventDefault();
     const form = event.target;
 
@@ -147,6 +152,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     }
 
     try {
+      const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
       const dbPayload = {
         openClassName: event.target.openClassName.value,
         danceStyles: selectedDanceStyles,
@@ -157,7 +163,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           : null,
         author: JSON.parse(localStorage.getItem("userInfo")).displayName,
         UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
-        creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+        creatorEmail: currentUserEmail,
         StudioId: selectedStudio
           ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
           : null,
@@ -165,45 +171,35 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         level: selectedLevel,
         time: openClassTime,
         date: openClassDate.format("YYYY-MM-DD"),
-        venue: event.target.openClassVenue.value,
-        description: event.target.description.value,
+        capacity: event.target.capacity.value,
+        description: description,
         city: selectedCity,
         active: true,
+        youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
 
       setIsSubmitting(true);
 
-      const workshopRef = await addDoc(
-        collection(db, COLLECTIONS.OPEN_CLASSES),
-        dbPayload
-      );
-
-      setNewWorkshopId(workshopRef.id);
-      setOpenClass((prev) => [...prev, { id: workshopRef.id, ...dbPayload }]);
-
-      const userRef = doc(
-        db,
-        "User",
-        JSON.parse(localStorage.getItem("userInfo")).UserId
-      );
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        if (userSnap.data() != null) {
-          await updateDoc(userRef, {
-            OpenClassCreated: [
-              ...(userSnap.data()?.OpenClassCreated || []),
-              workshopRef.id,
-            ],
-          });
-        }
+      const notifyEmails = currentUserEmail;
+      const metaData = {
+        entity_name: dbPayload.openClassName,
+        time: dbPayload.time,
+        date: dbPayload.date,
+        StudioId : dbPayload.StudioId
+      } 
+      const response = await postData(dbPayload, COLLECTIONS.OPEN_CLASSES, notifyEmails, metaData) ;
+      if (response.ok) {
+        const result = await response.json();
+        setNewOpenClassId(result.id);
+        setOpenClass((prev) => [...prev, { id: result.id, ...dbPayload }]);
+        clearForm(form);
+        resetDraft();
+        showSnackbar("Open class successfully added.", "success");
+        setStep((prev) => prev + 1);
       }
 
-      clearForm(form);
-      resetDraft();
-      showSnackbar("Open class successfully added.", "success");
-      setStep((prev) => prev + 1);
     } catch (error) {
-      console.error("Error adding workshop: ", error);
+      console.error("Error adding open class: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
@@ -220,6 +216,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     setOpenClassTime("");
     setOpenClassDate(dayjs(new Date()));
     setSelectedCity('');
+    setDescription('');
   };
 
   const handleTimeSelect = (startTime, endTime) => {
@@ -258,8 +255,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           let foundOpenClass = openClasses[0];
 
           form.openClassName.value = foundOpenClass?.openClassName || "";
-          form.openClassVenue.value = foundOpenClass?.venue || "";
-          form.description.value = foundOpenClass?.description || "";
+          form.capacity.value = foundOpenClass?.capacity || 0;
+          setDescription(foundOpenClass?.description || "");
 
           setSelectedDanceStyles(
             foundOpenClass?.danceStyles?.length
@@ -294,8 +291,8 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
             openClassName: form.openClassName?.value || "",
-            venue: form.openClassVenue?.value || "",
-            description: form.description?.value || "",
+            capacity : form.capacity?.value || 0,
+            description: description ,
             danceStyles: selectedDanceStyles,
             instructors: selectedInstructors
               ? selectedInstructors?.map?.(
@@ -328,7 +325,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
   useEffect(() => {
     let intervalId = null;
-
+    let previousState = null;
     async function main() {
       const form = document.getElementById("addStudioForm");
 
@@ -361,10 +358,10 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
           intervalId = setInterval(async () => {
             try {
-              await updateDoc(openClassRef, {
+              const currentState ={
                 openClassName: form.openClassName?.value || "",
-                venue: form.openClassVenue?.value || "",
-                description: form.description?.value || "",
+                capacity: form.capacity?.value || 0,
+                description: description ,
                 danceStyles: selectedDanceStyles,
                 instructors: selectedInstructors
                   ? selectedInstructors?.map?.(
@@ -380,7 +377,20 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                 time: openClassTime,
                 date: openClassDate.format("YYYY-MM-DD"),
                 city: selectedCity,
-              });
+              }
+
+              // Check if the current state is different from the previous state
+              if (!isEqual(previousState, currentState)) {
+                try {
+                  await updateDoc(openClassRef, currentState);
+                  previousState = currentState; // Update previous state after successful save
+                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                } catch (error) {
+                  console.error(error);
+                }
+              }else{
+                  console.log("Nothing for Autosave to save")
+              }
             } catch (error) {
               console.error(error);
             }
@@ -403,14 +413,29 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     openClassTime,
     openClassDate,
     selectedCity,
+    description
   ]);
+
+  useEffect(() => {
+    if (isDarkModeOn) {
+      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+      toolbarEle.style.backgroundColor = "white";
+
+      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      inputEle.style.backgroundColor = "white";
+
+      const editEle = document.getElementsByClassName("ql-editor ")[0];
+      console.log(editEle);
+      inputEle.style.color = "black";      
+    }
+  }, [isDarkModeOn]);
 
   return (
     <div>
       {step === 1 && (
         <Form
           id="addStudioForm"
-          onSubmit={handleAddStudio}
+          onSubmit={handleAddOpenClass}
           style={{
             backgroundColor: isDarkModeOn ? "#202020" : "",
             color: isDarkModeOn ? "white" : "black",
@@ -581,16 +606,16 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                   </ThemeProvider>
                 </Col>
                 <Col md={6}>
-                  <Form.Label>Venue</Form.Label>
+                  <Form.Label>Maximum capacity</Form.Label>
                   <Form.Control
                     rows={1}
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    type="text"
-                    placeholder="Enter Venue"
-                    name="openClassVenue"
+                    type="number"
+                    placeholder="Enter capacity"
+                    name="capacity"
                   />
                 </Col>
               </Row>
@@ -661,21 +686,29 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
               <Row>
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
+                  <ReactQuill
+                    theme="snow"
+                    placeholder="Enter Description"
+                    value={description}
+                    onChange={setDescription}
+                  />
+                </Col>
+                <Col md={6}>
+                <Form.Label>Youtube video link</Form.Label>
                   <Form.Control
-                    rows={3}
+                    rows={1}
                     style={{
                       backgroundColor: isDarkModeOn ? "#333333" : "",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    as="textarea"
-                    placeholder="Enter Description"
-                    name="description"
+                    type="text"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
                   />
                 </Col>
-                <Col md={6}></Col>
               </Row>
 
-              <hr />
+              <hr></hr>
 
               <Row>
                 <Col xs={6}></Col>
@@ -697,13 +730,13 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           </Form.Group>
         </Form>
       )}
-
+      {isSubmitting && <LinearProgress />}
       {step === 2 && (
         <>
           <Row>
             <Col>
               <ImageUpload
-                entityId={newWorkshopId}
+                entityId={newOpenClassId}
                 title={"Open Class Images"}
                 storageFolder={STORAGES.OPENCLASSICON}
                 maxImageCount={1}

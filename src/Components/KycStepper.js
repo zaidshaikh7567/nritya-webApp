@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Stepper, Step, StepLabel, Box, Typography, Paper, ThemeProvider, createTheme, Divider } from '@mui/material';
+import { Stepper, Step, StepLabel, Typography, Paper, ThemeProvider, createTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { styled } from '@mui/material/styles';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { Spinner } from 'react-bootstrap';
 import { readDocument } from '../utils/firebaseUtils';
 import { STATUSES, COLLECTIONS } from '../constants';
 import './KycStepper.css';
@@ -46,9 +43,9 @@ const map = {
 const KycStepper = ({ kycId, status }) => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [kycData, setKycData] = useState({});
-  const [expanded, setExpanded] = useState(false);
+
   console.log(status)
-  console.log(STATUSES.VERIFICATION_FAILED)
+
   const theme = createTheme({
     palette: {
       mode: isDarkModeOn ? 'dark' : 'light',
@@ -70,8 +67,6 @@ const KycStepper = ({ kycId, status }) => {
     fetchData();
   }, [kycId]);
 
-  const handleExpand = () => setExpanded(true);
-  const handleCollapse = () => setExpanded(false);
 
   return (
     <ThemeProvider theme={theme}>
@@ -92,11 +87,5 @@ const KycStepper = ({ kycId, status }) => {
     </ThemeProvider>
   );
 };
-
-function toPascalCase(str) {
-  return str.replace(/(\w)(\w*)/g, function(_, firstChar, rest) {
-    return firstChar.toUpperCase() + rest.toLowerCase();
-  });
-}
 
 export default KycStepper;

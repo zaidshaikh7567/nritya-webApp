@@ -3,12 +3,13 @@ import { Form, Button, Col, Row, Image } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'; 
-import { doc, getDoc,setDoc,addDoc,updateDoc,collection,where,getDocs,query } from "firebase/firestore";
+import { addDoc,collection} from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { COLLECTIONS } from '../constants';
 import { STORAGES } from '../constants';
 import { db } from '../config';
 import { storage } from '../config';
+import { postData } from '../utils/common';
 
 const handleProfilePictureChange = async (file, userId) => {
    
@@ -44,7 +45,6 @@ function InstructorAdd() {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [selectedImage, setSelectedImage] = useState(null); // Track selected image
   const [toUploadImage, setToUploadImage] = useState(null);
-  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -65,26 +65,41 @@ function InstructorAdd() {
       console.log("Created by not found")
       alert("User not found")
     }
+    const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;
     console.log(createdBy);
     try{
-      const instructorsRef = await addDoc(collection(db, COLLECTIONS.INSTRUCTORS), {
-          name: e.target.name.value,
-          danceStyles: e.target.danceStyles.value,
-          experience: e.target.experience.value,
-          age: e.target.age.value,
-          email: e.target.email.value,
-          description: e.target.description.value,
-          facebook: e.target.facebook.value,
-          instagram: e.target.instagram.value,
-          twitter: e.target.twitter.value,
-          youtube: e.target.youtube.value,
-          createdBy:createdBy,
-          ownedBy: null,
-      });
-      if (selectedImage && toUploadImage) {
-       // const file = e.target.files[0];
-        const imageUrl = await handleProfilePictureChange(toUploadImage, instructorsRef.id);
-        console.log('Profile picture uploaded:', imageUrl);
+      const instructorData = {
+        name: e.target.name.value,
+        danceStyles: e.target.danceStyles.value,
+        experience: e.target.experience.value,
+        age: e.target.age.value,
+        email: e.target.email.value,
+        description: e.target.description.value,
+        facebook: e.target.facebook.value,
+        instagram: e.target.instagram.value,
+        twitter: e.target.twitter.value,
+        youtube: e.target.youtube.value,
+        createdBy: createdBy,
+        ownedBy: null,
+      };
+      const notifyEmails = currentUserEmail; 
+      const metaData = {
+        entity_name: e.target.name.value
+      }
+      const response = await postData(instructorData,COLLECTIONS.INSTRUCTORS, notifyEmails, metaData) 
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Instructor added:', result,result?.id);
+
+      if (selectedImage && toUploadImage && result.id) {
+        // const file = e.target.files[0];
+         const imageUrl = await handleProfilePictureChange(toUploadImage, result.id);
+         console.log('Profile picture uploaded:', imageUrl);
+       }
+ 
+      } else {
+        console.error('Error adding instructor:', response.statusText);
       }
 
       console.log("Instructor added successfully");

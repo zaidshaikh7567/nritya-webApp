@@ -18,8 +18,19 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { MultiSelect } from 'primereact/multiselect';
+import { putData } from '../utils/common';
 
 const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
+const categoryMap = {
+  Kids: "Kids",
+  Adults: "Adults",
+  Women_Only: "Women Only",
+  Men_Only: "Men Only",
+  Seniors: "Seniors",
+  All: "All Ages, Open to All",
+  Couples: "Couples",
+  Families: "Families"
+};
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -78,7 +89,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       time: '',
       instructors: [],
       fee:'',
-      level:''
+      level:'',
+      freeTrial: false,
+      classCategory: []
     }
 });
 
@@ -119,21 +132,6 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   
     setSelectedRow(selectedRowIndex);
   };
-  
-
-
-  const handleToggleInstructor = (instructor) => {
-    setSelectedInstructors((prevSelected) => {
-      // Check if the instructor is already selected
-      const isAlreadySelected = prevSelected.some((selected) => selected.id === instructor.id);
-
-      // If selected, remove the instructor; if not selected, add the instructor
-      return isAlreadySelected
-        ? prevSelected.filter((selected) => selected.id !== instructor.id)
-        : [...prevSelected, instructor];
-    });
-  };
-  
   
   useEffect(() => {
     // Fetch the list of studios created by the user from localStorage
@@ -198,6 +196,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               instructors: [],
               fee: '',
               level:'',
+              freeTrial: false,
+              classCategory: []
             }
         });
         }
@@ -233,47 +233,51 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
     try {
       // Update the studio document with the new values
       ////console.log(description,geolocation)
-      const studioRef = doc(db, COLLECTIONS.STUDIO, studioId);
-      await updateDoc(studioRef, {
-              studioName: event.target.studioName.value,
-              aboutStudio: event.target.aboutStudio.value,
-              founderName: event.target.founderName.value,
-              aboutFounder: event.target.aboutFounder.value,
-              mobileNumber: event.target.mobileNumber.value,
-              whatsappNumber: event.target.whatsappNumber.value,
-              mailAddress: event.target.mailAddress.value,
-              danceStyles: selectedDanceStyles.join(","),
-              numberOfHalls: event.target.numberOfHalls.value,
-              maximumOccupancy: event.target.maximumOccupancy.value,
-              instructorsNames: selectedInstructors,
-              status: 'OPEN',
-              tableData: tableData,
-              buildingName: event.target.buildingName.value,
-              street: event.target.street.value,
-              city: event.target.city.value,
-              landmark: event.target.landmark.value,
-              pincode: event.target.pincode.value,
-              state: event.target.state.value,
-              country: "India",
-              geolocation : selectedLocation,
-              aadharNumber: event.target.aadharNumber.value ,
-              gstNumber: event.target.gstNumber.value,
-              enrolledId:[],
-              reviews:[],
-              author: JSON.parse(localStorage.getItem('userInfo')).displayName,
-              UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
-              addAmenities: selectedAmenities.join(","),
-              enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
-              instagram: event.target.instagram.value,
-              facebook: event.target.facebook.value,
-              youtube: event.target.youtube.value,
-              twitter: event.target.twitter.value,
-      });
-
-      //console.log("Studio updated successfully");
-      alert("Studio Update successfully")
-      setShowUpdateSuccessAlert(true);
-      setShowUpdateErrorAlert(false);
+        const dbPayload ={
+          studioName: event.target.studioName.value,
+          aboutStudio: event.target.aboutStudio.value,
+          founderName: event.target.founderName.value,
+          aboutFounder: event.target.aboutFounder.value,
+          mobileNumber: event.target.mobileNumber.value,
+          whatsappNumber: event.target.whatsappNumber.value,
+          mailAddress: event.target.mailAddress.value,
+          danceStyles: selectedDanceStyles.join(","),
+          numberOfHalls: event.target.numberOfHalls.value,
+          maximumOccupancy: event.target.maximumOccupancy.value,
+          instructorsNames: selectedInstructors,
+          status: 'OPEN',
+          tableData: tableData,
+          buildingName: event.target.buildingName.value,
+          street: event.target.street.value,
+          city: event.target.city.value,
+          landmark: event.target.landmark.value,
+          pincode: event.target.pincode.value,
+          state: event.target.state.value,
+          country: "India",
+          geolocation : selectedLocation,
+          gstNumber: event.target.gstNumber.value,
+          enrolledId:[],
+          reviews:[],
+          author: JSON.parse(localStorage.getItem('userInfo')).displayName,
+          UserId: JSON.parse(localStorage.getItem('userInfo')).UserId,
+          addAmenities: selectedAmenities.join(","),
+          enrollmentProcess: encodeToUnicode(event.target.enrollmentProcess.value),
+          instagram: event.target.instagram.value,
+          facebook: event.target.facebook.value,
+          youtube: event.target.youtube.value,
+          twitter: event.target.twitter.value,
+      }
+      
+      const response = await putData(dbPayload, COLLECTIONS.STUDIO, studioId) 
+      if (response.ok) {
+        //console.log("Studio updated successfully");
+        alert("Studio Update successfully")
+        setShowUpdateSuccessAlert(true);
+        setShowUpdateErrorAlert(false);
+      }else{
+        setShowUpdateSuccessAlert(false);
+        setShowUpdateErrorAlert(true);
+      }
     } catch (error) {
       console.error("Error updating studio: ", error);
       setShowUpdateSuccessAlert(false);
@@ -516,14 +520,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'black' }}>Additional Details</h3>
                 <Row>
                   <Col md={4}>
-                    <Form.Label>Owner's Aadhar Number</Form.Label>
-                    <Form.Control defaultValue={selectedStudio ? selectedStudio.aadharNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="Enter aadhar Number" name="aadharNumber" />
-                  </Col>
-                  <Col md={4}>
                       <Form.Label>GST Number</Form.Label>
                       <Form.Control defaultValue={selectedStudio ? selectedStudio.gstNumber : ''} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="number" rows={1} placeholder="GST Number" name="gstNumber" />
                   </Col>
-                  <Col md={4}>
+                  <Col md={8}>
                       <Form.Label>Add Amenities</Form.Label>
                   
                       <ThemeProvider theme={darkTheme}>
@@ -559,122 +559,161 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
               <br></br>
             <span>Time Table Of dance classes</span>
-            <Table bordered variant="light">
-              <thead>
-                <tr>
-                  <th>Class Name</th>
-                  <th>Dance Forms</th>
-                  <th>Days</th>
-                  <th>Time</th>
-                  <th>Instructors</th>
-                  <th>Fee</th>
-                  <th>Level</th>
-                  <th style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <Button variant="primary" onClick={handleAddRow}>
-                      <FaPlus/>
-                    </Button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(tableData).map((rowKey, index) => (
-                  <tr key={rowKey}
-                  >
-                    <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        type="text"
-                        value={tableData[rowKey].className}
-                        onChange={(e) => handleTableChange(rowKey, 'className', e.target.value)}
-                        style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
-                      />
-                    </td>
-                    <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        as="select"
-                        value={tableData[rowKey].danceForms}
-                        onChange={(e) => handleTableChange(rowKey, 'danceForms', e.target.value)}
-                        style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
-                      >
-                        <option value="">Select a dance form</option>
-                        {danceStylesOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                        </Form.Control>
-                    </td>
-                    <td style={{padding:'0rem'}}>
-                      <MultiSelect value={tableData[rowKey] && tableData[rowKey].days && tableData[rowKey].days.split(',').filter(day => day !== '')}
-                        onChange={(event) => handleTableChange(rowKey, 'days', event.target.value)}
-                        options={daysOfWeek}
-                        placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"
-                        style={{color: '#000', width: '100%'}}
-                      />
-                    </td>
-                    <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        type="text"
-                        value={tableData[rowKey].time}
-                        //onChange={(e) => handleTableChange(rowKey, 'time', e.target.value)}
-                        onClick={() => handleTimePickerOpen(rowKey,tableData[rowKey].time)}
-                      />
-                      {showTimePicker && (
-                      <TimeRangePicker
-                        show={showTimePicker}
-                        handleClose={handleTimePickerClose}
-                        handleSelect={handleTimeSelect}
-                        defaultTime={tableData[selectedRowIndex]?.time || "00:00-00:00"} // selectedRowIndex
-                      />
-                    )}
-                    </td>
-                    <td style={{padding:'0rem', width:'20rem'}}>
-                      <Autocomplete
-                        multiple
-                        options={instructorNamesWithIds}
-                        value={tableData[rowKey] && tableData[rowKey].instructors ? tableData[rowKey].instructors : []}
-                        onChange={(_, values) => handleTableChange(rowKey, 'instructors', values)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="standard"
-                            placeholder="Select Instructors"
-                          />
-                        )}
-                      />
-                    </td>
-                    <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        type="text"
-                        value={tableData[rowKey].fee?tableData[rowKey].fee:""}
-                        onChange={(e) => handleTableChange(rowKey, 'fee', e.target.value)}
-                        style={{height: 'auto',lineHeight: '1.5em',padding: '8px'}}
-                      />
-                    </td>
-                    <td style={{padding:'0rem'}}>
-                      <Form.Control
-                        as="select"
-                        value={tableData[rowKey].level?tableData[rowKey].level:""}
-                        onChange={(e) => handleTableChange(rowKey, 'level', e.target.value)}
-                        style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
-                      >
-                        <option value="">Select a Level</option>
-                         <option value="Beginner">Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Advanced">Advanced</option>
-                      <option value="Misc">Misc</option>
-
-                        </Form.Control>
-                    </td>
-                    <td style={{padding:'0rem'}}>
-                      <Button variant="danger" onClick={() => handleRemoveRow(rowKey)}>
-                        <FaMinus/>
+            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', scrollbarColor: isDarkModeOn ? '#888 #333' : '#ccc #fff', }}>
+              <Table bordered variant="light">
+                <thead>
+                  <tr>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Class Name</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'10rem', border: '1px solid black'}}>Dance Form</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Days</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Time</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'20rem', border: '1px solid black'}}>Instructors</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'8rem', border: '1px solid black'}}>Fee (₹)</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'10rem', border: '1px solid black'}}>Level</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'8rem', border: '1px solid black'}}>Free Trial</th>
+                  <th style={{padding:'0rem',textAlign:'center' , minWidth:'15rem', border: '1px solid black'}}>Class Category</th>
+                    <th style={{padding: 0 }}>
+                      <Button variant="primary" onClick={handleAddRow}>
+                        <FaPlus/>
                       </Button>
-                    </td>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
+                </thead>
+                <tbody>
+                  {Object.keys(tableData).map((rowKey, index) => (
+                    <tr key={rowKey}
+                    >
+                      <td style={{padding:'0rem'}}>
+                        <Form.Control
+                          type="text"
+                          value={tableData[rowKey].className}
+                          onChange={(e) => handleTableChange(rowKey, 'className', e.target.value)}
+                          style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
+                        />
+                      </td>
+                      <td style={{padding:'0rem'}}>
+                        <Form.Control
+                          as="select"
+                          value={tableData[rowKey].danceForms}
+                          onChange={(e) => handleTableChange(rowKey, 'danceForms', e.target.value)}
+                          style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
+                        >
+                          <option value="">Select a dance form</option>
+                          {danceStylesOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                          </Form.Control>
+                      </td>
+                      <td style={{padding:'0rem'}}>
+                        <MultiSelect value={tableData[rowKey] && tableData[rowKey].days && tableData[rowKey].days.split(',').filter(day => day !== '')}
+                          onChange={(event) => handleTableChange(rowKey, 'days', event.target.value)}
+                          options={daysOfWeek}
+                          placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"
+                          style={{color: '#000', width: '100%'}}
+                        />
+                      </td>
+                      <td style={{padding:'0rem'}}>
+                        <Form.Control
+                          type="text"
+                          value={tableData[rowKey].time}
+                          //onChange={(e) => handleTableChange(rowKey, 'time', e.target.value)}
+                          onClick={() => handleTimePickerOpen(rowKey,tableData[rowKey].time)}
+                        />
+                        {showTimePicker && (
+                        <TimeRangePicker
+                          show={showTimePicker}
+                          handleClose={handleTimePickerClose}
+                          handleSelect={handleTimeSelect}
+                          defaultTime={tableData[selectedRowIndex]?.time || "00:00-00:00"} // selectedRowIndex
+                        />
+                      )}
+                      </td>
+                      <td style={{padding:'0rem', width:'20rem'}}>
+                        <Autocomplete
+                          multiple
+                          options={instructorNamesWithIds}
+                          value={tableData[rowKey] && tableData[rowKey].instructors ? tableData[rowKey].instructors : []}
+                          onChange={(_, values) => handleTableChange(rowKey, 'instructors', values)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="standard"
+                              placeholder="Select Instructors"
+                            />
+                          )}
+                        />
+                      </td>
+                      <td style={{padding:'0rem'}}>
+                        <Form.Control
+                          type="text"
+                          value={tableData[rowKey].fee?tableData[rowKey].fee:""}
+                          onChange={(e) => handleTableChange(rowKey, 'fee', e.target.value)}
+                          style={{height: 'auto',lineHeight: '1.5em',padding: '8px'}}
+                        />
+                      </td>
+                      <td style={{padding:'0rem'}}>
+                        <Form.Control
+                          as="select"
+                          value={tableData[rowKey].level?tableData[rowKey].level:""}
+                          onChange={(e) => handleTableChange(rowKey, 'level', e.target.value)}
+                          style={{height: 'auto', lineHeight: '1.5em',padding: '8px'}}
+                        >
+                          <option value="">Select a Level</option>
+                          <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Misc">Misc</option>
 
-            </Table>
+                          </Form.Control>
+                      </td>
+                      <td style={{ padding: '0rem', border: '1px solid black' }}>
+                        <Form.Control
+                          style={{ backgroundColor: "white", height: 'auto', lineHeight: '1.5em', padding: '8px' }}
+                          as="select"
+                          value={tableData[index]?.freeTrial ? tableData[index].freeTrial : ""}
+                          onChange={(e) => handleTableChange(index, 'freeTrial', e.target.value)}
+                        >
+                          <option value="">Select a value</option>
+                          <option value={true}>Yes</option>
+                          <option value={false}>No</option>
+                        </Form.Control>
+                      </td>
+                      <td style={{ padding: '0rem', width: '20rem' }}>
+                        <Autocomplete
+                          multiple
+                          id="tags-standard"
+                          options={Object.values(categoryMap)}
+                          value={tableData[index]?.classCategory && tableData[index].classCategory.length > 0 
+                            ? tableData[index].classCategory.map(key => categoryMap[key]) 
+                            : []}
+                          onChange={(_, values) => {
+                            const selectedKeys = values.map(value =>
+                              Object.keys(categoryMap).find(key => categoryMap[key] === value)
+                            );
+                            handleTableChange(index, 'classCategory', selectedKeys);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="standard"
+                              placeholder="Select Class Category"
+                            />
+                          )}
+                        />
+                      </td>
+                      <td style={{padding:'0rem'}}>
+                        <Button variant="danger" onClick={() => handleRemoveRow(rowKey)}>
+                          <FaMinus/>
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+
+              </Table>
+            </div>
             <br></br>
             <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
                <Row>

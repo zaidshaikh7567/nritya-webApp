@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
 import { Offcanvas, Button } from 'react-bootstrap';
-import { useAuth } from '../context/AuthContext';
 import { auth } from '../config';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import logo from './../logo.png';
 import './SideMenu.css';
+import {useEffect} from "react";
 import secureLocalStorage from 'react-secure-storage';
+import { setCreatorMode } from '../utils/firebaseUtils';
 
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const { currentUser } = useAuth();
 
   const handleLogout = async () => {
     console.log("Logging out SideMenu")
@@ -24,6 +23,28 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
     }
   };
 
+  const trySetCreatorMode = () => {
+    let attempts = 0;
+    const userInfoFull = JSON.parse(localStorage.getItem('userInfoFull'));
+    const userId = userInfoFull?.uid;
+
+    while (attempts < 2) {
+          const creatorMode = secureLocalStorage.getItem('CreatorMode');
+
+          if (creatorMode == null) {
+            setCreatorMode(userId);
+            attempts += 1;
+          } else {
+            break;
+          }
+        
+      }
+  };
+
+  useEffect(() => {
+    trySetCreatorMode();
+  }, []);
+
   const regularMenuItems = [
     { action: () => window.location.hash = '#/profile', name: 'Profile', show: true },
     { action: () => window.location.hash = '#/transactions', name: 'Transactions',show:true },
@@ -31,11 +52,6 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
     { action: () => window.location.hash = '#/myBookings', name: 'Bookings',show:true },
     { action: handleLogout, name: 'Sign Out',show:true },
   ];
-
-  const handleProfile = () => {
-    // Implement your profile page navigation logic here
-    window.open('#/profile', '_blank', 'noopener noreferrer');
-  };
 
   return (
     <Offcanvas

@@ -3,11 +3,12 @@ import { Form, Button, Col, Row, Image } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
-import {doc, getDoc, updateDoc, collection, where, query, getDocs} from 'firebase/firestore';
+import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from 'firebase/storage';
 import { COLLECTIONS } from '../constants';
 import { STORAGES } from '../constants';
 import { db, storage } from '../config';
+import { putData } from '../utils/common';
 
 function InstructorUpdate({ instructors, setInstructors }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -105,6 +106,31 @@ function InstructorUpdate({ instructors, setInstructors }) {
         youtube: e.target.youtube.value,
       };
 
+      const response = await putData(updatedInstructorData,COLLECTIONS.INSTRUCTORS, selectedInstructor.id) 
+
+      if (response.ok) {
+        // Merge the updated details into the selected instructor
+      setSelectedInstructor((prevInstructor) => ({
+        ...prevInstructor,
+        ...updatedInstructorData,
+      }));
+
+      if (selectedImage && toUploadImage) {
+        const imageUrl = await handleProfilePictureChange(toUploadImage, selectedInstructor.id);
+        ////console.log('Profile picture uploaded:', imageUrl);
+      }
+
+      ////console.log('Instructor updated successfully');
+      alert('Instructor updated successfully');
+
+ 
+      } else {
+        console.error('Error adding instructor:', response.statusText);
+      }
+
+
+    /*
+
       // Merge the updated details into the selected instructor
       setSelectedInstructor((prevInstructor) => ({
         ...prevInstructor,
@@ -122,6 +148,7 @@ function InstructorUpdate({ instructors, setInstructors }) {
 
       ////console.log('Instructor updated successfully');
       alert('Instructor updated successfully');
+      */
     } catch (error) {
       console.error('Error updating instructor', error);
       alert('Error updating instructor');
@@ -167,6 +194,7 @@ function InstructorUpdate({ instructors, setInstructors }) {
           style={{
             backgroundColor: isDarkModeOn ? '#333333' : '',
             color: isDarkModeOn ? 'white' : 'black',
+            height: 'auto',
           }}
         >
           <option
