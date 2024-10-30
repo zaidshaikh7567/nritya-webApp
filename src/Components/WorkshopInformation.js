@@ -56,10 +56,11 @@ function WorkshopInformation({workshopClickTicket,setWorkshopClickTicket}) {
                                 variant="h6"
                                 component="span"
                                 sx={{
-                                    fontSize: { xs: "28px", md: "48px" },
+                                    fontSize: { xs: "24px", md: "48px" },
                                     fontWeight: "700",
                                     lineHeight: "58.56px",
-                                    fontFamily: "Instrument Sans"
+                                    fontFamily: "Instrument Sans",
+                                    // wordWrap: "break-word"
                                 }}
                             >
                                 {workshopClickTicket.entity_name}
@@ -103,7 +104,7 @@ function WorkshopInformation({workshopClickTicket,setWorkshopClickTicket}) {
                     {/* Bottom Section */}
                     <Box
                         bgcolor="white"
-                        px={{xs: 2, md:9}}
+                        px={{xs: 2, md:6}}
                         py="26px"
                         // border="1px solid #FFFFFF"
                         borderRadius="15px"
@@ -129,52 +130,39 @@ function WorkshopInformation({workshopClickTicket,setWorkshopClickTicket}) {
                                 <QRCode style={{ placeSelf: 'start', width: "200px", height: "200px" }} value={(endpoint_url + workshopClickTicket.entity_id)} />
                             </Box>
 
-                            <Box display="flex" flexDirection="column" alignItems={{ xs: "center", md: "start" }}>
-                                {/* <Typography
-                                    variant="body2"
-                                    mt={2}
-                                    mx={{xs: 2.5}}
-                                    sx={{
-                                        fontSize: { xs: "15px", sm: "20px", md: "26px" },
-                                        fontWeight: "500",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        wordWrap: "break-word",
-                                    }}
-                                >
-                                    Valid till 31st Oct, 2024 ; 22:14:07
-                                </Typography> */}
-                                <Box display="flex" flexDirection='column' alignItems="start">
-                                    <Box sx={{
-                                        fontSize: { xs: "18px", md: "26px" },
-                                        fontWeight: "600",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black"
-                                    }}>Date</Box>
-                                    <Box sx={{
-                                        fontSize: { xs: "15px", md: "22px" },
-                                        fontWeight: "500",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:1 ,md:2 }
-                                    }}>25th Oct, 2024</Box>
-                                </Box>
-                                <Box display="flex" flexDirection='column' alignItems="start">
-                                    <Box sx={{
-                                        fontSize: { xs: "18px", md: "26px" },
-                                        fontWeight: "600",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:2 ,md:3 }
-                                    }}>Time</Box>
-                                    <Box sx={{
-                                        fontSize: { xs: "15px", md: "22px" },
-                                        fontWeight: "500",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:1 ,md:2 }
-                                    }}>4:00 PM - 6:00 PM</Box>
-                                </Box>
+                            <Box sx={{ p:4}}>
+                                    <Box sx={{ mb: 4 }}>
+                                        <Typography variant="span" sx={{
+                                            fontSize: { xs: "18px", md: "26px" },
+                                            fontWeight: "600",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>
+                                            Date
+                                        </Typography>
+                                        <Typography sx={{
+                                            fontSize: { xs: "15px", md: "22px" },
+                                            fontWeight: "500",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>25th Oct, 2024</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="span" sx={{
+                                            fontSize: { xs: "18px", md: "26px" },
+                                            fontWeight: "600",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>
+                                            Time
+                                        </Typography>
+                                        <Typography sx={{
+                                            fontSize: { xs: "15px", md: "22px" },
+                                            fontWeight: "500",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>4:00 PM - 6:00 PM</Typography>
+                                    </Box>
                             </Box>
                         </Box>
 

@@ -102,7 +102,7 @@ function OpenClassInformation({openClassClickTicket,setOpenClassClickTicket }) {
                     {/* Bottom Section */}
                     <Box
                         bgcolor="white"
-                        px={{ xs: 3, md: 9 }}
+                        px={{ xs: 3, md: 6 }}
                         py={{ xs: 4, md: 0 }}
                         // border="1px solid #FFFFFF"
                         borderRadius="15px"
@@ -128,55 +128,39 @@ function OpenClassInformation({openClassClickTicket,setOpenClassClickTicket }) {
                                 <QRCode value={(endpoint_url +openClassClickTicket .entity_id)} size={200} />
                             </Box>
 
-                            <Box display="flex" flexDirection="column" alignItems={{ xs: "center", sm: "center" }}>
-                                {/* <Typography
-                                    variant="body2"
-                                    mt={2}
-                                    mx={{xs: 2.5}}
-                                    sx={{
-                                        fontSize: { xs: "15px", sm: "20px", md: "26px" },
-                                        fontWeight: "500",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        wordWrap: "break-word",
-                                    }}
-                                >
-                                    Valid till 31st Oct, 2024 ; 22:14:07
-                                </Typography> */}
-                                
-                                <Box display="flex" flexDirection='column' alignItems="start">
-                                    <Box sx={{
-                                        fontSize: { xs: "18px", md: "26px" },
-                                        fontWeight: "600",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:2 ,md:3 }
-                                    }}>Date</Box>
-                                    <Box sx={{
-                                        fontSize: { xs: "15px", md: "22px" },
-                                        fontWeight: "500",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:1 ,md:2 }
-                                    }}>25th Oct, 2024</Box>
-                                </Box>
-                                <Box display="flex" flexDirection='column' alignItems="start">
-                                    <Box sx={{
-                                        fontSize: { xs: "18px", md: "26px" },
-                                        fontWeight: "600",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:2 ,md:3 }
-                                    }}>Time</Box>
-                                    <Box sx={{
-                                        fontSize: { xs: "15px", md: "22px" },
-                                        fontWeight: "500",
-                                        fontFamily: "Instrument Sans",
-                                        color: isDarkModeOn ? "white" : "black",
-                                        mt:{xs:1 ,md:2 }
-                                    }}>4:00 PM - 6:00 PM</Box>
-                                </Box>
-                                
+                            <Box sx={{ p: 4 }}>
+                                    <Box sx={{ mb: 4 }}>
+                                        <Typography variant="span" sx={{
+                                            fontSize: { xs: "18px", md: "26px" },
+                                            fontWeight: "600",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>
+                                            Date
+                                        </Typography>
+                                        <Typography sx={{
+                                            fontSize: { xs: "15px", md: "22px" },
+                                            fontWeight: "500",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>25th Oct, 2024</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="span" sx={{
+                                            fontSize: { xs: "18px", md: "26px" },
+                                            fontWeight: "600",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>
+                                            Time
+                                        </Typography>
+                                        <Typography sx={{
+                                            fontSize: { xs: "15px", md: "22px" },
+                                            fontWeight: "500",
+                                            fontFamily: "Instrument Sans",
+                                            color: isDarkModeOn ? "white" : "black"
+                                        }}>4:00 PM - 6:00 PM</Typography>
+                                    </Box>
                             </Box>
                         </Box>
 
