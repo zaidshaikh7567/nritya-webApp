@@ -130,7 +130,7 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
                                 <QRCode style={{  width: "200px", height: "200px" }} value={(endpoint_url + currentClickTicket.id)} />
                             </Box>
                             
-                            <Box display="flex" flexDirection="column" alignItems={{ xs: "center", md: "start" }}>
+                            <Box display="flex" flexDirection="column" /* alignItems={{ xs: "center", md: "start" }} */ alignSelf="center">
                                 <Typography
                                     variant="body2"
                                     mt={2}
