@@ -62,7 +62,7 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
                                     fontFamily: "Instrument Sans"
                                 }}
                             >
-                                Jazz 2
+                                {currentClickTicket.name_class}
                             </Typography>
                             <Typography
                                 variant="body2"
@@ -121,14 +121,15 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
                         <Box
                             display="flex"
                             flexDirection={{ xs: "column", md: "row" }} // Stack vertically on small screens
-                            alignItems="center"
+                            alignSelf={{xs:"center", md:"start"}}
                             justifyContent="space-between"
                             gap={{ xs: 2, md: 7 }}
+                            ml={{ xs: 0, md: 4 }}
                         >
-                            <Box display="flex" alignItems="center" sx={{ p: {xs:"8px",md :'16px'}, bgcolor: 'white', borderRadius: 2 }}>
-                                <QRCode value={(endpoint_url + currentClickTicket.id)} size={200} />
+                            <Box display="flex" sx={{ p: { xs: "8px", sm:"8px", md: '16px' }, bgcolor: 'white', borderRadius: 2 ,  maxWidth: 'fit-content', marginX:{xs:"auto"}}}>
+                                <QRCode style={{  width: "200px", height: "200px" }} value={(endpoint_url + currentClickTicket.id)} />
                             </Box>
-
+                            
                             <Box display="flex" flexDirection="column" alignItems={{ xs: "center", md: "start" }}>
                                 <Typography
                                     variant="body2"
@@ -187,10 +188,10 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
                         <Box
                             display="flex"
                             flexDirection={{ xs: "column", sm: "row", md: "row" }}
-                            // alignItems="center"
-                            alignSelf="start"
+                            alignItems={{xs:"start", md: "center"}}
+                            // alignSelf="start"
                             justifyContent="space-between"
-                            gap={{ xs: 3,sm :20, md: 3 }}
+                            gap={{ xs: 3,sm :32, md: 25 }}
                             ml={{ xs: 0, sm: 0 ,md :4}}
                         >
                             <Box>
@@ -216,11 +217,12 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
                                         fontWeight: "500",
                                         fontFamily: "Instrument Sans",
                                         color: isDarkModeOn ?  "white" : "black",
-                                        maxWidth: "90%",
+                                        maxWidth: "100%",
                                         marginTop: "15px"
                                     }}
                                 >
                                     {currentClickTicket.studio_address}
+                                    {/* The Backyard Groovers White House Tower, Sector 28, Gurugram, 122002 */}
                                 </Typography>
                             </Box>
 

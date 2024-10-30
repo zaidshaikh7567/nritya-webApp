@@ -56,7 +56,7 @@ function BookingLists({ bookingData, setCurrentClickTicket }) {
                                         color: "#FFFFFF"
                                     }}
                                 >
-                                    Jazz 2
+                                    {bookingData.name_class}
                                 </Typography>
                                 <Typography
                                     variant="body2"
@@ -183,7 +183,8 @@ function BookingLists({ bookingData, setCurrentClickTicket }) {
                     </Box>
 
                     {/* External Link Section */}
-                    <Box display="flex" alignItems="center" justifyContent="center">
+                    <Box display="flex" alignItems="start" mx={{xs: 1,md: 4.5}}>
+                    <Box display="flex" alignItems="center" justifyContent="center" alignSelf="start">
                         <Typography
                             variant="body2"
                             mt={2}
@@ -203,7 +204,7 @@ function BookingLists({ bookingData, setCurrentClickTicket }) {
                                 style={{marginTop:"13px", width: { xs: "20px", sm: "24px", md: "30px" }, height: { xs: "20px", sm: "24px", md: "30px" }, marginLeft: "8px", color: isDarkModeOn ? "white" : "black" }} />
                         </div>
                     </Box>
-
+                    </Box>
                 </Box>
             </div>
         </>

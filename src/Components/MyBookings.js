@@ -249,9 +249,9 @@ function MyBookings() {
             </Typography>
           )} */}
           {
-            workshopClickTicket?<WorkshopInformation workshopClickTicket={workshopClickTicket} setWorkshopClickTicket={setWorkshopClickTicket}/> 
+            workshopClickTicket ? <WorkshopInformation workshopClickTicket={workshopClickTicket} setWorkshopClickTicket={setWorkshopClickTicket}/> 
             :<>
-            {bookings.map((bookingData) => (
+            {bookingCategories.Workshops.map((bookingData) => (
               <WorkshopList  key={bookingData.id} bookingData={bookingData} setWorkshopClickTicket={setWorkshopClickTicket}/>
             ))}
             </>   
@@ -271,9 +271,9 @@ function MyBookings() {
             </Typography>
           )} */}
           {
-            openClassClickTicket? <OpenClassInformation setOpenClassClickTicket={setOpenClassClickTicket}/>:
+            openClassClickTicket? <OpenClassInformation openClassClickTicket={openClassClickTicket} setOpenClassClickTicket={setOpenClassClickTicket}/>:
             <>
-            {bookings.map((bookingData) => (
+            {bookingCategories.OpenClasses.map((bookingData) => (
               <OpenClassList key={bookingData.id} bookingData={bookingData} setOpenClassClickTicket={setOpenClassClickTicket}/>
             ))}
             </>    
