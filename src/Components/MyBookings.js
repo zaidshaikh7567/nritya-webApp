@@ -7,8 +7,6 @@ import { db } from '../config';
 import { Row, Col, Card, Container } from 'react-bootstrap';
 import { BASEURL_PROD, COLLECTIONS } from '../constants';
 import { Tab, Tabs, Box, Typography } from '@mui/material';
-import { BASEURL_PROD, COLLECTIONS } from '../constants';
-import { Tab, Tabs, Box, Typography} from '@mui/material';
 import axios from 'axios';
 import BookingLists from './BookingLists';
 import BookingInformation from './BookingInformation';
