@@ -1,15 +1,16 @@
 import React from "react";
 import { Box, Typography } from '@mui/material';
+import { BASEURL_PROD } from '../constants';
 import QRCode from 'react-qr-code';
 import venueIcon from "../assets/images/venue-icon.png";
 import venueIconWhite from "../assets/images/venue-icon-white.png";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { GrShare } from "react-icons/gr";
+
 
 function WorkshopList({ bookingData, setWorkshopClickTicket }) {
 
-    
+    const endpoint_url = BASEURL_PROD + "bookings/availFreeTrial/";
     const isDarkModeOn = useSelector(selectDarkModeStatus);
 
     return (
@@ -22,7 +23,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                     borderRadius="15px"
                     sx={{
                         width: { xs: "100%", md: "800px" }, // Full width on small screens, fixed 800px on larger
-                        // height: { xs: "auto", md: "400px" }, // Height adapts on smaller screens
+                        height: { xs: "auto", md: "400px" }, // Height adapts on smaller screens
                         boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
                         mx: 'auto'
                     }}
@@ -53,7 +54,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                                     fontFamily: "Instrument Sans"
                                 }}
                             >
-                                Jazz 2
+                                {bookingData.entity_name}
                             </Typography>
                             <Typography
                                 variant="body2"
@@ -65,7 +66,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                                     color: "#D9D9D9"
                                 }}
                             >
-                                Ticket for 1
+                                Ticket for {bookingData.persons_allowed} 
                             </Typography>
                         </Box>
                         <Box
@@ -86,7 +87,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                                     // marginBottom: 2
                                 }}
                             >
-                                Booking ID: X6KQEPGTEIU79Y
+                                Booking ID: {bookingData.id} 
                             </Typography>
                         </Box>
                     </Box>
@@ -102,7 +103,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                         borderRadius="15px"
                         sx={{
                             width: { xs: "100%", md: "800px" },
-                            // height: { xs: "auto", md: "250px" },
+                            height: { xs: "auto", md: "250px" },
                             bgcolor: isDarkModeOn ? "black" : "white"
                         }}
                         display="flex"
@@ -113,7 +114,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                     >
                         <Box display="flex" flexDirection="column" alignItems="center">
                             <Box sx={{ p: '16px', bgcolor: 'white', borderRadius: 2 }}>
-                                <QRCode value="TeamopineSolution" size={140} />
+                                <QRCode  value={(endpoint_url + bookingData.entity_id)} size={140} />
                             </Box>
 
                             <Typography
@@ -197,27 +198,6 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                     </Box>
                 </Box>
 
-                {/* External Link Section */}
-                <Box display="flex" alignItems="center" justifyContent="center">
-                    <Typography
-                        variant="body2"
-                        mt={2}
-                        sx={{
-                            fontSize: { xs: "18px", md: "26px" },
-                            fontWeight: "500",
-                            fontFamily: "Instrument Sans",
-                            color: isDarkModeOn ? "white" : "black",
-                            textAlign: "center"
-                        }}
-                    >
-                        Check out the latest class timings
-
-                    </Typography>
-                    <div>
-                        <GrShare alt="Class timings"
-                            style={{ marginTop: "13px", width: { xs: 20, sm: 24, md: 30 }, height: { xs: 20, sm: 24, md: 30 }, marginLeft: "8px", color: isDarkModeOn ? "white" : "black" }} />
-                    </div>
-                </Box>
             </Box>
         </>
     );

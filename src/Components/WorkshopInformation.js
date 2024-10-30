@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Button } from '@mui/material';
 import QRCode from 'react-qr-code';
+import { BASEURL_PROD } from '../constants';
 import venueIcon from "../assets/images/venue-icon.png";
 import venueIconWhite from "../assets/images/venue-icon-white.png";
 // import shareIcon from "../assets/images/share-icon.png";
@@ -10,10 +11,11 @@ import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { GrShare } from "react-icons/gr";
 
-function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
+function WorkshopInformation({workshopClickTicket,setWorkshopClickTicket}) {
     
-    
+    const endpoint_url = BASEURL_PROD + "bookings/availFreeTrial/";
     const isDarkModeOn = useSelector(selectDarkModeStatus);
+
     return (
         <>
             <Box maxWidth="md" mx="auto" my={4} px={2} display="flex" flexDirection={{ xs: "column", md: "row" }}>
@@ -60,7 +62,7 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                                     fontFamily: "Instrument Sans"
                                 }}
                             >
-                                Jazz 2
+                                {workshopClickTicket.entity_name}
                             </Typography>
                             <Typography
                                 variant="body2"
@@ -72,7 +74,7 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                                     color: "#D9D9D9"
                                 }}
                             >
-                                Ticket for 1
+                                Ticket for {workshopClickTicket.persons_allowed}
                             </Typography>
                         </Box>
                         <Box
@@ -93,7 +95,7 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                                     // marginBottom: 2
                                 }}
                             >
-                                Booking ID: X6KQEPGTEIU79Y
+                                Booking ID: {workshopClickTicket.id}
                             </Typography>
                         </Box>
                     </Box>
@@ -119,16 +121,16 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                         <Box
                             display="flex"
                             flexDirection={{ xs: "column", md: "row" }} // Stack vertically on small screens
-                            alignItems="center"
-                            justifyContent="space-between"
+                            alignSelf={{xs:"center", md:"start"}}
                             gap={{ xs: 2, md: 7 }}
+                            ml={{ xs: 0, md: 4 }}
                         >
                             <Box display="flex" alignItems="center" sx={{ p: { xs: "8px", md: '16px' }, bgcolor: 'white', borderRadius: 2 }}>
-                            <QRCode style={{ placeSelf: 'start', width: "200px", height: "200px" }} value="TeamopineSolution" />
+                                <QRCode style={{ placeSelf: 'start', width: "200px", height: "200px" }} value={(endpoint_url + workshopClickTicket.entity_id)} />
                             </Box>
 
                             <Box display="flex" flexDirection="column" alignItems={{ xs: "center", md: "start" }}>
-                                <Typography
+                                {/* <Typography
                                     variant="body2"
                                     mt={2}
                                     mx={{xs: 2.5}}
@@ -141,7 +143,38 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                                     }}
                                 >
                                     Valid till 31st Oct, 2024 ; 22:14:07
-                                </Typography>
+                                </Typography> */}
+                                <Box display="flex" flexDirection='column' alignItems="start">
+                                    <Box sx={{
+                                        fontSize: { xs: "18px", md: "26px" },
+                                        fontWeight: "600",
+                                        fontFamily: "Instrument Sans",
+                                        color: isDarkModeOn ? "white" : "black"
+                                    }}>Date</Box>
+                                    <Box sx={{
+                                        fontSize: { xs: "15px", md: "22px" },
+                                        fontWeight: "500",
+                                        fontFamily: "Instrument Sans",
+                                        color: isDarkModeOn ? "white" : "black",
+                                        mt:{xs:1 ,md:2 }
+                                    }}>25th Oct, 2024</Box>
+                                </Box>
+                                <Box display="flex" flexDirection='column' alignItems="start">
+                                    <Box sx={{
+                                        fontSize: { xs: "18px", md: "26px" },
+                                        fontWeight: "600",
+                                        fontFamily: "Instrument Sans",
+                                        color: isDarkModeOn ? "white" : "black",
+                                        mt:{xs:2 ,md:3 }
+                                    }}>Time</Box>
+                                    <Box sx={{
+                                        fontSize: { xs: "15px", md: "22px" },
+                                        fontWeight: "500",
+                                        fontFamily: "Instrument Sans",
+                                        color: isDarkModeOn ? "white" : "black",
+                                        mt:{xs:1 ,md:2 }
+                                    }}>4:00 PM - 6:00 PM</Box>
+                                </Box>
                             </Box>
                         </Box>
 
@@ -177,7 +210,7 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                                 Check out the latest class timings
 
                                 <GrShare alt="Class timings"
-                                    style={{ width: { xs: 20, sm: 24, md: 30 }, height: { xs: 20, sm: 24, md: 30 }, marginLeft: "8px", color: isDarkModeOn ? "black" : "white" }} />
+                                    style={{ width: { xs: 20, sm: 24, md: 30 }, height: { xs: 20, sm: 24, md: 30 }, marginLeft: "8px", color: isDarkModeOn ? "white" : "black" }} />
 
                             </Typography>
                         </Box>
@@ -192,7 +225,7 @@ function WorkshopInformation({workshopClickTicke,setWorkshopClickTicket}) {
                         >
                             <Box>
                                 <Box display="flex" alignItems="center">
-                                    <img src={isDarkModeOn ?venueIconWhite: venueIcon} alt="Venue" style={{ width: "40px", height: "40px" }} />
+                                    <img src={isDarkModeOn ? venueIconWhite: venueIcon} alt="Venue" style={{ width: "40px", height: "40px" }} />
                                     <Typography
                                         variant="body2"
                                         ml={1}
