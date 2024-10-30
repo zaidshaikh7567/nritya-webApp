@@ -50,7 +50,7 @@ function OpenClassInformation({openClassClickTicket,setOpenClassClickTicket }) {
                             height: { xs: "auto", md: "180px" }
                         }}
                     >
-                        <Box display="flex" flexDirection="column" alignSelf="center">
+                        <Box display="flex" flexDirection="column" alignSelf="center" textAlign={{ xs: "center", md: 'left' }}>
                             <Typography
                                 variant="h6"
                                 component="span"
@@ -61,7 +61,7 @@ function OpenClassInformation({openClassClickTicket,setOpenClassClickTicket }) {
                                     fontFamily: "Instrument Sans"
                                 }}
                             >
-                                {openClassClickTicket.entity_name}
+                                {openClassClickTicket?.entity_name || "No Name"}
                             </Typography>
                             <Typography
                                 variant="body2"

@@ -43,7 +43,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                             height: { xs: "auto", md: "150px" }
                         }}
                     >
-                        <Box display="flex" flexDirection="column" alignSelf="center">
+                        <Box display="flex" flexDirection="column" alignSelf="center" textAlign={{ xs: "center", md: 'left' }}>
                             <Typography
                                 variant="h6"
                                 component="span"
