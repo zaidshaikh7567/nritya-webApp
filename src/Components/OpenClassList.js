@@ -42,7 +42,7 @@ function OpenClassList({bookingData, setOpenClassClickTicket}) {
                             height: { xs: "auto", md: "150px" }
                         }}
                     >
-                        <Box display="flex" flexDirection="column" alignSelf="center">
+                        <Box display="flex" flexDirection="column" alignSelf="center" textAlign={{ xs: "center", md: 'left' }}>
                             <Typography
                                 variant="h6"
                                 component="span"
@@ -53,7 +53,7 @@ function OpenClassList({bookingData, setOpenClassClickTicket}) {
                                     fontFamily: "Instrument Sans"
                                 }}
                             >
-                                {bookingData.entity_name}
+                                {bookingData?.entity_name || "No Name"}
                             </Typography>
                             <Typography
                                 variant="body2"

@@ -51,7 +51,7 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
                             height: { xs: "auto", md: "180px" }
                         }}
                     >
-                        <Box display="flex" flexDirection="column" alignSelf="center">
+                        <Box display="flex" flexDirection="column" alignSelf="center" textAlign={{ xs: "center", md: 'left' }}>
                             <Typography
                                 variant="h6"
                                 component="span"
