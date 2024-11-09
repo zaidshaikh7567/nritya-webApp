@@ -27,14 +27,14 @@ const SnackbarProvider = ({ children }) => {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbar.open}
-        autoHideDuration={6000}
+        autoHideDuration={12000}
         onClose={closeSnackbar}
       >
         <MuiAlert
           variant="filled"
           onClose={closeSnackbar}
           severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", maxWidth: "auto", boxShadow: 3 }} 
         >
           {snackbar.message}
         </MuiAlert>

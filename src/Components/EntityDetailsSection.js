@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import ShareButton from "./ShareButton";
 import { CHIP_LEVELS_DESIGN } from "../constants";
 
-function EntityDetailsSection({ dataItem, whatsappMessage }) {
+function EntityDetailsSection({ dataItem }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const shareUrl = window.location.href;
 

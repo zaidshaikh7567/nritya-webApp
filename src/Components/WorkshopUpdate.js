@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import {LinearProgress,  Button as MuiButton } from "@mui/material";
 import { db } from "../config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS, LEVELS } from "../constants";
@@ -87,6 +87,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
     if (
       !form.workshopName.value ||
       !form.workshopFees.value ||
+      !form.capacity.value ||
       !description ||
       !selectedDanceStyles?.length ||
       !selectedInstructors?.length ||
@@ -487,7 +488,11 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                 <Form.Label>Maximum capacity</Form.Label>
                 <Form.Control
                   rows={1}
-                  defaultValue={selectedWorkshop ? selectedWorkshop.price : 0}
+                  defaultValue={
+                    selectedWorkshop && selectedWorkshop.capacity !== undefined 
+                      ? selectedWorkshop.capacity 
+                      : ""
+                  }                
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
@@ -572,24 +577,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                   onChange={setDescription}
                 />
               </Col>
-              <Col md={6}>
-                <Form.Label>Youtube video Id</Form.Label>
-                <Form.Control
-                  rows={1}
-                  defaultValue={
-                    selectedWorkshop ? selectedWorkshop.youtubeId : ""
-                  }
-                  style={{
-                    backgroundColor: isDarkModeOn ? "#333333" : "",
-                    color: isDarkModeOn ? "white" : "black",
-                  }}
-                  type="text"
-                  placeholder="Enter youtube videoId"
-                  name="youtubeId"
-                />
-              </Col>
-            </Row>
-            <Row>
+              
                 <Col md={6}>
                   <Form.Label>Youtube video Link</Form.Label>
                   <Form.Control
@@ -627,6 +615,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
             </Row>
           </div>
         </Form.Group>
+        {isSubmitting && <LinearProgress />}
       </Form>
     </div>
   );

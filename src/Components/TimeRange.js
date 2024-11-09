@@ -13,32 +13,35 @@ const TimeRange = ({ defaultTime, handleSelect }) => {
     const options = [];
     let option_AM = [];
     let option_PM = [];
+    
     for (let hours = 0; hours < 24; hours++) {
-      for (let minutes = 0; minutes < 60; minutes += 30) {
-        const formattedHours = hours.toString().padStart(2, "0");
-        const formattedMinutes = minutes.toString().padStart(2, "0");
-        const timeString = `${formattedHours}:${formattedMinutes}`;
-
-        if (hours < 12) {
-          option_AM.push(`${timeString} AM`);
-        } else {
-          const formattedHours12 = (hours - 12).toString().padStart(2, "0");
-          option_PM.push(`${formattedHours12}:${formattedMinutes} PM`);
+        for (let minutes = 0; minutes < 60; minutes += 30) {
+            const formattedMinutes = minutes.toString().padStart(2, "0");
+            
+            if (hours < 12) {
+                // Handle 12-hour format for AM, converting 0 hours to 12 for midnight
+                const formattedHours = hours === 0 ? 12 : hours;
+                option_AM.push(`${formattedHours}:${formattedMinutes} AM`);
+            } else {
+                // Handle 12-hour format for PM, converting 12-23 hours to 1-12 format
+                const formattedHours = hours === 12 ? 12 : hours % 12;
+                option_PM.push(`${formattedHours}:${formattedMinutes} PM`);
+            }
         }
-      }
     }
 
+    // Interleave AM and PM options to build the full list
     for (let i = 0; i < option_AM.length || i < option_PM.length; i++) {
-      if (i < option_AM.length) {
-        options.push(option_AM[i]);
-      }
-      if (i < option_PM.length) {
-        options.push(option_PM[i]);
-      }
+        if (i < option_AM.length) {
+            options.push(option_AM[i]);
+        }
+        if (i < option_PM.length) {
+            options.push(option_PM[i]);
+        }
     }
 
     return options;
-  };
+};
 
   const renderTimeOptions = (defaultValue) => {
     const timeOptions = generateTimeOptions();

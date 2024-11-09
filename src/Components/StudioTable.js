@@ -27,10 +27,10 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const danceStylesOptions = danceStyles.danceStyles;
-  const [defaultTime, setDefaultTime] =  useState("00:00-00:00")
+  const [defaultTime, setDefaultTime] =  useState('12:00 PM - 01:00 PM')
 
   const handleAddRow = () => {
-    setTableData((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '00:00 - 00:00', instructors: [], fee:'',level:'' ,status: '',freeTrial: false, classCategory: []  }]);
+    setTableData((prevData) => [...prevData, { className: '', danceForms: '', days: '', time: '12:00 PM - 01:00 PM', instructors: [], fee:'',level:'' ,status: '',freeTrial: false, classCategory: []  }]);
   };
 
   const handleRemoveRow = (index) => {

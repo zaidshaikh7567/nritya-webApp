@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
-import { Button as MuiButton } from "@mui/material";
+import { LinearProgress, Button as MuiButton } from "@mui/material";
 import { db } from "../config";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { COLLECTIONS, LEVELS } from "../constants";
@@ -471,8 +471,10 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
                 <Form.Control
                   rows={1}
                   defaultValue={
-                    selectedOpenClass ? selectedOpenClass.capacity : 0
-                  }
+                    selectedOpenClass && selectedOpenClass.capacity !== undefined 
+                      ? selectedOpenClass.capacity 
+                      : ""
+                  } 
                   style={{
                     backgroundColor: isDarkModeOn ? "#333333" : "",
                     color: isDarkModeOn ? "white" : "black",
@@ -595,6 +597,7 @@ function OpenClassUpdate({ openClassId, instructors, studioId }) {
             </Row>
           </div>
         </Form.Group>
+        {isSubmitting && <LinearProgress />}
       </Form>
     </div>
   );

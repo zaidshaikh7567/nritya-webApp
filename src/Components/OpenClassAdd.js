@@ -553,7 +553,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
               <Row>
                 <Col md={6}>
                   <TimeRange
-                    defaultTime={openClassTime || "00:00-00:00"}
+                    defaultTime={openClassTime || "12:00 PM - 01:00 PM"}
                     handleSelect={handleTimeSelect}
                   />
                 </Col>

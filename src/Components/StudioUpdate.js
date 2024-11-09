@@ -13,7 +13,7 @@ import TimeRangePicker from './TimeRangePicker';
 import indianCities from '../cities.json';
 import danceStyles from '../danceStyles.json';
 import { AMENITIES_ICONS } from '../constants';
-import {Autocomplete,TextField} from '@mui/material';
+import {Autocomplete,LinearProgress,TextField} from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { FaMinus, FaPlus } from 'react-icons/fa';
@@ -52,6 +52,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedAmenities,setSelectedAmenities] = useState([]);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [defaultTime, setDefaultTime] =  useState("00:00-00:00");
 
@@ -217,6 +218,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
 
   const handleUpdateStudio = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
     const nameIdLocal = event.target.nameId.value;
     const indexOfColon = nameIdLocal.lastIndexOf(":");
     const studioId = nameIdLocal.substring(indexOfColon + 1).trim();
@@ -282,6 +284,8 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       console.error("Error updating studio: ", error);
       setShowUpdateSuccessAlert(false);
       setShowUpdateErrorAlert(true);
+    } finally{
+      setIsSubmitting(false);
     }
     // Reset input fields to their initial values when a new studio is selected
     document.getElementById("updateStudioForm").reset();
@@ -736,9 +740,10 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
                         </Row>
 
             <br></br>
-            <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }} type="submit">
+            <Button style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }} type="submit" disabled={isSubmitting}>
               Update Studio
             </Button>
+            {isSubmitting && <LinearProgress />}
             </Form>
             {studioId && studioId.length > 0 && selectedStudioId && (
               <>

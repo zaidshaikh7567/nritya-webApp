@@ -95,9 +95,9 @@ function App() {
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
                   <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
-                  <Route path='/workshop/:workshopId' element={<WorkShopFullPage/>}/>
-                  <Route path='/openClass/:openClassId' element={<OpenClassFullPage/>}/>
-                  <Route path='/course/:courseId' element={<CourseFullPage/>}/>
+                  <Route path='/workshop/:entityId' element={<WorkShopFullPage/>}/>
+                  <Route path='/openClass/:entityId' element={<OpenClassFullPage/>}/>
+                  <Route path='/course/:entityId' element={<CourseFullPage/>}/>
                   <Route path='/st' element={<StudioFullPage/>}/>
                   <Route path='/search/:entity' element={<SearchPage/>}/>
                   <Route path='/jobs' element={<JobHire/>}/>

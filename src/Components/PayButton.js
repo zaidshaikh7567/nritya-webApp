@@ -44,7 +44,6 @@ function PayButton() {
 
     // Create a new order and send details to backend
     const result = await axios.post("https://nrityaserver-2b241e0a97e5.herokuapp.com/payments/razorpay_order", {
-      "order_id": "Order-5152",
       "name": "Ayush Raj",
       "entity_id": "abnh_78opjsjwq123",
       "entity_name": "Studio Of Ayush",
