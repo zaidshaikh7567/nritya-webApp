@@ -81,7 +81,7 @@ function LandingPage() {
   };
 
   useEffect(() => {
-    const retryFetch = async (url, options = {}, retries = 10, delay = 1000) => {
+    const retryFetch = async (url, options = {}, retries = 5, delay = 1000) => {
         for (let i = 0; i < retries; i++) {
             try {
                 const response = await fetch(url, options);
@@ -117,6 +117,7 @@ function LandingPage() {
 
             return combinedData;
         } catch (error) {
+            setShowEmptyPage(true);
             console.error("Fetch error:", error);
             throw error;
         }
