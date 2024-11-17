@@ -29,17 +29,17 @@ Run this to see changes node server.js \
 cp -r ../build ./
 git add . \
 git commit \
-git push
+git push \
 
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### Run
-npm start
-npm run start:dev [connects with localhost)
-npm run start:staging
-npm run start:production
+npm start \
+npm run start:dev [connects with localhost) \
+npm run start:staging \
+npm run start:production \
 
 ### `npm test`
 
@@ -47,8 +47,8 @@ Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
-npm run build:staging
-npm run build:production [Remove homepage]
+npm run build:staging \
+npm run build:production [Remove homepage] \
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
