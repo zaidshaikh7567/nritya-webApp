@@ -12,7 +12,7 @@ git commit \
 git push
 
 ### Generate Build & push it to gh-pages
-npm run build \
+npm run build:staging \
 git checkout gh-pages \
 cp -r build/* . \
 git add . \
@@ -21,7 +21,7 @@ git push
 
 ### Generate Build for domain & push it to build-branch
 Remove "homepage" line from package.json \
-npm run build \
+npm run build:production \
 git checkout . \
 cp -r build ../ \
 git checkout build-branch \
