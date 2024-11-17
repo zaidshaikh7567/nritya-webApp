@@ -16,6 +16,9 @@ import { getAllFilesFromFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
 import { BASEURL_PROD } from "../constants";
 import { firebaseConfig, envType } from "../config";
+import EmptyState from "../Components/EmptyState";
+import EntitySkeleton from "../Components/EntitySkeleon";
+//import { sleep } from "../utils/common";
 
 
 const DanceCarousel = lazy(() => import("../Components/DanceCarousel"));
@@ -45,6 +48,7 @@ function LandingPage() {
   });
   const [studioIdName,setStudioIdName] = useState({});
   const [danceImagesUrl, setDanceImagesUrl] = useState([]);
+  const [showEmptyPage,setShowEmptyPage] = useState(false);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const navigate = useNavigate();
 
@@ -107,6 +111,10 @@ function LandingPage() {
 
             const allData = await Promise.all(promises);
             const combinedData = Object.assign({}, ...allData);
+            const exploreData = Object.values(combinedData).flat();
+            const isEmpty = exploreData.length === 0 || exploreData.every(obj => Object.keys(obj).length === 0);
+            setShowEmptyPage(isEmpty);
+
             return combinedData;
         } catch (error) {
             console.error("Fetch error:", error);
@@ -212,9 +220,11 @@ function LandingPage() {
         </Row>
         
         <LocationComponent />
+        <br/>
 
-        <br />
-          {/* Studios Section */}
+      {showEmptyPage? (<EmptyState/>):
+      (<>
+        {/* Studios Section */}
       {exploreEntity[COLLECTIONS.STUDIO] && Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 0 && (
         <>
           <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
@@ -222,7 +232,7 @@ function LandingPage() {
           </h3>
           <Row>
             {/* Wrap CardSlider with Suspense */}
-            <Suspense fallback={<div>Loading Studios...</div>}>
+            <Suspense fallback={<EntitySkeleton/>}>
               <CardSlider dataList={exploreEntity[COLLECTIONS.STUDIO]} imgOnly={false} />
             </Suspense>
           </Row>
@@ -236,7 +246,7 @@ function LandingPage() {
             Explore Workshops
           </h3>
           <Row>
-            <Suspense fallback={<div>Loading Workshops...</div>}>
+            <Suspense fallback={<EntitySkeleton/>}>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName={studioIdName} type={COLLECTIONS.WORKSHOPS} />
             </Suspense>
           </Row>
@@ -250,7 +260,7 @@ function LandingPage() {
             Explore Open Classes
           </h3>
           <Row>
-            <Suspense fallback={<div>Loading Open Classes...</div>}>
+            <Suspense fallback={<EntitySkeleton/>}>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.OPEN_CLASSES]} studioIdName={studioIdName} type={COLLECTIONS.OPEN_CLASSES} />
             </Suspense>
           </Row>
@@ -264,7 +274,7 @@ function LandingPage() {
             Explore Courses
           </h3>
           <Row>
-            <Suspense fallback={<div>Loading Courses...</div>}>
+            <Suspense fallback={<EntitySkeleton/>}>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.COURSES]} studioIdName={studioIdName} type={COLLECTIONS.COURSES} />
             </Suspense>
           </Row>
@@ -293,6 +303,9 @@ function LandingPage() {
             </Col>
           ))}
         </Row>
+        </>
+      )}
+      
         
       </Container>
     </div>

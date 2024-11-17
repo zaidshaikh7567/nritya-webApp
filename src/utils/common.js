@@ -68,6 +68,8 @@ export const getRandomColor = () => {
   return COLORS[randomKey];
 };
 
+export const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const bookEntity = async (bookingData) => {
   const url = `${SERVER_URLS.CLOUD}bookings/bookEntity/`; 
 
