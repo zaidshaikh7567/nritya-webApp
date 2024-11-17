@@ -13,7 +13,7 @@ import CardSliderCard from "../Components/CardSliderCard";
 import './SearchPage.css';
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
-import { COLLECTIONS, LEVELS } from "../constants";
+import { COLLECTIONS, LEVELS, BASEURL_PROD } from "../constants";
 import NWorkshopCard from "../Components/NWorkshopCard";
 import NOpenClassCard from "../Components/NOpenClassCard";
 import NCourseCard from "../Components/NCourseCard";
@@ -110,7 +110,7 @@ const SearchPage = () => {
   };
   const fetchIdNameMp = async (city) => {
     try {
-      const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
+      const apiEndpoint = `${BASEURL_PROD}api/autocomplete/?&city=${city}`;
       const response = await fetch(apiEndpoint);
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -134,7 +134,7 @@ const SearchPage = () => {
       if (query == null) {
       setQuery("");
     }
-    let apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?query=${query}`;
+    let apiEndpoint = `${BASEURL_PROD}api/search/?query=${query}`;
     const entity = getCollectionForSearchType(storedSelectedSearchType);
 
     const city = localStorage.getItem(FILTER_LOCATION_KEY) || "New Delhi";
@@ -176,7 +176,7 @@ const SearchPage = () => {
 
 
   const handleChange = async (event, value) => {
-    const baseUrl = "https://nrityaserver-2b241e0a97e5.herokuapp.com/api";
+    const baseUrl = `${BASEURL_PROD}api`;
     //setQuery(event.target.value);
     setQuery(value);
 

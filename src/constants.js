@@ -30,7 +30,7 @@ export const ENTITY_FLAG = {
 
 
 export const SERVER_URLS = {
-    PROD : 'https://nrityaserver-2b241e0a97e5.herokuapp.com/',
+    CLOUD : process.env.REACT_APP_BACKEND_URL,
     LOCAL : 'http://127.0.0.1:8000/'
 }
 
@@ -109,7 +109,7 @@ export const SEARCH_FILTERS ={
 }
 
 export const BASEURL_DEV = "http://127.0.0.1:8000/"
-export const BASEURL_PROD= "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
+export const BASEURL_PROD= process.env.REACT_APP_BACKEND_URL
 
 export const AMENITIES_ICONS = {
     "AC": <FaSnowflake />,

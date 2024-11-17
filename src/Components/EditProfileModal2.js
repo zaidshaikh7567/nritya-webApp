@@ -9,8 +9,8 @@ import qs from 'qs';
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 
-const PROD_BASE_URL = "https://nrityaserver-2b241e0a97e5.herokuapp.com"
-const LOCAL_BASE_URL = "http://127.0.0.1:8000"
+const PROD_BASE_URL = BASEURL_PROD
+const LOCAL_BASE_URL = "http://127.0.0.1:8000/"
 const BASE_URL = PROD_BASE_URL
 
 const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }) => {
@@ -64,7 +64,7 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
       //console.log(userProfileInfo.PhoneNumber);
   
       const response = await axios.post(
-        `${BASE_URL}/djSms/request_otp/`,
+        `${BASEURL_PROD}djSms/request_otp/`,
         qs.stringify({
           phone_number: userProfileInfo.PhoneNumber, // use qs to stringify the data
         }),
@@ -97,7 +97,7 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
     //console.log(userProfileInfo.PhoneNumber,otp)
     try {
       const response = await axios.post(
-        `${BASE_URL}/djSms/confirm_otp/`, 
+        `${BASEURL_PROD}djSms/confirm_otp/`, 
         qs.stringify({
           "phone_number": userProfileInfo.PhoneNumber,
           "otp": otp,

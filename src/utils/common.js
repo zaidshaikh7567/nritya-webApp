@@ -69,7 +69,7 @@ export const getRandomColor = () => {
 };
 
 export const bookEntity = async (bookingData) => {
-  const url = `${SERVER_URLS.PROD}bookings/bookEntity/`; 
+  const url = `${SERVER_URLS.CLOUD}bookings/bookEntity/`; 
 
   try {
     const response = await fetch(url, {

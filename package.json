@@ -73,8 +73,13 @@
     "scripts": {
         "predeploy": "npm run build",
         "deploy": "gh-pages -d build",
-        "start": "react-scripts start",
-        "build": "react-scripts build",
+        "start": "env-cmd -f .env.staging react-scripts start",
+        "start:dev": "env-cmd -f .env.dev react-scripts start",
+        "start:staging": "env-cmd -f .env.staging react-scripts start",
+        "start:production": "env-cmd -f .env.production react-scripts start",
+        "build:staging": "env-cmd -f .env.staging react-scripts build",
+        "build:production": "env-cmd -f .env.production react-scripts build",
+        "build": "env-cmd -f .env.staging react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
@@ -97,6 +102,7 @@
         ]
     },
     "devDependencies": {
+        "env-cmd": "^10.1.0",
         "gh-pages": "^5.0.0"
     }
 }

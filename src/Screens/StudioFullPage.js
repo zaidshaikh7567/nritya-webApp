@@ -25,6 +25,7 @@ import { Chip, Grid } from '@mui/material';
 import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
+import { BASEURL_PROD } from './../constants.js';
 
 function StudioFullPage() {
   const { studioId } = useParams();
@@ -91,8 +92,9 @@ function StudioFullPage() {
   };
 
 
-  const BASEURL_STUDIO = "https://nrityaserver-2b241e0a97e5.herokuapp.com/api/studio/"
+  const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
   useEffect(() => {
+    console.log(BASEURL_STUDIO)
     const fetchData = async () => {
       try {
         if (JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId) {

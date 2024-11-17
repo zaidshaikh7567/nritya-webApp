@@ -14,6 +14,8 @@ import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from "react-router-dom";
 import { getAllFilesFromFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
+import { BASEURL_PROD } from "../constants";
+import { firebaseConfig, envType } from "../config";
 
 
 const DanceCarousel = lazy(() => import("../Components/DanceCarousel"));
@@ -98,7 +100,7 @@ function LandingPage() {
     const fetchAndSaveData = async (city, entities) => {
         try {
             const promises = entities.map(entity => {
-                const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/search/?&city=${city}&entity=${entity}`;
+                const apiEndpoint = `${BASEURL_PROD}api/search/?&city=${city}&entity=${entity}`;
                 return retryFetch(apiEndpoint)
                     .then(data => ({ [entity]: data }));
             });
@@ -114,7 +116,7 @@ function LandingPage() {
 
     const fetchIdNameMp = async (city) => {
         try {
-            const apiEndpoint = `https://nrityaserver-2b241e0a97e5.herokuapp.com/api/autocomplete/?&city=${city}`;
+            const apiEndpoint = `${BASEURL_PROD}api/autocomplete/?&city=${city}`;
             return await retryFetch(apiEndpoint);
         } catch (error) {
             console.error("Error in processing:", error);
@@ -171,7 +173,9 @@ function LandingPage() {
 
     fetchImages();
   }, []);
-
+  console.log("ENV:",envType,)
+  console.log("ENV URL:",BASEURL_PROD);
+  console.log("FIREBASE_ENV:",firebaseConfig);
   return (
     <div>
       <Container className="my-0">

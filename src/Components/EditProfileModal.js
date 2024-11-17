@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Autocomplete, Alert, Snackbar } from '@mui/material';
 import danceStyles from '../danceStyles.json';
-import { COLLECTIONS } from '../constants';
+import { BASEURL_PROD, COLLECTIONS } from '../constants';
 import { useAuth } from '../context/AuthContext';
 import { saveDocument, handleSavePostOTPSuccess } from '../utils/firebaseUtils';
 import axios from "axios";
 import qs from 'qs';
 
-const PROD_BASE_URL = "https://nrityaserver-2b241e0a97e5.herokuapp.com"
-const LOCAL_BASE_URL = "http://127.0.0.1:8000"
+const PROD_BASE_URL = BASEURL_PROD
+const LOCAL_BASE_URL = "http://127.0.0.1:8000/"
 const BASE_URL = PROD_BASE_URL
 
 const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }) => {
@@ -61,7 +61,7 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
       //console.log(userProfileInfo.PhoneNumber);
   
       const response = await axios.post(
-        `${BASE_URL}/djSms/request_otp/`,
+        `${BASE_URL}djSms/request_otp/`,
         qs.stringify({
           phone_number: userProfileInfo.PhoneNumber, // use qs to stringify the data
         }),
@@ -94,7 +94,7 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
     //console.log(userProfileInfo.PhoneNumber,otp)
     try {
       const response = await axios.post(
-        `${BASE_URL}/djSms/confirm_otp/`, 
+        `${BASE_URL}djSms/confirm_otp/`, 
         qs.stringify({
           "phone_number": userProfileInfo.PhoneNumber,
           "otp": otp,

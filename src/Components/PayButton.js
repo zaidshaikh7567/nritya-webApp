@@ -2,6 +2,7 @@ import React from 'react';
 import logo from '../logo.png';
 import axios from "axios";
 import { Button } from '@mui/joy';
+import { BASEURL_PROD } from '../constants';
 
 function PayButton() {
 
@@ -18,7 +19,7 @@ function PayButton() {
   
   const handlePaymentResponse = async (response) => {
     try {
-      const backendResponse = await axios.post("https://nrityaserver-2b241e0a97e5.herokuapp.com/payments/razorpay_callback", response);
+      const backendResponse = await axios.post(`${BASEURL_PROD}payments/razorpay_callback`, response);
       if (backendResponse.status === 200) {
         alert(`Payment Success:
           Order ID: ${response.razorpay_order_id}
@@ -43,7 +44,7 @@ function PayButton() {
     }
 
     // Create a new order and send details to backend
-    const result = await axios.post("https://nrityaserver-2b241e0a97e5.herokuapp.com/payments/razorpay_order", {
+    const result = await axios.post(`${BASEURL_PROD}payments/razorpay_order`, {
       "name": "Ayush Raj",
       "entity_id": "abnh_78opjsjwq123",
       "entity_name": "Studio Of Ayush",
