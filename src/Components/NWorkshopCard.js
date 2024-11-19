@@ -458,11 +458,33 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
           >
             {dataItem.date || ""} | {dataItem.time || ""}
           </Typography>
-          <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
-            {dataItem && dataItem.price && (
-              <span> ₹{dataItem.price}</span>
-            )}
-          </Typography>
+          <Box mt={1} display="flex" justifyContent="space-between">
+            <Typography alignSelf="center" style={{color: isDarkModeOn ? 'white' : 'black'}}>
+              {dataItem && dataItem.price && (
+                <span> ₹{dataItem.price}</span>
+              )}
+            </Typography>
+            <Button
+              size='small'
+              variant="contained"
+              sx={{
+                alignSelf: "center",
+                color: 'white',
+                backgroundColor: '#735EAB',
+                '&:hover': {
+                  backgroundColor: '#735EAB',
+                  color: 'white',
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: isDarkModeOn ? 'rgba(115, 94, 171, 0.5)' : 'rgba(115, 94, 171, 0.3)',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                },
+              }}
+              type='button'
+            >
+              Book Now
+            </Button>
+          </Box>
         </CardContent>
       </Card>
 

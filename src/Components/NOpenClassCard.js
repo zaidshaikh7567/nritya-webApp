@@ -465,6 +465,27 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
           >
             {dataItem.date || ""} | {dataItem.time || ""}
           </Typography>
+          <Box mt={1} textAlign="right">
+            <Button
+              size='small'
+              variant="contained"
+              sx={{
+                color: 'white',
+                backgroundColor: '#735EAB',
+                '&:hover': {
+                  backgroundColor: '#735EAB',
+                  color: 'white',
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: isDarkModeOn ? 'rgba(115, 94, 171, 0.5)' : 'rgba(115, 94, 171, 0.3)',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                },
+              }}
+              type='button'
+            >
+              Book Now
+            </Button>
+          </Box>
         </CardContent>
       </Card>
 
