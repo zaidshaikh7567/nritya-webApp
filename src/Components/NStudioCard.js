@@ -100,7 +100,7 @@ export default function NStudioCard({img_src,data}) {
 
         </AspectRatio>
       <CardContent style={{ padding: '10px' }}>
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" columnGap={1}>
           <Link
             alignSelf="center"
             href={`#/studio/${studioId}`}
@@ -109,13 +109,18 @@ export default function NStudioCard({img_src,data}) {
             textColor="text.primary"
             underline='none'
             overlay
+            whiteSpace='nowrap'
+            overflow='hidden'
+            textOverflow='ellipsis'
             style={{ color: isDarkModeOn ? 'white' : 'black' }}
           >
             {data && data.studioName ? data.studioName : "    "}
           </Link>
-          <Typography alignSelf="center" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-            <span>⭐ {data && data.avgRating ? data.avgRating.toFixed(1) : "Not rated yet"}</span>
-          </Typography>
+          {data && data.avgRating ?
+            <Typography width={52} flexShrink={0} alignSelf="center" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+              ⭐ {data.avgRating.toFixed(1)}
+            </Typography> : null
+          }
         </Box>
         <Typography style={{ color: isDarkModeOn ? 'white' : 'black' }} level="body-xs">{data.street ? data.street : ".  "}</Typography>
         <IconButton
