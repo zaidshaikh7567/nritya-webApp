@@ -24,6 +24,7 @@ const Order = lazy(() => import('./Screens/Order'));
 const Cart = lazy(() => import('./Screens/Cart'));
 const Transactions = lazy(() => import('./Components/Transactions'));
 const Trail = lazy(() => import('./Components/Trail'));
+const StudioSubscription = lazy(() => import('./Screens/StudioSubscription'));
 const CreatorStudio = lazy(() => import('./Screens/CreatorStudio'));
 const CreatorDashboard = lazy(() => import('./Screens/CreatorDashboard'));
 const CreatorInstructor = lazy(() => import('./Screens/CreatorInstructor'));
@@ -118,6 +119,7 @@ function App() {
                       <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
                       <Route path='/modifyCourses' element={<CreatorCourse/>}/>
                       <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>
+                      <Route path='/studioSubscription' element={<StudioSubscription/>}/>
                     </Route>
                   </Route>
                   <Route path='/n-trail' element={<Trail/>}/>

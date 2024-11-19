@@ -44,7 +44,8 @@ function CreatorDashboard() {
     { title: "Total Instructors", data: counts.instructorsCount, link: "#/modifyInstructors" },
     { title: "Total Workshops", data: counts.workshopsCount, link: "#/modifyWorkshops" },
     { title: "Total Open Classes", data: counts.openClassesCount, link: "#/modifyOpenClasses" },
-    { title: "Total Courses", data: counts.coursesCount, link: "#/modifyCourses" }
+    { title: "Total Courses", data: counts.coursesCount, link: "#/modifyCourses" },
+    { title: "Studio Subscription", data: counts.coursesCount, link: "#/studioSubscription" }
   ];
 
 
