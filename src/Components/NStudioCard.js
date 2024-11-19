@@ -4,6 +4,8 @@ import AspectRatio from '@mui/joy/AspectRatio';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Chip from '@mui/joy/Chip';
+import Box from '@mui/joy/Box';
+import Button from '@mui/material/Button';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import { Stack } from '@mui/material';
@@ -97,19 +99,25 @@ export default function NStudioCard({img_src,data}) {
           </Stack>
 
         </AspectRatio>
-      <CardContent style={{padding:'10px'}}>
-        <Link
-          href={`#/studio/${studioId}`}
-          fontWeight="bold"
-          color="neutral"
-          textColor="text.primary"
-          underline='none'
-          overlay
-          style={{color: isDarkModeOn?'white':'black'}}
-        >
-          {data && data.studioName?data.studioName:"    "}
-        </Link>
-        <Typography style={{color: isDarkModeOn?'white':'black'}} level="body-xs">{data.street?data.street:".  "}</Typography>
+      <CardContent style={{ padding: '10px' }}>
+        <Box display="flex" justifyContent="space-between">
+          <Link
+            alignSelf="center"
+            href={`#/studio/${studioId}`}
+            fontWeight="bold"
+            color="neutral"
+            textColor="text.primary"
+            underline='none'
+            overlay
+            style={{ color: isDarkModeOn ? 'white' : 'black' }}
+          >
+            {data && data.studioName ? data.studioName : "    "}
+          </Link>
+          <Typography alignSelf="center" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+            <span>⭐ {data && data.avgRating ? data.avgRating.toFixed(1) : "Not rated yet"}</span>
+          </Typography>
+        </Box>
+        <Typography style={{ color: isDarkModeOn ? 'white' : 'black' }} level="body-xs">{data.street ? data.street : ".  "}</Typography>
         <IconButton
           hidden
           aria-label="Like minimal photography"
@@ -127,13 +135,31 @@ export default function NStudioCard({img_src,data}) {
         >
           <Favorite />
         </IconButton>
-        <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
-            <span>⭐ {data && data.avgRating ? data.avgRating.toFixed(1) : "Not rated yet"}</span>
-            {data && data.minFee && (
-              <span style={{position: "absolute", right: 2}}>  Starts @₹{data.minFee}</span>
-            )}
+        <Box display="flex" justifyContent="space-between">
+          <Typography alignSelf="center" fontSize={12} style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+            {data && data.minFee && (`@ ₹${data.minFee} onwards`)}
           </Typography>
-
+          <Button
+            size='small'
+            variant="contained"
+            sx={{
+              alignSelf: "center",
+              color: 'white',
+              backgroundColor: '#735EAB',
+              '&:hover': {
+                backgroundColor: '#735EAB',
+                color: 'white',
+              },
+              '&.Mui-disabled': {
+                backgroundColor: isDarkModeOn ? 'rgba(115, 94, 171, 0.5)' : 'rgba(115, 94, 171, 0.3)',
+                color: 'rgba(255, 255, 255, 0.5)',
+              },
+            }}
+            type='button'
+          >
+            Explore
+          </Button>
+        </Box>
       </CardContent>
     </Card>
   );
