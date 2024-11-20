@@ -13,6 +13,7 @@ import EntityDetailsSection from "../Components/EntityDetailsSection";
 import EntityBookingCard from "../Components/EntityBookingCard";
 import EntityVenueBox from "../Components/EntityVenueBox";
 import { useAlert } from '../context/AlertContext';
+import PageMeta from "./PageMeta";
  
 
 function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName, defaultImageUrl }) {
@@ -111,40 +112,48 @@ function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName,
   }
 
   return (
-    <Box
-      sx={{
-        padding: "0rem",
-        minHeight: "100vh",
-        color: isDarkModeOn ? "white" : "black",
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid item xs={12} lg={8}>
-          <MediaDisplay
-            youtubeViedoLink={dataItem.youtubeViedoLink}
-            imageUrl={imageUrl}
-            altText={dataItem.name || "Entity Image"}
-          />
+    <>
+      <PageMeta
+        title={dataItem?.workshopName || dataItem?.openClassName || dataItem?.courseName || ""}
+        description={`${dataItem?.workshopName || dataItem?.openClassName || dataItem?.courseName}, ${dataItem?.city}, ${dataItem?.price}, ${dataItem?.danceStyles?.join?.(',')}`}
+        image={imageUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+      />
+
+      <Box
+        sx={{
+          padding: "0rem",
+          minHeight: "100vh",
+          color: isDarkModeOn ? "white" : "black",
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={8}>
+            <MediaDisplay
+              youtubeViedoLink={dataItem.youtubeViedoLink}
+              imageUrl={imageUrl}
+              altText={dataItem.name || "Entity Image"}
+            />
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <EntityBookingCard
+              dataItem={dataItem}
+              personsAllowed={personsAllowed}
+              setPersonsAllowed={setPersonsAllowed}
+              totalPrice={totalPrice}
+              handleBook={handleBook}
+              entityType={entityCollectionName}
+            />
+            {isBooking && <LinearProgress/> }
+          </Grid>
+          <Grid item xs={12} lg={8}>
+            <EntityDetailsSection dataItem={dataItem} />
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <EntityVenueBox dataItem={dataItem} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} lg={4}>
-          <EntityBookingCard
-            dataItem={dataItem}
-            personsAllowed={personsAllowed}
-            setPersonsAllowed={setPersonsAllowed}
-            totalPrice={totalPrice}
-            handleBook={handleBook}
-            entityType={entityCollectionName}
-          />
-          {isBooking && <LinearProgress/> }
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <EntityDetailsSection dataItem={dataItem} />
-        </Grid>
-        <Grid item xs={12} lg={4}>
-          <EntityVenueBox dataItem={dataItem} />
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 }
 

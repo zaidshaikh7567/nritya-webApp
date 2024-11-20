@@ -24,7 +24,7 @@ import Typography from '@mui/joy/Typography';
 import { Chip, Grid } from '@mui/material';
 import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
-import { Helmet } from 'react-helmet-async';
+import PageMeta from '../Components/PageMeta.js';
 import { BASEURL_PROD } from './../constants.js';
 
 function StudioFullPage() {
@@ -210,10 +210,11 @@ function StudioFullPage() {
 
   return (
     <Container fluid style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'color' }}>
-      <Helmet>
-        <title>{studioData ? studioData.studioName : "Dance Studio"}</title>
-        <meta name="description" content={`Learn ${studioData ? studioData.danceStyles : ''}`} />
-      </Helmet>
+      <PageMeta
+        title={studioData ? studioData.studioName : ""}
+        description={`${studioData?.studioName}, ${studioData?.city}, ${studioData?.danceStyles}`}
+        image={studioData?.iconUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+      />
       <Row>
         <Col lg={8} className='d-flex'>
           <div className='contentWrapper-main'>
