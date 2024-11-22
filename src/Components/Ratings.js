@@ -137,10 +137,10 @@ function Ratings({ userID, studioID }) {
   };
   
   return (
-    <div>
-      <p >
+    <div className='text-center'>
+      <p>
         {userID ? (
-          `${rating !== -1 ? "" : 'You have not rated this studio yet.'}`
+          `${rating !== -1 ? `You have given a rating of ${rating}` : 'Rate now'}`
         ) : (
           <a href="#/login">
             <StarRating rating={rating} onRatingChange={handleRatingChange} 
