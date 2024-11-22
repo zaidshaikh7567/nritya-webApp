@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Skeleton from "@mui/material/Skeleton";
 import MUIButton from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import { COLLECTIONS } from "../constants";
 import {faBolt,faMusic,faHiking,faGlassCheers,} from "@fortawesome/free-solid-svg-icons";
 import "./LandingPage.css";
@@ -24,6 +25,8 @@ import EntitySkeleton from "../Components/EntitySkeleon";
 const DanceCarousel = lazy(() => import("../Components/DanceCarousel"));
 const CardSlider = lazy(() => import('../Components/CardSlider'));
 const CardSliderNew = lazy(() => import('../Components/CardSliderNew'));
+
+const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
 
 // Define the array of dance forms with their names and corresponding icons
 const danceForms = [
@@ -63,6 +66,10 @@ function LandingPage() {
     }, 100);
   };
 
+  const navigateToSearch = (entity) => {
+    localStorage.setItem(FILTER_SEARCH_TYPE_KEY, entity);
+    navigate(`/search/${entity}`);
+  };
 
   const cardStyle = {
     background: isDarkModeOn ? "#333333" : "white",
@@ -228,9 +235,12 @@ function LandingPage() {
         {/* Studios Section */}
       {exploreEntity[COLLECTIONS.STUDIO] && Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 0 && (
         <>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
-            Explore Studios
-          </h3>
+          <Box sx={{ display:"flex", justifyContent:"space-between", alignItems: 'center' }}>
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+              Explore Studios
+            </h3>
+            {Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 4 ? <MUIButton variant="text" onClick={() => navigateToSearch("studio")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
+          </Box>
           <Row>
             {/* Wrap CardSlider with Suspense */}
             <Suspense fallback={<EntitySkeleton/>}>
@@ -243,9 +253,12 @@ function LandingPage() {
       {/* Workshops Section */}
       {exploreEntity[COLLECTIONS.WORKSHOPS] && Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 0 && (
         <>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
-            Explore Workshops
-          </h3>
+          <Box sx={{ display:"flex", justifyContent:"space-between", alignItems: 'center' }}>
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+              Explore Workshops
+            </h3>
+            {Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 4 ? <MUIButton onClick={() => navigateToSearch("workshop")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
+          </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.WORKSHOPS]} studioIdName={studioIdName} type={COLLECTIONS.WORKSHOPS} />
@@ -257,9 +270,12 @@ function LandingPage() {
       {/* Open Classes Section */}
       {exploreEntity[COLLECTIONS.OPEN_CLASSES] && Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 0 && (
         <>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
-            Explore Open Classes
-          </h3>
+          <Box sx={{ display:"flex", justifyContent:"space-between", alignItems: 'center' }}>
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+              Explore Open Classes
+            </h3>
+            {Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 4 ? <MUIButton onClick={() => navigateToSearch("openClass")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>: null}
+          </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.OPEN_CLASSES]} studioIdName={studioIdName} type={COLLECTIONS.OPEN_CLASSES} />
@@ -271,9 +287,12 @@ function LandingPage() {
       {/* Courses Section */}
       {exploreEntity[COLLECTIONS.COURSES] && Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 0 && (
         <>
-          <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
-            Explore Courses
-          </h3>
+          <Box sx={{ display:"flex", justifyContent:"space-between", alignItems: 'center' }}>
+            <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
+              Explore Courses
+            </h3>
+            {Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 4 ? <MUIButton onClick={() => navigateToSearch("course")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>:null}
+          </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
               <CardSliderNew dataList={exploreEntity[COLLECTIONS.COURSES]} studioIdName={studioIdName} type={COLLECTIONS.COURSES} />
