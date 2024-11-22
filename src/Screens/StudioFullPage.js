@@ -483,18 +483,6 @@ function StudioFullPage() {
 
       <br />
 
-      {workshops.length > 0 && (
-        <>
-          <br></br>
-          <Row>
-            <Col xs={12}>
-              <h3 style={{ color: isDarkModeOn ? "white" : "black" }}>Studio Workshops</h3>
-              <WorkshopCardSlider dataList={workshops} />
-            </Col>
-          </Row>
-        </>
-      )}
-
       {openClasses.length > 0 && (
         <>
           <br></br>
