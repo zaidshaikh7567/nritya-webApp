@@ -3,6 +3,8 @@ import { Card as MuiCard } from '@mui/joy';
 import { useState } from 'react';
 import { Dialog, DialogContent, Button } from '@mui/material';
 import CardCover from '@mui/joy/CardCover';
+import { FiZoomIn } from "react-icons/fi";
+import './MagnifyImage.css';
 import ProductCard from './NStudioCard';
 
 const CardSlider = ({ dataList, imgOnly = false }) => {
@@ -46,12 +48,15 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
               },
             }}
           >
-            <CardCover>
+            <CardCover className='image-gallery-container'>
               <img
                 src={entity} // Use studio.iconUrl for the image source
                 loading="lazy"
                 alt="Studio image" // Use studioName for alt text
               />
+              <div className="gallery-image-overlay">
+                <FiZoomIn size={50} color='white' />
+              </div>
             </CardCover>
           </MuiCard>
           </a>
