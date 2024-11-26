@@ -14,6 +14,7 @@ import EntityBookingCard from "../Components/EntityBookingCard";
 import EntityVenueBox from "../Components/EntityVenueBox";
 import { useAlert } from '../context/AlertContext';
 import PageMeta from "./PageMeta";
+import { useAuth } from "../context/AuthContext";
  
 
 function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName, defaultImageUrl }) {
@@ -22,6 +23,7 @@ function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName,
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const { setShowSignInModal } = useAuth();
   const [imageUrl, setImageUrl] = useState(null);
   const [dataItem, setDataItem] = useState(null);
   const [personsAllowed, setPersonsAllowed] = useState(1);
@@ -39,7 +41,8 @@ function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName,
     const handleBook = async () => {
       if (!currentUser) {
         showSnackbar("Please login to book", "warning");
-        navigate("/login");
+        // navigate("/login");
+        setShowSignInModal(true);
         return;
       }
 

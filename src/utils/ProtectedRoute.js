@@ -1,12 +1,22 @@
-import React from 'react'
-import { Outlet, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext';
 
 function ProtectedRoute() {
-    const { currentUser } = useAuth();
-    return(
-        currentUser ? <Outlet/> : <Navigate to="/login"/>
-    )
+    const location = useLocation();
+    const { currentUser, setShowSignInModal } = useAuth();
+
+    useEffect(() => {
+        if (!currentUser) {
+            setShowSignInModal(true);
+        }
+        }, [currentUser, location.pathname, setShowSignInModal]);
+    
+      if (!currentUser) {
+        return null;
+      }
+
+    return <Outlet />;
 }
 
 export default ProtectedRoute

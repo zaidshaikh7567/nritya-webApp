@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../config';
 import { doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import StarRating from './StarRating';
+import { useAuth } from '../context/AuthContext';
 
 function Ratings({ userID, studioID }) {
+  const { setShowSignInModal } = useAuth();
   const [rating, setRating] = useState(-1);
   const [averageRating, setAverageRating] = useState(null);
 
@@ -44,7 +46,8 @@ function Ratings({ userID, studioID }) {
     // Check if userID is null, and if so, do not proceed with rating updates
     if (!userID) {
       // Redirect to the login page if userID is null
-      window.location.href = '#/login'; // Modify this URL to the actual login page URL
+      // window.location.href = '#/login'; // Modify this URL to the actual login page URL
+      setShowSignInModal(true);
       return;
     }
 
@@ -142,7 +145,7 @@ function Ratings({ userID, studioID }) {
         {userID ? (
           `${rating !== -1 ? `You have given a rating of ${rating}` : 'Rate now'}`
         ) : (
-          <a href="#/login">
+          <a>
             <StarRating rating={rating} onRatingChange={handleRatingChange} 
                starSize={
                 window.innerWidth > 992 ? 'large' : // for screens larger than 992px

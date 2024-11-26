@@ -9,6 +9,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -21,6 +22,8 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     currentUser,
+    showSignInModal,
+    setShowSignInModal
   };
 
   return (

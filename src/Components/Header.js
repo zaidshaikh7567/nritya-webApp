@@ -85,11 +85,10 @@ function Header() {
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, showSignInModal, setShowSignInModal } = useAuth();
   const dispatch = useDispatch();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const reduxLocation = useSelector(selectRefreshLocation);
-  const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
   const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
   const photoURL = userInfo?.photoURL;
@@ -200,13 +199,12 @@ function Header() {
   //console.log("Hii-1", entity)
 
   const handleOpen = () => {
-    setOpen(true)
-    console.log("handle Open from header", open)
+    setShowSignInModal(true);
   }
 
   //function handle to close the form
   const handleClose = () => {
-    setOpen(false)
+    setShowSignInModal(false);
   }
 
   return (
@@ -318,7 +316,7 @@ function Header() {
                     <Button startIcon={<SearchIcon />} variant="outlined" className="search-box me-2 my-2 rounded-3 d-none d-lg-flex" href="#/search/studios" style={{ textTransform: 'none', borderColor: 'white', backgroundColor: 'white', color: 'black', borderWidth: '2px', height: '3rem', width: '12rem', textAlign: 'left', justifyContent: 'left' }}>
                       Search
                     </Button>
-                    <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/login" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px', height: '3rem', width: '12rem' }}> List Studios</Button>
+                    <Button startIcon={<Apartment />} variant="outlined" className="btn-hover-purple-bg me-2 my-2 rounded-3" href="#/modifyStudios" style={{ textTransform: 'none', borderColor: 'white', color: 'white', borderWidth: '2px', height: '3rem', width: '12rem' }}> List Studios</Button>
                   </>
                 )}
               </Nav>
@@ -381,7 +379,7 @@ function Header() {
               <Button variant="outlined" className='btn-hover-purple-bg my-2 rounded-3' onClick={handleOpen} style={{ textTransform: 'none', color: 'white', borderColor: "white", height: '3rem', width: '12rem', borderWidth: '2px' }}>Sign In</Button>
             )}
             <Suspense fallback={<div>Loading...</div>}>
-              <LoginModalDailog open={open} handleClose={handleClose} />
+              <LoginModalDailog open={showSignInModal} handleClose={handleClose} />
             </Suspense>
           </Nav>
         </Navbar.Collapse>
