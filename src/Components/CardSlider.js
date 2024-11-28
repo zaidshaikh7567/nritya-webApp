@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card as MuiCard } from '@mui/joy';
 import { useState } from 'react';
-import { Dialog, DialogContent, Button } from '@mui/material';
+import { Dialog, DialogContent, Button, Box } from '@mui/material';
 import CardCover from '@mui/joy/CardCover';
 import { FiZoomIn } from "react-icons/fi";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import './MagnifyImage.css';
 import ProductCard from './NStudioCard';
 
@@ -15,6 +16,29 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
 
   const [open, setOpen] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const scrollRef = useRef(null);
+
+  const updateScrollButtons = () => {
+    const container = scrollRef.current;
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0);
+      setCanScrollRight(
+        container.scrollLeft < container.scrollWidth - container.clientWidth
+      );
+    }
+  };
+
+  const scroll = (direction) => {
+    const container = scrollRef.current;
+    if (direction === "left") {
+      container.scrollBy({ left: -330, behavior: "smooth" });
+    } else if (direction === "right") {
+      container.scrollBy({ left: 330, behavior: "smooth" });
+    }
+  };
 
   const handleOpen = (url) => {
     console.log(url)
@@ -31,8 +55,21 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
     transform: 'scale(1.01)', // Scale up slightly on hover
   };
 
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container) {
+      updateScrollButtons();
+      container.addEventListener("scroll", updateScrollButtons);
+      return () => container.removeEventListener("scroll", updateScrollButtons);
+    }
+  }, []);
+
   return (
-    <div className="horizontal-scroll-wrapper no-important">
+    <Box sx={{ display: 'flex', p: 0, m: 0, position: 'relative' }}>
+      {canScrollLeft && <button className="scroll-button left" onClick={() => scroll("left")}>
+      <MdArrowBackIosNew />
+      </button>}
+    <div ref={scrollRef} className="horizontal-scroll-wrapper no-important scroll-wrapper">
       {formattedDataList.map((entity, index) => (
         imgOnly ? (
           <a className="no-important" key={index} onClick={() => handleOpen(entity)}>
@@ -92,7 +129,10 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
         )}
       </Dialog>
     </div>
-
+    {canScrollRight && <button className="scroll-button right" onClick={() => scroll("right")}>
+    <MdArrowForwardIos />
+      </button>}
+    </Box>
   );
 };
 
