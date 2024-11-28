@@ -40,7 +40,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [selectedCity, setSelectedCity] = useState(currentCity);
   const [description, setDescription] = useState('');
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
@@ -95,8 +94,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
       !selectedDuration ||
       !selectedLevel ||
       !workshopTime ||
-      !workshopDate ||
-      !selectedCity
+      !workshopDate
     )
       validationFailed = false;
 
@@ -137,7 +135,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         level: selectedLevel,
         time: workshopTime,
         date: workshopDate.format("YYYY-MM-DD"),
-        city: selectedCity,
         youtubeViedoLink: form.youtubeViedoLink.value,
       };
       console.log(dbPayload)
@@ -169,7 +166,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
     setSelectedLevel("");
     setWorkshopTime("");
     setWorkshopDate(dayjs(new Date()));
-    setSelectedCity('');
     setSelectedWorkshop(null);
     setSelectedWorkshopId("");
     setDescription('');
@@ -181,10 +177,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
   const handleLevelChange = (event, value) => {
     setSelectedLevel(value);
-  };
-
-  const handleCityChange = (event, value) => {
-    setSelectedCity(value);
   };
 
   const handleSelectStudioValue = (event, value) => {
@@ -237,7 +229,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
         setSelectedStudio(studioId[currentStudioIndex] || null);
       }
 
-      setSelectedCity(selectedWorkshop?.city || '');
       setDescription(selectedWorkshop?.description || '');
     }
   }, [selectedWorkshop]);
@@ -508,34 +499,6 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
 
             <Row>
               <Col md={6}>
-                <Form.Label>City</Form.Label>
-                <ThemeProvider theme={darkTheme}>
-                  <CssBaseline />
-
-                  <Autocomplete
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    id="tags-standard"
-                    options={cities.cities}
-                    value={selectedCity}
-                    onChange={handleCityChange}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        placeholder="Select City"
-                        style={{
-                          backgroundColor: isDarkModeOn ? "#333333" : "",
-                          color: isDarkModeOn ? "white" : "black",
-                        }}
-                      />
-                    )}
-                  />
-                </ThemeProvider>
-              </Col>
-              <Col md={6}>
                 <Form.Label>Studio</Form.Label>
                 <ThemeProvider theme={darkTheme}>
                   <CssBaseline />
@@ -563,22 +526,7 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                   />
                 </ThemeProvider>
               </Col>
-            </Row>
-
-            <br />
-
-            <Row>
               <Col md={6}>
-                <Form.Label>Brief Description</Form.Label>
-                <ReactQuill
-                  theme="snow"
-                  placeholder="Enter Description"
-                  value={description}
-                  onChange={setDescription}
-                />
-              </Col>
-              
-                <Col md={6}>
                   <Form.Label>Youtube video Link</Form.Label>
                   <Form.Control
                     rows={1}
@@ -594,6 +542,20 @@ function WorkshopUpdate({ workshopId, instructors, studioId }) {
                     name="youtubeViedoLink"
                   />
                 </Col>
+            </Row>
+
+            <br />
+
+            <Row>
+              <Col md={6}>
+                <Form.Label>Brief Description</Form.Label>
+                <ReactQuill
+                  theme="snow"
+                  placeholder="Enter Description"
+                  value={description}
+                  onChange={setDescription}
+                />
+              </Col>
               </Row>
             <hr></hr>
 

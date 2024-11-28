@@ -57,7 +57,6 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [selectedCity, setSelectedCity] = useState(currentCity);
   const [workshopTime, setWorkshopTime] = useState("");
   const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,10 +81,6 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     setSelectedLevel(value);
   };
 
-  const handleCityChange = (event, value) => {
-    setSelectedCity(value);
-  };
-
   const handleSelectStudio = (event, value) => {
     setSelectedStudio(value);
   };
@@ -106,8 +101,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
       !selectedDuration ||
       !selectedLevel ||
       !workshopTime ||
-      !workshopDate ||
-      !selectedCity
+      !workshopDate
     )
       validationFailed = false;
 
@@ -174,7 +168,6 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
         price: event.target.workshopFees.value,
         capacity: event.target.capacity.value,
         // venue: event.target.workshopVenue.value,
-        city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
@@ -215,7 +208,6 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     setSelectedLevel("");
     setWorkshopTime("");
     setWorkshopDate(dayjs(new Date()));
-    setSelectedCity('');
     setDescription('');
   };
 
@@ -286,8 +278,6 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
           setWorkshopTime(foundWorkshop?.time || "");
 
           setWorkshopDate(dayjs(foundWorkshop?.date || Date.now()));
-
-          setSelectedCity(foundWorkshop?.city || '');
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS), {
             workshopName: form.workshopName?.value || "",
@@ -311,8 +301,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
             duration: selectedDuration,
             level: selectedLevel,
             time: workshopTime,
-            date: workshopDate.format("YYYY-MM-DD"),
-            city: selectedCity,
+            date: workshopDate.format("YYYY-MM-DD")
           });
         }
 
@@ -379,8 +368,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                 duration: selectedDuration,
                 level: selectedLevel,
                 time: workshopTime,
-                date: workshopDate.format("YYYY-MM-DD"),
-                city: selectedCity
+                date: workshopDate.format("YYYY-MM-DD")
               }
               // Check if the current state is different from the previous state
               if (!isEqual(previousState, currentState)) {
@@ -416,8 +404,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     selectedDuration,
     selectedLevel,
     workshopTime,
-    workshopDate,
-    selectedCity,
+    workshopDate
   ]);
 
   useEffect(() => {
@@ -641,39 +628,7 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                     name="capacity"
                   />
                 </Col>
-                <Col md={6}>
-                  <Form.Label>City</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
 
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      id="tags-standard"
-                      options={cities.cities}
-                      value={selectedCity}
-                      onChange={handleCityChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select City"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
                 <Col md={6}>
                   <Form.Label>Studio</Form.Label>
                   <ThemeProvider theme={darkTheme}>
@@ -702,6 +657,25 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
                     />
                   </ThemeProvider>
                 </Col>
+              </Row>
+
+              <br />
+
+              <Row>
+              <Col md={6}>
+                  <Form.Label>Youtube video link</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
+                  />
+                </Col>
+
                 <Col md={6}>
                   <Form.Label>Brief Description</Form.Label>
                   {/* <Form.Control
@@ -725,23 +699,10 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
                 </Col>
               </Row>
+
+              <hr></hr>
+
               <Row>
-                <Col md={6}>
-                  <Form.Label>Youtube video link</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    type="text"
-                    placeholder="Enter youtube video link"
-                    name="youtubeViedoLink"
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <hr></hr>
                 <Col xs={6}></Col>
                 <Col xs={6} className="d-flex justify-content-end">
                   <MuiButton

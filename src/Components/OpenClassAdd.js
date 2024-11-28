@@ -57,7 +57,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedStudio, setSelectedStudio] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [selectedCity, setSelectedCity] = useState(currentCity);
   const [openClassTime, setOpenClassTime] = useState("");
   const [openClassDate, setOpenClassDate] = useState(dayjs(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,10 +81,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     setSelectedLevel(value);
   };
 
-  const handleCityChange = (event, value) => {
-    setSelectedCity(value);
-  };
-
   const handleSelectStudio = (event, value) => {
     setSelectedStudio(value);
   };
@@ -107,8 +102,7 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
       !selectedDuration ||
       !selectedLevel ||
       !openClassTime ||
-      !openClassDate ||
-      !selectedCity
+      !openClassDate
     )
       validationFailed = false;
 
@@ -173,7 +167,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
         date: openClassDate.format("YYYY-MM-DD"),
         capacity: event.target.capacity.value,
         description: description,
-        city: selectedCity,
         active: true,
         youtubeViedoLink: event.target.youtubeViedoLink.value,
       };
@@ -215,7 +208,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     setSelectedLevel("");
     setOpenClassTime("");
     setOpenClassDate(dayjs(new Date()));
-    setSelectedCity('');
     setDescription('');
   };
 
@@ -286,8 +278,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
           setOpenClassTime(foundOpenClass?.time || "");
 
           setOpenClassDate(dayjs(foundOpenClass?.date || Date.now()));
-
-          setSelectedCity(foundOpenClass?.city || '');
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_OPEN_CLASSES), {
             openClassName: form.openClassName?.value || "",
@@ -310,7 +300,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
             level: selectedLevel,
             time: openClassTime,
             date: openClassDate.format("YYYY-MM-DD"),
-            city: selectedCity,
           });
         }
 
@@ -376,7 +365,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                 level: selectedLevel,
                 time: openClassTime,
                 date: openClassDate.format("YYYY-MM-DD"),
-                city: selectedCity,
               }
 
               // Check if the current state is different from the previous state
@@ -412,7 +400,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
     selectedLevel,
     openClassTime,
     openClassDate,
-    selectedCity,
     description
   ]);
 
@@ -624,34 +611,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
 
               <Row>
                 <Col md={6}>
-                  <Form.Label>City</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
-
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      id="tags-standard"
-                      options={cities.cities}
-                      value={selectedCity}
-                      onChange={handleCityChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select City"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-                <Col md={6}>
                   <Form.Label>Studio</Form.Label>
                   <ThemeProvider theme={darkTheme}>
                     <CssBaseline />
@@ -679,6 +638,19 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     />
                   </ThemeProvider>
                 </Col>
+                <Col md={6}>
+                <Form.Label>Youtube video link</Form.Label>
+                  <Form.Control
+                    rows={1}
+                    style={{
+                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    type="text"
+                    placeholder="Enter youtube video link"
+                    name="youtubeViedoLink"
+                  />
+                </Col>
               </Row>
 
               <br />
@@ -691,19 +663,6 @@ function OpenClassAdd({ instructors, studioId, setOpenClass }) {
                     placeholder="Enter Description"
                     value={description}
                     onChange={setDescription}
-                  />
-                </Col>
-                <Col md={6}>
-                <Form.Label>Youtube video link</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    type="text"
-                    placeholder="Enter youtube video link"
-                    name="youtubeViedoLink"
                   />
                 </Col>
               </Row>
