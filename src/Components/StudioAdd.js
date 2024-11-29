@@ -685,7 +685,7 @@ function StudioAdd({instructors}) {
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
                
                 <Form.Label>State</Form.Label>
-                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state">
+                <Form.Control as="select" style={{ padding: "0 1.5rem", backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state">
                 <option value="">Select a State</option>
                     {stateOptions.map((city, index) => (
                         <option key={index} value={city}>
