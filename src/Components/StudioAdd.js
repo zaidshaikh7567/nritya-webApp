@@ -12,6 +12,7 @@ import MapsInput from './MapsInput';
 import { useSelector} from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import indianCities from '../cities.json';
+import indianStates from '../states.json';
 import danceStyles from '../danceStyles.json';
 import { AMENITIES_ICONS } from '../constants';
 import {Autocomplete,TextField} from '@mui/material';
@@ -52,6 +53,7 @@ function StudioAdd({instructors}) {
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
+    const stateOptions = indianStates.states;
     const danceStylesOptions = danceStyles.danceStyles;
     const amenityKeys = Object.keys(AMENITIES_ICONS).map(String);
     const [activeStep, setActiveStep] = useState(0);
@@ -683,7 +685,14 @@ function StudioAdd({instructors}) {
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
                
                 <Form.Label>State</Form.Label>
-                <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state" />
+                <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state">
+                <option value="">Select a State</option>
+                    {stateOptions.map((city, index) => (
+                        <option key={index} value={city}>
+                            {city}
+                        </option>
+                    ))}
+                </Form.Control>
                
                 </Col>
 
