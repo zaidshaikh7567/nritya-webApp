@@ -9,6 +9,8 @@ import CryptoJS from 'crypto-js';
 import { validateField } from '../utils/validationUtils';
 import './Kyc.css';
 import { LinearProgress, Typography } from '@mui/material';
+import indianCities from '../cities.json';
+import indianStates from '../states.json';
 
 const names_map = new Map([
   ["first_name" , "First Name"],
@@ -33,6 +35,9 @@ const names_map = new Map([
     ['state_province', 'state'], // Include this key, either of them is present
     ['zip_pin_code']
 ];
+
+const locationOptions = indianCities.cities;
+const stateOptions = indianStates.states;
 
 function Kyc() {
   const [formData, setFormData] = useState({
@@ -286,8 +291,8 @@ function Kyc() {
                   <div className="col-md-6 col-lg-4" key={availableField}>
                       <Form.Group controlId={`formBasic${availableField}`}>
                           <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>{names_map.get(availableField)}</Typography>
-                          <Form.Control
-                              type={availableField === 'age' || availableField === 'phone_number' ? 'number' : 'text'}
+                          {['city', 'state_province'].includes(availableField) ? <Form.Control
+                              as="select"
                               placeholder={`Enter ${names_map.get(availableField)}`}
                               name={availableField}
                               value={formData[availableField]}
@@ -297,8 +302,30 @@ function Kyc() {
                               style={{
                                   backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5',
                                   color: isDarkModeOn ? 'white' : 'black',
+                                  paddingTop: 0,
+                                  paddingBottom: 0,
                               }}
-                          />
+                          >
+                            <option value="">Select a {names_map.get(availableField)}</option>
+                              {[...(availableField === 'city' ? locationOptions : stateOptions)].map((city, index) => (
+                                  <option key={index} value={city}>
+                                      {city}
+                                  </option>
+                              ))}
+                            </Form.Control> : <Form.Control
+                                  type={availableField === 'age' || availableField === 'phone_number' ? 'number' : 'text'}
+                                  placeholder={`Enter ${names_map.get(availableField)}`}
+                                  name={availableField}
+                                  value={formData[availableField]}
+                                  onChange={handleChange}
+                                  required
+                                  className="glassmorphic-input"
+                                  style={{
+                                      backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5',
+                                      color: isDarkModeOn ? 'white' : 'black',
+                                  }}
+                              />
+                            }
                           {errors[availableField] && <span style={{ color: 'red' }}>{errors[availableField]}</span>} {/* Show validation error */}
                       </Form.Group>
                   </div>
