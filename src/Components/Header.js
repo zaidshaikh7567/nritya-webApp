@@ -199,6 +199,7 @@ function Header() {
   //console.log("Hii-1", entity)
 
   const handleOpen = () => {
+    localStorage.clear();
     setShowSignInModal(true);
   }
 
