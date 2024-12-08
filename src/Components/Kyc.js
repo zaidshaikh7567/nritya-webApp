@@ -69,6 +69,8 @@ function Kyc() {
   const [progressAadhar, setProgressAadhar] = useState(-1);
   const [progressGst, setProgressGst] = useState(-1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
+  const currentName = JSON.parse(localStorage.getItem("userInfo"))?.displayName;
 
 
   const calculateHash = (data) => {
@@ -149,23 +151,23 @@ function Kyc() {
       const kycDoc = await readDocument(COLLECTIONS.USER_KYC, kycId);
       const newHash = calculateHash(formData);
       console.log(newHash,kycDoc?.hash)
+      const notifyEmails = currentUserEmail;
+      const metaData = {
+        user_name:currentName,
+      }; 
       if (kycDoc) {
         if (kycDoc.hash !== newHash) {
-          await updateDocumentFields(COLLECTIONS.USER_KYC, kycId, {
-            ...formData,
-            hash: newHash,
-          });
+          const dbPayload = {...formData,hash: newHash,}
+          const response = await postData(dbPayload, COLLECTIONS.USER_KYC, notifyEmails,metaData);
           //alert("KYC updated successfully");
         } else {
           //alert("No changes detected");
         }
       } else {
         // If no KYC record exists, create a new one
-        await saveDocument(COLLECTIONS.USER_KYC, kycId, {
-          ...formData,
-          UserId: user_id,
-          hash: newHash,
-        });
+        const dbPayload = {...formData,hash: newHash,}
+        metaData = ''
+        const response = await postData(dbPayload, COLLECTIONS.USER_KYC, notifyEmails,metaData);
         //alert("KYC added successfully");
       }
       /*
