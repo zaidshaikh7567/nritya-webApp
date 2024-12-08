@@ -167,7 +167,6 @@ function Kyc() {
       } else {
         // If no KYC record exists, create a new one
         const dbPayload = {...formData,hash: newHash,}
-        metaData = ''
         const response = await postData(dbPayload, COLLECTIONS.USER_KYC, notifyEmails,metaData);
         //alert("KYC added successfully");
       }
