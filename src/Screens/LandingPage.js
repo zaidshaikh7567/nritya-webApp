@@ -19,6 +19,7 @@ import { BASEURL_PROD } from "../constants";
 import { firebaseConfig, envType } from "../config";
 import EmptyState from "../Components/EmptyState";
 import EntitySkeleton from "../Components/EntitySkeleon";
+import { useLoader } from "../context/LoaderContext";
 //import { sleep } from "../utils/common";
 
 
@@ -45,6 +46,7 @@ const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 
 function LandingPage() {
+  const { setIsLoading } = useLoader();
   const [exploreEntity, setExploreEntity] = useState({
     [COLLECTIONS.STUDIO]:{}, [COLLECTIONS.WORKSHOPS]:{}, 
     [COLLECTIONS.OPEN_CLASSES]:{}, [COLLECTIONS.COURSES]:{}
@@ -159,6 +161,8 @@ function LandingPage() {
             setExploreEntity(exploreEntityData);
         } catch (error) {
             console.error("Error fetching data:", error);
+        } finally {
+          setIsLoading(false);
         }
     };
 

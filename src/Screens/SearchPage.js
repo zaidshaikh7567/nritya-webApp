@@ -18,6 +18,7 @@ import NWorkshopCard from "../Components/NWorkshopCard";
 import NOpenClassCard from "../Components/NOpenClassCard";
 import NCourseCard from "../Components/NCourseCard";
 import { useMediaQuery } from '@mui/material';
+import { useLoader } from "../context/LoaderContext";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
@@ -42,6 +43,7 @@ const getCollectionForSearchType = (searchType) => {
 };
 
 const SearchPage = () => {
+  const { setIsLoading } = useLoader();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [selectedDistances, setSelectedDistances] = useState("");
@@ -125,6 +127,7 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
+    setIsLoading(true);
     const storedSelectedSearchType =
       localStorage.getItem(FILTER_SEARCH_TYPE_KEY) ||
       selectedSearchType ||
@@ -171,7 +174,9 @@ const SearchPage = () => {
       })
       .catch((error) =>
         console.error("Error fetching search results:", error)
-      );
+      ).finally(() => {
+        setIsLoading(false);
+      });
   };
 
 
