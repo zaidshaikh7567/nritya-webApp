@@ -1,7 +1,7 @@
 import { COLORS, SERVER_URLS,BASEURL_DEV,BASEURL_PROD } from "../constants";
 
 export async function postData(dbPayload, collection_name, notify, metadata) {
-  const BASEURL = BASEURL_DEV;
+  const BASEURL = BASEURL_PROD;
   const endpoint = 'crud/newEntity/'; // Define your endpoint here
   const authToken = localStorage.getItem("authToken");
   try {
