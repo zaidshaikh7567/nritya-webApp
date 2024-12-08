@@ -137,6 +137,29 @@ export const getYoutubeVideoId = (link)=> {
   return videoId
 }
 
+export const formatDateString = (dateString) => {
+  // Split the input date string
+  const [year, month, day] = dateString.split('-');
+
+  // Create an array of month names
+  const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  // Determine the ordinal suffix for the day
+  const daySuffix = (day) => {
+      const lastDigit = day % 10;
+      const suffix = (lastDigit === 1 && day !== '11') ? 'st' :
+                     (lastDigit === 2 && day !== '12') ? 'nd' :
+                     (lastDigit === 3 && day !== '13') ? 'rd' : 'th';
+      return `${day}${suffix}`;
+  };
+
+  // Format and return the final date string
+  return `${daySuffix(day)} ${monthNames[parseInt(month) - 1]}, ${year}`;
+}
+
 export const gradientStyles = [
   { background: 'linear-gradient(to bottom right, #FFD700, #FFA500)', color: 'black' },
   { background: 'linear-gradient(to bottom right, #00BFFF, #1E90FF)', color: 'black' },
