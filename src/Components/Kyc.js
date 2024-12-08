@@ -7,6 +7,7 @@ import { STATUSES, COLLECTIONS, STORAGES } from '../constants.js';
 import KycStepper from './KycStepper.js';
 import CryptoJS from 'crypto-js';
 import { validateField } from '../utils/validationUtils';
+import { postData } from '../utils/common.js';
 import './Kyc.css';
 import { LinearProgress, Typography } from '@mui/material';
 import indianCities from '../cities.json';
