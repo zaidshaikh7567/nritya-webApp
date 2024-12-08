@@ -155,6 +155,7 @@ function Kyc() {
       const notifyEmails = currentUserEmail;
       const metaData = {
         user_name:currentName,
+        user_id: user_id,
       }; 
       if (kycDoc) {
         if (kycDoc.hash !== newHash) {
