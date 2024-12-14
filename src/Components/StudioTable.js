@@ -210,26 +210,14 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
                   </Form.Control>
               </td>
               <td style={{padding:'0rem', width:'20rem'}}>
-                <Autocomplete
-                  multiple
-                  id="tags-standard"
-                  options={Object.values(categoryMap)} 
-                  value={row.classCategory.map(key => categoryMap[key])} 
-                  onChange={(_, values) => {
-
-                    const selectedKeys = values.map(value => 
-                      Object.keys(categoryMap).find(key => categoryMap[key] === value)
-                    );
-                    handleTableChange(index, 'classCategory', selectedKeys);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      placeholder="Select Class Category"
-                    />
-                  )}
-                />
+                < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
+                  as="select"
+                  value={row.classCategory[0] || ""}
+                  onChange={(e) => handleTableChange(index, 'classCategory', [e.target.value])}
+                >
+                  <option value="">Select Class Category</option>
+                  {Object.values(categoryMap).map((value, idx) => <option key={idx} value={value}>{value}</option>)}
+                </Form.Control>
               </td>
               <td style={{padding:'0rem'}}>
                 <Button variant="danger" onClick={() => handleRemoveRow(index)}>

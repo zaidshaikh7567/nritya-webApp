@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './TableView.css';
 import { Button, Table, Modal, Spinner, Card } from 'react-bootstrap';
+import MUIButton from "@mui/material/Button";
 import { useAuth } from '../context/AuthContext';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
@@ -81,6 +82,7 @@ const TableView = ({ studioData, studioId }) => {
     textAlign: "center",
   };
 
+  console.log("=======================", Object.values(studioData?.tableData || {}).map((classItem) => classItem?.classCategory));
 
 
   return (
@@ -137,33 +139,19 @@ const TableView = ({ studioData, studioId }) => {
                           { label: 'Instructors', value: instructors || "" },
                           { label: 'Level', value: classItem.level || "N/A" },
                           { label: 'Fee (₹)', value: classItem.fee || "N/A" },
-                          { label: 'Categories', value: Array.isArray(classItem.classCategory) ? (classItem.classCategory.join(', ') ): (classItem.classCategory || "N/A")},
+                          { label: 'Categories', value: Array.isArray(classItem.classCategory) ? (classItem.classCategory?.[0] || "N/A"): (classItem.classCategory || "N/A")},
                           {
                             label: 'Book Free Trial',
                             value: (
-                              
-                                  <Button
-                                    className='custom-button'
-                                    onClick={() => {
+                              <>
+                              <MUIButton disabled={classItem.freeTrial === "false" || classItem.freeTrial === ""} onClick={() => {
                                       if (classItem?.freeTrial && classItem.freeTrial !== "false" && classItem.freeTrial !== "") {
                                         bookFreeTrial(index);  // Only trigger booking if free trial is available
                                       }
-                                    }}
-                                    
-                                  >
-                                    <Typography
-                                      sx={{
-                                        color: isDarkModeOn?'white':'black',  
-                                        width: '100%',
-                                        textAlign: 'center',
-                                      }}
-                                    >
-                                      {classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
+                                    }} sx={{ width: '90%', m: 1, color: isDarkModeOn ? "white" : "black", bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" }, "&:disabled": { bgcolor: 'gray', color: isDarkModeOn ? "white" : "black" } }} variant="text">{classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
                                         ? "Free Trial Unavailable"
-                                        : "BOOK"}
-                                    </Typography>
-                                  </Button>
-                               
+                                        : "BOOK"}</MUIButton>
+                               </>
                             ),
                           },                                                   
                         ].map((item, i) => (
