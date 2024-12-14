@@ -26,6 +26,7 @@ import axios from 'axios';
 import { FaPhoneAlt } from 'react-icons/fa';
 import PageMeta from '../Components/PageMeta.js';
 import { BASEURL_PROD } from './../constants.js';
+import nearby from '../assets/images/nearby.png';
 
 function StudioFullPage() {
   const { studioId } = useParams();
@@ -446,6 +447,9 @@ function StudioFullPage() {
         <Col md={3} lg={3} className="d-flex flex-column">
           <Typography variant="h1" component="h2" style={{ color: isDarkModeOn ? 'white' : 'black', fontSize: '20px' }}>
             <Grid container alignItems="center" spacing={1}>
+              <Grid item style={{ textTransform: 'capitalize' }}>
+                Get Directions
+              </Grid>
               {studioData && studioData.geolocation && (
                 <Grid item>
                   <a
@@ -453,13 +457,14 @@ function StudioFullPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <FaDirections style={{ color: isDarkModeOn ? 'white' : 'black' }} />
+                    <img
+                      src={nearby}
+                      alt="Directions"
+                      style={{ width: "24px", height: "24px", filter: isDarkModeOn ? 'none' : 'invert(1)' }}
+                    />
                   </a>
                 </Grid>
               )}
-              <Grid item style={{ textTransform: 'capitalize' }}>
-                Visit Us at:
-              </Grid>
             </Grid>
           </Typography>
           <br></br>
