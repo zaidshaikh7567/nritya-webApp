@@ -18,7 +18,7 @@ import { readDocument, readDocumentWithImageUrl } from "../utils/firebaseUtils";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
-import { bookEntity, getYoutubeVideoId } from "../utils/common";
+import { bookEntity, formatDateString, getYoutubeVideoId } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
@@ -463,7 +463,7 @@ export default function NOpenClassCard({dataItem, studioIdName}) {
             style={{ color: isDarkModeOn ? "white" : "black" }}
             level="body-xs"
           >
-            {dataItem.date || ""} | {dataItem.time || ""}
+            {formatDateString(dataItem.date) || ""} | {dataItem.time || ""}
           </Typography>
           <Box mt={1} textAlign="right">
             <Button

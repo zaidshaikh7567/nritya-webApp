@@ -10,6 +10,8 @@ import Skeleton from '@mui/material/Skeleton';
 import SnackbarProvider from './context/SnackbarContext';
 import { HelmetProvider } from 'react-helmet-async';
 import './App.css';
+import FullScreenLoader from './Components/FullScreenLoader';
+import { useLoader } from './context/LoaderContext';
 
 const Header = lazy(() => import('./Components/Header'));
 const Footer = lazy(() => import('./Components/Footer'));
@@ -44,6 +46,7 @@ const CourseFullPage = lazy(()=> import('././Screens/CourseFullPage'));
 
 
 function App() {
+  const { isLoading } = useLoader();
   const isDarkModeOn = useSelector(selectDarkModeStatus); 
 
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -75,6 +78,7 @@ function App() {
 
   return (
     <HelmetProvider>
+    {isLoading ? <FullScreenLoader /> : null}
     <HashRouter  >
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Suspense fallback={

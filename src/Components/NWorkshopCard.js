@@ -13,7 +13,7 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import dayjs from "dayjs";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Spinner } from "react-bootstrap";
-import { bookEntity, getYoutubeVideoId } from "../utils/common";
+import { bookEntity, formatDateString, getYoutubeVideoId } from "../utils/common";
 
 import whatsAppImage from '../assets/images/whatsapp.png';
 import callImage from '../assets/images/india_11009487.png';
@@ -456,7 +456,7 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
             style={{ color: isDarkModeOn ? "white" : "black" }}
             level="body-xs"
           >
-            {dataItem.date || ""} | {dataItem.time || ""}
+            {formatDateString(dataItem.date) || ""} | {dataItem.time || ""}
           </Typography>
           <Box mt={1} display="flex" justifyContent="space-between">
             <Typography alignSelf="center" style={{color: isDarkModeOn ? 'white' : 'black'}}>

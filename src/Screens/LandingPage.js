@@ -19,6 +19,7 @@ import { BASEURL_PROD } from "../constants";
 import { firebaseConfig, envType } from "../config";
 import EmptyState from "../Components/EmptyState";
 import EntitySkeleton from "../Components/EntitySkeleon";
+import { useLoader } from "../context/LoaderContext";
 //import { sleep } from "../utils/common";
 
 
@@ -45,6 +46,7 @@ const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 
 function LandingPage() {
+  const { setIsLoading } = useLoader();
   const [exploreEntity, setExploreEntity] = useState({
     [COLLECTIONS.STUDIO]:{}, [COLLECTIONS.WORKSHOPS]:{}, 
     [COLLECTIONS.OPEN_CLASSES]:{}, [COLLECTIONS.COURSES]:{}
@@ -159,6 +161,8 @@ function LandingPage() {
             setExploreEntity(exploreEntityData);
         } catch (error) {
             console.error("Error fetching data:", error);
+        } finally {
+          setIsLoading(false);
         }
     };
 
@@ -239,7 +243,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Studios
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 4 ? <MUIButton variant="text" onClick={() => navigateToSearch("studio")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
+            {Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} variant="text" onClick={() => navigateToSearch("studio")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
           </Box>
           <Row>
             {/* Wrap CardSlider with Suspense */}
@@ -257,7 +261,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Workshops
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 4 ? <MUIButton onClick={() => navigateToSearch("workshop")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
+            {Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("workshop")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
           </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
@@ -274,7 +278,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Open Classes
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 4 ? <MUIButton onClick={() => navigateToSearch("openClass")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>: null}
+            {Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("openClass")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>: null}
           </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
@@ -291,7 +295,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Courses
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 4 ? <MUIButton onClick={() => navigateToSearch("course")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>:null}
+            {Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("course")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>:null}
           </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>

@@ -85,14 +85,14 @@ const CardSlider = ({ dataList, imgOnly = false }) => {
               },
             }}
           >
-            <CardCover className='image-gallery-container'>
+            <CardCover>
               <img
                 src={entity} // Use studio.iconUrl for the image source
                 loading="lazy"
                 alt="Studio image" // Use studioName for alt text
               />
               <div className="gallery-image-overlay">
-                <FiZoomIn size={50} color='white' />
+                <FiZoomIn size={50} color='white' className='' />
               </div>
             </CardCover>
           </MuiCard>
