@@ -15,10 +15,12 @@ import EntityVenueBox from "../Components/EntityVenueBox";
 import { useAlert } from '../context/AlertContext';
 import PageMeta from "./PageMeta";
 import { useAuth } from "../context/AuthContext";
+import { useLoader } from "../context/LoaderContext";
  
 
 function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName, defaultImageUrl }) {
   const { entityId } = useParams();
+  const { setIsLoading } = useLoader();
   const showAlert = useAlert();
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -71,6 +73,7 @@ function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName,
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const data = await readDocument(entityCollectionName, entityId);
         setDataItem(data);
         if (data && data.StudioId) {
@@ -80,6 +83,8 @@ function AssociatedEntityFullPage({ entityCollectionName, storageCollectionName,
       } catch (error) {
         console.error("Error fetching data:", error);
         showSnackbar("Failed to load details.", "error");
+      } finally {
+        setIsLoading(false);
       }
     };
 

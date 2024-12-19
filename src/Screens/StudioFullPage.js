@@ -28,8 +28,10 @@ import PageMeta from '../Components/PageMeta.js';
 import { BASEURL_PROD } from './../constants.js';
 import nearby from '../assets/images/nearby.png';
 import StudioTimingsTable from '../Components/StudioTimingsTable.jsx';
+import { useLoader } from '../context/LoaderContext.js';
 
 function StudioFullPage() {
+  const { setIsLoading } = useLoader();
   const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -99,6 +101,7 @@ function StudioFullPage() {
     console.log(BASEURL_STUDIO)
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         if (JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId) {
           const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
           updateRecentlyWatchedInFirebase(UserId, studioId);
@@ -117,6 +120,8 @@ function StudioFullPage() {
         console.log(studioData);
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
 
     };
@@ -128,27 +133,34 @@ function StudioFullPage() {
 
   useEffect(() => {
     const getWorkshopsOfStudio = async () => {
-      const q = query(
-        collection(db, COLLECTIONS.WORKSHOPS),
-        where(
-          "StudioId",
-          "==",
-          studioId
-        ),
-        where("active", "==", true)
-      );
-
-      const querySnapshot = await getDocs(q);
-      const workshopsOfStudio = querySnapshot.docs
-        .filter((doc) => doc.data().workshopName)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-          };
-        });
-      setWorkshops(workshopsOfStudio);
+      try {
+        setIsLoading(true);
+        const q = query(
+          collection(db, COLLECTIONS.WORKSHOPS),
+          where(
+            "StudioId",
+            "==",
+            studioId
+          ),
+          where("active", "==", true)
+        );
+  
+        const querySnapshot = await getDocs(q);
+        const workshopsOfStudio = querySnapshot.docs
+          .filter((doc) => doc.data().workshopName)
+          .map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              ...data,
+            };
+          });
+        setWorkshops(workshopsOfStudio);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getWorkshopsOfStudio();
@@ -156,27 +168,34 @@ function StudioFullPage() {
 
   useEffect(() => {
     const getOpenClassesOfStudio = async () => {
-      const q = query(
-        collection(db, COLLECTIONS.OPEN_CLASSES),
-        where(
-          "StudioId",
-          "==",
-          studioId
-        ),
-        where("active", "==", true)
-      );
-
-      const querySnapshot = await getDocs(q);
-      const openClassesOfStudio = querySnapshot.docs
-        .filter((doc) => doc.data().openClassName)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-          };
-        });
-      setOpenClasses(openClassesOfStudio);
+      try {
+        setIsLoading(true);
+        const q = query(
+          collection(db, COLLECTIONS.OPEN_CLASSES),
+          where(
+            "StudioId",
+            "==",
+            studioId
+          ),
+          where("active", "==", true)
+        );
+  
+        const querySnapshot = await getDocs(q);
+        const openClassesOfStudio = querySnapshot.docs
+          .filter((doc) => doc.data().openClassName)
+          .map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              ...data,
+            };
+          });
+        setOpenClasses(openClassesOfStudio);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getOpenClassesOfStudio();
@@ -184,27 +203,34 @@ function StudioFullPage() {
 
   useEffect(() => {
     const getCoursesOfStudio = async () => {
-      const q = query(
-        collection(db, COLLECTIONS.COURSES),
-        where(
-          "StudioId",
-          "==",
-          studioId
-        ),
-        where("active", "==", true)
-      );
-
-      const querySnapshot = await getDocs(q);
-      const coursesOfStudio = querySnapshot.docs
-        .filter((doc) => doc.data().name)
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-          };
-        });
-      setCourses(coursesOfStudio);
+      try {
+        setIsLoading(true);
+        const q = query(
+          collection(db, COLLECTIONS.COURSES),
+          where(
+            "StudioId",
+            "==",
+            studioId
+          ),
+          where("active", "==", true)
+        );
+  
+        const querySnapshot = await getDocs(q);
+        const coursesOfStudio = querySnapshot.docs
+          .filter((doc) => doc.data().name)
+          .map((doc) => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              ...data,
+            };
+          });
+        setCourses(coursesOfStudio);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getCoursesOfStudio();

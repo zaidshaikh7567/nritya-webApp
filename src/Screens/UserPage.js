@@ -21,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import CardSlider from "../Components/CardSlider";
 import { db } from "../config";
+import { useLoader } from '../context/LoaderContext';
 
 
 function UserPage() {
@@ -46,12 +47,14 @@ function UserPage() {
     ['Studios', 'Creator', '#/modifyStudios'],
     ['DashBoard', 'Creator', '#/creatorDashboard']
   ];
+  const { setIsLoading } = useLoader();
   const [open, setOpen] = useState(false);
   const [recentlyWatchedStudios, setRecentlyWatchedStudios] = useState([]);
 
 
   const fetchRecentlyWatchedStudios = async (userId) => {
     try {
+      setIsLoading(true);
       const userRef = doc(db, COLLECTIONS.USER, userId);
       const userDoc = await getDoc(userRef);
       const recentlyWatchedMap = userDoc.exists()
@@ -84,6 +87,8 @@ function UserPage() {
       setRecentlyWatchedStudios(validStudioData);
     } catch (error) {
       console.error("Error fetching recently watched studios:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,6 +112,7 @@ function UserPage() {
     }
     const getCreatorMode = async () => {
       try{
+      setIsLoading(true);
       const userData = await readDocument(COLLECTIONS.USER, currentUser.uid);
       if (userData) {
           setUserProfileInfo(
@@ -126,6 +132,8 @@ function UserPage() {
       }
       }catch(error){
         console.log(" error");
+      } finally {
+        setIsLoading(false);
       }
     }
   

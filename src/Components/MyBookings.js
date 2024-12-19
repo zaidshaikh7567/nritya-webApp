@@ -14,9 +14,11 @@ import WorkshopInformation from './WorkshopInformation';
 import WorkshopList from './WorkshopList';
 import OpenClassList from './OpenClassList';
 import OpenClassInformation from './OpenClassInformation';
+import { useLoader } from '../context/LoaderContext';
 
 function MyBookings() {
   const { currentUser } = useAuth();
+  const { setIsLoading } = useLoader();
   const userId = currentUser.uid;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [bookings, setBookings] = useState([]);
@@ -36,10 +38,13 @@ function MyBookings() {
 
     const fetchBookings = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(endpoint_url2); // or use fetch
         setUserBookings(response.data);
       } catch (error) {
         console.error('Error fetching bookings:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     console.log("fetchBookings ran")
@@ -50,21 +55,28 @@ function MyBookings() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const query_ref = query(collection(db,COLLECTIONS.FREE_TRIAL_BOOKINGS), where('user_id', '==', userId));
-      const querySnapshot = await getDocs(query_ref);
-    
-      const bookingDataArray = [];
-      querySnapshot.forEach((doc) => {
-        console.log("Bookings....")
-        const bookingData = doc.data();
-        console.log(doc.id, ' => ', bookingData);
-        bookingDataArray.push({ ...bookingData, 'id': doc.id });
-      });
-      bookingDataArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-      //bookingDataArray.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
-      //console.log(bookingDataArray)
-      setBookings(bookingDataArray);
+      try {
+        setIsLoading(true);
+        const query_ref = query(collection(db,COLLECTIONS.FREE_TRIAL_BOOKINGS), where('user_id', '==', userId));
+        const querySnapshot = await getDocs(query_ref);
+      
+        const bookingDataArray = [];
+        querySnapshot.forEach((doc) => {
+          console.log("Bookings....")
+          const bookingData = doc.data();
+          console.log(doc.id, ' => ', bookingData);
+          bookingDataArray.push({ ...bookingData, 'id': doc.id });
+        });
+        bookingDataArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
+        //bookingDataArray.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
+        //console.log(bookingDataArray)
+        setBookings(bookingDataArray);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();

@@ -8,7 +8,7 @@ const FullScreenLoader = () => {
   const isDarkModeOn = useSelector(selectDarkModeStatus); 
 
   return (
-    <Box sx={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 99 }}>
+    <Box sx={{ position: 'fixed', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 99 }}>
       <img src={isDarkModeOn ? whiteLoader : loader} alt='Loader' style={{ width: 200, height: 100, objectFit: "contain" }} />
     </Box>
   );

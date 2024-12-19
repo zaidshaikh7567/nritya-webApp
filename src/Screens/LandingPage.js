@@ -144,6 +144,7 @@ function LandingPage() {
 
     const fetchData = async () => {
         try {
+            setIsLoading(true);
             let filterLocation = localStorage.getItem("filterLocation");
             if (!filterLocation || filterLocation === "null") {
                 filterLocation = "New Delhi";
@@ -174,6 +175,7 @@ function LandingPage() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
+        setIsLoading(true);
         const dataImagesUrlLocal = await getAllFilesFromFolder(
           "LandingPageImages"
         );
@@ -188,6 +190,8 @@ function LandingPage() {
         }
       } catch (error) {
         console.error("Error fetching images:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
