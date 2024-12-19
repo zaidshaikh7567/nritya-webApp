@@ -27,6 +27,7 @@ import { FaPhoneAlt } from 'react-icons/fa';
 import PageMeta from '../Components/PageMeta.js';
 import { BASEURL_PROD } from './../constants.js';
 import nearby from '../assets/images/nearby.png';
+import StudioTimingsTable from '../Components/StudioTimingsTable.jsx';
 
 function StudioFullPage() {
   const { studioId } = useParams();
@@ -351,6 +352,10 @@ function StudioFullPage() {
             </Row>
           </>
         }
+      </Row>
+
+      <Row>
+        <StudioTimingsTable timings={studioData?.timings} />
       </Row>
 
       <br></br>

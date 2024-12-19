@@ -20,6 +20,17 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { MultiSelect } from 'primereact/multiselect';
 import { putData } from '../utils/common';
+import StudioWeeklyTimings from './StudioWeeklyTiming';
+
+const initialStudioTimings = {
+  monday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  tuesday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  wednesday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  thursday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  friday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  saturday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  sunday: [{ open: "09:00 AM", close: "06:00 PM" }],
+}
 
 const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
 const categoryMap = {
@@ -66,6 +77,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
+  const [timings, setTimings] = useState(initialStudioTimings);
 
   const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
 
@@ -163,6 +175,9 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
       if(selectedStudio && selectedStudio.tableData){
         const maxIndex = Math.max(...Object.keys(tableData).map(Number));
         setSelectedStudioFrozenClassRows(maxIndex);
+      }
+      if (selectedStudio && selectedStudio?.timings?.length) {
+        setTimings(selectedStudio.timings);
       }
     }
   }, [selectedStudio]);
@@ -270,6 +285,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
           facebook: event.target.facebook.value,
           youtube: event.target.youtube.value,
           twitter: event.target.twitter.value,
+          timings
       }
       
       const response = await putData(dbPayload, COLLECTIONS.STUDIO, studioId) 
@@ -716,7 +732,11 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
               </Table>
             </div>
             <br></br>
-            <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
+
+            <h3 style={{ margin: '12px 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Timings</h3>
+            <StudioWeeklyTimings timings={timings} setTimings={setTimings} />
+
+            <h3 style={{ margin: '32px 0 0 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
                <Row>
             <Col md={4}>
                           <Form.Label>Instagram</Form.Label>

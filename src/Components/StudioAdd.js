@@ -22,6 +22,7 @@ import {Stepper,Step,StepLabel} from '@mui/material';
 import SuccessMessage from './SucessPage';
 import { postData } from '../utils/common';
 import { isEqual } from 'lodash';
+import StudioWeeklyTimings from './StudioWeeklyTiming';
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -34,6 +35,16 @@ const decodeUnicode = (unicodeString) => {
   const textDecoder = new TextDecoder();
   return textDecoder.decode(new Uint8Array(utf8Encoded));
 };
+
+const initialStudioTimings = {
+  monday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  tuesday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  wednesday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  thursday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  friday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  saturday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  sunday: [{ open: "09:00 AM", close: "06:00 PM" }],
+}
 
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
@@ -50,6 +61,7 @@ function StudioAdd({instructors}) {
     const instructorNamesWithIds = instructors.map((instructor) => `${instructor.name} - ${instructor.id}`);
     const [isReady, setIsReady] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [timings, setTimings] = useState(initialStudioTimings);
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
@@ -170,6 +182,7 @@ function StudioAdd({instructors}) {
               youtube: event.target.youtube.value,
               twitter: event.target.twitter.value,
               visibilty:1,
+              timings
           };
             setIsSubmitting(true);
             const notifyEmails = currentUserEmail
@@ -253,6 +266,7 @@ function StudioAdd({instructors}) {
           form.facebook.value = foundStudio.facebook;
           form.youtube.value = foundStudio.youtube;
           form.twitter.value = foundStudio.twitter;
+          if (foundStudio?.timings?.length) setTimings(foundStudio.timings);
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS), {
             studioName: form.studioName.value,
@@ -302,6 +316,7 @@ function StudioAdd({instructors}) {
             youtube: form.youtube.value,
             twitter: form.twitter.value,
             visibilty: 1,
+            timings
           });
         }
 
@@ -395,7 +410,9 @@ function StudioAdd({instructors}) {
                 facebook: form.facebook.value,
                 youtube: form.youtube.value,
                 twitter: form.twitter.value,
-                visibilty: 1,}
+                visibilty: 1,
+                timings
+              }
               
               // Check if the current state is different from the previous state
               if (!isEqual(previousState, currentState)) {
@@ -618,7 +635,11 @@ function StudioAdd({instructors}) {
                   <Form.Control rows={12} style={{  height: '150px', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enrollment Process" name="enrollmentProcess" />
           
                 </Row>
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
+
+                <h3 style={{ margin: '12px 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Timings</h3>
+                <StudioWeeklyTimings timings={timings} setTimings={setTimings} />
+
+                <h3 style={{ margin: '32px 0 0 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
                <Row>
                <Col md={4}>
                   <Form.Label>Instagram</Form.Label>
