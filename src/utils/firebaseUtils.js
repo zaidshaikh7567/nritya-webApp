@@ -2,29 +2,33 @@ import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, 
 import { db } from '../config';
 import {ref,listAll,getDownloadURL,uploadBytes, deleteObject, uploadBytesResumable  } from "firebase/storage";
 import { storage } from '../config';
-import { COLLECTIONS } from '../constants';
+import { BASEURL_PROD } from '../constants';
 import secureLocalStorage from 'react-secure-storage';
 
 export const setCreatorMode = async (uid) => {
-  console.log("creatorMode uid",uid)
-  try{
-  const userRef = doc(db, COLLECTIONS.USER, uid);
-  const userSnap = await getDoc(userRef);
-  if (userSnap.exists()) {
-    if(userSnap.data() != null){
-      const mode = userSnap.data().CreatorMode
-      console.log("setCreatorMode: Is User a creator?",mode)
+  const BASEURL = BASEURL_PROD;
+  const url = `${BASEURL}crud/getUserMode/${uid}`;
+  //console.log("creatorMode uid", uid, url);
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.success) {
+      let mode = false;
+      if (data.data === true) {
+        mode = true;
+      }
+      //console.log("setCreatorMode: Is User a creator?", mode);
       secureLocalStorage.setItem('CreatorMode', mode);
-        
-    }else{
-      console.log("userSnap.data() null")
-      
+    } else {
+      console.log("Error: ", data.message || "Unknown error");
+      //secureLocalStorage.setItem('CreatorMode', false);
     }
-  } else {
-    console.log("User not found");
-  }
-  }catch(error){
-    console.log(" error",error);
+    
+  } catch (error) {
+    console.log("Error fetching user mode: ", error);
+    secureLocalStorage.setItem('CreatorMode', false);
   }
 }
 
