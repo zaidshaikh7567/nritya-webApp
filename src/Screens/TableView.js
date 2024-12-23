@@ -148,7 +148,7 @@ const TableView = ({ studioData, studioId }) => {
                                       if (classItem?.freeTrial && classItem.freeTrial !== "false" && classItem.freeTrial !== "") {
                                         bookFreeTrial(index);  // Only trigger booking if free trial is available
                                       }
-                                    }} sx={{ width: '90%', m: 1, color: isDarkModeOn ? "white" : "black", bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" }, "&:disabled": { bgcolor: 'gray', color: isDarkModeOn ? "white" : "black" } }} variant="text">{classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
+                                    }} sx={{ width: '90%', m: 1, color: "white", bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" }, "&:disabled": { bgcolor: 'gray', color: 'white' } }} variant="text">{classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
                                         ? "Free Trial Unavailable"
                                         : "BOOK"}</MUIButton>
                                </>
