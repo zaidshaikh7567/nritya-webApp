@@ -95,7 +95,7 @@ const StudioTimingsTable = ({ timings }) => {
         <Table
           bordered
           className={`custom-table ${isDarkModeOn ? "dark-mode" : ""}`}
-          style={{ borderRadius: "5px", minWidth: "1000px" }} // Force a minimum table width
+          style={{ minWidth: "1000px" }} // Force a minimum table width
         >
           <thead>
             <tr>
