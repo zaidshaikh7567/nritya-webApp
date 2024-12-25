@@ -18,8 +18,8 @@ function BookingInformation({ currentClickTicket, setCurrentClickTicket }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   return (
-    <Box sx={{ position: 'relative', maxWidth: "600px", mx: 'auto', fontFamily: "Instrument Sans" }}>
-        <Button onClick={() => setCurrentClickTicket(null)} sx={{ position: 'absolute', top: 0, left: -100, '&:active': { bgcolor: 'transparent' } }}>
+    <Box sx={{ mt: { xs: 10, md: 0 }, position: 'relative', maxWidth: "600px", mx: 'auto', fontFamily: "Instrument Sans" }}>
+        <Button onClick={() => setCurrentClickTicket(null)} sx={{ position: 'absolute', top: { xs: -80, md: 0 }, left: { xs: -15, md: -100 }, '&:active': { bgcolor: 'transparent' } }}>
           <img src={backIcon} alt='back' style={{ width: "50px", height: "50px" }} />
         </Button>
 
