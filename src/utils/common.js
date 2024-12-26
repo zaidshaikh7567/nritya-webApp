@@ -137,7 +137,7 @@ export const getYoutubeVideoId = (link)=> {
   return videoId
 }
 
-export const formatDateString = (dateString) => {
+export const formatDateString = (dateString = "") => {
   // Split the input date string
   const [year, month, day] = dateString.split('-');
 
