@@ -221,7 +221,7 @@ function MyBookings() {
           <Tab style={colorstyles} label="Courses" />
         </Tabs>
         {tabIndex === 0 && (
-          <Box p={3}>
+          <Box py={3}>
               <div style={{ backgroundColor: isDarkModeOn ? "#202020" : "white" }}>
             {bookings.length === 0 ? (
               <div>
@@ -239,7 +239,6 @@ function MyBookings() {
                   ))}
                   </>
                 }
-
               </div>
               
             )}

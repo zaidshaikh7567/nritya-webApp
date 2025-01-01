@@ -247,7 +247,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Studios
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} variant="text" onClick={() => navigateToSearch("studio")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
+            {Object.keys(exploreEntity[COLLECTIONS.STUDIO]).length > 4 ? <MUIButton sx={{ color: 'white', bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} variant="text" onClick={() => navigateToSearch("studio")}>View All</MUIButton> : null}
           </Box>
           <Row>
             {/* Wrap CardSlider with Suspense */}
@@ -265,7 +265,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Workshops
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("workshop")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton> : null}
+            {Object.keys(exploreEntity[COLLECTIONS.WORKSHOPS]).length > 4 ? <MUIButton sx={{ color: 'white', bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("workshop")}>View All</MUIButton> : null}
           </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
@@ -282,7 +282,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Open Classes
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("openClass")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>: null}
+            {Object.keys(exploreEntity[COLLECTIONS.OPEN_CLASSES]).length > 4 ? <MUIButton sx={{ color: 'white', bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("openClass")}>View All</MUIButton>: null}
           </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
@@ -299,7 +299,7 @@ function LandingPage() {
             <h3 style={{ color: isDarkModeOn ? "white" : "black", textTransform: "none" }}>
               Explore Courses
             </h3>
-            {Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 4 ? <MUIButton sx={{ bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("course")} style={{ color: isDarkModeOn ? "white" : "black" }}>View All</MUIButton>:null}
+            {Object.keys(exploreEntity[COLLECTIONS.COURSES]).length > 4 ? <MUIButton sx={{ color: 'white', bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }} onClick={() => navigateToSearch("course")}>View All</MUIButton>:null}
           </Box>
           <Row>
             <Suspense fallback={<EntitySkeleton/>}>
