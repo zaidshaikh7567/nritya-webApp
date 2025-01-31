@@ -12,6 +12,7 @@ import {Card as MUICard,CardHeader,Avatar, CardContent, Typography, Tooltip} fro
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditProfileModal from '../Components/EditProfileModal';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { setGetCreatorModeOnMount } from '../utils/firebaseUtils';
 import {
   doc,
   getDoc,
@@ -110,34 +111,35 @@ function UserPage() {
         fetchRecentlyWatchedStudios(currentUser.uid);
       
     }
-    const getCreatorMode = async () => {
-      try{
-      setIsLoading(true);
-      const userData = await readDocument(COLLECTIONS.USER, currentUser.uid);
-      if (userData) {
-          setUserProfileInfo(
-            {
-              Name: userData.Name || '',
-              Age: userData.Age || '',
-              DanceStyles: userData.DanceStyles || '',
-              Gender: userData.Gender || '',
-              Bio: userData.Bio || '',
-              PhoneNumber : userData.PhoneNumber || '',
-              isPhoneNumberVerified : userData.isPhoneNumberVerified || false,
-            }
-          )
-          setIsCreator(userData.CreatorMode)
-      } else {
-        console.log("User not found but workshop created... error");
-      }
-      }catch(error){
-        console.log(" error");
+    const fetchCreatorMode = async () => {
+      try {
+        setIsLoading(true);
+        const userData = await readDocument(COLLECTIONS.USER, currentUser.uid);
+        if (userData) {
+          setUserProfileInfo({
+            Name: userData.Name || '',
+            Age: userData.Age || '',
+            DanceStyles: userData.DanceStyles || '',
+            Gender: userData.Gender || '',
+            Bio: userData.Bio || '',
+            PhoneNumber: userData.PhoneNumber || '',
+            isPhoneNumberVerified: userData.isPhoneNumberVerified || false,
+          });
+          const creatorMode = await setGetCreatorModeOnMount(currentUser.uid);
+          setIsCreator(creatorMode);
+          //console.log(creatorMode)
+        } else {
+          console.log("User not found but workshop created... error");
+        }
+      } catch (error) {
+        console.log("Error fetching user data or creator mode: ", error);
       } finally {
         setIsLoading(false);
       }
-    }
-  
-    getCreatorMode();
+    };
+    
+    fetchCreatorMode();
+    
   }, [isCreator]); // Run once on mount
 
   const cardStyle = {

@@ -48,6 +48,12 @@ export const getCreatorMode = async () => {
   }
 }
 
+export const setGetCreatorModeOnMount = async (uid) => {
+  await setCreatorMode(uid);
+  return await getCreatorMode();
+};
+
+
 // Read operation with image URL
 export const readDocumentWithImageUrl = async (collectionName, productId) => {
     console.log("Debug ",`${collectionName}/${productId}`)
