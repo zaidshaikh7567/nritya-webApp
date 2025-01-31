@@ -107,8 +107,8 @@ function UserPage() {
   useEffect(() => {
   
     if (currentUser && currentUser.uid) {
-      
-        fetchRecentlyWatchedStudios(currentUser.uid);
+        console.log("Recently watched disabled")
+        //fetchRecentlyWatchedStudios(currentUser.uid);
       
     }
     const fetchCreatorMode = async () => {

@@ -20,6 +20,7 @@ import CardSlider from '../Components/CardSlider.js';
 import WorkshopCardSlider from '../Components/WorkshopCardSlider.js';
 import OpenClassCardSlider from '../Components/OpenClassCardSlider.js';
 import CourseCardSlider from '../Components/CourseCardSlider.js';
+import { fetchStudioEntities } from '../utils/firebaseUtils.js';
 import Typography from '@mui/joy/Typography';
 import { Chip, Grid } from '@mui/material';
 import axios from 'axios';
@@ -104,7 +105,8 @@ function StudioFullPage() {
         setIsLoading(true);
         if (JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId) {
           const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
-          updateRecentlyWatchedInFirebase(UserId, studioId);
+          console.log("Recently watched disabled")
+          //updateRecentlyWatchedInFirebase(UserId, studioId);
         }
         const responseText = await axios.get(`${BASEURL_STUDIO}${studioId}/text/`);
         const dataText = responseText.data;
@@ -130,111 +132,15 @@ function StudioFullPage() {
   }, []);
 
   const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
-
   useEffect(() => {
-    const getWorkshopsOfStudio = async () => {
-      try {
-        setIsLoading(true);
-        const q = query(
-          collection(db, COLLECTIONS.WORKSHOPS),
-          where(
-            "StudioId",
-            "==",
-            studioId
-          ),
-          where("active", "==", true)
-        );
-  
-        const querySnapshot = await getDocs(q);
-        const workshopsOfStudio = querySnapshot.docs
-          .filter((doc) => doc.data().workshopName)
-          .map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              ...data,
-            };
-          });
-        setWorkshops(workshopsOfStudio);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    setIsLoading(true);
 
-    getWorkshopsOfStudio();
-  }, []);
-
-  useEffect(() => {
-    const getOpenClassesOfStudio = async () => {
-      try {
-        setIsLoading(true);
-        const q = query(
-          collection(db, COLLECTIONS.OPEN_CLASSES),
-          where(
-            "StudioId",
-            "==",
-            studioId
-          ),
-          where("active", "==", true)
-        );
-  
-        const querySnapshot = await getDocs(q);
-        const openClassesOfStudio = querySnapshot.docs
-          .filter((doc) => doc.data().openClassName)
-          .map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              ...data,
-            };
-          });
-        setOpenClasses(openClassesOfStudio);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getOpenClassesOfStudio();
-  }, []);
-
-  useEffect(() => {
-    const getCoursesOfStudio = async () => {
-      try {
-        setIsLoading(true);
-        const q = query(
-          collection(db, COLLECTIONS.COURSES),
-          where(
-            "StudioId",
-            "==",
-            studioId
-          ),
-          where("active", "==", true)
-        );
-  
-        const querySnapshot = await getDocs(q);
-        const coursesOfStudio = querySnapshot.docs
-          .filter((doc) => doc.data().name)
-          .map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              ...data,
-            };
-          });
-        setCourses(coursesOfStudio);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getCoursesOfStudio();
-  }, []);
+    Promise.all([
+      fetchStudioEntities(studioId, COLLECTIONS.OPEN_CLASSES, setOpenClasses),
+      fetchStudioEntities(studioId, COLLECTIONS.WORKSHOPS, setWorkshops),
+      fetchStudioEntities(studioId, COLLECTIONS.COURSES, setCourses),
+    ]).finally(() => setIsLoading(false));
+  }, [studioId]);
 
   return (
     <Container fluid style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'color' }}>

@@ -2,7 +2,7 @@ import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, getDocs, 
 import { db } from '../config';
 import {ref,listAll,getDownloadURL,uploadBytes, deleteObject, uploadBytesResumable  } from "firebase/storage";
 import { storage } from '../config';
-import { BASEURL_PROD } from '../constants';
+import { BASEURL_DEV, BASEURL_PROD } from '../constants';
 import secureLocalStorage from 'react-secure-storage';
 
 export const setCreatorMode = async (uid) => {
@@ -31,6 +31,25 @@ export const setCreatorMode = async (uid) => {
     secureLocalStorage.setItem('CreatorMode', false);
   }
 }
+
+export const fetchStudioEntities = async (studioId, entityType, setState) => {
+  const BASE_URL = BASEURL_PROD;
+  try {
+    const url = `${BASE_URL}crud/${studioId}/${entityType}/`;
+    console.log(url)
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.success) {
+      setState(data.data);
+    } else {
+      console.error(`Error fetching ${entityType}:`, data.error);
+    }
+  } catch (error) {
+    console.error(`Error fetching ${entityType}:`, error);
+  }
+};
+
 
 export const getCreatorMode = async () => {
   try{

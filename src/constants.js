@@ -108,7 +108,7 @@ export const SEARCH_FILTERS ={
     DISTANCES:'distances',
 }
 
-export const BASEURL_DEV = "http://127.0.0.1:8000/"
+export const BASEURL_DEV = "http://0.0.0.0:8000/"
 export const BASEURL_PROD= process.env.REACT_APP_BACKEND_URL
 
 export const AMENITIES_ICONS = {
