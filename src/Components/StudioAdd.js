@@ -502,7 +502,6 @@ function StudioAdd({instructors}) {
               if (!isEqual(previousState, currentState)) {
                 try {
                   await updateDoc(studioRef, currentState);
-                  showSnackbar("Saved data in draft", "success");
                   previousState = currentState; // Update previous state after successful save
                   console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
                 } catch (error) {
