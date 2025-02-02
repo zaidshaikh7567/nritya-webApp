@@ -863,14 +863,18 @@ function StudioAdd({instructors}) {
             
              <div hidden={activeStep !== 4}>
               <ImageUpload entityId={newStudioId} title={"Studio Images"}  storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
-              <Row>
-                
-                <Col xs={12} className="d-flex justify-content-end">
-                  <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
-                    Next
-                  </MuiButton>
-                </Col>
-              </Row>
+            </div>
+
+            <div hidden={activeStep !== 4}>
+              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTSv} maxImageCount={10}></ImageUpload>
+
+              <Row className='mt-3'>
+              <Col xs={12} className="d-flex justify-content-end">
+                <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
+                  Next
+                </MuiButton>
+              </Col>
+            </Row>
             </div>
 
             <div  hidden={activeStep !== 5} style={{ display: 'flex',  alignItems: 'center', height: 'auto'}}>
