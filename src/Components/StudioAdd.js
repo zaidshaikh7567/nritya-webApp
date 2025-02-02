@@ -23,6 +23,7 @@ import SuccessMessage from './SucessPage';
 import { postData } from '../utils/common';
 import { isEqual } from 'lodash';
 import StudioWeeklyTimings from './StudioWeeklyTiming';
+import { useSnackbar } from '../context/SnackbarContext';
 
 const encodeToUnicode = (text) => {
   const textEncoder = new TextEncoder();
@@ -49,6 +50,7 @@ const initialStudioTimings = {
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
+    const showSnackbar = useSnackbar();
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
       [{ className: '', danceForms: '', days: '', time: '', instructors: [], fee:'',level:'' ,status: '' ,freeTrial:false ,classCategory: []}],
@@ -204,6 +206,88 @@ function StudioAdd({instructors}) {
         }
       };
 
+  const saveDraft = async () => {
+    const form = document.getElementById("addStudioForm");
+
+    try {
+      const q = query(
+        collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS),
+        where(
+          "UserId",
+          "==",
+          JSON.parse(localStorage.getItem("userInfo")).UserId
+        )
+      );
+  
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        let studios = [];
+  
+        querySnapshot.forEach((doc) => {
+          studios.push({ id: doc.id, ...doc.data() });
+        });
+  
+        let foundStudio = studios[0];
+  
+        const studioRef = doc(
+          db,
+          DRAFT_COLLECTIONS.DRAFT_STUDIOS,
+          foundStudio.id
+        );
+  
+        const newData = tableData.reduce((accumulator, current, index) => {
+          accumulator[index] = current;
+          return accumulator;
+        }, {});
+  
+        const currentState = {
+          studioName: form.studioName.value,
+          aboutStudio: form.aboutStudio.value,
+          founderName: form.founderName.value,
+          aboutFounder: form.aboutFounder.value,
+          mobileNumber: form.mobileNumber.value,
+          whatsappNumber: form.whatsappNumber.value,
+          mailAddress: form.mailAddress.value,
+          danceStyles: selectedDanceStyles.join(","),
+          numberOfHalls: form.numberOfHalls.value,
+          maximumOccupancy: form.maximumOccupancy.value,
+          instructorsNames: selectedInstructors,
+          status: "OPEN",
+          tableData: newData,
+          buildingName: form.buildingName.value,
+          street: form.street.value,
+          city: form.city.value,
+          landmark: form.landmark.value,
+          pincode: form.pincode.value,
+          state: form.state.value,
+          country: "India",
+          geolocation: selectedLocation,
+          gstNumber: form.gstNumber.value,
+          enrolledId: [],
+          reviews: [],
+          author: JSON.parse(localStorage.getItem("userInfo")).displayName,
+          UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
+          isPremium: true,
+          addAmenities: selectedAmenities.join(","),
+          enrollmentProcess: encodeToUnicode(form.enrollmentProcess.value),
+          creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
+          instagram: form.instagram.value,
+          facebook: form.facebook.value,
+          youtube: form.youtube.value,
+          twitter: form.twitter.value,
+          visibilty: 1,
+          timings,
+        };
+  
+        await updateDoc(studioRef, currentState);
+        showSnackbar("Draft saved successfully!", "success");
+      }
+    } catch (error) {
+      console.error("Error saving draft: ", error);
+    }
+  };
+
   useEffect(() => {
     async function main() {
       const form = document.getElementById("addStudioForm");
@@ -251,7 +335,7 @@ function StudioAdd({instructors}) {
           form.pincode.value = foundStudio.pincode;
           form.state.value = foundStudio.state;
           setSelectedLocation(foundStudio.geolocation);
-          form.aadharNumber.value = foundStudio.aadharNumber;
+          // form.aadharNumber.value = foundStudio.aadharNumber;
           form.gstNumber.value = foundStudio.gstNumber;
           setTableData(Object.values(foundStudio.tableData));
           setSelectedAmenities(
@@ -418,6 +502,7 @@ function StudioAdd({instructors}) {
               if (!isEqual(previousState, currentState)) {
                 try {
                   await updateDoc(studioRef, currentState);
+                  showSnackbar("Saved data in draft", "success");
                   previousState = currentState; // Update previous state after successful save
                   console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
                 } catch (error) {
@@ -543,7 +628,10 @@ function StudioAdd({instructors}) {
                       Prev
                     </MuiButton>
                   </Col>
-                  <Col xs={6} className="d-flex justify-content-end">
+                  <Col xs={6} className="d-flex justify-content-end gap-3">
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={saveDraft}>
+                      Save to Draft
+                    </MuiButton>
                     <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                       Next
                     </MuiButton>
@@ -666,7 +754,10 @@ function StudioAdd({instructors}) {
                       Prev
                     </MuiButton>
                   </Col>
-                  <Col xs={6} className="d-flex justify-content-end">
+                  <Col xs={6} className="d-flex justify-content-end gap-3">
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={saveDraft}>
+                      Save to Draft
+                    </MuiButton>
                     <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                       Next
                     </MuiButton>
@@ -732,8 +823,10 @@ function StudioAdd({instructors}) {
                       Prev
                     </MuiButton>
                   </Col>
-                  <Col xs={6} className="d-flex justify-content-end">
-                    
+                  <Col xs={6} className="d-flex justify-content-end gap-3">
+                    <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={saveDraft}>
+                      Save to Draft
+                    </MuiButton>
                     <MuiButton variant="contained" disabled={isSubmitting} style={{backgroundColor:isDarkModeOn?"#892cdc":"black", color:'white'}} type="submit">
                       Add Studio & Next
                     </MuiButton>
