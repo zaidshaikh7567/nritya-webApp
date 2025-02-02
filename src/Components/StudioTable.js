@@ -202,8 +202,8 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
               <td style={{padding:'0rem',border: '1px solid black'}}>
                 < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   as="select"
-                  value={row.level}
-                  onChange={(e) => handleTableChange(index, 'level', e.target.value)}
+                  value={row.freeTrial}
+                  onChange={(e) => handleTableChange(index, 'freeTrial', e.target.value)}
                 >     <option value="">Select a value</option>
                       <option value={true}>Yes</option>
                       <option value={false}>No</option>
