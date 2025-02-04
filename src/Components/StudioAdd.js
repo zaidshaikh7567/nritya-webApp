@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Row, Col , Form } from 'react-bootstrap';
 import {LinearProgress, Button as MuiButton} from '@mui/material';
 import { useState, useEffect } from 'react';
@@ -50,6 +50,7 @@ const initialStudioTimings = {
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
+    const previousDraftState = useRef(null);
     const showSnackbar = useSnackbar();
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
@@ -279,9 +280,14 @@ function StudioAdd({instructors}) {
           visibilty: 1,
           timings,
         };
-  
-        await updateDoc(studioRef, currentState);
-        showSnackbar("Draft saved successfully!", "success");
+
+        if (!isEqual(previousDraftState.current, currentState)) {
+          await updateDoc(studioRef, currentState);
+          previousDraftState.current = currentState;
+          showSnackbar("Draft saved successfully!", "success");
+        } else {
+          showSnackbar("No changes detected to save.", "info");
+        }
       }
     } catch (error) {
       console.error("Error saving draft: ", error);
