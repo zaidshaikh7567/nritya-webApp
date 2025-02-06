@@ -460,7 +460,7 @@ export default function NWorkshopCard({dataItem, studioIdName}) {
           </Typography>
           <Box mt={1} display="flex" justifyContent="space-between">
             <Typography alignSelf="center" style={{color: isDarkModeOn ? 'white' : 'black'}}>
-              {dataItem && dataItem.price && (
+              {dataItem && dataItem.price && dataItem.price>=0 && (
                 <span> ₹{dataItem.price}</span>
               )}
             </Typography>

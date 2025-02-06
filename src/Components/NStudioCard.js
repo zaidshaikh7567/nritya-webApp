@@ -116,7 +116,7 @@ export default function NStudioCard({img_src,data}) {
           >
             {data && data.studioName ? data.studioName : "    "}
           </Link>
-          {data && data.avgRating ?
+          {data && data.avgRating && data.avgRating>0 ?
             <Typography width={52} flexShrink={0} alignSelf="center" style={{ color: isDarkModeOn ? 'white' : 'black' }}>
               ⭐ {data.avgRating.toFixed(1)}
             </Typography> : null
@@ -142,7 +142,7 @@ export default function NStudioCard({img_src,data}) {
         </IconButton>
         <Box display="flex" justifyContent="space-between">
           <Typography alignSelf="center" fontSize={12} style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-            {data && data.minFee && (`@ ₹${data.minFee} onwards`)}
+            {data && data.minFee && data.minFee>=0 &&(`@ ₹${data.minFee} onwards`)}
           </Typography>
           <Button
             size='small'

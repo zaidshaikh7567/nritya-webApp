@@ -461,7 +461,7 @@ export default function NCourseCard({dataItem, studioIdName}) {
             {formatDateString(dataItem.date) || ""} | {dataItem.time || ""}
           </Typography>
           <Typography style={{color: isDarkModeOn ? 'white' : 'black'}}>
-            {dataItem && dataItem.price && (
+            {dataItem && dataItem.price &&dataItem.price>=0&& (
               <span> ₹{dataItem.price}</span>
             )}
           </Typography>

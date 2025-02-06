@@ -168,12 +168,13 @@ function StudioFullPage() {
               </Typography>
             </Col>
             <Col sm ={1} xs={12} className="d-flex align-items-center justify-content-end">
-              {studioData && studioData.avgRating && studioData.ratedBy ? (
-                <>
-                  <span style={{ color: 'goldenrod' }}>⭐{studioData.avgRating.toFixed(1)}</span>
-                  <span style={{ color: isDarkModeOn ? 'white' : 'black' }}> ({studioData.ratedBy})</span>
-                </>
-              ) : ""}
+            {studioData && studioData.avgRating > 0 && studioData.ratedBy > 0 ? (
+              <>
+                <span style={{ color: 'goldenrod' }}>⭐{studioData.avgRating.toFixed(1)}</span>
+                <span style={{ color: isDarkModeOn ? 'white' : 'black' }}> ({studioData.ratedBy})</span>
+              </>
+            ) : ""}
+
             </Col>
           </Row>
    
