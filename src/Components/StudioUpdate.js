@@ -176,7 +176,7 @@ function StudioUpdate({ studio, setStudio, studioId, setStudioId, instructors })
         const maxIndex = Math.max(...Object.keys(tableData).map(Number));
         setSelectedStudioFrozenClassRows(maxIndex);
       }
-      if (selectedStudio && selectedStudio?.timings?.length) {
+      if (selectedStudio && selectedStudio?.timings) {
         setTimings(selectedStudio.timings);
       }
     }

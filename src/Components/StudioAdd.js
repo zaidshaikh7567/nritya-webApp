@@ -38,13 +38,13 @@ const decodeUnicode = (unicodeString) => {
 };
 
 const initialStudioTimings = {
-  monday: [{ open: "09:00 AM", close: "06:00 PM" }],
   tuesday: [{ open: "09:00 AM", close: "06:00 PM" }],
   wednesday: [{ open: "09:00 AM", close: "06:00 PM" }],
   thursday: [{ open: "09:00 AM", close: "06:00 PM" }],
   friday: [{ open: "09:00 AM", close: "06:00 PM" }],
   saturday: [{ open: "09:00 AM", close: "06:00 PM" }],
   sunday: [{ open: "09:00 AM", close: "06:00 PM" }],
+  monday: [{ open: "09:00 AM", close: "06:00 PM" }],
 }
 
 const DRAFT_INTERVAL_TIME = 1000 * 10;
@@ -65,6 +65,10 @@ function StudioAdd({instructors}) {
     const [isReady, setIsReady] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [timings, setTimings] = useState(initialStudioTimings);
+
+    // console.log("==============");
+    // console.log("timings", timings);
+    // console.log("==============");
 
     //const [dropdownVisible, setDropdownVisible] = useState(false);
     const locationOptions = indianCities.cities;
@@ -356,7 +360,7 @@ function StudioAdd({instructors}) {
           form.facebook.value = foundStudio.facebook;
           form.youtube.value = foundStudio.youtube;
           form.twitter.value = foundStudio.twitter;
-          if (foundStudio?.timings?.length) setTimings(foundStudio.timings);
+          if (foundStudio?.timings) setTimings(foundStudio.timings);
         } else {
           await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_STUDIOS), {
             studioName: form.studioName.value,
@@ -509,12 +513,12 @@ function StudioAdd({instructors}) {
                 try {
                   await updateDoc(studioRef, currentState);
                   previousState = currentState; // Update previous state after successful save
-                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                  // console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
                 } catch (error) {
                   console.error(error);
                 }
               }else{
-                console.log("Nothing for Autosave to save")
+                // console.log("Nothing for Autosave to save")
             }
 
             } catch (error) {

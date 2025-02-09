@@ -2,9 +2,9 @@ import { useSelector } from "react-redux";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Button as MuiButton } from "@mui/material";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
+import dayOrder from "../days.json";
 
 const generateTimeOptions = () => {
-  const options = [];
   let option_AM = [];
   let option_PM = [];
   for (let hours = 0; hours < 24; hours++) {
@@ -24,16 +24,7 @@ const generateTimeOptions = () => {
     }
   }
 
-  for (let i = 0; i < option_AM.length || i < option_PM.length; i++) {
-    if (i < option_AM.length) {
-      options.push(option_AM[i]);
-    }
-    if (i < option_PM.length) {
-      options.push(option_PM[i]);
-    }
-  }
-
-  return options;
+  return [...option_AM, ...option_PM];
 };
 
 const renderTimeOptions = (defaultValue) => {
@@ -60,7 +51,10 @@ const StudioWeeklyTimings = ({ timings, setTimings }) => {
   };
 
   const addTimeSlot = (day) => {
-    const updatedDayTimings = [...timings[day], { open: "09:00 AM", close: "06:00 PM" }];
+    const updatedDayTimings = [
+      ...timings[day],
+      { open: "09:00 AM", close: "06:00 PM" },
+    ];
     setTimings({ ...timings, [day]: updatedDayTimings });
   };
 
@@ -74,10 +68,12 @@ const StudioWeeklyTimings = ({ timings, setTimings }) => {
 
   return (
     <Row className="gy-3">
-      {Object.entries(timings).map(([day, slots]) => (
+      {dayOrder.map((day) => (
         <Col xs={12} sm={6} md={4} lg={3} key={day}>
-          <span className="mb-3" style={{ fontWeight: 'bold' }}>{day.charAt(0).toUpperCase() + day.slice(1)}</span>
-          {slots.map((slot, index) => (
+          <span className="mb-3" style={{ fontWeight: "bold" }}>
+            {day.charAt(0).toUpperCase() + day.slice(1)}
+          </span>
+          {timings[day].map((slot, index) => (
             <Row key={index} className="mb-2 align-items-center">
               <Col xs={5}>
                 <Form.Group>
@@ -92,8 +88,8 @@ const StudioWeeklyTimings = ({ timings, setTimings }) => {
                       height: "auto",
                       lineHeight: "1.5em",
                       padding: "8px",
-                      color: isDarkModeOn ? 'white' : '#333333',
-                      backgroundColor: isDarkModeOn ? '#333333' : 'white'
+                      color: isDarkModeOn ? "white" : "#333333",
+                      backgroundColor: isDarkModeOn ? "#333333" : "white",
                     }}
                   >
                     {renderTimeOptions(slot.open)}
@@ -113,8 +109,8 @@ const StudioWeeklyTimings = ({ timings, setTimings }) => {
                       height: "auto",
                       lineHeight: "1.5em",
                       padding: "8px",
-                      color: isDarkModeOn ? 'white' : '#333333',
-                      backgroundColor: isDarkModeOn ? '#333333' : 'white'
+                      color: isDarkModeOn ? "white" : "#333333",
+                      backgroundColor: isDarkModeOn ? "#333333" : "white",
                     }}
                   >
                     {renderTimeOptions(slot.close)}
@@ -137,9 +133,9 @@ const StudioWeeklyTimings = ({ timings, setTimings }) => {
             variant="contained"
             onClick={() => addTimeSlot(day)}
             sx={{
-              color: isDarkModeOn ? 'black' : 'white',
-              bgcolor: isDarkModeOn ? 'white' : 'black',
-              '&:hover': { bgcolor: isDarkModeOn ? 'white' : 'black', }
+              color: isDarkModeOn ? "black" : "white",
+              bgcolor: isDarkModeOn ? "white" : "black",
+              "&:hover": { bgcolor: isDarkModeOn ? "white" : "black" },
             }}
           >
             Add Time Slot
