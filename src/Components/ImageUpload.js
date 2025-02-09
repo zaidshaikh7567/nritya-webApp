@@ -98,7 +98,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
       if (maxImageCount === 1) {
         // Delete all previous images in the folder
         await deleteAllImagesInFolder(storageFolder, entityId);
-        await uploadImages(storageFolder,newFiles, entityId);
+        await uploadImages(storageFolder,newFiles, entityId, setProgressUpdate);
       } else {
         // Calculate images to delete and add
         const { imagesToDelete, newImages } = calculateDelta(selectedFiles, uploadedFiles);

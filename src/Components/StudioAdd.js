@@ -876,7 +876,7 @@ function StudioAdd({instructors}) {
             </div>
 
             <div hidden={activeStep !== 4}>
-              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTSv} maxImageCount={10}></ImageUpload>
+              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10}></ImageUpload>
 
               <Row className='mt-3'>
               <Col xs={12} className="d-flex justify-content-end">
