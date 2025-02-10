@@ -32,7 +32,7 @@ const initialStudioTimings = {
   sunday: [{ open: "09:00 AM", close: "06:00 PM" }],
 }
 
-const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
+const daysOfWeek = ['Mon','Tues','Wed','Thurs','Fri','Sat','Sun'];
 const categoryMap = {
   Kids: "Kids",
   Adults: "Adults",

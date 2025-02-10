@@ -156,7 +156,7 @@ const TableView = ({ studioData, studioId }) => {
                           },                                                   
                         ].map((item, i) => (
                           <tr key={i}>
-                            <td style={{ color: "white",textAlign: 'center', backgroundColor: isDarkModeOn ? "#121212" : "black" }}>
+                            <td style={{ color: "white",textAlign: 'center', backgroundColor: isDarkModeOn ? "#121212" : "black", padding: item.label === 'Book Free Trial' ? "25px 30px" : '15px 30px' }}>
                               {item.label}
                             </td>
                             <td
@@ -164,7 +164,7 @@ const TableView = ({ studioData, studioId }) => {
                                 backgroundColor: isDarkModeOn ? "#444" : "#f0f0f0",
                                 color: isDarkModeOn ? "white" : "black",
                                 textAlign: 'center',
-                                padding: item.label === 'Book Free Trial' ? 0 :'',
+                                padding: item.label === 'Book Free Trial' ? 0 : '15px 30px',
                               }}
                             >
                               {item.value}

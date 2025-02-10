@@ -10,7 +10,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/saga-blue/theme.css";
 
-const daysOfWeek = ['M','T','W','Th','F','St','Sn'];
+const daysOfWeek = ['Mon','Tues','Wed','Thurs','Fri','Sat','Sun'];
 const categoryMap = {
   Kids: "Kids",
   Adults: "Adults",
