@@ -176,7 +176,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                     <p>Max no of image(s):{maxImageCount} {storageFolder === STORAGES.STUDIOIMAGES && <p>Add at least 5 images</p>}</p>
                   </div>
                 </div>
-                <form style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>
+                <div style={{  backgroundColor: isDarkModeOn ? '#333333' : 'white'}}>
                   <div className="kb-file-upload">
                     <div className="file-upload-box">
                       <input
@@ -237,7 +237,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                   <div className="kb-buttons-box">
                     <button
                       type="button"
-                      className="btn form-submit"
+                      className="btn div-submit"
                       style={{ backgroundColor: isDarkModeOn ? '#892CDC' : 'black', color:'white'  }}
                       onClick={handleUploadSubmit}
                       disabled={disable}
@@ -245,7 +245,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
                       Image Upload
                     </button>
                   </div>
-                </form>
+                </div>
                 {selectedFiles.length > 0 && (
                   <div className="kb-attach-box" hidden>
                     <div className="row">
