@@ -116,7 +116,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
       }
 
       // alert("Images Uploaded/Deleted");
-      //showSnackbar("Images Uploaded/Deleted", "success");
+      showSnackbar("Image(s) uploaded successfully", "success");
     } catch (error) {
       console.error("Error uploading/deleting images:", error);
     }
