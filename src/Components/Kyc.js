@@ -60,7 +60,7 @@ function Kyc() {
   const [kycData, setKycData] = useState(null);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [errors, setErrors] = useState({});
-  const user_id = JSON.parse(localStorage.getItem('userInfo')).UserId;
+  const user_id = JSON.parse(localStorage.getItem('userInfo'))?.UserId;
   const kycId = `${user_id}_Kyc`;
   const [filesAadhar, setFilesAadhar] = useState(null);
   const [filesGst, setFilesGst] = useState(null);
@@ -70,7 +70,7 @@ function Kyc() {
   const [progressAadhar, setProgressAadhar] = useState(-1);
   const [progressGst, setProgressGst] = useState(-1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
+  const currentUserEmail = JSON.parse(localStorage.getItem("userInfo"))?.email;
   const currentName = JSON.parse(localStorage.getItem("userInfo"))?.displayName;
 
 

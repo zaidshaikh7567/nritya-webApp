@@ -212,7 +212,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
               <td style={{padding:'0rem', width:'20rem'}}>
                 < Form.Control style={{backgroundColor:"white",height: 'auto', lineHeight: '1.5em',padding: '8px'}}
                   as="select"
-                  value={row.classCategory[0] || ""}
+                  value={Array.isArray(row.classCategory) && row.classCategory.length > 0 ? row.classCategory[0] : ""}
                   onChange={(e) => handleTableChange(index, 'classCategory', [e.target.value])}
                 >
                   <option value="">Select Class Category</option>

@@ -65,9 +65,9 @@ function App() {
   }, [adminLoggedIn]);
 
   const handleLogin = async (UserInfo,userInfoFull) => {
-    setUsername(UserInfo.displayName);
+    setUsername(UserInfo?.displayName);
     setIsLoggedIn(true);
-    setUserID(UserInfo.UserId) 
+    setUserID(UserInfo?.UserId) 
 
     localStorage.setItem('username',username);
     localStorage.setItem('isLoggedIn', true);
