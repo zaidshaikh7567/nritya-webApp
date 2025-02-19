@@ -77,7 +77,61 @@ function StudioAdd({instructors}) {
     const amenityKeys = Object.keys(AMENITIES_ICONS).map(String);
     const [activeStep, setActiveStep] = useState(0);
 
+    const validateStep1 = () => {
+      const form = document.getElementById("addStudioForm");
+
+      if (!form.studioName.value) return "Studio name is required";
+      if (!form.aboutStudio.value) return "About Studio is required";
+      if (!form.founderName.value) return "Founder name is required";
+      if (!form.aboutFounder.value) return "About Founder is required";
+      if (!form.mobileNumber.value) return "Mobile number is required";
+      if (!form.whatsappNumber.value) return "WhatsApp number is required";
+      if (!form.numberOfHalls.value) return "Number of halls is required";
+      if (!form.maximumOccupancy.value) return "Maximum occupancy is required";
+      if (!selectedDanceStyles.length) return "At least one dance style must be selected";
+    };
+
+    const validateStep2 = () => {
+      if (!Object.values(timings).every((slots) => slots.length > 0)) {
+        return "All timing slots must be filled";
+      }
+      if (!tableData.length) {
+        return "At least one class entry is required";
+      }
+      for (const entry of tableData) {
+        if (!entry.className?.trim()) return "Class name is required";
+        if (!entry.danceForms?.trim()) return "Dance forms are required";
+        if (!entry.days?.trim()) return "Days are required";
+        if (!entry.time?.trim()) return "Time is required";
+        if (!entry.fee?.trim()) return "Fee is required";
+        if (!entry.level?.trim()) return "Level is required";
+        if (!entry.instructors.length) return "At least one instructor is required";
+        if (!entry.classCategory.length || !entry.classCategory[0]?.trim()) return "Class category is required";
+      }
+    };
+
+    const validateStep3 = () => {
+      const form = document.getElementById("addStudioForm");
+
+      if (!form.buildingName.value) return "Building name is required";
+      if (!form.street.value) return "Street is required";
+      if (!form.city.value) return "City is required";
+      if (!form.pincode.value) return "Pincode is required";
+      if (!form.state.value) return "State is required";
+      if (!selectedLocation) return "Location selection is required";
+    };
+
     const handleNext = () => {
+      let errorMessage = '';
+
+      if (activeStep === 0) errorMessage = validateStep1()
+
+      if (activeStep === 1) errorMessage = validateStep2()
+
+      if (errorMessage) {
+        return showSnackbar(errorMessage, 'error');
+      }
+
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
@@ -141,6 +195,15 @@ function StudioAdd({instructors}) {
 
       const handleAddStudio = async (event) => {
         event.preventDefault();
+
+        if (activeStep === 2) {
+          const errorMessage = validateStep3();
+
+          if (errorMessage) {
+            return showSnackbar(errorMessage, 'error');
+          }
+        }
+
         const title = event.target.studioName.value;
         if (!title) {
           return;
@@ -562,18 +625,18 @@ function StudioAdd({instructors}) {
                 <Row>
                 <Col md={6}>
 
-                <Form.Label>Studio Name</Form.Label>
+                <Form.Label>Studio Name *</Form.Label>
                 <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="studioName" />
                 
-                <Form.Label>About Studio</Form.Label>
+                <Form.Label>About Studio *</Form.Label>
                 <Form.Control rows={6} style={{  minHeight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio's details" name="aboutStudio" />
                 
                 </Col>
                 <Col md={6}>
-                <Form.Label>Founder's Name</Form.Label>
+                <Form.Label>Founder's Name *</Form.Label>
                 <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter founder name" name="founderName" />
                 
-                <Form.Label>About Founder</Form.Label>
+                <Form.Label>About Founder *</Form.Label>
                 <Form.Control rows={6} style={{  minheight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter founder's details" name="aboutFounder" />
                 
                 </Col>
@@ -584,10 +647,10 @@ function StudioAdd({instructors}) {
                 <Row>
                 <Col md={6}>
 
-                <Form.Label>Mobile Number</Form.Label>
+                <Form.Label>Mobile Number *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter mobile number" name="mobileNumber" type="number"  />
 
-                <Form.Label>WhatsApp Number</Form.Label>
+                <Form.Label>WhatsApp Number *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter whatsapp number" name="whatsappNumber" type="number"  />
                 </Col>
                 <Col md={6}>
@@ -601,7 +664,7 @@ function StudioAdd({instructors}) {
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Details</h3>
                 <Row>
                   <Col md={6}>
-                <Form.Label >Dance Styles</Form.Label>
+                <Form.Label >Dance Styles *</Form.Label>
                 <ThemeProvider theme={darkTheme}>
                   <CssBaseline />
 
@@ -622,11 +685,11 @@ function StudioAdd({instructors}) {
                   )}
                 />
                 </ThemeProvider>
-                <Form.Label>Number of Hall(s)</Form.Label>
+                <Form.Label>Number of Hall(s) *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Number of Hall(s)" name="numberOfHalls" type="number" />
                 </Col>
                 <Col md={6}>
-                <Form.Label>Maximum Occupancy</Form.Label>
+                <Form.Label>Maximum Occupancy *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }}  rows={1} placeholder="Maximum Occupancy" name="maximumOccupancy" type="number"   />
                 </Col>
                 </Row>
@@ -685,7 +748,7 @@ function StudioAdd({instructors}) {
                     </a>
                 <hr></hr>   
                 
-                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule</h3>
+                <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Class Schedule *</h3>
                   <span>Time Table Of dance classes</span>
                     <div style={{ overflowX: 'auto', whiteSpace: 'nowrap', scrollbarColor: isDarkModeOn ? '#888 #333' : '#ccc #fff', }}>
                       <StudioTable
@@ -733,7 +796,7 @@ function StudioAdd({instructors}) {
           
                 </Row>
 
-                <h3 style={{ margin: '12px 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Timings</h3>
+                <h3 style={{ margin: '12px 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Studio Timings *</h3>
                 <StudioWeeklyTimings timings={timings} setTimings={setTimings} />
 
                 <h3 style={{ margin: '32px 0 0 0', backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Social Media Links</h3>
@@ -780,12 +843,12 @@ function StudioAdd({instructors}) {
                 <h3 style={{ backgroundColor: isDarkModeOn ? '#202020' : '', color: isDarkModeOn ? 'white' : 'black' }}>Address Details</h3>
                 <Row>
                   <Col md={6}>
-                  <Form.Label>Building Name</Form.Label>
+                  <Form.Label>Building Name *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter building name" name="buildingName" />
 
-                <Form.Label>Street</Form.Label>
+                <Form.Label>Street *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" rows={1} placeholder="Enter street" name="street" />
-                <Form.Label>City</Form.Label>
+                <Form.Label>City *</Form.Label>
                 <Form.Control as="select" style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black', height: 'auto', // Let it adjust to content
                     lineHeight: '1.5em', // Mimics rows={1}
                     padding: '8px', }} name="city">
@@ -802,10 +865,10 @@ function StudioAdd({instructors}) {
                   <Form.Label>Landmark</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter landmark" name="landmark" />
 
-                <Form.Label>Pincode</Form.Label>
+                <Form.Label>Pincode *</Form.Label>
                 <Form.Control style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter pincode" name="pincode" type="number"  />
                
-                <Form.Label>State</Form.Label>
+                <Form.Label>State *</Form.Label>
                 <Form.Control as="select" style={{ padding: "0 1.5rem", backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} rows={1} placeholder="Enter state" name="state">
                 <option value="">Select a State</option>
                     {stateOptions.map((city, index) => (

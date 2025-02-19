@@ -34,6 +34,8 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
   };
 
   const handleRemoveRow = (index) => {
+    if (tableData.length - 1 === 0) return;
+
     setTableData((prevData) => {
       const newData = [...prevData];
       newData.splice(index, 1);
