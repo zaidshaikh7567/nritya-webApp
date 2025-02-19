@@ -9,6 +9,7 @@ import { Autocomplete, TextField } from '@mui/material';
 import { MultiSelect } from 'primereact/multiselect';
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/saga-blue/theme.css";
+import { updateDaysFormat } from '../utils/mapping';
 
 const daysOfWeek = ['Mon','Tues','Wed','Thurs','Fri','Sat','Sun'];
 const categoryMap = {
@@ -141,7 +142,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
               </td>
               
               <td style={{ padding:'0rem',minWidth:'15rem', border: '1px solid black'}} className="m-0 p-0">
-                <MultiSelect value={row.days && row.days.split(',').filter(day => day !== '') } 
+                <MultiSelect value={row.days && updateDaysFormat(row?.days?.split?.(',')?.filter?.(day => day !== '')) } 
                     onChange={(event) => handleTableChange(index, 'days', event.target.value)}
                     options={daysOfWeek}
                     placeholder="class days" maxSelectedLabels={7} className="w-full md:w-20rem"

@@ -22,6 +22,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { putData } from "../utils/common";
 import StudioWeeklyTimings from "./StudioWeeklyTiming";
 import { useSnackbar } from "../context/SnackbarContext";
+import { updateDaysFormat } from "../utils/mapping";
 
 const initialStudioTimings = {
   monday: [{ open: "09:00 AM", close: "06:00 PM" }],
@@ -1051,9 +1052,9 @@ function StudioUpdate({
                       value={
                         tableData[rowKey] &&
                         tableData[rowKey].days &&
-                        tableData[rowKey].days
-                          .split(",")
-                          .filter((day) => day !== "")
+                        updateDaysFormat(tableData?.[rowKey]?.days
+                          ?.split?.(",")
+                          ?.filter?.((day) => day !== ""))
                       }
                       onChange={(event) =>
                         handleTableChange(rowKey, "days", event.target.value)
