@@ -245,16 +245,25 @@ function StudioUpdate({
 
   const handleUpdateStudio = async (event) => {
     event.preventDefault();
+
+    if (!studioId) {
+      //console.log("Invalid or empty studio id")
+      return;
+    }
+
+    const errorMessage = validate();
+
+    if (errorMessage) {
+      return showSnackbar(errorMessage, 'error');
+    }
+
+
     setIsSubmitting(true);
     const nameIdLocal = event.target.nameId.value;
     const indexOfColon = nameIdLocal.lastIndexOf(":");
     const studioId = nameIdLocal.substring(indexOfColon + 1).trim();
     //console.log(studioId)
 
-    if (!studioId) {
-      //console.log("Invalid or empty studio id")
-      return;
-    }
 
     //const description = encodeToUnicode(event.target.description.value);
     //const geolocation = selectedLocation;
@@ -363,6 +372,44 @@ function StudioUpdate({
     });
   };
 
+  const validate = () => {
+    const form = document.getElementById("updateStudioForm");
+  
+    if (!form.studioName.value) return "Studio name is required";
+    if (!form.aboutStudio.value) return "About Studio is required";
+    if (!form.founderName.value) return "Founder name is required";
+    if (!form.aboutFounder.value) return "About Founder is required";
+    if (!form.mobileNumber.value) return "Mobile number is required";
+    if (!form.whatsappNumber.value) return "WhatsApp number is required";
+    if (!form.numberOfHalls.value) return "Number of halls is required";
+    if (!form.maximumOccupancy.value) return "Maximum occupancy is required";
+    if (!selectedDanceStyles.length) return "At least one dance style must be selected";
+  
+    if (!Object.values(timings).every((slots) => slots.length > 0)) {
+      return "All timing slots must be filled";
+    }
+    if (!Object.values(tableData).length) {
+      return "At least one class entry is required";
+    }
+    for (const entry of Object.values(tableData)) {
+      if (!entry.className?.trim()) return "Class name is required";
+      if (!entry.danceForms?.trim()) return "Dance forms are required";
+      if (!entry.days?.trim()) return "Days are required";
+      if (!entry.time?.trim()) return "Time is required";
+      if (!entry.fee?.trim()) return "Fee is required";
+      if (!entry.level?.trim()) return "Level is required";
+      if (!entry.instructors.length) return "At least one instructor is required";
+      if (!entry.classCategory.length || !entry.classCategory[0]?.trim()) return "Class category is required";
+    }
+  
+    if (!form.buildingName.value) return "Building name is required";
+    if (!form.street.value) return "Street is required";
+    if (!form.city.value) return "City is required";
+    if (!form.pincode.value) return "Pincode is required";
+    if (!form.state.value) return "State is required";
+    if (!selectedLocation) return "Location selection is required";
+  };
+
   return (
     <div
       style={{
@@ -409,7 +456,7 @@ function StudioUpdate({
         </h3>
         <Row>
           <Col md={6}>
-            <Form.Label>Studio Name</Form.Label>
+            <Form.Label>Studio Name *</Form.Label>
             <Form.Control
               rows={1}
               defaultValue={selectedStudio ? selectedStudio.studioName : ""}
@@ -422,7 +469,7 @@ function StudioUpdate({
               name="studioName"
             />
 
-            <Form.Label>About Studio</Form.Label>
+            <Form.Label>About Studio *</Form.Label>
             <Form.Control
               rows={6}
               defaultValue={selectedStudio ? selectedStudio.aboutStudio : ""}
@@ -437,7 +484,7 @@ function StudioUpdate({
             />
           </Col>
           <Col md={6}>
-            <Form.Label>Founder's Name</Form.Label>
+            <Form.Label>Founder's Name *</Form.Label>
             <Form.Control
               rows={1}
               defaultValue={selectedStudio ? selectedStudio.founderName : ""}
@@ -450,7 +497,7 @@ function StudioUpdate({
               name="founderName"
             />
 
-            <Form.Label>About Founder</Form.Label>
+            <Form.Label>About Founder *</Form.Label>
             <Form.Control
               rows={6}
               defaultValue={selectedStudio ? selectedStudio.aboutFounder : ""}
@@ -477,7 +524,7 @@ function StudioUpdate({
         </h3>
         <Row>
           <Col md={6}>
-            <Form.Label>Mobile Number</Form.Label>
+            <Form.Label>Mobile Number *</Form.Label>
             <Form.Control
               defaultValue={selectedStudio ? selectedStudio.mobileNumber : ""}
               style={{
@@ -490,7 +537,7 @@ function StudioUpdate({
               type="number"
             />
 
-            <Form.Label>WhatsApp Number</Form.Label>
+            <Form.Label>WhatsApp Number *</Form.Label>
             <Form.Control
               defaultValue={selectedStudio ? selectedStudio.whatsappNumber : ""}
               style={{
@@ -530,7 +577,7 @@ function StudioUpdate({
         </h3>
         <Row>
           <Col md={6}>
-            <Form.Label>Dance Styles</Form.Label>
+            <Form.Label>Dance Styles *</Form.Label>
 
             <ThemeProvider theme={darkTheme}>
               <CssBaseline />
@@ -559,7 +606,7 @@ function StudioUpdate({
               />
             </ThemeProvider>
 
-            <Form.Label>Number of Hall(s)</Form.Label>
+            <Form.Label>Number of Hall(s) *</Form.Label>
             <Form.Control
               defaultValue={selectedStudio ? selectedStudio.numberOfHalls : ""}
               style={{
@@ -573,7 +620,7 @@ function StudioUpdate({
             />
           </Col>
           <Col md={6}>
-            <Form.Label>Maximum Occupancy</Form.Label>
+            <Form.Label>Maximum Occupancy *</Form.Label>
             <Form.Control
               defaultValue={
                 selectedStudio ? selectedStudio.maximumOccupancy : ""
@@ -662,7 +709,7 @@ function StudioUpdate({
         </h3>
         <Row>
           <Col md={6}>
-            <Form.Label>Building Name</Form.Label>
+            <Form.Label>Building Name *</Form.Label>
             <Form.Control
               defaultValue={selectedStudio ? selectedStudio.buildingName : ""}
               style={{
@@ -675,7 +722,7 @@ function StudioUpdate({
               name="buildingName"
             />
 
-            <Form.Label>Street</Form.Label>
+            <Form.Label>Street *</Form.Label>
             <Form.Control
               defaultValue={selectedStudio ? selectedStudio.street : ""}
               style={{
@@ -687,7 +734,7 @@ function StudioUpdate({
               placeholder="Enter street"
               name="street"
             />
-            <Form.Label>City</Form.Label>
+            <Form.Label>City *</Form.Label>
             <Form.Control
               as="select"
               style={{
@@ -729,7 +776,7 @@ function StudioUpdate({
               name="landmark"
             />
 
-            <Form.Label>Pincode</Form.Label>
+            <Form.Label>Pincode *</Form.Label>
             <Form.Control
               defaultValue={selectedStudio ? selectedStudio.pincode : ""}
               style={{
@@ -743,7 +790,7 @@ function StudioUpdate({
               type="number"
             />
 
-            <Form.Label>State</Form.Label>
+            <Form.Label>State *</Form.Label>
             <Form.Control
               as="select"
               style={{
@@ -1169,7 +1216,7 @@ function StudioUpdate({
             color: isDarkModeOn ? "white" : "black",
           }}
         >
-          Studio Timings
+          Studio Timings *
         </h3>
         <StudioWeeklyTimings timings={timings} setTimings={setTimings} />
 
