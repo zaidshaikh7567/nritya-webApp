@@ -43,6 +43,7 @@ function StudioFullPage() {
   const [workshops, setWorkshops] = useState([]);
   const [openClasses, setOpenClasses] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [carouselLoading, setCarouselLoading] = useState(false);
 
   // Function to update the recently watched studios in Firebase
   const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
@@ -108,6 +109,7 @@ function StudioFullPage() {
           console.log("Recently watched disabled")
           //updateRecentlyWatchedInFirebase(UserId, studioId);
         }
+        setCarouselLoading(true);
         const responseText = await axios.get(`${BASEURL_STUDIO}${studioId}/text/`);
         const dataText = responseText.data;
         setStudioData(dataText);
@@ -124,6 +126,7 @@ function StudioFullPage() {
         console.error(error);
       } finally {
         setIsLoading(false);
+        setCarouselLoading(false);
       }
 
     };
@@ -274,22 +277,24 @@ function StudioFullPage() {
       </Row>
       <br></br>
 
-      <Row>
-        {carouselImages.length ?
+        {!carouselLoading ?
+        <>
+      {carouselImages.length ?  <Row>
           <CardSlider dataList={carouselImages} imgOnly={true} />
+      </Row> : null}
+</>
           :
-          <>
+          
             <Row>
               <Skeleton variant="rectangular" animation="wave" sx={{ paddingRight: "0.5rem" }} width={"240"} height={300} />
               <Skeleton variant="rectangular" animation="wave" sx={{ paddingRight: "0.5rem" }} width={"240"} height={300} />
             </Row>
-          </>
+          
         }
-      </Row>
 
-      <Row>
+      {studioData?.timings ? <Row>
         <StudioTimingsTable timings={studioData?.timings} />
-      </Row>
+      </Row> : null}
 
       <br></br>
       <Row>
