@@ -9,6 +9,7 @@ import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
 import { Typography,Tooltip } from '@mui/material';
+import { useSnackbar } from '../context/SnackbarContext';
 
 
 function processInstructors(instructors) {
@@ -26,6 +27,7 @@ function processInstructors(instructors) {
 
 
 const TableView = ({ studioData, studioId }) => {
+  const showSnackbar = useSnackbar();
   console.log("TableView",studioData,studioId)
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
@@ -40,6 +42,8 @@ const TableView = ({ studioData, studioId }) => {
   console.log(studioData)
 
   const bookFreeTrial = (classIndex) => {
+    return showSnackbar("Booking hasn't started yet. Tickets should not be generated in the booking section", "info");         
+
     const endpoint_url = BASEURL_PROD + "bookings/freeTrial/";
     if (!userId) {
       alert("Please Login");
@@ -145,9 +149,9 @@ const TableView = ({ studioData, studioId }) => {
                             value: (
                               <>
                               <MUIButton disabled={classItem.freeTrial === "false" || classItem.freeTrial === ""} onClick={() => {
-                                      if (classItem?.freeTrial && classItem.freeTrial !== "false" && classItem.freeTrial !== "") {
+                                      /* if (classItem?.freeTrial && classItem.freeTrial !== "false" && classItem.freeTrial !== "") { */
                                         bookFreeTrial(index);  // Only trigger booking if free trial is available
-                                      }
+                                      /* } */
                                     }} sx={{ width: '90%', m: 1, color: "white", bgcolor: '#735EAB', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" }, "&:disabled": { bgcolor: 'gray', color: 'white' } }} variant="text">{classItem?.freeTrial && (classItem.freeTrial === "false" || classItem.freeTrial === "")
                                         ? "Free Trial Unavailable"
                                         : "BOOK"}</MUIButton>
