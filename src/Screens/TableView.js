@@ -132,7 +132,7 @@ const TableView = ({ studioData, studioId }) => {
                 instructors = processInstructors(classItem.instructors);
               }
                 return (
-                  <Card key={index} style={{ minWidth: "400px",paddingLeft:"0.5rem",border:'none', backgroundColor: isDarkModeOn?'#202020':'white' }}>
+                  <Card key={index} style={{ minWidth: "500px",paddingLeft:"0.5rem",border:'none', backgroundColor: isDarkModeOn?'#202020':'white' }}>
                   <Table bordered className={`custom-table ${isDarkModeOn ? 'dark-mode' : ''}`} style={{borderRadius:"5px" }}>
                   <tbody>
                         {[
