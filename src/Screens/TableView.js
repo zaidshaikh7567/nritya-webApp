@@ -42,7 +42,7 @@ const TableView = ({ studioData, studioId }) => {
   console.log(studioData)
 
   const bookFreeTrial = (classIndex) => {
-    return showSnackbar("Booking hasn't started yet. Tickets should not be generated in the booking section", "info");         
+    return showSnackbar("Booking hasn't started yet", "info");         
 
     const endpoint_url = BASEURL_PROD + "bookings/freeTrial/";
     if (!userId) {
