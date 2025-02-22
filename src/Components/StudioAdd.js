@@ -196,13 +196,17 @@ function StudioAdd({instructors}) {
       const handleAddStudio = async (event) => {
         event.preventDefault();
 
-        if (activeStep === 2) {
-          const errorMessage = validateStep3();
-
-          if (errorMessage) {
-            return showSnackbar(errorMessage, 'error');
+        if (activeStep < 3) { // If user enter enter/return btn at any place it should validate all
+          const errorMessage1 = validateStep1();
+          const errorMessage2 = validateStep2();
+          const errorMessage3 = validateStep3();
+        
+          const errorMessages = [errorMessage1, errorMessage2, errorMessage3].filter(Boolean).join(', ');
+        
+          if (errorMessages) {
+            return showSnackbar(errorMessages, 'error');
           }
-        }
+        }        
 
         const title = event.target.studioName.value;
         if (!title) {
