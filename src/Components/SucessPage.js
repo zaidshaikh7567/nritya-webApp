@@ -1,8 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import MUIButton from "@mui/material/Button";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 
 const SuccessMessage = ({ StudioId }) => {
+  const navigate = useNavigate();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
 
   const form = document.getElementById("addStudioForm");
@@ -10,6 +13,10 @@ const SuccessMessage = ({ StudioId }) => {
   const studioName = form?.studioName?.value;
   const streetName = form?.street?.value;
   const city = form?.city?.value;
+
+  const navigateToStudio = () => {
+    navigate(`/studio/${StudioId}`);
+  };
 
   return (
     <div className="container">
@@ -26,6 +33,13 @@ const SuccessMessage = ({ StudioId }) => {
             >
               Your studio {studioName} (Studio ID: {StudioId}), located at {streetName} in {city} has been registered successfully 🎉
             </h4>
+            <MUIButton
+              sx={{ mt: 1, px: 3, color: 'white', bgcolor: '#735EAB', textTransform: 'none', "&:hover": { bgcolor: "#735EAB" }, "&:active": { bgcolor: "#735EAB" } }}
+              variant="text"
+              onClick={() => navigateToStudio()}
+            >
+              Check Now
+            </MUIButton>
           </div>
         </div>
       </div>
