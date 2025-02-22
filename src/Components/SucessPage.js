@@ -1,14 +1,31 @@
-import React from 'react';
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 
 const SuccessMessage = ({ StudioId }) => {
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const form = document.getElementById("addStudioForm");
+
+  const studioName = form?.studioName?.value;
+  const streetName = form?.street?.value;
+  const city = form?.city?.value;
+
   return (
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-md-12"> {/* Change col-md-5 to col-md-12 */}
           <div className="_success message-box">
             <i className="fa fa-check-circle" aria-hidden="true"></i>
-            <h3>Your Studio registration was successful</h3>
-            <p>{StudioId} is now registered 🎉</p>
+            <h4
+              style={{
+                textTransform: "none",
+                marginTop: "1rem",
+                color: isDarkModeOn ? "white" : "black",
+              }}
+            >
+              Your studio {studioName} (Studio ID: {StudioId}), located at {streetName} in {city} has been registered successfully 🎉
+            </h4>
           </div>
         </div>
       </div>
