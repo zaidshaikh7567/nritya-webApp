@@ -40,10 +40,12 @@ function CreatorDashboard() {
   }, [currentUser]);
   
   const isDashboardModuleVisible = process.env.REACT_APP_DASHBOARD_MODULES_VISIBLE === "true";
-  const cardItems = [{ title: "Total Studios", data: counts.studiosCount, link: "#/modifyStudios" }];
+  const cardItems = [
+    { title: "Total Studios", data: counts.studiosCount, link: "#/modifyStudios" },
+    { title: "Total Instructors", data: counts.instructorsCount, link: "#/modifyInstructors" }
+  ];
   if (isDashboardModuleVisible) {
     cardItems.push(
-      { title: "Total Instructors", data: counts.instructorsCount, link: "#/modifyInstructors" },
       { title: "Total Workshops", data: counts.workshopsCount, link: "#/modifyWorkshops" },
       { title: "Total Open Classes", data: counts.openClassesCount, link: "#/modifyOpenClasses" },
       { title: "Total Courses", data: counts.coursesCount, link: "#/modifyCourses" },
