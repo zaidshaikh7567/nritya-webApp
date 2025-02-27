@@ -803,6 +803,7 @@ function StudioUpdate({
               rows={1}
               placeholder="Enter state"
               name="state"
+              defaultValue={selectedStudio ? selectedStudio.state : ""}
             >
               <option value="">Select a State</option>
               {stateOptions.map((city, index) => (
