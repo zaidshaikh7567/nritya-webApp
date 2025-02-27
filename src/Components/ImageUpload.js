@@ -11,7 +11,7 @@ import { useSnackbar } from "../context/SnackbarContext";
 import { STORAGES } from "../constants";
 
 
-const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode, disable }) => {
+const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCount, updateMode, disable }) => {
   const showSnackbar = useSnackbar();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -99,24 +99,31 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, updateMode
         // Delete all previous images in the folder
         await deleteAllImagesInFolder(storageFolder, entityId);
         await uploadImages(storageFolder,newFiles, entityId, setProgressUpdate);
+        showSnackbar("Image uploaded successfully", "success");
       } else {
         // Calculate images to delete and add
         const { imagesToDelete, newImages } = calculateDelta(selectedFiles, uploadedFiles);
 
+        if (minImageCount && newImages.length < minImageCount) {
+          showSnackbar(`Minimum ${minImageCount} image(s) are required`, "error");
+          return;
+        }
+
         // Delete images if there are any
         if (imagesToDelete.length > 0) {
           await deleteImages(storageFolder, imagesToDelete, entityId, setProgressDelete);
+          showSnackbar("Image(s) deleted successfully", "success");
         }
 
         // Upload new images if there are any
         if (newImages.length > 0) {
           await uploadImages(storageFolder, newImages, entityId, setProgressUpdate);
+          showSnackbar("Image(s) uploaded successfully", "success");
         }
 
       }
 
       // alert("Images Uploaded/Deleted");
-      showSnackbar("Image(s) uploaded successfully", "success");
     } catch (error) {
       console.error("Error uploading/deleting images:", error);
     }

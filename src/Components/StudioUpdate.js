@@ -1300,6 +1300,7 @@ function StudioUpdate({
                 title={"Studio Images"}
                 storageFolder={STORAGES.STUDIOIMAGES}
                 maxImageCount={10}
+                minImageCount={5}
               />
             </div>
             <br />

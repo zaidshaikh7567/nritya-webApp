@@ -939,7 +939,7 @@ function StudioAdd({instructors}) {
              
             
              <div hidden={activeStep !== 4}>
-              <ImageUpload entityId={newStudioId} title={"Studio Images"}  storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
+              <ImageUpload entityId={newStudioId} title={"Studio Images"} maxImageCount={10} minImageCount={5} storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
             </div>
 
             <div hidden={activeStep !== 4}>
