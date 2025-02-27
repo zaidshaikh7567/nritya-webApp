@@ -247,11 +247,6 @@ function StudioUpdate({
   const handleUpdateStudio = async (event) => {
     event.preventDefault();
 
-    if (!studioId) {
-      //console.log("Invalid or empty studio id")
-      return;
-    }
-
     const errorMessage = validate();
 
     if (errorMessage) {
@@ -263,6 +258,12 @@ function StudioUpdate({
     const nameIdLocal = event.target.nameId.value;
     const indexOfColon = nameIdLocal.lastIndexOf(":");
     const studioId = nameIdLocal.substring(indexOfColon + 1).trim();
+
+    if (!studioId) {
+      //console.log("Invalid or empty studio id")
+      return;
+    }
+
     //console.log(studioId)
 
 
