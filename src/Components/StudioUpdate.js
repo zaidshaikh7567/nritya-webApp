@@ -265,6 +265,13 @@ function StudioUpdate({
 
     //console.log(studioId)
 
+    if (!studioId) {
+      //console.log("Invalid or empty studio id")
+      return;
+    }
+
+    //console.log(studioId)
+
     //const description = encodeToUnicode(event.target.description.value);
     //const geolocation = selectedLocation;
 
