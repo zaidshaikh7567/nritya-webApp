@@ -250,9 +250,8 @@ function StudioUpdate({
     const errorMessage = validate();
 
     if (errorMessage) {
-      return showSnackbar(errorMessage, 'error');
+      return showSnackbar(errorMessage, "error");
     }
-
 
     setIsSubmitting(true);
     const nameIdLocal = event.target.nameId.value;
@@ -265,7 +264,6 @@ function StudioUpdate({
     }
 
     //console.log(studioId)
-
 
     //const description = encodeToUnicode(event.target.description.value);
     //const geolocation = selectedLocation;
@@ -376,7 +374,7 @@ function StudioUpdate({
 
   const validate = () => {
     const form = document.getElementById("updateStudioForm");
-  
+
     if (!form.studioName.value) return "Studio name is required";
     if (!form.aboutStudio.value) return "About Studio is required";
     if (!form.founderName.value) return "Founder name is required";
@@ -385,8 +383,9 @@ function StudioUpdate({
     if (!form.whatsappNumber.value) return "WhatsApp number is required";
     if (!form.numberOfHalls.value) return "Number of halls is required";
     if (!form.maximumOccupancy.value) return "Maximum occupancy is required";
-    if (!selectedDanceStyles.length) return "At least one dance style must be selected";
-  
+    if (!selectedDanceStyles.length)
+      return "At least one dance style must be selected";
+
     if (!Object.values(timings).every((slots) => slots.length > 0)) {
       return "All timing slots must be filled";
     }
@@ -400,10 +399,12 @@ function StudioUpdate({
       if (!entry.time?.trim()) return "Time is required";
       if (!entry.fee?.trim()) return "Fee is required";
       if (!entry.level?.trim()) return "Level is required";
-      if (!entry.instructors.length) return "At least one instructor is required";
-      if (!entry.classCategory.length || !entry.classCategory[0]?.trim()) return "Class category is required";
+      if (!entry.instructors.length)
+        return "At least one instructor is required";
+      if (!entry.classCategory.length || !entry.classCategory[0]?.trim())
+        return "Class category is required";
     }
-  
+
     if (!form.buildingName.value) return "Building name is required";
     if (!form.street.value) return "Street is required";
     if (!form.city.value) return "City is required";
@@ -411,6 +412,8 @@ function StudioUpdate({
     if (!form.state.value) return "State is required";
     if (!selectedLocation) return "Location selection is required";
   };
+
+  console.log("APKDSOJDIOJIUHEDUWIEDUIWHEDUIWSD", selectedStudio);
 
   return (
     <div
@@ -803,7 +806,7 @@ function StudioUpdate({
               rows={1}
               placeholder="Enter state"
               name="state"
-              defaultValue={selectedStudio ? selectedStudio.state : ""}
+              value={selectedStudio ? selectedStudio.state : ""}
             >
               <option value="">Select a State</option>
               {stateOptions.map((city, index) => (
@@ -822,7 +825,7 @@ function StudioUpdate({
                 : selectedLocation
             }
             setSelectedLocation={setSelectedLocation}
-          />
+          ></MapsInput>
         </Row>
         <hr></hr>
 
@@ -1054,9 +1057,11 @@ function StudioUpdate({
                       value={
                         tableData[rowKey] &&
                         tableData[rowKey].days &&
-                        updateDaysFormat(tableData?.[rowKey]?.days
-                          ?.split?.(",")
-                          ?.filter?.((day) => day !== ""))
+                        updateDaysFormat(
+                          tableData?.[rowKey]?.days
+                            ?.split?.(",")
+                            ?.filter?.((day) => day !== "")
+                        )
                       }
                       onChange={(event) =>
                         handleTableChange(rowKey, "days", event.target.value)
