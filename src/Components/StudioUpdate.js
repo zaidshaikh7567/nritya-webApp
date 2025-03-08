@@ -207,7 +207,7 @@ function StudioUpdate({
         setSelectedStudio(studioDoc.data());
         if (studioDoc.data().geolocation) {
           const loc = studioDoc.data().geolocation;
-          setSelectedLocation(loc);
+          setSelectedLocation(loc || null);
           //console.log("StudioUpdate Selected location",selectedLocation,loc)
         }
 
@@ -826,11 +826,7 @@ function StudioUpdate({
 
           <Form.Label>Save exact Address</Form.Label>
           <MapsInput
-            selectedLocation={
-              selectedStudio && selectedStudio.geolocation
-                ? selectedStudio.geolocation
-                : selectedLocation
-            }
+            selectedLocation={selectedLocation}
             setSelectedLocation={setSelectedLocation}
           ></MapsInput>
         </Row>
