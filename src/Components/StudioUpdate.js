@@ -1307,8 +1307,7 @@ function StudioUpdate({
                 entityId={selectedStudioId}
                 title={"Studio Images"}
                 storageFolder={STORAGES.STUDIOIMAGES}
-                maxImageCount={10}
-                minImageCount={5}
+                maxImageCount={10} minImageCount={5}
               />
             </div>
             <br />
@@ -1317,7 +1316,7 @@ function StudioUpdate({
                 entityId={selectedStudioId}
                 title={"Studio Icon"}
                 storageFolder={STORAGES.STUDIOICON}
-                maxImageCount={1}
+                maxImageCount={1} minImageCount={1}
               />
             </div>
             <div>
@@ -1325,7 +1324,7 @@ function StudioUpdate({
                 entityId={selectedStudioId}
                 title={"Studio Announcement Images"}
                 storageFolder={STORAGES.STUDIOANNOUNCEMENTS}
-                maxImageCount={10}
+                maxImageCount={10} minImageCount={1}
               />
             </div>
             <br />

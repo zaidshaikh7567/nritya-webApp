@@ -51,6 +51,9 @@ const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
     const previousDraftState = useRef(null);
+    const logoImageUploadRef = useRef(null);
+    const studioImageUploadRef = useRef(null);
+    const anouncementImageUploadRef = useRef(null);
     const showSnackbar = useSnackbar();
     const [newStudioId, setNewStudioId] = useState("")
     const [tableData, setTableData] = useState(
@@ -121,12 +124,27 @@ function StudioAdd({instructors}) {
       if (!selectedLocation) return "Location selection is required";
     };
 
+    const validateStep4 = () => {
+      if (!logoImageUploadRef.current?.isValid()) return "Please upload studio logo before proceeding"
+    };
+
+    const validateStep5 = () => {
+      if (!studioImageUploadRef.current?.isValid()) return "Please upload studio images before proceeding"
+      if (!anouncementImageUploadRef.current?.isValid()) return "Please upload studio anouncement images before proceeding"
+    };
+
     const handleNext = () => {
       let errorMessage = '';
 
       if (activeStep === 0) errorMessage = validateStep1()
 
       if (activeStep === 1) errorMessage = validateStep2()
+
+      if (activeStep === 2) errorMessage = validateStep3()
+        
+      if (activeStep === 3) errorMessage = validateStep4()
+
+      if (activeStep === 4) errorMessage = validateStep5()
 
       if (errorMessage) {
         return showSnackbar(errorMessage, 'error');
@@ -925,7 +943,7 @@ function StudioAdd({instructors}) {
              
             <div hidden={activeStep !== 3}>
               
-              <ImageUpload entityId={newStudioId} title={"Studio Icon"} storageFolder={STORAGES.STUDIOICON} maxImageCount={1}></ImageUpload>
+              <ImageUpload entityId={newStudioId} title={"Studio Icon"} storageFolder={STORAGES.STUDIOICON} maxImageCount={1} minImageCount={1} ref={logoImageUploadRef}></ImageUpload>
               <Row>
                 
                 <Col xs={12} className="d-flex justify-content-end">
@@ -939,11 +957,11 @@ function StudioAdd({instructors}) {
              
             
              <div hidden={activeStep !== 4}>
-              <ImageUpload entityId={newStudioId} title={"Studio Images"} maxImageCount={10} minImageCount={5} storageFolder={STORAGES.STUDIOIMAGES} ></ImageUpload>
+              <ImageUpload entityId={newStudioId} title={"Studio Images"} maxImageCount={10} minImageCount={5} storageFolder={STORAGES.STUDIOIMAGES} ref={studioImageUploadRef}></ImageUpload>
             </div>
 
             <div hidden={activeStep !== 4}>
-              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10}></ImageUpload>
+              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10} minImageCount={1} ref={anouncementImageUploadRef}></ImageUpload>
 
               <Row className='mt-3'>
               <Col xs={12} className="d-flex justify-content-end">

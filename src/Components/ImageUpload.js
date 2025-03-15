@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
 import shortid from "shortid";
-import { ref, getDownloadURL, listAll } from 'firebase/storage';
+import { ref as firebaseRef, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../config';
 import { useSelector } from 'react-redux'; // Import useSelector and useDispatch
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
@@ -11,16 +11,17 @@ import { useSnackbar } from "../context/SnackbarContext";
 import { STORAGES } from "../constants";
 
 
-const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCount, updateMode, disable }) => {
+const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10, minImageCount, updateMode, disable }, ref) => {
   const showSnackbar = useSnackbar();
+  const imageInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]); // Track new files to be added
-  const [deletedFiles, setDeletedFiles] = useState([]); // Track deleted files
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   //console.log("Received props=> entityId:", entityId, "|storageFolder:", storageFolder);
   const [progressDelete, setProgressDelete] = useState(-1);
   const [progressUpdate, setProgressUpdate] = useState(-1);
+  const [isUploadSuccessful, setIsUploadSuccessful] = useState(false);
 
   console.log("Kyc enitity id ",entityId, disable)
   const filesizes = (bytes, decimals = 2) => {
@@ -44,6 +45,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
     if (maxImageCount && selectedFiles.length > maxImageCount) {
       const truncatedFiles = selectedFiles.slice(0, maxImageCount);
       alert(`Exceeded maxImageCount, keeping first ${maxImageCount} files.`);
+      imageInputRef.current.value = null;
       setSelectedFiles(truncatedFiles);
     }
   }, [selectedFiles, maxImageCount]);
@@ -70,6 +72,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
         if (updatedFiles.length === files.length) {
           setSelectedFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
           setNewFiles(updatedFiles);
+          imageInputRef.current.value = null;
           // console.log("New files in total",setNewFiles.length)
         }
       };
@@ -80,8 +83,6 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
 
   const handleDeleteSelectedFile = (id) => {
     if (window.confirm("Are you sure you want to delete this image?")) {
-      const fileToDelete = selectedFiles.find((file) => file.id === id);
-      setDeletedFiles((prevDeletedFiles) => [...prevDeletedFiles, fileToDelete]);
       setSelectedFiles((prevFiles) =>
         prevFiles.filter((file) => file.id !== id)
       );
@@ -94,12 +95,16 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
       return;
     }
 
+    setProgressDelete(-1);
+    setProgressUpdate(-1);
+
     try {
-      if (maxImageCount === 1) {
+      if (maxImageCount === 1 && selectedFiles.length >= minImageCount) {
         // Delete all previous images in the folder
         await deleteAllImagesInFolder(storageFolder, entityId);
         await uploadImages(storageFolder,newFiles, entityId, setProgressUpdate);
         showSnackbar("Image uploaded successfully", "success");
+        setIsUploadSuccessful(true);
       } else {
         // Calculate images to delete and add
         const { imagesToDelete, newImages } = calculateDelta(selectedFiles, uploadedFiles);
@@ -120,11 +125,13 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
           await uploadImages(storageFolder, newImages, entityId, setProgressUpdate);
           showSnackbar("Image(s) uploaded successfully", "success");
         }
-
+        setIsUploadSuccessful(true);
       }
 
+      imageInputRef.current.value = null;
       // alert("Images Uploaded/Deleted");
     } catch (error) {
+      setIsUploadSuccessful(false);
       console.error("Error uploading/deleting images:", error);
     }
   };
@@ -144,11 +151,10 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
   const fetchStudioImages = async (entityId) => {
     setSelectedFiles([]);
     setNewFiles([]);
-    setDeletedFiles([]);
     try {
       const folderPath = `${storageFolder}/${entityId}`;
       console.log(folderPath)
-      const folderRef = ref(storage, folderPath);
+      const folderRef = firebaseRef(storage, folderPath);
       const fileList = await listAll(folderRef);
 
       const files = await Promise.all(
@@ -170,6 +176,10 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    isValid: () => isUploadSuccessful,
+  }));
+
   return (
     <div className="fileupload-view" style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
       <div className="row justify-content-center m-0" style={{ flex: '1',justifyContent: 'center' }}>
@@ -187,6 +197,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
                   <div className="kb-file-upload">
                     <div className="file-upload-box">
                       <input
+                        ref={imageInputRef}
                         type="file"
                         id="fileupload"
                         className="file-upload-input"
@@ -319,7 +330,7 @@ const ImageUpload = ({entityId,storageFolder,title, maxImageCount=10, minImageCo
       </div>
     </div>
   );
-};
+});
 
 // Set default prop values
 ImageUpload.defaultProps = {
