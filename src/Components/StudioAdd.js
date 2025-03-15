@@ -964,7 +964,12 @@ function StudioAdd({instructors}) {
               <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10} minImageCount={1} ref={anouncementImageUploadRef}></ImageUpload>
 
               <Row className='mt-3'>
-              <Col xs={12} className="d-flex justify-content-end">
+              <Col xs={6}>
+                <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleBack()}>
+                  Prev
+                </MuiButton>
+              </Col>
+              <Col xs={6} className="d-flex justify-content-end">
                 <MuiButton variant="contained" style={{backgroundColor:isDarkModeOn?"#892cdc":"black"}}onClick={() => handleNext()}>
                   Next
                 </MuiButton>
