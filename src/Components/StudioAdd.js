@@ -961,7 +961,7 @@ function StudioAdd({instructors}) {
             </div>
 
             <div hidden={activeStep !== 4}>
-              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10} minImageCount={1} ref={anouncementImageUploadRef}></ImageUpload>
+              <ImageUpload entityId={newStudioId} title={"Studio Announcement Images"}  storageFolder={STORAGES.STUDIOANNOUNCEMENTS} maxImageCount={10} minImageCount={0} ref={anouncementImageUploadRef}></ImageUpload>
 
               <Row className='mt-3'>
               <Col xs={6}>

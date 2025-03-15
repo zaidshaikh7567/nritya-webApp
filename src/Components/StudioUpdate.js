@@ -1324,7 +1324,7 @@ function StudioUpdate({
                 entityId={selectedStudioId}
                 title={"Studio Announcement Images"}
                 storageFolder={STORAGES.STUDIOANNOUNCEMENTS}
-                maxImageCount={10} minImageCount={1}
+                maxImageCount={10} minImageCount={0}
               />
             </div>
             <br />

@@ -177,7 +177,10 @@ const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10,
   };
 
   useImperativeHandle(ref, () => ({
-    isValid: () => isUploadSuccessful,
+    isValid: () => {
+      if (minImageCount === 0) return true;
+      return isUploadSuccessful
+    },
   }));
 
   return (
