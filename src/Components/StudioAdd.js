@@ -79,6 +79,7 @@ function StudioAdd({instructors}) {
     const danceStylesOptions = danceStyles.danceStyles;
     const amenityKeys = Object.keys(AMENITIES_ICONS).map(String);
     const [activeStep, setActiveStep] = useState(0);
+    const [mapAddress, setMapAddress] = useState('');
 
     const validateStep1 = () => {
       const form = document.getElementById("addStudioForm");
@@ -121,6 +122,7 @@ function StudioAdd({instructors}) {
       if (!form.city.value) return "City is required";
       if (!form.pincode.value) return "Pincode is required";
       if (!form.state.value) return "State is required";
+      if (!mapAddress) return "Address is required";
       if (!selectedLocation) return "Location selection is required";
     };
 
@@ -259,6 +261,7 @@ function StudioAdd({instructors}) {
               pincode: event.target.pincode.value,
               state: event.target.state.value,
               country: "India",
+              mapAddress,
               geolocation : selectedLocation,
               gstNumber: event.target.gstNumber.value,
               enrolledId:[],
@@ -352,6 +355,7 @@ function StudioAdd({instructors}) {
           pincode: form.pincode.value,
           state: form.state.value,
           country: "India",
+          mapAddress: mapAddress || '',
           geolocation: selectedLocation,
           gstNumber: form.gstNumber.value,
           enrolledId: [],
@@ -429,6 +433,7 @@ function StudioAdd({instructors}) {
           form.landmark.value = foundStudio.landmark;
           form.pincode.value = foundStudio.pincode;
           form.state.value = foundStudio.state;
+          setMapAddress(foundStudio.mapAddress || '');
           setSelectedLocation(foundStudio.geolocation);
           // form.aadharNumber.value = foundStudio.aadharNumber;
           form.gstNumber.value = foundStudio.gstNumber;
@@ -479,6 +484,7 @@ function StudioAdd({instructors}) {
             pincode: form.pincode.value,
             state: form.state.value,
             country: "India",
+            mapAddress: mapAddress || "",
             geolocation: selectedLocation,
             
             gstNumber: form.gstNumber.value,
@@ -570,6 +576,7 @@ function StudioAdd({instructors}) {
                 pincode: form.pincode.value,
                 state: form.state.value,
                 country: "India",
+                mapAddress: mapAddress || "",
                 geolocation: selectedLocation,
                 
                 gstNumber: form.gstNumber.value,
@@ -624,6 +631,7 @@ function StudioAdd({instructors}) {
     selectedDanceStyles,
     selectedInstructors,
     tableData,
+    mapAddress,
     selectedLocation,
     selectedAmenities,
   ]);
@@ -903,8 +911,12 @@ function StudioAdd({instructors}) {
                 </Col>
 
                 <Form.Label>Save exact Address</Form.Label>
-                <MapsInput selectedLocation={selectedLocation} setSelectedLocation={setSelectedLocation}></MapsInput>
-                
+                <MapsInput
+                  selectedLocation={selectedLocation}
+                  setSelectedLocation={setSelectedLocation}
+                  mapAddress={mapAddress}
+                  setMapAddress={setMapAddress}
+                ></MapsInput>
                 </Row>
                 
 

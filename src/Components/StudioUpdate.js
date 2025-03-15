@@ -88,6 +88,7 @@ function StudioUpdate({
   const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
   const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
   const [timings, setTimings] = useState(initialStudioTimings);
+  const [mapAddress, setMapAddress] = useState('');
 
   const instructorNamesWithIds = instructors.map(
     (instructor) => `${instructor.name} - ${instructor.id}`
@@ -192,6 +193,9 @@ function StudioUpdate({
       }
       if (selectedStudio && selectedStudio?.timings) {
         setTimings(selectedStudio.timings);
+      }
+      if (selectedStudio && selectedStudio?.mapAddress) {
+        setMapAddress(selectedStudio?.mapAddress);
       }
     }
   }, [selectedStudio]);
@@ -299,6 +303,7 @@ function StudioUpdate({
         pincode: event.target.pincode.value,
         state: event.target.state.value,
         country: "India",
+        mapAddress,
         geolocation: selectedLocation,
         gstNumber: event.target.gstNumber.value,
         enrolledId: [],
@@ -417,10 +422,9 @@ function StudioUpdate({
     if (!form.city.value) return "City is required";
     if (!form.pincode.value) return "Pincode is required";
     if (!form.state.value) return "State is required";
+    if (!mapAddress) return "Address is required";
     if (!selectedLocation) return "Location selection is required";
   };
-
-  console.log("APKDSOJDIOJIUHEDUWIEDUIWHEDUIWSD", selectedStudio);
 
   return (
     <div
@@ -828,6 +832,8 @@ function StudioUpdate({
           <MapsInput
             selectedLocation={selectedLocation}
             setSelectedLocation={setSelectedLocation}
+            mapAddress={mapAddress}
+            setMapAddress={setMapAddress}
           ></MapsInput>
         </Row>
         <hr></hr>

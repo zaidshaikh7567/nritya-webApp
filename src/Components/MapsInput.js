@@ -5,13 +5,11 @@ import { useJsApiLoader } from '@react-google-maps/api';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 const libraries = ['places'];
-const apiKey = "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ"; // Replace with your actual API key
+const apiKey = "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ";
 
-function MapsInput({ selectedLocation, setSelectedLocation }) {
-    const [center, setCenter] = useState(selectedLocation || { lat: 28.6139, lng: 77.2090 }); // Default to Delhi
-    const [address, setAddress] = useState('');
+function MapsInput({ selectedLocation, setSelectedLocation, mapAddress, setMapAddress }) {
+    const [center, setCenter] = useState(selectedLocation || { lat: 28.6139, lng: 77.2090 });
 
-    // Load Google Maps API only once
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: apiKey,
         libraries,
@@ -27,9 +25,30 @@ function MapsInput({ selectedLocation, setSelectedLocation }) {
         const results = await geocodeByAddress(selectedAddress);
         const latLng = await getLatLng(results[0]);
 
-        setAddress(selectedAddress);
+        setMapAddress(selectedAddress);
         setCenter(latLng);
         setSelectedLocation(latLng);
+    };
+
+    const handleMapClick = async ({ lat, lng }) => {
+        const latLng = { lat, lng };
+        setSelectedLocation(latLng);
+        setCenter(latLng);
+
+        if (!mapAddress.trim()) {
+            try {
+                const geocoder = new window.google.maps.Geocoder();
+                geocoder.geocode({ location: latLng }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        setMapAddress(results[0].formatted_address);
+                    } else {
+                        console.error('Geocoder failed due to: ', status);
+                    }
+                });
+            } catch (error) {
+                console.error('Error with reverse geocoding:', error);
+            }
+        }
     };
 
     if (loadError) return <p>Error loading maps</p>;
@@ -41,8 +60,8 @@ function MapsInput({ selectedLocation, setSelectedLocation }) {
 
             {/* Autocomplete Input */}
             <PlacesAutocomplete
-                value={address}
-                onChange={setAddress}
+                value={mapAddress}
+                onChange={setMapAddress}
                 onSelect={handleSelect}
             >
                 {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -75,7 +94,7 @@ function MapsInput({ selectedLocation, setSelectedLocation }) {
                     defaultCenter={center}
                     center={center}
                     defaultZoom={16}
-                    onClick={({ lat, lng }) => setSelectedLocation({ lat, lng })}
+                    onClick={handleMapClick}
                 >
                     {selectedLocation && (
                         <PinMarker lat={selectedLocation.lat} lng={selectedLocation.lng} />
