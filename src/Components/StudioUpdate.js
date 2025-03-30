@@ -52,7 +52,7 @@ const encodeToUnicode = (text) => {
   return String.fromCharCode(...utf8Encoded);
 };
 
-const decodeUnicode = (unicodeString) => {
+const decodeUnicode = (unicodeString = "") => {
   const utf8Encoded = unicodeString.split("").map((c) => c.charCodeAt(0));
   const textDecoder = new TextDecoder();
   return textDecoder.decode(new Uint8Array(utf8Encoded));
@@ -898,7 +898,7 @@ function StudioUpdate({
             <Form.Control
               defaultValue={
                 selectedStudio
-                  ? decodeUnicode(selectedStudio.enrollmentProcess)
+                  ? decodeUnicode(selectedStudio?.enrollmentProcess)
                   : ""
               }
               rows={6}
