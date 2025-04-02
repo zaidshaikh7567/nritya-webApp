@@ -51,6 +51,7 @@ const DRAFT_INTERVAL_TIME = 1000 * 10;
 
 function StudioAdd({instructors}) {
     const previousDraftState = useRef(null);
+    const effectDraftRef = useRef(null);
     const logoImageUploadRef = useRef(null);
     const studioImageUploadRef = useRef(null);
     const anouncementImageUploadRef = useRef(null);
@@ -287,6 +288,9 @@ function StudioAdd({instructors}) {
             }
             const response = await postData(studioData,COLLECTIONS.STUDIO, notifyEmails, metaData) ;
             if (response.ok) {
+              if (effectDraftRef.current) {
+                clearInterval(effectDraftRef.current);
+              }
               const result = await response.json();
               setNewStudioId(result.id)
               resetDraft();
@@ -515,7 +519,7 @@ function StudioAdd({instructors}) {
   }, []);
 
   useEffect(() => {
-    let intervalId = null;
+    effectDraftRef.current = null;
     let previousState = null; 
 
     async function main() {
@@ -548,7 +552,7 @@ function StudioAdd({instructors}) {
             foundStudio.id
           );
           
-          intervalId = setInterval(async () => {
+          effectDraftRef.current = setInterval(async () => {
             
             try {
               const newData = tableData.reduce((accumulator, current, index) => {
@@ -625,7 +629,7 @@ function StudioAdd({instructors}) {
 
     if (isReady) main();
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(effectDraftRef.current);
   }, [
     isReady,
     selectedDanceStyles,
