@@ -9,9 +9,11 @@ import { Card, CardContent, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useSnackbar } from "../context/SnackbarContext";
 import { STORAGES } from "../constants";
+import { useLoader } from "../context/LoaderContext";
 
 
 const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10, minImageCount, updateMode, disable }, ref) => {
+  const { setIsLoading } = useLoader();
   const showSnackbar = useSnackbar();
   const imageInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -99,6 +101,7 @@ const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10,
     setProgressUpdate(-1);
 
     try {
+      setIsLoading(true);
       if (maxImageCount === 1 && selectedFiles.length >= minImageCount) {
         // Delete all previous images in the folder
         await deleteAllImagesInFolder(storageFolder, entityId);
@@ -133,6 +136,8 @@ const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10,
     } catch (error) {
       setIsUploadSuccessful(false);
       console.error("Error uploading/deleting images:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
