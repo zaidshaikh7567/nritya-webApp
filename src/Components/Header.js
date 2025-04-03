@@ -167,8 +167,9 @@ function Header() {
   };
 
   const handleLocationChange = (event, location) => {
-    if (!location) setSelectedLocation("New Delhi");
-    else setSelectedLocation(location);
+    if (!location) return;
+
+    setSelectedLocation(location);
 
     setShowLocationDropdown(false);
     window.location.reload();
