@@ -348,7 +348,6 @@ function Kyc() {
                     className="glassmorphic-input"
                     value={formData.aadhar}
                     onChange={handleChange}
-                    required
                     style={{
                       backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5',
                       color: isDarkModeOn ? 'white' : 'black',
@@ -407,7 +406,6 @@ function Kyc() {
                     value={formData.gstin}
                     onChange={handleChange}
                     className="glassmorphic-input"
-                    required
                     style={{
                       backgroundColor: isDarkModeOn ? '#181818' : '#e5e5e5',
                       color: isDarkModeOn ? 'white' : 'black',

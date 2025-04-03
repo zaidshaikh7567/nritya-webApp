@@ -13,12 +13,12 @@ export const validateField = (name, value) => {
           }
           break;
       case 'aadhar':
-          if (!/^\d{12}$/.test(value)) {
+          if (value && !/^\d{12}$/.test(value)) {
               error = 'Aadhar number must be exactly 12 digits.';
           }
           break;
       case 'gstin':
-            if (!/^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}[1-9A-Za-z]{1}[Zz]{1}[0-9A-Za-z]{1}$/.test(value)) {
+            if (value && !/^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}[1-9A-Za-z]{1}[Zz]{1}[0-9A-Za-z]{1}$/.test(value)) {
                 error = 'GSTIN must be a valid format (e.g., 22ABCDE0000A1Z5).';
             }
             break;
