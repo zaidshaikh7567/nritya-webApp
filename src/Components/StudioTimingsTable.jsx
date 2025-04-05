@@ -14,10 +14,10 @@ const StudioTimingsTable = ({ timings }) => {
     color: isDarkModeOn ? "white" : "black",
     textAlign: "center",
     padding: "8px",
-    minWidth: "150px", // Fixed column width
-    whiteSpace: "nowrap", // Prevent text wrapping
-    overflow: "hidden", // Hide overflow content
-    textOverflow: "ellipsis", // Add ellipsis for overflow
+    minWidth: "150px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   };
 
   const commonHeaderStyle = {
@@ -25,25 +25,43 @@ const StudioTimingsTable = ({ timings }) => {
     color: "white",
     textAlign: "center",
     padding: "8px",
-    minWidth: "150px", // Fixed column width
-    whiteSpace: "nowrap", // Prevent text wrapping
+    minWidth: "150px",
+    whiteSpace: "nowrap",
   };
 
-  const renderTimings = (slots) =>
-    slots.length > 0
-      ? slots.map((slot, index) => (
-          <div
-            key={index}
-            style={{
-              whiteSpace: "nowrap", // Prevent text wrapping for each timing
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {slot.open} - {slot.close}
-          </div>
-        ))
-      : "Closed";
+  const isDayClosed = (daySlots) => {
+    return daySlots?.length === 1 && daySlots[0].open === "Closed";
+  };
+
+  const renderTimings = (slots) => {
+    if (!slots || slots.length === 0) {
+      return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <span style={{ color: "#f44336" }}>Closed</span>
+        </div>
+      );
+    }
+    if (isDayClosed(slots)) {
+      return (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <span style={{ color: "#f44336" }}>Closed</span>
+        </div>
+      );
+    }
+    
+    return slots.map((slot, index) => (
+      <div
+        key={index}
+        style={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {slot.open} - {slot.close}
+      </div>
+    ));
+  };
 
   if (!timings || !Object.keys(timings).length) return null;
 
@@ -81,7 +99,7 @@ const StudioTimingsTable = ({ timings }) => {
                 <td style={commonCellStyle}>
                   {day.charAt(0).toUpperCase() + day.slice(1)}
                 </td>
-                <td style={{ ...commonCellStyle, textAlign: "center" }}>
+                <td style={commonCellStyle}>
                   {renderTimings(timings[day] || [])}
                 </td>
               </tr>
@@ -95,7 +113,7 @@ const StudioTimingsTable = ({ timings }) => {
         <Table
           bordered
           className={`custom-table ${isDarkModeOn ? "dark-mode" : ""}`}
-          style={{ minWidth: "1000px" }} // Force a minimum table width
+          style={{ minWidth: "1000px" }}
         >
           <thead>
             <tr>
@@ -113,10 +131,7 @@ const StudioTimingsTable = ({ timings }) => {
               {weekdays.map((day) => (
                 <td
                   key={day}
-                  style={{
-                    ...commonCellStyle,
-                    textAlign: "left", // Align timings to the left
-                  }}
+                  style={commonCellStyle}
                 >
                   {renderTimings(timings[day] || [])}
                 </td>
