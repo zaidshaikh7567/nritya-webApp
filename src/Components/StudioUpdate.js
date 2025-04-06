@@ -1125,7 +1125,7 @@ function StudioUpdate({
                   </td>
                   <td style={{ padding: "0rem" }}>
                     <Form.Control
-                      type="text"
+                      type="number"
                       value={tableData[rowKey].fee ? tableData[rowKey].fee : ""}
                       onChange={(e) =>
                         handleTableChange(rowKey, "fee", e.target.value)

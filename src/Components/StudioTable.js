@@ -184,7 +184,7 @@ function StudioTable({ tableData = [], setTableData, instructorNamesWithIds }) {
               </td>
               <td style={{padding:'0rem',border: '1px solid black'}}>
                 < Form.Control style={{backgroundColor:"white"}}
-                  type="text"
+                  type="number"
                   value={row.fee}
                   onChange={(e) => handleTableChange(index, 'fee', e.target.value)}
                 />
