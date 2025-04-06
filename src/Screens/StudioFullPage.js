@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Badge, Stack } from 'react-bootstrap';
 import { db } from '../config';
 import { doc, getDoc, getDocs, collection, updateDoc, where, query } from "firebase/firestore";
-import { COLLECTIONS, AMENITIES_ICONS } from "./../constants.js";
+import { COLLECTIONS, AMENITIES_ICONS, STUDIO_ICON_DEFAULT } from "./../constants.js";
 import { FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaDirections } from 'react-icons/fa';
 import './Carousel.css';
 import MapReadOnly from '../Components/MapReadOnly';
@@ -150,7 +150,7 @@ function StudioFullPage() {
       <PageMeta
         title={studioData ? studioData.studioName : ""}
         description={`${studioData?.studioName}, ${studioData?.city}, ${studioData?.danceStyles}`}
-        image={studioData?.iconUrl || "https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+        image={studioData?.iconUrl || STUDIO_ICON_DEFAULT}
       />
       <Row>
         <Col lg={8} className='d-flex'>

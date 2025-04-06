@@ -11,7 +11,7 @@ import Typography from '@mui/joy/Typography';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
-import { CHIP_LEVELS_DESIGN, COLORS, danceStylesColorChips } from '../constants';
+import { CHIP_LEVELS_DESIGN, COLORS, danceStylesColorChips, STUDIO_ICON_DEFAULT } from '../constants';
 import IconButton from '@mui/joy/IconButton';
 import Favorite from '@mui/icons-material/Favorite';
 
@@ -44,7 +44,7 @@ export default function NStudioCard({img_src,data}) {
       
         <AspectRatio ratio="1.78" style={{ position: 'relative'}}>
           <img
-            src={data && data.iconUrl ? data.iconUrl :"https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg"}
+            src={data && data.iconUrl ? data.iconUrl :STUDIO_ICON_DEFAULT}
             loading="lazy"
             alt="Studio Image"
             style={{ maxWidth: '100%', height: 'auto', overflow: 'hidden' }}
