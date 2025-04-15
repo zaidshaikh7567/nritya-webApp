@@ -12,6 +12,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import './App.css';
 import FullScreenLoader from './Components/FullScreenLoader';
 import { useLoader } from './context/LoaderContext';
+import NrityaLandingPage from './Screens/NrityaLandingPage';
 
 const Header = lazy(() => import('./Components/Header'));
 const Footer = lazy(() => import('./Components/Footer'));
@@ -97,7 +98,8 @@ function App() {
             <SnackbarProvider>
               <Suspense fallback={<Skeleton variant="rectangular" animation="wave"/>}>
                 <Routes>
-                  <Route path="/" element={<LandingPage />} />
+                  {/* <Route path="/" element={<LandingPage />} /> */}
+                  <Route path="/" element={<NrityaLandingPage />} />
                   <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
                   <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
                   <Route path='/workshop/:entityId' element={<WorkShopFullPage/>}/>
