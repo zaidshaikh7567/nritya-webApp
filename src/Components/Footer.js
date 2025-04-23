@@ -112,6 +112,9 @@ function Footer() {
                 Quick Links
               </Typography>
               <Typography variant="body2">
+                <a href="#/ourServices" style={linkStyle}>Our Services</a>
+              </Typography>
+              <Typography variant="body2">
                 <a href="#/modifyStudios" style={linkStyle}>List Studios</a>
               </Typography>
               <Typography variant="body2">
