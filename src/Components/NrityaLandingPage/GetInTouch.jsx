@@ -160,7 +160,7 @@ const GetInTouch = forwardRef((_, getInTouchSectionRef) => {
             }}
           >
             <Typography sx={{ fontSize: "18px" }}>Contact us</Typography>
-            <Typography sx={{ fontSize: "18px" }}>+91-xxxxxxxxx</Typography>
+            <Typography sx={{ fontSize: "18px" }}>+91-9310402342</Typography>
             <Typography sx={{ fontSize: "18px" }}>
               nritya@nritya.co.in
             </Typography>
