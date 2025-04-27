@@ -79,8 +79,7 @@ export default function NStudioCard({img_src,data}) {
             spacing={2}
             style={{ position: "absolute", top: 0, left: 0, padding: "1px", paddingTop: "1px" }}
           >
-            {data && data.freeTrialAvailable &&(
-            
+            {data.freeTrialAvailable === "true" || data.freeTrialAvailable === true && (
                 <Chip
                   key={1}
                  
@@ -94,7 +93,6 @@ export default function NStudioCard({img_src,data}) {
                 >
                   {'Free Trial Available'}
                 </Chip>
-              
             )}
           </Stack>
 
