@@ -13,6 +13,7 @@ import './App.css';
 import FullScreenLoader from './Components/FullScreenLoader';
 import { useLoader } from './context/LoaderContext';
 import NrityaLandingPage from './Screens/NrityaLandingPage';
+import WorkshopForm from './Screens/WorkshopForm';
 
 const Header = lazy(() => import('./Components/Header'));
 const Footer = lazy(() => import('./Components/Footer'));
@@ -122,6 +123,7 @@ function App() {
                       <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
                       <Route path='/modifyStudios' element={<CreatorStudio/>}/>
                       <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
+                      <Route path='/modifyWorkshops2' element={<WorkshopForm/>}/>
                       <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
                       <Route path='/modifyCourses' element={<CreatorCourse/>}/>
                       <Route path='/modifyInstructors' element={<CreatorInstructor/>}/>

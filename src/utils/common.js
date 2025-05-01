@@ -160,6 +160,15 @@ export const formatDateString = (dateString = "") => {
   return `${daySuffix(day)} ${monthNames[parseInt(month) - 1]}, ${year}`;
 }
 
+export const getUserEmail = () => {
+  const userInfoFull = JSON.parse(localStorage.getItem('userInfoFull'));
+  if (userInfoFull) {
+    return userInfoFull.email;
+  } else {
+    return null;
+  }
+}
+
 export const gradientStyles = [
   { background: 'linear-gradient(to bottom right, #FFD700, #FFA500)', color: 'black' },
   { background: 'linear-gradient(to bottom right, #00BFFF, #1E90FF)', color: 'black' },

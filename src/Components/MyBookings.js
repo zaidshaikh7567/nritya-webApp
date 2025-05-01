@@ -75,7 +75,7 @@ function MyBookings() {
         );
 
         //bookingDataArray.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
-        //console.log(bookingDataArray)
+        console.log(bookingDataArray)
         setBookings(bookingDataArray);
       } catch (error) {
         console.error(error);

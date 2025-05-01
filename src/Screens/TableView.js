@@ -8,7 +8,7 @@ import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import axios from 'axios';
 import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
-import { Typography,Tooltip } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useSnackbar } from '../context/SnackbarContext';
 
 
@@ -39,10 +39,10 @@ const TableView = ({ studioData, studioId }) => {
   //useMediaQuery('(max-width:800px)');
 
   //console.log("Small Screen Check",isSmallScreen)
-  console.log(studioData)
+  console.log(studioData,BASEURL_PROD)
 
   const bookFreeTrial = (classIndex) => {
-    return showSnackbar("Booking hasn't started yet", "info");         
+    //return showSnackbar("Booking hasn't started yet", "info");         
 
     const endpoint_url = BASEURL_PROD + "bookings/freeTrial/";
     if (!userId) {
