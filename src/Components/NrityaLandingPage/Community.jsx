@@ -58,7 +58,7 @@ const Community = () => {
           {[
             "Laser Focused Audience",
             "No More Algorithm Guessing",
-            "MaximiseClass Enrolment",
+            "Maximise Class Enrolment",
           ].map((item, index, arr) => (
             <React.Fragment key={index}>
               <Box
