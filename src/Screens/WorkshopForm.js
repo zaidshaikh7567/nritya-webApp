@@ -197,7 +197,7 @@ const WorkshopForm = () => {
 
       {variants.map((variant, vIndex) => (
         <Paper sx={{ p: 3, mb: 3 }} key={variant.variant_id}>
-          <Typography style={{color: isDarkModeOn ? 'white' : 'black', textTransform: 'none'}} variant="h6">Event {vIndex + 1}</Typography>
+          <Typography style={{color: isDarkModeOn ? 'white' : 'black', textTransform: 'none'}} variant="h6">Event {vIndex + 1} : {variant?.description}</Typography>
           <Grid container spacing={2} mt={1}>
             {['date', 'time', 'description'].map((field) => (
                 <Grid item xs={12} sm={4} key={field}>
