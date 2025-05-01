@@ -183,7 +183,7 @@ const GetInTouch = forwardRef((_, getInTouchSectionRef) => {
             component="span"
             sx={{ fontSize: "18px", display: "inline-block" }}
           >
-            +91-xxxxxxxxx
+            +91-9310402342
           </Typography>
           <Typography
             component="span"
