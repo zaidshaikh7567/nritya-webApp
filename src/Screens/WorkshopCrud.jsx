@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, Button, Grid,Tooltip, Stack } from '@mui/material';
+import { Box, Typography, Card, CardContent, Button, Grid,Tooltip, Stack, Skeleton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'
 import { Add } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
@@ -18,8 +18,11 @@ const WorkshopCrud = () => {
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true); 
+
   
   const fetchWorkshops = async () => {
+    setLoading(true); 
     try {
       const res = await axios.get(`${BASEURL_PROD}crud/get_workshops_by_creator/${getUserEmail()}`);
       setWorkshops(res.data.workshops || []);
@@ -27,7 +30,10 @@ const WorkshopCrud = () => {
     } catch (error) {
       console.error(error);
       alert('Failed to fetch workshops.');
+    } finally {
+      setLoading(false); // stop loading
     }
+
   };
 
   useEffect(() => {
@@ -101,7 +107,6 @@ const WorkshopCrud = () => {
             </Card>
           </Grid>
   
-          {/* Workshop Cards */}
           {workshops.map((workshop) => (
             <Grid item xs={12} sm={6} md={4} key={workshop.id}>
               <Card sx={{ background: isDarkModeOn ? '#333' : '#fafafa' }}>
@@ -149,6 +154,21 @@ const WorkshopCrud = () => {
               </Card>
             </Grid>
           ))}
+          {loading && Array.from(new Array(3)).map((_, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card sx={{ background: isDarkModeOn ? '#333' : '#fafafa' }}>
+                  <CardContent>
+                    <Skeleton variant="text" width="60%" height={30} />
+                    <Skeleton variant="text" width="40%" />
+                    <Skeleton variant="text" width="50%" />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="30%" />
+                    <Skeleton variant="rectangular" height={40} sx={{ mt: 2 }} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          }
         </Grid>
         {showForm && (
         <WorkshopForm2 key={selectedWorkshop?.id || 'new'} existingWorkshop={selectedWorkshop} setShowForm={setShowForm} onClose={handleCloseForm} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box, Typography, Paper, IconButton, Grid, MenuItem } from '@mui/material';
+import { TextField, Button, Box, Typography, Paper, IconButton, Grid, MenuItem, LinearProgress } from '@mui/material';
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { Add, CloseOutlined, Delete } from '@mui/icons-material';
 import axios from 'axios';
@@ -11,6 +11,7 @@ import { Stack } from 'react-bootstrap';
 
 const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
+    const [loading, setLoading] = useState(false);
     const defaultWorkshop = {
         name: '',
         dance_styles: '',
@@ -143,6 +144,7 @@ const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
     
       const handleSubmit = async () => {
         try {
+          setLoading(true);
           let res =""
           if (existingWorkshop) {
             const workshop_id = existingWorkshop.workshop_id;
@@ -162,6 +164,8 @@ const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
         } catch (error) {
           console.error(error);
           alert(error.response?.data?.error || 'Something went wrong.');
+        }finally {
+          setLoading(false);
         }
       };
     return (
@@ -325,7 +329,8 @@ const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
               Add Event
             </Button>
             <br/>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>Submit Workshop</Button>
+            <Button variant="contained" color="primary" disabled={loading} onClick={handleSubmit}>{loading?"Submitting":"Submit"}</Button>
+            {loading && <LinearProgress sx={{ mb: 2 }} />}
           </Box>
     );
   };
