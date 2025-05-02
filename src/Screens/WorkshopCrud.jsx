@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, Button, Grid,Tooltip, Stack, Skeleton } from '@mui/material';
+import { Box, Typography, Card, CardContent, Button, Grid,Tooltip, Stack, Skeleton, CardMedia, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'
-import { Add } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import axios from 'axios';
 import { getUserEmail } from '../utils/common';
@@ -10,7 +9,8 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { useSelector } from 'react-redux';
 import { BASEURL_DEV, BASEURL_PROD } from '../constants';
 import DraftTimeInfo from '../Components/DraftTimeInfo';
-import { getDraftStatus } from '../utils/timeUtils';
+import { formatDateToReadable, getDraftStatus } from '../utils/timeUtils';
+import  Dance8  from '../Components/DanceImg/Dance8.jpg';
 
 const WorkshopCrud = () => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -78,31 +78,32 @@ const WorkshopCrud = () => {
                     {/* Add New Workshop Card */}
                     <Grid item xs={12} sm={6} md={4}>
                         <Card sx={{ background: isDarkModeOn ? '#333' : '#fafafa' }}>
+                       
                         <CardContent
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '200px',
-            }}
-            >
-            <IconButton
-                color="primary"
-                onClick={handleCreate}
-                sx={{
-                border: '2px dashed #ccc',
-                borderRadius: '50%',
-                width: 80,
-                height: 80,
-                }}
-            >
-                <AddIcon sx={{ fontSize: 40 }} />
-            </IconButton>
-            <Typography variant="h6" mt={2} style={{ color: isDarkModeOn ? 'white' : 'black' }}>
-                Add New Workshop
-            </Typography>
-            </CardContent>
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '200px',
+                        }}
+                        >
+                        <IconButton
+                            color="primary"
+                            onClick={handleCreate}
+                            sx={{
+                            border: '2px dashed #ccc',
+                            borderRadius: '50%',
+                            width: 80,
+                            height: 80,
+                            }}
+                        >
+                            <AddIcon sx={{ fontSize: 40 }} />
+                        </IconButton>
+                        <Typography variant="h6" mt={2} style={{ color: isDarkModeOn ? 'white' : 'black' }}>
+                            Add New Workshop
+                        </Typography>
+                  </CardContent>
 
             </Card>
           </Grid>
@@ -110,12 +111,36 @@ const WorkshopCrud = () => {
           {workshops.map((workshop) => (
             <Grid item xs={12} sm={6} md={4} key={workshop.id}>
               <Card sx={{ background: isDarkModeOn ? '#333' : '#fafafa' }}>
+              <CardMedia
+                            component="img"
+                            alt="green iguana"
+                            height="240"
+                            image={Dance8}
+                          />
                 <CardContent>
-                  <Typography variant="h6">{workshop.name}</Typography>
-                  <Typography variant="body2" mt={1}>{workshop.dance_styles}</Typography>
-                  <Typography variant="body2" mt={1}>{workshop.city}</Typography>
-                  <Typography variant="body2" mt={1}>From {workshop.start_date} to {workshop.end_date}</Typography>
-                  <Typography variant="body2" mt={1}>{workshop.min_price} onwards</Typography>
+                  <Typography variant="h6" style={{textTransform:'none'}}>{workshop.name}</Typography>
+                  
+                  <Stack
+                      direction="row"
+                      spacing={2}
+                      style={{ position: "relative", padding: "1px" }}
+                    >
+                      {workshop && workshop.dance_styles && (
+                        workshop.dance_styles.split(',').map((form, index) => (
+                          <>
+                          <Chip
+                            key={index}
+                            label={form}
+                            size="small"
+                          />
+                            
+                          </>
+                        ))
+                      ) }
+                    </Stack>
+                  <Typography variant="body2" mt={1}>{workshop.city} | {formatDateToReadable(workshop.start_date)} </Typography>
+                  <Typography variant="h6" mt={1} style={{textTransform:'none'}}>₹{workshop.min_price}</Typography>
+                  <hr/>
                 {
                     workshop.creation_time && (
                         <DraftTimeInfo creationTimeString={workshop.creation_time} />

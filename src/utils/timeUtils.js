@@ -20,3 +20,10 @@ export const getDraftStatus = (creationTimeString, draftWindowHours = 4) => {
     isDraftActive,
   };
 };
+
+export const formatDateToReadable = (dateString) => {
+  const date = new Date(dateString);
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+};
+
