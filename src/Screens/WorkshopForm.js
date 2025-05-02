@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Paper, IconButton, Grid, Chip, MenuItem } from '@mui/material';
+import { TextField, Button, Box, Typography, Paper, IconButton, Grid, MenuItem } from '@mui/material';
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { Add, Delete } from '@mui/icons-material';
 import axios from 'axios';
 import { getUserEmail } from '../utils/common';
 import { useSelector } from 'react-redux';
-import MapsInput from '../Components/MapsInput';
 import danceStyles from '../danceStyles.json';
 
 const WorkshopForm = () => {
@@ -17,7 +16,7 @@ const WorkshopForm = () => {
     end_date: '',
     terms_conditions: '',
     description: '',
-    owner_email: getUserEmail(),
+    creator_email: getUserEmail(),
     building: '',
     street: '',
     city: '',
@@ -25,14 +24,14 @@ const WorkshopForm = () => {
   });
 
   const SKIP_LIST = [
-    'user_email',
+    'creator_email',
     'status',
     'created_at',
     'updated_at',
     'owner_email',]
 
 
-    const ADDRESS_KEYS = ["building", "street", "city", "state", "pincode"];
+  const ADDRESS_KEYS = ["building", "street", "city", "state", "pincode"];
 
   const [variants, setVariants] = useState([]);
 
@@ -157,6 +156,7 @@ const WorkshopForm = () => {
 
           <Grid item xs={12} sm={6}>
             {key === 'dance_styles' ? (
+
               <TextField
                 select
                 fullWidth
@@ -172,6 +172,7 @@ const WorkshopForm = () => {
                   </MenuItem>
                 ))}
               </TextField>
+        
             ) : (
               <TextField
                 fullWidth

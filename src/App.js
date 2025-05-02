@@ -15,6 +15,7 @@ import { useLoader } from './context/LoaderContext';
 import NrityaLandingPage from './Screens/NrityaLandingPage';
 import WorkshopForm from './Screens/WorkshopForm';
 import WorkshopDetailsPage from './Screens/WorkshopDetailsPage';
+import WorkshopCrud from './Screens/WorkshopCrud';
 
 const Header = lazy(() => import('./Components/Header'));
 const Footer = lazy(() => import('./Components/Footer'));
@@ -125,6 +126,7 @@ function App() {
                       <Route path='/modifyStudios' element={<CreatorStudio/>}/>
                       <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
                       <Route path='/modifyWorkshops2' element={<WorkshopForm/>}/>
+                      <Route path='/workshopCrud' element={<WorkshopCrud/>}/>
                       <Route path='/workshopFullPage2' element={<WorkshopDetailsPage/>}/>
                       <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
                       <Route path='/modifyCourses' element={<CreatorCourse/>}/>
