@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import danceStyles from '../danceStyles.json';
 import { BASEURL_DEV, BASEURL_PROD } from '../constants';
 import { Stack } from 'react-bootstrap';
+import { STORAGES } from '../constants';
+import ImageUpload from '../Components/ImageUpload';
 
 const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
     const isDarkModeOn = useSelector(selectDarkModeStatus);
@@ -168,6 +170,7 @@ const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
           setLoading(false);
         }
       };
+      console.log("Workshop Form", key);
     return (
       <Box sx={{ p: 4, maxWidth: '100%', margin: 'auto' }}>
             <Typography style={{color: isDarkModeOn ? 'white' : 'black', textTransform: 'none'}} variant="h5" mb={2}>Workshop Modify</Typography>
@@ -192,8 +195,19 @@ const WorkshopForm2 = ({ key='new',existingWorkshop = null, setShowForm }) => {
                         <CloseOutlined />
                     </IconButton>
                 </Stack>
-
-        
+                {
+                  existingWorkshop && existingWorkshop.workshop_id &&(
+                    <ImageUpload
+                      key={existingWorkshop.workshop_id}
+                      entityId={existingWorkshop.workshop_id}
+                      title={"Workshop Image Icon"}
+                      storageFolder={STORAGES.WORKSHOPICON}
+                      maxImageCount={1}
+                    />
+                  )
+                }
+                <hr/>
+                
                 <Grid container spacing={2}>
             {Object.keys(defaultWorkshop).map((key, index) => {
                 const value = workshop[key];

@@ -197,7 +197,7 @@ const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10,
               <div className="kb-data-box">
                 <div className="kb-modal-data-title">
                   <div className="kb-data-title" style={{justifyContent:'center',flex: '1'}}>
-                    <h4>{title}</h4>
+                    <h4 style={{textTransform:'none'}}>{title}</h4>
                     <p>Max no of image(s):{maxImageCount} {storageFolder === STORAGES.STUDIOIMAGES && <p>Add at least 5 images</p>}</p>
                   </div>
                 </div>

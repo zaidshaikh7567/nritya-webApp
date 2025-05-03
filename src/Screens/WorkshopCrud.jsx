@@ -7,16 +7,18 @@ import { getUserEmail } from '../utils/common';
 import WorkshopForm2 from './WorkshopForm2';
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import { useSelector } from 'react-redux';
-import { BASEURL_DEV, BASEURL_PROD } from '../constants';
-import DraftTimeInfo from '../Components/DraftTimeInfo';
-import { formatDateToReadable, getDraftStatus } from '../utils/timeUtils';
-import  Dance8  from '../Components/DanceImg/Dance8.jpg';
+import { BASEURL_DEV, BASEURL_PROD, STORAGES } from '../constants';
+import { useNavigate } from 'react-router-dom';
+import { readDocumentWithImageUrl } from '../utils/firebaseUtils';
+import WorkshopCardForOwner from '../Components/WorkshopCardForOwner';
+
+
 
 const WorkshopCrud = () => {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [workshops, setWorkshops] = useState([]);
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
-  
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true); 
 
@@ -110,75 +112,17 @@ const WorkshopCrud = () => {
   
           {workshops.map((workshop) => (
             <Grid item xs={12} sm={6} md={4} key={workshop.id}>
-              <Card sx={{ background: isDarkModeOn ? '#333' : '#fafafa' }}>
-              <CardMedia
-                            component="img"
-                            alt="green iguana"
-                            height="240"
-                            image={Dance8}
-                          />
-                <CardContent>
-                  <Typography variant="h6" style={{textTransform:'none'}}>{workshop.name}</Typography>
-                  
-                  <Stack
-                      direction="row"
-                      spacing={2}
-                      style={{ position: "relative", padding: "1px" }}
-                    >
-                      {workshop && workshop.dance_styles && (
-                        workshop.dance_styles.split(',').map((form, index) => (
-                          <>
-                          <Chip
-                            key={index}
-                            label={form}
-                            size="small"
-                          />
-                            
-                          </>
-                        ))
-                      ) }
-                    </Stack>
-                  <Typography variant="body2" mt={1}>{workshop.city} | {formatDateToReadable(workshop.start_date)} </Typography>
-                  <Typography variant="h6" mt={1} style={{textTransform:'none'}}>₹{workshop.min_price}</Typography>
-                  <hr/>
-                {
-                    workshop.creation_time && (
-                        <DraftTimeInfo creationTimeString={workshop.creation_time} />
-                    )
-                }
-
-                <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                    <Tooltip title={getDraftStatus(workshop.creation_time) ? "Edit workshop" : "Draft time expired"}>
-                        <span>
-                        <Button
-                            variant="outlined"
-                            onClick={() => handleEdit(workshop)}
-                            disabled={!getDraftStatus(workshop.creation_time).isDraftActive}
-                        >
-                            Edit
-                        </Button>
-                        </span>
-                    </Tooltip>
-
-                    <Tooltip title={getDraftStatus(workshop.creation_time) ? "Delete workshop" : "Draft time expired"}>
-                        <span>
-                        <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={() => handleDelete(workshop)}
-                            disabled={!getDraftStatus(workshop.creation_time).isDraftActive}
-                        >
-                            Delete
-                        </Button>
-                        </span>
-                    </Tooltip>
-                    </Stack>
-
-    
-                </CardContent>
-              </Card>
+              <WorkshopCardForOwner
+                key={workshop.id}
+                workshop={workshop}
+                isDarkModeOn={isDarkModeOn}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                readDocumentWithImageUrl={readDocumentWithImageUrl}
+              />
             </Grid>
           ))}
+
           {loading && Array.from(new Array(3)).map((_, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card sx={{ background: isDarkModeOn ? '#333' : '#fafafa' }}>
