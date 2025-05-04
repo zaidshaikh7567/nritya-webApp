@@ -17,6 +17,7 @@ import WorkshopForm from './Screens/WorkshopForm';
 import WorkshopDetailsPage from './Screens/WorkshopDetailsPage';
 import WorkshopCrud from './Screens/WorkshopCrud';
 import WorkshopRevenue from './Screens/WorkshopRevenue';
+import NewWorkshop from './Screens/NewWorkshop';
 
 const Header = lazy(() => import('./Components/Header'));
 const Footer = lazy(() => import('./Components/Footer'));
@@ -102,6 +103,7 @@ function App() {
                       <Route path='/modifyWorkshops2' element={<WorkshopForm/>}/>
                       <Route path='/workshopCrud' element={<WorkshopCrud/>}/>
                       <Route path='/workshopRevenue/:workshopId' element={<WorkshopRevenue/>}/>
+                      <Route path='/workshopFullDetails2/:workshopId' element={<NewWorkshop/>}/>
                       <Route path='/workshopFullPage2' element={<WorkshopDetailsPage/>}/>
                       <Route path='/modifyOpenClasses' element={<CreatorOpenClass/>}/>
                       <Route path='/modifyCourses' element={<CreatorCourse/>}/>

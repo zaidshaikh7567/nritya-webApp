@@ -73,13 +73,13 @@ const WorkshopCardForOwner = ({ workshop, isDarkModeOn, onEdit, onDelete, readDo
         </Stack>
 
         <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-          <Button variant="outlined" color="info">
+          <Button variant="outlined" color="info" onClick={() => navigate(`/workshopFullDetails2/${workshop?.workshop_id}`)}>
             Full Page
           </Button>
           <Button
             variant="outlined"
             color="info"
-            onClick={() => navigate(`/workshopRevenue/${workshop.workshop_id}`)}
+            onClick={() => navigate(`/workshopRevenue/${workshop?.workshop_id}`)}
           >
             Revenue
           </Button>

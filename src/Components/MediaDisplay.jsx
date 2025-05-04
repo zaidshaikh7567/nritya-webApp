@@ -48,7 +48,7 @@ const MediaDisplay = ({ youtubeViedoLink, imageUrl, altText }) => {
       alt={altText || "Workshop Image"}
       sx={{
         width: "100%",
-        height: "auto",
+        maxHeight: "50%",
         objectFit: "cover",
         borderRadius: "8px",
       }}
