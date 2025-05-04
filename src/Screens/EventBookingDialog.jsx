@@ -170,20 +170,61 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
   
     const handleConfirmBooking = () => {
       const { confirmed, total } = calculateSummary();
-  
+    
       if (confirmed.length === 0) {
         alert("Select at least one pricing option.");
         return;
       }
-  
+    
+      // Ensure workshopId exists
+      const workshopId = workshopData?.workshop_id;
+      if (!workshopId) {
+        alert("Workshop ID is missing.");
+        return;
+      }
+    
+      let bookingData = {
+        workshop_id: workshopId,
+        buyers_name: "NAME OF BUYER",
+        buyer_email: "buyer@fake.com",
+        buyer_number: "+910123456789",
+        total: total,
+        variant: {}
+      };
+    
+      // Constructing the variant structure
+      confirmed.map(item => {
+        const { quantity, subvariant, price, variant } = item;
+        console.log(quantity, subvariant, price, variant)
+        // Ensure all required fields are available
+        if (variant && subvariant && quantity !== undefined && price !== undefined) {
+          if (!bookingData.variant[variant]) {
+            bookingData.variant[variant] = {};
+          }
+    
+          bookingData.variant[variant][subvariant] = {
+            quantity: quantity,
+            price: price
+          };
+        } else {
+          console.warn("Incomplete data for item: ", item);
+        }
+      });
+    
+      console.log("Booking Data JSON:", JSON.stringify(bookingData, null, 2));
+    
+      // Optional: display a nice summary alert too
       let summary = confirmed.map(
-        item => `${item.quantity} x ${item.subvariant} @ ₹${item.price} (Event: ${item.variant})`
+        item => {
+          const { quantity, subvariant, price, variant } = item;
+          return `${quantity} x ${subvariant} @ ₹${price} (Event: ${variant})`;
+        }
       ).join('\n');
-  
+    
       alert(`Booking Summary:\n\n${summary}\n\nTotal: ₹${total}`);
       handleClose();
     };
-  
+
     const handleClose = () => {
       onClose();
       setSelectedVariants([]);
@@ -195,35 +236,55 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
   
     return (
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
-        <DialogTitle>Select Events</DialogTitle>
+        <DialogTitle sx={{ textTransform:'none'}}>Select Events</DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             {workshopData && workshopData.variants.map((variant, i) => (
               <Grid item xs={12} sm={6} key={i}>
                 <Card
                   sx={{
-                    border: selectedVariants.some(v => v.variant_id === variant.variant_id) ? '2px solid #1976d2' : '1px solid #ccc',
+                    border: selectedVariants.some(v => v.variant_id === variant.variant_id) 
+                      ? '2px solid #735EAB' 
+                      : '1px solid #ccc',
+                    color: selectedVariants.some(v => v.variant_id === variant.variant_id)
+                      ? '#white'
+                      : 'inherit',
+                    backgroundColor: selectedVariants.some(v => v.variant_id === variant.variant_id)
+                      ? '#735EAB'
+                      : 'transparent',
                     cursor: 'pointer',
-                    '&:hover': { borderColor: '#1976d2' }
+                    '&:hover': { borderColor: 'black' },
                   }}
                   onClick={() => handleVariantToggle(variant)}
                 >
                   <CardContent>
-                    <Typography variant="h6">{variant.description}</Typography>
-                    <Typography variant="body2">🗓️ {variant.date} | 🕑 {convertTo12HourFormat(variant.time)}</Typography>
+                    <Typography variant="h6" sx={{
+                      color: selectedVariants.some(v => v.variant_id === variant.variant_id)
+                      ? '#ffffff'
+                      : 'inherit',
+                      textTransform:'none',
+                    }}
+                    >{variant.description}</Typography>
+                    <Typography variant="body2" sx={{
+                      color: selectedVariants.some(v => v.variant_id === variant.variant_id)
+                      ? '#ffffff'
+                      : 'inherit',
+                    }} >🗓️ {variant.date} | 🕑 {convertTo12HourFormat(variant.time)}</Typography>
                   </CardContent>
                 </Card>
+                
               </Grid>
+             
             ))}
           </Grid>
   
           {selectedVariants.length > 0 && selectedVariants.map((variant, vi) => (
             <div key={vi} style={{ marginTop: 32 }}>
-              <Typography variant="h6" gutterBottom>{variant.description} - Pricing Options</Typography>
+              <Typography variant="h6" sx={{textTransform:'none',}} gutterBottom>{variant.description} : Ticket Options</Typography>
               <Grid container spacing={2}>
                 {variant.subvariants.map((sub, idx) => (
                   <Grid item xs={12} sm={6} md={4} key={idx}>
-                    <Card sx={{ p: 2 }}>
+                    <Card sx={{ p: 2, border: '1px solid #ccc' }}>
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -233,7 +294,7 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
                         }
                         label={
                           <div>
-                            <Typography variant="subtitle1">{sub.description}</Typography>
+                            <Typography variant="subtitle1" sx={{textTransform:'none',}}>{sub.description}</Typography>
                             <Typography variant="body2">₹{sub.price}</Typography>
                           </div>
                         }
@@ -258,7 +319,7 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
           {confirmed.length > 0 && (
             <>
               <Divider sx={{ my: 3 }} />
-              <Typography variant="h6" gutterBottom>Booking Summary</Typography>
+              <Typography variant="h6" sx={{textTransform:'none'}}gutterBottom>Booking Summary</Typography>
   
               <TableContainer component={Paper}>
                 <Table>
