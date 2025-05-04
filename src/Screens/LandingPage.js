@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Skeleton from "@mui/material/Skeleton";
 import MUIButton from "@mui/material/Button";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import { COLLECTIONS } from "../constants";
 import {
@@ -18,7 +19,6 @@ import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import LocationComponent from "../Components/LocationComponent";
 import { useNavigate } from "react-router-dom";
-import { getAllFilesFromFolder } from "../utils/firebaseUtils";
 import SearchIcon from "@mui/icons-material/Search";
 import { BASEURL_PROD } from "../constants";
 import EntitySkeleton from "../Components/EntitySkeleon";
@@ -190,18 +190,15 @@ function LandingPage() {
     const fetchImages = async () => {
       try {
         setIsLoading(true);
-        const dataImagesUrlLocal = await getAllFilesFromFolder(
-          "LandingPageImages"
-        );
-        //console.log("dataImagesUrlLocal:", dataImagesUrlLocal); // Debugging log
-        if (Array.isArray(dataImagesUrlLocal)) {
-          const imageUrlsArray = dataImagesUrlLocal.map(
-            (image) => image.fileURL
-          );
-          setDanceImagesUrl(imageUrlsArray);
-        } else {
-          console.error("Expected an array but got:", dataImagesUrlLocal);
-        }
+        const response = await axios.get(`${BASEURL_PROD}api/landingPageImages/`);
+        const data = response.data.signed_urls;
+
+      if (Array.isArray(data)) {
+        const imageUrlsArray = data;
+        setDanceImagesUrl(imageUrlsArray);
+      } else {
+        console.error("Expected an array but got:", data);
+      }
       } catch (error) {
         console.error("Error fetching images:", error);
       } finally {

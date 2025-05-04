@@ -3,21 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import {auth , provider}  from './../config.js';
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { db } from '../config';
-import { doc, getDoc,setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { COLLECTIONS } from "./../constants.js";
 import {  Row, Col } from 'react-bootstrap';
-import { useSelector } from 'react-redux'; 
-import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector'; 
 import { Button, Container } from '@mui/material';
 import { setCreatorMode } from '../utils/firebaseUtils.js';
 import { postData } from '../utils/common.js';
 
 
 
-function LoginPage({onLogin,setIsLoggedIn}) {
-  
+function LoginPage() {
   const [loginFailed, setLoginFailed] = useState(false);
-  const isDarkModeOn = useSelector(selectDarkModeStatus); // Use useSelector to access isDarkModeOn
+  const [username, setUsername] = useState(null);
+  const onLogin = async (UserInfo,userInfoFull) => {
+    setUsername(UserInfo?.displayName);
+
+    localStorage.setItem('username',username);
+    localStorage.setItem('isLoggedIn', true);
+    localStorage.setItem('userInfo',JSON.stringify(UserInfo));
+    localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
+  };
 
   const navigate = useNavigate();
 
@@ -74,25 +79,19 @@ function LoginPage({onLogin,setIsLoggedIn}) {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const accessToken = credential.accessToken;
         const idToken = credential.idToken;
-        console.log("Access token",accessToken)
-        console.log("Id token",idToken)
         const user = result.user;
-        console.log("Post login :",user);
-        console.log("UserId",user.uid);
-        console.log("Result ", result)
+
         if (result) {
           let token = await auth.currentUser?.getIdToken();
           console.log("token", token);
           localStorage.setItem("authToken", token);
         }
         onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL},user);
-        setIsLoggedIn(true);
         await addUserIfMissing(user);
         await setCreatorMode(user.uid);
         navigate(`/`);
       } catch (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+
         console.log('Invalid username or password');
         setLoginFailed(true);
       }
@@ -108,8 +107,7 @@ function LoginPage({onLogin,setIsLoggedIn}) {
                 className='custom-login-form'
                 onSubmit={(e) => {
                   e.preventDefault(); // Prevent form submission
-                  signin(); // Call your signin function on form submission
-                  //alert("Form Submitted")
+                  signin(); 
                 }}
                 style={{
                   display: 'flex',

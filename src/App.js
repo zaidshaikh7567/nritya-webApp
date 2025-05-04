@@ -54,33 +54,6 @@ function App() {
   const { isLoading } = useLoader();
   const isDarkModeOn = useSelector(selectDarkModeStatus); 
 
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
-    return storedIsLoggedIn === 'true';
-  });
-  const [username, setUsername] = useState(null);
-  const [userID, setUserID] = useState(null);
-  const [adminLoggedIn, setAdminLoggedIn] = useState(false)
-  useEffect(() => {
-    // Check if the URL contains 'n-admin'
-    const isNAdminRoute = window.location.pathname.includes('/n-admin');
-    // You can add more routes to exclude from header and footer if needed
-    setAdminLoggedIn((isNAdminRoute || JSON.parse(localStorage.getItem('adminLogin'))))
-    //console.log("Admin n",adminLoggedIn)
-  }, [adminLoggedIn]);
-
-  const handleLogin = async (UserInfo,userInfoFull) => {
-    setUsername(UserInfo?.displayName);
-    setIsLoggedIn(true);
-    setUserID(UserInfo?.UserId) 
-
-    localStorage.setItem('username',username);
-    localStorage.setItem('isLoggedIn', true);
-    localStorage.setItem('userInfo',JSON.stringify(UserInfo));
-    localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
-    //console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
-  };
-
   return (
     <HelmetProvider>
     {isLoading ? <FullScreenLoader /> : null}
@@ -104,7 +77,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/ourServices" element={<NrityaLandingPage />} />
-                  <Route path="/login" element={<LoginPage onLogin={handleLogin} setIsLoggedIn={setIsLoggedIn} />} />
+                  <Route path="/login" element={<LoginPage  />} />
                   <Route path='/studio/:studioId' element={<StudioFullPage/>}/>
                   <Route path='/workshop/:entityId' element={<WorkShopFullPage/>}/>
                   <Route path='/openClass/:entityId' element={<OpenClassFullPage/>}/>

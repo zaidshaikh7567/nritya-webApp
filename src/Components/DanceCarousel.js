@@ -3,10 +3,9 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './DanceCarousel.css';
-import { Hidden } from '@mui/material';
 
 const DanceCarousel = ({ danceImages }) => {
-
+  console.log("Dance Images",danceImages);
   const settings = {
     dots: false,
     infinite: true,
@@ -52,7 +51,7 @@ const DanceCarousel = ({ danceImages }) => {
   return (
     <Slider {...settings}>
       {danceImages.map((image, index) => (
-        <div id={index} className="image-container">
+        <div key={index} id={index} className="image-container">
             <img className="img-fluid hover-image" loading="lazy" style={{paddingRight:"5px"}} src={image}></img>
         </div>
 
