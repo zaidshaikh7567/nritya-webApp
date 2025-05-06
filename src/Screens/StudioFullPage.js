@@ -36,7 +36,6 @@ function StudioFullPage() {
   const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const containerRef = useRef(null);
   const [studioData, setStudioData] = useState(null);
   const [carouselImages, setCarouselImages] = useState([]);
   const [announcementImages, setAnnouncementImages] = useState([]);
@@ -45,59 +44,6 @@ function StudioFullPage() {
   const [courses, setCourses] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(false);
 
-  // Function to update the recently watched studios in Firebase
-  const updateRecentlyWatchedInFirebase = async (userId, studioId) => {
-    try {
-
-      const userRef = doc(db, COLLECTIONS.USER, userId);
-      const userDoc = await getDoc(userRef);
-      const recentlyWatchedMap = userDoc.exists() ? userDoc.data().recentlyWatched : {};
-
-      const isStudioWatched = Object.values(recentlyWatchedMap).includes(studioId);
-
-      // If the studio ID is already present, remove its older occurrences and keep the new one at the 0th key
-      if (isStudioWatched) {
-        const updatedRecentlyWatched = {};
-        let count = 1;
-        console.log(recentlyWatchedMap)
-        for (const key in recentlyWatchedMap) {
-          if (recentlyWatchedMap[key] === studioId) {
-            // Skip the older occurrence of the studio ID
-            continue;
-          }
-          updatedRecentlyWatched[count] = recentlyWatchedMap[key];
-          count++;
-        }
-
-        // Add the latest watched studio ID at the 0th key
-        updatedRecentlyWatched[0] = studioId;
-
-        // Save the updated "recentlyWatched" map back to Firebase
-        await updateDoc(userRef, { recentlyWatched: updatedRecentlyWatched });
-      } else {
-        // If the studio ID is not already present, follow the same logic as before
-        const updatedRecentlyWatched = { ...recentlyWatchedMap };
-        // Shift the existing entries in the "recentlyWatched" map to create space for the latest watched studio ID
-        for (let i = Object.keys(updatedRecentlyWatched).length - 1; i >= 0; i--) {
-          if (i === 0) {
-            delete updatedRecentlyWatched[i]; // Remove the last entry to keep the map size within 5
-          } else {
-            updatedRecentlyWatched[i] = updatedRecentlyWatched[i - 1];
-          }
-        }
-
-        // Add the latest watched studio ID at the first index (key "0")
-        updatedRecentlyWatched[0] = studioId;
-        console.log(updatedRecentlyWatched)
-        // Save the updated "recentlyWatched" map back to Firebase
-        await updateDoc(userRef, { recentlyWatched: updatedRecentlyWatched });
-      }
-    } catch (error) {
-      console.error("Error updating recently watched in Firebase:", error);
-    }
-  };
-
-
   const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
   useEffect(() => {
     console.log(BASEURL_STUDIO)
@@ -105,7 +51,7 @@ function StudioFullPage() {
       try {
         setIsLoading(true);
         if (JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId) {
-          const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
+          //const UserId = JSON.parse(localStorage.getItem('userInfo')).UserId
           console.log("Recently watched disabled")
           //updateRecentlyWatchedInFirebase(UserId, studioId);
         }
@@ -116,8 +62,13 @@ function StudioFullPage() {
         const responseImages = await axios.get(`${BASEURL_STUDIO}${studioId}/images/`);
         const dataImages = responseImages.data;
         if (dataImages && dataImages.StudioImages) {
-          setCarouselImages(dataImages.StudioImages)
+          const responseImages = dataImages.StudioImages;
+          const filteredImages = Array.isArray(responseImages) 
+            ? responseImages.filter(image => typeof image === 'string' && !image.includes(`${studioId}/?Expire`))
+            : [];
+          setCarouselImages(filteredImages);
         }
+        
         if (dataImages && dataImages.StudioAnnouncements) {
           setAnnouncementImages(dataImages.StudioAnnouncements)
         }

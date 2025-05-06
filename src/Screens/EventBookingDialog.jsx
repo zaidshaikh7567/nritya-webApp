@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Grid,
   Card, CardContent, Typography, FormControlLabel, Checkbox,
@@ -13,12 +13,13 @@ import {
 } from '@mui/material';
 import {convertTo12HourFormat} from '../utils/timeUtils';
 
-
-
 const EventBookingDialog = ({ open, onClose, workshopData }) => {
     const [selectedVariants, setSelectedVariants] = useState([]);
     const [selectedSubvariants, setSelectedSubvariants] = useState({});
     const [quantities, setQuantities] = useState({});
+    const [availablity, setAvailablity] = useState(null);
+    //const [subvariantToVariantMap, setSubvariantToVariantMap] = useState(null);
+    const subvariantToVariantMapRef = useRef(new Map());
 
     const getVariantDescription = (variantId) => {
         const variant = workshopData.variants.find(v => v.variant_id === variantId);
@@ -30,7 +31,7 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
         const subvariant = variant?.subvariants.find(s => s.subvariant_id === subvariant_id);
         return subvariant ? subvariant.description : 'No description available';
     };
-      
+    
   
     const handleVariantToggle = (variant) => {
       const isSelected = selectedVariants.some(v => v.variant_id === variant.variant_id);
@@ -91,17 +92,6 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
       }
     };
 
-  
-    const handleQuantityChange2 = (variant_id, subvariant_id, value) => {
-      setQuantities(prev => ({
-        ...prev,
-        [variant_id]: {
-          ...prev[variant_id],
-          [subvariant_id]: Math.max(0, parseInt(value) || 0)
-        }
-      }));
-    };
-
     const handleQuantityChange = (variant_id, subvariant_id, value) => {
         const newValue = Math.max(0, parseInt(value) || 0);
       
@@ -143,7 +133,6 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
         }
       };
       
-  
     const calculateSummary = () => {
       let confirmed = [];
   
@@ -231,6 +220,75 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
       setSelectedSubvariants({});
       setQuantities({});
     };
+
+    const getVariantIdFromSubvariant = (subvariantId) => {
+      console.log("Accessing subvariantToVariantMap:", subvariantToVariantMapRef.current);
+      return subvariantToVariantMapRef.current.get(subvariantId); // Access the map from ref
+    };
+
+    useEffect(() => {
+      const map = new Map();
+      workshopData?.variants.forEach(variant => {
+        variant.subvariants.forEach(subvariant => {
+          map.set(subvariant.subvariant_id, variant.variant_id);
+        });
+      });
+      console.log("Saving subvariantToVariantMap:", map);
+      subvariantToVariantMapRef.current = map; // Store map in ref
+    }, [workshopData]);
+
+    useEffect(() => {
+      if (process.env.REACT_APP_LIVE_CAPACITY_LEFT === 'true' && workshopData?.workshop_id){
+        const workshopId = "295add5d-403b-4b31-9a47-887039221ef2";  // Dummy UUID for testing
+    
+      const socket = new WebSocket(`ws://0.0.0.0:8000/ws/workshops/${workshopId}/`);
+    
+      socket.onopen = () => {
+        console.log("WebSocket connection established!");
+      };
+    
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Received WebSocket data:", data);
+    
+        if (data.type === "subvariant_capacity_update") {
+          console.log(
+            "Seat availabilty Update : ", data.available_capacity, typeof(data.available_capacity));
+          const capacityMap = new Map(Object.entries(data.available_capacity));
+          setAvailablity(capacityMap)
+          // Iterate over the available_capacity and update the quantity if necessary
+            capacityMap.forEach((availableCapacity, subvariantId) => {
+              console.log(subvariantId, availableCapacity)
+              const variantId = getVariantIdFromSubvariant(subvariantId);  // Get the variant_id using the map
+              // console.log(variantId, subvariantId, availableCapacity, subvariantToVariantMapRef.current)
+              if (variantId) {
+                // If sold out, set quantity to 0
+                if (availableCapacity === 0) {
+                  handleQuantityChange(variantId, subvariantId, 0);
+                }
+              }
+            });
+          
+        }
+      };
+    
+      socket.onerror = (error) => {
+        console.error("WebSocket Error:", error);
+      };
+    
+      socket.onclose = (event) => {
+        console.log("WebSocket closed:", event);
+      };
+    
+      return () => {
+        socket.close();
+      };
+
+      }
+      
+    }, [workshopData]);
+    
+  
   
     const { confirmed, total } = calculateSummary();
   
@@ -285,6 +343,7 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
                 {variant.subvariants.map((sub, idx) => (
                   <Grid item xs={12} sm={6} md={4} key={idx}>
                     <Card sx={{ p: 2, border: '1px solid #ccc' }}>
+                      
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -292,12 +351,28 @@ const EventBookingDialog = ({ open, onClose, workshopData }) => {
                             onChange={() => handleSubvariantSelect(variant.variant_id, sub.subvariant_id, sub.price)}
                           />
                         }
+                        disabled={process.env.REACT_APP_LIVE_CAPACITY_LEFT === 'true' && availablity && (availablity.get(sub.subvariant_id) ===0)}
+                        
                         label={
                           <div>
-                            <Typography variant="subtitle1" sx={{textTransform:'none',}}>{sub.description}</Typography>
+                            <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
+                              {sub.description}
+                            </Typography>
                             <Typography variant="body2">₹{sub.price}</Typography>
+                        
+                            {
+                              process.env.REACT_APP_LIVE_CAPACITY_LEFT === 'true' &&
+                              availablity &&
+                              availablity.get(sub.subvariant_id) >= 0 && (
+                                availablity.get(sub.subvariant_id) === 0 ? (
+                                  <Typography variant="body3">Sold Out</Typography>
+                                ) : (
+                                  <Typography variant="body3">{availablity.get(sub.subvariant_id)} seats left</Typography>
+                                )
+                              )
+                            }
                           </div>
-                        }
+                        }                        
                       />
                       <TextField
                         type="number"

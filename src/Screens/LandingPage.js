@@ -195,7 +195,10 @@ function LandingPage() {
 
       if (Array.isArray(data)) {
         const imageUrlsArray = data;
-        setDanceImagesUrl(imageUrlsArray);
+          const filteredImages = imageUrlsArray.filter(image => typeof image === 'string' && !image.includes("LandingPageImages/?Expire"));
+
+        
+        setDanceImagesUrl(filteredImages);
       } else {
         console.error("Expected an array but got:", data);
       }

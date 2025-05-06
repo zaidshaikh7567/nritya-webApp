@@ -83,6 +83,8 @@ function NewWorkshop() {
                   
                   setStartTime(time); // Set the minimum time in state
                 }
+
+                
                 
             } catch (error) {
                 console.error('Error fetching workshop data:', error);
@@ -428,6 +430,7 @@ function NewWorkshop() {
         open={openDialog}
         onClose={handleCloseDialog}
         workshopData={workshopData}
+
       />
       </Box>
 
