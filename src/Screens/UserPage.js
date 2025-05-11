@@ -284,6 +284,7 @@ function UserPage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
       <Container>
         {formData?.hash && <UserCard formData={formData} />}
 
@@ -303,7 +304,7 @@ function UserPage() {
 
         {formData?.hash && <KycStepper status={formData.status} />}
 
-        {(!formData?.hash || formData?.status === "Verification Failed") && (
+        {formData?.hash && formData?.status === "Verified" && (
           <Grid container rowGap={3} columnGap={3} sx={{ my: 3 }}>
             {cardData.map(([name, type, link], index) => {
               if (type === "Creator" && !isCreator) return null;
@@ -342,7 +343,22 @@ function UserPage() {
           </Grid>
         )}
 
-        {(!formData?.hash || formData?.status === "Verification Failed") && (
+        {formData?.hash && formData?.status === "Verification Failed" && (
+          <Typography
+            variant="body1"
+            sx={{
+              my: 3,
+              fontSize: "35px",
+              color: isDarkModeOn ? "white" : "black",
+              fontFamily: "Nunito Sans",
+            }}
+          >
+            Re-enter valid details for verification
+          </Typography>
+        )}
+
+        {/* {(!formData?.hash || formData?.status === "Verification Failed") && ( */}
+        {true && (
           <Paper
             elevation={2}
             sx={{
@@ -352,6 +368,13 @@ function UserPage() {
               bgcolor: isDarkModeOn ? "#00000040" : "unset",
             }}
           >
+            <Typography
+              variant="subtitle1"
+              component="p"
+              sx={{ mb: 3, color: "red" }}
+            >
+              {formData.comments || "Comment from verifier of KYC data"}
+            </Typography>
             <form onSubmit={handleSubmit}>
               <Grid container rowSpacing={3} columnSpacing={2}>
                 <Grid item xs={12} sm={6}>
