@@ -57,7 +57,14 @@ const UserCard = ({ formData }) => {
                 onClick={() => setOpenUploadProfileModal(true)}
                 sx={{ position: "relative", cursor: "pointer" }}
               >
-                <Avatar sx={{ width: 80, height: 80 }} />
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    border: 2,
+                    borderColor: "white",
+                  }}
+                />
                 <IconButton
                   sx={{
                     position: "absolute",
@@ -205,7 +212,14 @@ const UserCard = ({ formData }) => {
                 onClick={() => setOpenUploadProfileModal(true)}
                 sx={{ position: "relative" }}
               >
-                <Avatar sx={{ width: 80, height: 80 }} />
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    border: 2,
+                    borderColor: "white",
+                  }}
+                />
                 <IconButton
                   sx={{
                     position: "absolute",
