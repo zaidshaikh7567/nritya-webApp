@@ -357,8 +357,7 @@ function UserPage() {
           </Typography>
         )}
 
-        {/* {(!formData?.hash || formData?.status === "Verification Failed") && ( */}
-        {true && (
+        {(!formData?.hash || formData?.status === "Verification Failed") && (
           <Paper
             elevation={2}
             sx={{
@@ -368,13 +367,11 @@ function UserPage() {
               bgcolor: isDarkModeOn ? "#00000040" : "unset",
             }}
           >
-            <Typography
-              variant="subtitle1"
-              component="p"
-              sx={{ mb: 3, color: "red" }}
-            >
-              {formData.comments || "Comment from verifier of KYC data"}
-            </Typography>
+            {formData.comments && (
+              <Typography variant="subtitle1" component="p" sx={{ mb: 3 }}>
+                {formData.comments || "Comment from verifier of KYC data"}
+              </Typography>
+            )}
             <form onSubmit={handleSubmit}>
               <Grid container rowSpacing={3} columnSpacing={2}>
                 <Grid item xs={12} sm={6}>
