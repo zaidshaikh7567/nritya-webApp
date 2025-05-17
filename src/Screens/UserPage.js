@@ -33,8 +33,6 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import FileInputWithNumber from "../Components/profile/FileInputWithNumber";
 import {
   deleteAllImagesInFolder2,
-  readDocument,
-  setGetCreatorModeOnMount,
   updateDocumentFields,
   uploadImages4,
 } from "../utils/firebaseUtils";
@@ -305,7 +303,9 @@ function UserPage() {
       try {
         setIsLoading(true);
 
-        const kycDoc = await readDocument(COLLECTIONS.USER_KYC, kycId);
+        const response = await fetch(`${BASEURL_PROD}crud/getKycDoc/${kycId}`);
+        const responseJson = await response.json();
+        const kycDoc = responseJson.kyc_data;
 
         if (kycDoc) {
           setKycDoc(kycDoc);
