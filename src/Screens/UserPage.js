@@ -28,7 +28,7 @@ import { useLoader } from "../context/LoaderContext";
 import UserCard from "../Components/profile/UserCard";
 import { validateField } from "../utils/validationUtils";
 import { useSnackbar } from "../context/SnackbarContext";
-import { COLLECTIONS, STATUSES, STORAGES } from "../constants";
+import { BASEURL_PROD, COLLECTIONS, STATUSES, STORAGES } from "../constants";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import FileInputWithNumber from "../Components/profile/FileInputWithNumber";
 import {
@@ -87,8 +87,9 @@ function UserPage() {
   const [kycDoc, setKycDoc] = useState(null);
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  const [isStateDisabled, setIsStateDisabled] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange2 = (e) => {
     const { name, value, type, checked, files } = e.target;
 
     if (!["checkbox", "file"].includes(type)) {
@@ -106,6 +107,55 @@ function UserPage() {
         type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
+
+  const handleChange = async (e) => {
+    const { name, value, type, checked, files } = e.target;
+    console.log("name", BASEURL_PROD, user_id);
+    // validate field if not checkbox/file
+    if (!["checkbox", "file"].includes(type)) {
+      const error = validateField(name, value);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: error,
+      }));
+    }
+  
+    // update formData
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
+    }));
+  
+    // if pincode is being entered and reaches 6 digits
+    if (name === "zip_pin_code" && value.length === 6) {
+      try {
+        const response = await fetch(`https://api.postalpincode.in/pincode/${value}`);
+        const data = await response.json();
+        if (data[0].Status === "Success") {
+          const stateName = data[0].PostOffice[0].State;
+          console.log("State Name:", stateName);
+          setFormData((prevData) => ({
+            ...prevData,
+            state_province: stateName,
+          }));
+          setIsStateDisabled(true);  // disable state field
+        } else {
+          console.error("Invalid Pincode");
+          setIsStateDisabled(false);
+        }
+      } catch (err) {
+        console.error("Failed to fetch state", err);
+        setIsStateDisabled(false);
+      }
+    }
+  
+    // if pincode is edited back to less than 6 digits, re-enable state field
+    if (name === "zip_pin_code" && value.length < 6) {
+      setIsStateDisabled(false);
+    }
+  };
+  
 
   const calculateHash = (data) => {
     const filteredData = Object.keys(data).filter(
@@ -134,12 +184,11 @@ function UserPage() {
       let errorNum = 0;
 
       formFields.forEach((field) => {
-        let error = validateField(field, formData[field]);
-
-        if (["aadharFile", "gstinFile"].includes(field) && !formData.hash) {
-          if (field === "aadharFile") error = "Aadhar file is required";
-          else if (field === "gstinFile") error = "GSTIN file is required";
+        if (["aadhar", "gstin"].includes(field) && !formData[field]) {
+          return;
         }
+        console.log(field, formData[field]);
+        let error = validateField(field, formData[field]);
 
         if (error) {
           isValid = false;
@@ -172,8 +221,8 @@ function UserPage() {
         const dbPayload = {
           ...formData,
           hash: newHash,
-          aadharFile: undefined,
-          gstinFile: undefined,
+          //aadharFile: undefined,
+          //gstinFile: undefined,
         };
         await postData(dbPayload, COLLECTIONS.USER_KYC, notifyEmails, metaData);
       }
@@ -231,20 +280,23 @@ function UserPage() {
     const fetchCreatorMode = async () => {
       try {
         setIsLoading(true);
-
-        const userData = await readDocument(COLLECTIONS.USER, currentUser.uid);
-
-        if (userData) {
-          const creatorMode = await setGetCreatorModeOnMount(currentUser.uid);
-          setIsCreator(creatorMode);
+        const res = await fetch(`${BASEURL_PROD}crud/getUserMode/${currentUser.uid}`);
+        const data = await res.json();
+        if (data) {
+          setIsCreator(data.creatorMode);
         }
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchCreatorMode();
+  
+    if (currentUser?.uid) {
+      fetchCreatorMode();
+    }
   }, [currentUser]);
+  
 
   useEffect(() => {
     const fetchKycData = async () => {
@@ -496,6 +548,7 @@ function UserPage() {
                       onChange={handleChange}
                       displayEmpty
                       sx={{ height: FORM_FIELD_HEIGHT }}
+                      disabled={isStateDisabled}
                     >
                       <MenuItem value="">Select state</MenuItem>
                       {stateOptions.map((state, index) => (
