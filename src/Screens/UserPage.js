@@ -119,18 +119,20 @@ function UserPage() {
         [name]: error,
       }));
     }
-  
+
     // update formData
     setFormData((prevData) => ({
       ...prevData,
       [name]:
         type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
-  
+
     // if pincode is being entered and reaches 6 digits
     if (name === "zip_pin_code" && value.length === 6) {
       try {
-        const response = await fetch(`https://api.postalpincode.in/pincode/${value}`);
+        const response = await fetch(
+          `https://api.postalpincode.in/pincode/${value}`
+        );
         const data = await response.json();
         if (data[0].Status === "Success") {
           const stateName = data[0].PostOffice[0].State;
@@ -139,7 +141,7 @@ function UserPage() {
             ...prevData,
             state_province: stateName,
           }));
-          setIsStateDisabled(true);  // disable state field
+          setIsStateDisabled(true); // disable state field
         } else {
           console.error("Invalid Pincode");
           setIsStateDisabled(false);
@@ -149,13 +151,12 @@ function UserPage() {
         setIsStateDisabled(false);
       }
     }
-  
+
     // if pincode is edited back to less than 6 digits, re-enable state field
     if (name === "zip_pin_code" && value.length < 6) {
       setIsStateDisabled(false);
     }
   };
-  
 
   const calculateHash = (data) => {
     const filteredData = Object.keys(data).filter(
@@ -184,10 +185,6 @@ function UserPage() {
       let errorNum = 0;
 
       formFields.forEach((field) => {
-        if (["aadhar", "gstin"].includes(field) && !formData[field]) {
-          return;
-        }
-        console.log(field, formData[field]);
         let error = validateField(field, formData[field]);
 
         if (error) {
@@ -266,7 +263,11 @@ function UserPage() {
       });
 
       event.target.reset();
-      setFormData(initialValues);
+      setFormData((prev) => ({
+        ...prev,
+        hash: newHash,
+        status: STATUSES.SUBMITTED,
+      }));
 
       showSnackbar("Your KYC details are submitted successfully", "success");
     } catch (error) {
@@ -280,7 +281,9 @@ function UserPage() {
     const fetchCreatorMode = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`${BASEURL_PROD}crud/getUserMode/${currentUser.uid}`);
+        const res = await fetch(
+          `${BASEURL_PROD}crud/getUserMode/${currentUser.uid}`
+        );
         const data = await res.json();
         if (data) {
           setIsCreator(data.creatorMode);
@@ -291,12 +294,11 @@ function UserPage() {
         setIsLoading(false);
       }
     };
-  
+
     if (currentUser?.uid) {
       fetchCreatorMode();
     }
   }, [currentUser]);
-  
 
   useEffect(() => {
     const fetchKycData = async () => {
