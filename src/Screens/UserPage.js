@@ -284,7 +284,8 @@ function UserPage() {
         );
         const data = await res.json();
         if (data) {
-          setIsCreator(data.creatorMode);
+          const creatorMode = data.data;
+          setIsCreator(creatorMode);
         }
       } catch (err) {
         console.error(err);
