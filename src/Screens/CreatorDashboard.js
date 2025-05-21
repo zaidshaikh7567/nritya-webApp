@@ -42,11 +42,11 @@ function CreatorDashboard() {
   const isDashboardModuleVisible = process.env.REACT_APP_DASHBOARD_MODULES_VISIBLE === "true";
   const cardItems = [
     { title: "Total Studios", data: counts.studiosCount, link: "#/modifyStudios" },
-    { title: "Total Instructors", data: counts.instructorsCount, link: "#/modifyInstructors" }
+    { title: "Total Instructors", data: counts.instructorsCount, link: "#/modifyInstructors" },
+    { title: "Total Workshops", data: counts.workshopsCount, link: "#/workshops" },
   ];
   if (isDashboardModuleVisible) {
     cardItems.push(
-      { title: "Total Workshops", data: counts.workshopsCount, link: "#/modifyWorkshops" },
       { title: "Total Open Classes", data: counts.openClassesCount, link: "#/modifyOpenClasses" },
       { title: "Total Courses", data: counts.coursesCount, link: "#/modifyCourses" },
       { title: "Studio Subscription", data: counts.coursesCount, link: "#/studioSubscription" }
