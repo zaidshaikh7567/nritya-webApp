@@ -1,11 +1,23 @@
-import React, { useEffect } from "react";
-import { Row, Col, Form } from "react-bootstrap";
-import { LinearProgress, Button as MuiButton } from "@mui/material";
+import React, { useEffect, useMemo } from "react";
+import { Form } from "react-bootstrap";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Button as MuiButton,
+  Paper,
+  Typography,
+  FormControl,
+  ButtonGroup,
+  Select,
+  MenuItem,
+  IconButton,
+} from "@mui/material";
 import { useState } from "react";
 import { db } from "../config";
 import {
   doc,
-  getDoc,
   addDoc,
   updateDoc,
   collection,
@@ -14,6 +26,7 @@ import {
   getDocs,
   deleteDoc,
 } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import { COLLECTIONS, DRAFT_COLLECTIONS, LEVELS } from "../constants";
 import ImageUpload from "./ImageUpload";
 import { STORAGES } from "../constants";
@@ -22,217 +35,367 @@ import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
 import danceStyles from "../danceStyles.json";
 import { Autocomplete, TextField } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import TimeRange from "./TimeRange";
 import { useSnackbar } from "../context/SnackbarContext";
-import cities from '../cities.json';
+import indianCities from "../cities.json";
+import indianStates from "../states.json";
 import { postData } from "../utils/common";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { isEqual } from 'lodash';
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { isEqual } from "lodash";
+import { useLoader } from "../context/LoaderContext";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import ImageIcon from "@mui/icons-material/Image";
+import UploadIcon from "@mui/icons-material/Upload";
+import MapsInput from "./MapsInput";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const FILTER_LOCATION_KEY = "filterLocation";
+const FORM_FIELD_HEIGHT = 56;
 const DRAFT_INTERVAL_TIME = 1000 * 10;
 
-function WorkshopAdd({ instructors, studioId, setWorkshop }) {
-  const showSnackbar = useSnackbar();
-  const [newWorkshopId, setNewWorkshopId] = useState("");
-  const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const [selectedInstructors, setSelectedInstructors] = useState([]);
-  const [selectedDanceStyles, setSelectedDanceStyles] = useState([]);
+const cityOptions = indianCities.cities;
+const stateOptions = indianStates.states;
+const danceStylesOptions = danceStyles.danceStyles;
 
-  const instructorNamesWithIds = instructors.map(
-    (instructor) => `${instructor.name} - ${instructor.id}`
+const initialValue = {
+  workshopName: "",
+  description: "",
+  danceStyles: [],
+  videoLink: "",
+  workshopImage: null,
+  level: "",
+  startDate: null,
+  endDate: null,
+  venueType: "Studio",
+  venueDetails: null,
+  events: [
+    {
+      date: null,
+      startTime: null,
+      endTime: null,
+      description: "",
+      pricingOptions: [
+        {
+          price: "",
+          capacity: "",
+          description: "",
+        },
+      ],
+    },
+  ],
+};
+
+function WorkshopAdd() {
+  const user = JSON.parse(localStorage.getItem("userInfo"));
+
+  const navigate = useNavigate();
+  const showSnackbar = useSnackbar();
+  const { setIsLoading } = useLoader();
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const [step, setStep] = useState(1);
+  const [studios, setStudios] = useState([]);
+  const [isReady, setIsReady] = useState(false);
+  const [isVideoLink, setIsVideoLink] = useState(false);
+  const [formData, setFormData] = useState(initialValue);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: isDarkModeOn ? "dark" : "light",
+        },
+        typography: {
+          fontFamily: '"Nunito Sans", sans-serif',
+        },
+      }),
+    [isDarkModeOn]
   );
 
-  const danceStylesOptions = danceStyles.danceStyles;
-  const currentCity = localStorage.getItem(FILTER_LOCATION_KEY) || "";
-
-  const [isReady, setIsReady] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState("");
-  const [selectedStudio, setSelectedStudio] = useState(null);
-  const [selectedLevel, setSelectedLevel] = useState("");
-  const [workshopTime, setWorkshopTime] = useState("");
-  const [workshopDate, setWorkshopDate] = useState(dayjs(new Date()));
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [description, setDescription] = useState('');
-  const [step, setStep] = useState(1);
-
-  const darkTheme = createTheme({
-    palette: {
-      mode: isDarkModeOn ? "dark" : "light",
-    },
-  });
-
-  const handleDanceStylesChange = (event, value) => {
-    setSelectedDanceStyles(value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDurationChange = (event, value) => {
-    setSelectedDuration(value);
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, workshopImage: file }));
+    }
   };
 
-  const handleLevelChange = (event, value) => {
-    setSelectedLevel(value);
+  const handleDateChange = (name) => (date) => {
+    setFormData((prev) => ({ ...prev, [name]: date }));
   };
 
-  const handleSelectStudio = (event, value) => {
-    setSelectedStudio(value);
+  const handleVenueTypeChange = (e) => {
+    const venueType = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      venueType,
+      venueDetails:
+        venueType === "Studio"
+          ? { studio: "", address: "" }
+          : {
+              buildingName: "",
+              landmark: "",
+              streetAddress: "",
+              pincode: "",
+              city: "",
+              state: "",
+              mapAddress: "",
+              selectedLocation: "",
+            },
+    }));
   };
 
-  const handleInstructorChange = (event, value) => {
-    setSelectedInstructors(value);
+  const handleStudioChange = (e) => {
+    const studioId = e.target.value;
+    const selectedStudio = studios.find(
+      (studioIdItem) => studioIdItem?.id === studioId
+    );
+
+    const studioAddress = `${
+      selectedStudio?.buildingName ? selectedStudio?.buildingName + ", " : ""
+    }${selectedStudio?.street}, ${selectedStudio?.city}, ${
+      selectedStudio?.state
+    }, ${selectedStudio?.country} - ${selectedStudio?.pincode}`;
+
+    setFormData((prev) => ({
+      ...prev,
+      venueDetails: {
+        studio: studioId,
+        address: studioAddress || "",
+      },
+    }));
   };
 
-  const isValidInputs = (form) => {
-    let validationFailed = true;
-    if (
-      !form.workshopName.value ||
-      !form.workshopFees.value ||
-      !selectedDanceStyles?.length ||
-      !selectedInstructors?.length ||
-      !description ||
-      !selectedStudio ||
-      !selectedDuration ||
-      !selectedLevel ||
-      !workshopTime ||
-      !workshopDate
-    )
-      validationFailed = false;
+  const handleIndependentVenueChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      venueDetails: { ...prev.venueDetails, [name]: value },
+    }));
+  };
 
-    return validationFailed;
+  const isValidInputs = () => {
+    if (step === 1) {
+      if (
+        !formData.workshopName ||
+        !formData.description ||
+        !formData.danceStyles?.length ||
+        !formData.level ||
+        !formData.venueType ||
+        !formData.startDate ||
+        !formData.endDate
+      ) {
+        return false;
+      }
+
+      if (!isVideoLink) {
+        if (!formData.workshopImage) {
+          return false;
+        }
+      } else {
+        if (!formData.videoLink) {
+          return false;
+        }
+      }
+
+      if (formData.venueType === "Studio") {
+        if (!formData.venueDetails?.studio || !formData.venueDetails?.address) {
+          return false;
+        }
+      } else {
+        if (
+          !formData.venueDetails?.buildingName ||
+          !formData.venueDetails?.landmark ||
+          !formData.venueDetails?.streetAddress ||
+          !formData.venueDetails?.pincode ||
+          !formData.venueDetails?.city ||
+          !formData.venueDetails?.state ||
+          !formData.venueDetails?.mapAddress
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    } else {
+      if (!formData.events?.length) {
+        return false;
+      }
+
+      for (const event of formData.events) {
+        if (
+          !event.date ||
+          !event.startTime ||
+          !event.endTime ||
+          !event.description ||
+          !event.pricingOptions?.length
+        ) {
+          return false;
+        }
+
+        for (const pricing of event.pricingOptions) {
+          if (!pricing.price || !pricing.capacity || !pricing.description) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
   };
 
   const resetDraft = async () => {
     const q = query(
       collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS),
-      where("UserId", "==", JSON.parse(localStorage.getItem("userInfo")).UserId)
+      where("UserId", "==", user?.UserId)
     );
 
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      let studios = [];
+      let workshops = [];
 
       querySnapshot.forEach((doc) => {
-        studios.push({ id: doc.id, ...doc.data() });
+        workshops.push({ id: doc.id, ...doc.data() });
       });
 
-      let foundStudio = studios[0];
+      let foundWorkshop = workshops[0];
 
       const studioRef = doc(
         db,
         DRAFT_COLLECTIONS.DRAFT_WORKSHOPS,
-        foundStudio.id
+        foundWorkshop.id
       );
 
       await deleteDoc(studioRef);
     }
   };
 
+  const gotoStep2 = async (event) => {
+    event.preventDefault();
+
+    if (!isValidInputs()) {
+      showSnackbar("Please fill all the fields.", "error");
+      return;
+    }
+
+    setStep((prev) => prev + 1);
+  };
+
   const handleAddWorkshop = async (event) => {
     event.preventDefault();
-    const form = event.target;
 
-    if (!isValidInputs(form)) {
+    if (!isValidInputs()) {
       showSnackbar("Please fill all the fields.", "error");
       return;
     }
 
     try {
-      const currentUserEmail = JSON.parse(localStorage.getItem("userInfo")).email;
+      setIsLoading(true);
+
+      const currentUserEmail = user?.email;
+      const currentDateTime = dayjs();
+
       const dbPayload = {
-        workshopName: event.target.workshopName.value,
-        danceStyles: selectedDanceStyles,
-        instructors: selectedInstructors
-          ? selectedInstructors?.map?.(
-            (instructor) => instructor?.split?.("-")?.[1]?.trim?.() || null
-          )
-          : null,
-        author: JSON.parse(localStorage.getItem("userInfo")).displayName,
-        UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
         creatorEmail: currentUserEmail,
-        StudioId: selectedStudio
-          ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
-          : null,
-        duration: selectedDuration,
-        level: selectedLevel,
-        time: workshopTime,
-        description: description,
-        date: workshopDate.format("YYYY-MM-DD"),
-        price: event.target.workshopFees.value,
-        capacity: event.target.capacity.value,
-        // venue: event.target.workshopVenue.value,
-        active: true,
-        youtubeViedoLink: event.target.youtubeViedoLink.value,
+        UserId: user?.UserId,
+        createdAt: currentDateTime.toISOString(),
+        updatedAt: currentDateTime.toISOString(),
+        ...formData,
       };
 
+      delete dbPayload.workshopImage;
+      delete dbPayload.venueType;
+
+      dbPayload.endDate = dbPayload.endDate?.toISOString();
+      dbPayload.startDate = dbPayload.startDate?.toISOString();
+
+      dbPayload.events = dbPayload.events.map((event) => {
+        const convertedEvent = { ...event };
+
+        convertedEvent.date = convertedEvent.date.toISOString();
+        convertedEvent.startTime = convertedEvent.startTime.format("HH:mm:ss");
+        convertedEvent.endTime = convertedEvent.endTime.format("HH:mm:ss");
+
+        return convertedEvent;
+      });
+
       setIsSubmitting(true);
-      const notifyEmails = currentUserEmail; 
+      const notifyEmails = currentUserEmail;
       const metaData = {
         entity_name: dbPayload.workshopName,
-        time: dbPayload.time,
-        date: dbPayload.date,
-        StudioId : dbPayload.StudioId
-      }
-      const response = await postData(dbPayload, COLLECTIONS.WORKSHOPS, notifyEmails, metaData) ;
+        time: currentDateTime.format("HH:mm"),
+        date: currentDateTime.format("YYYY-MM-DD"),
+      };
+      const response = await postData(
+        dbPayload,
+        COLLECTIONS.WORKSHOPS,
+        notifyEmails,
+        metaData
+      );
       if (response.ok) {
         const result = await response.json();
-        setNewWorkshopId(result.id);
-        setWorkshop((prev) => [...prev, { id: result.id, ...dbPayload }]);
-        
-        clearForm(form);
+
+        clearForm();
         resetDraft();
         showSnackbar("Workshop successfully added.", "success");
-        setStep((prev) => prev + 1);
+
+        navigate("/workshops");
       }
     } catch (error) {
       console.error("Error adding workshop: ", error);
       showSnackbar(error?.message || "Something went wrong", "error");
     } finally {
       setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  const clearForm = (form) => {
-    form.reset();
-    setSelectedDanceStyles([]);
-    setSelectedInstructors([]);
-    setSelectedStudio(null);
-    setSelectedDuration("");
-    setSelectedLevel("");
-    setWorkshopTime("");
-    setWorkshopDate(dayjs(new Date()));
-    setDescription('');
-  };
-
-  const handleTimeSelect = (startTime, endTime) => {
-    const [currentStartTime, currentEndTime] = workshopTime.split(" - ");
-    let newTime = `${currentStartTime} - ${currentEndTime}`;
-
-    if (startTime !== null) newTime = `${startTime} - ${currentEndTime}`;
-    if (endTime !== null) newTime = `${currentStartTime} - ${endTime}`;
-
-    setWorkshopTime(newTime);
+  const clearForm = () => {
+    setFormData(initialValue);
+    setIsVideoLink(false);
   };
 
   useEffect(() => {
-    async function main() {
-      const form = document.getElementById("addStudioForm");
+    const getStudioCreated = async () => {
+      try {
+        setIsLoading(true);
 
+        const q = query(
+          collection(db, COLLECTIONS.STUDIO),
+          where("UserId", "==", user?.UserId)
+        );
+
+        const querySnapshot = await getDocs(q);
+        const studiosOfUser = querySnapshot.docs
+          .filter((doc) => doc.data().studioName)
+          .map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        setStudios(studiosOfUser);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getStudioCreated();
+  }, []);
+
+  useEffect(() => {
+    async function main() {
       try {
         const q = query(
           collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS),
-          where(
-            "UserId",
-            "==",
-            JSON.parse(localStorage.getItem("userInfo")).UserId
-          )
+          where("UserId", "==", user?.UserId)
         );
 
         const querySnapshot = await getDocs(q);
@@ -246,63 +409,57 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
           let foundWorkshop = workshops[0];
 
-          form.workshopName.value = foundWorkshop?.workshopName || "";
-          form.workshopFees.value = foundWorkshop?.price || 0;
-          form.capacity.value = foundWorkshop?.capacity || 0;
-          // form.workshopVenue.value = foundWorkshop?.venue || "";
-          setDescription(foundWorkshop?.description || "");
+          let fetchedWorkshopData = {
+            workshopName: foundWorkshop?.workshopName || "",
+            description: foundWorkshop?.description || "",
+            danceStyles: foundWorkshop?.danceStyles || [],
+            level: foundWorkshop?.level || "",
+            startDate: foundWorkshop?.startDate
+              ? dayjs(foundWorkshop.startDate)
+              : null,
+            endDate: foundWorkshop?.endDate
+              ? dayjs(foundWorkshop.endDate)
+              : null,
+            venueDetails: foundWorkshop?.venueDetails || null,
+          };
 
-          setSelectedDanceStyles(
-            foundWorkshop?.danceStyles?.length ? foundWorkshop.danceStyles : []
-          );
+          if (foundWorkshop?.events && foundWorkshop.events?.length) {
+            fetchedWorkshopData.events = foundWorkshop.events.map((event) => ({
+              ...event,
+              startTime: event.startTime
+                ? dayjs(event.startTime, "HH:mm:ss")
+                : null,
+              endTime: event.endTime ? dayjs(event.endTime, "HH:mm:ss") : null,
+              date: event.date ? dayjs(event.date) : null,
+            }));
+          } else {
+            fetchedWorkshopData.events = [];
+          }
 
-          setSelectedInstructors(
-            instructors
-              .filter((instructor) =>
-                foundWorkshop?.instructors.includes(instructor.id)
-              )
-              .map((instructor) => `${instructor.name} - ${instructor.id}`)
-          );
+          if (foundWorkshop?.videoLink) {
+            fetchedWorkshopData.videoLink = foundWorkshop?.videoLink;
+            setIsVideoLink(true);
+          }
 
-          const studios = studioId.map((studio) => studio.split(":")[1].trim());
-          const currentStudioIndex = studios.findIndex(
-            (studio) => studio === foundWorkshop?.StudioId
-          );
-          if (currentStudioIndex > 0)
-            setSelectedStudio(studioId[currentStudioIndex]);
+          if (
+            foundWorkshop?.venueDetails &&
+            Object.keys(foundWorkshop.venueDetails).includes("studio")
+          ) {
+            fetchedWorkshopData.venueType = "Studio";
+          } else {
+            fetchedWorkshopData.venueType = "Independent";
+          }
 
-          setSelectedDuration(foundWorkshop?.duration || "");
-
-          setSelectedLevel(foundWorkshop?.level || "");
-
-          setWorkshopTime(foundWorkshop?.time || "");
-
-          setWorkshopDate(dayjs(foundWorkshop?.date || Date.now()));
+          setFormData((prev) => ({ ...prev, ...fetchedWorkshopData }));
         } else {
-          await addDoc(collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS), {
-            workshopName: form.workshopName?.value || "",
-            price: form.workshopFees?.value || 0,
-            // venue: form.capacity?.value || 0,
-            // venue: form.workshopVenue?.value || "",
-            description: description,
-            danceStyles: selectedDanceStyles,
-            instructors: selectedInstructors
-              ? selectedInstructors?.map?.(
-                (instructor) =>
-                  instructor?.split?.("-")?.[1]?.trim?.() || null
-              )
-              : null,
-            author: JSON.parse(localStorage.getItem("userInfo")).displayName,
-            UserId: JSON.parse(localStorage.getItem("userInfo")).UserId,
-            creatorEmail: JSON.parse(localStorage.getItem("userInfo")).email,
-            StudioId: selectedStudio
-              ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
-              : null,
-            duration: selectedDuration,
-            level: selectedLevel,
-            time: workshopTime,
-            date: workshopDate.format("YYYY-MM-DD")
-          });
+          const currentData = { ...formData, UserId: user?.UserId };
+          delete currentData.workshopImage;
+          delete currentData.venueType;
+
+          await addDoc(
+            collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS),
+            currentData
+          );
         }
 
         setIsReady(true);
@@ -316,18 +473,12 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
   useEffect(() => {
     let intervalId = null;
-    let previousState = null; // Keep track of the previous form state.
+    let previousState = null;
     async function main() {
-      const form = document.getElementById("addStudioForm");
-
       try {
         const q = query(
           collection(db, DRAFT_COLLECTIONS.DRAFT_WORKSHOPS),
-          where(
-            "UserId",
-            "==",
-            JSON.parse(localStorage.getItem("userInfo")).UserId
-          )
+          where("UserId", "==", user?.UserId)
         );
 
         const querySnapshot = await getDocs(q);
@@ -349,38 +500,38 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
 
           intervalId = setInterval(async () => {
             try {
-              const currentState = {
-                workshopName: form.workshopName?.value || "",
-                price: form.workshopFees?.value || 0,
-                // venue: form.capacity?.value || 0,
-                // venue: form.workshopVenue?.value || "",
-                description: description,
-                danceStyles: selectedDanceStyles,
-                instructors: selectedInstructors
-                  ? selectedInstructors?.map?.(
-                    (instructor) =>
-                      instructor?.split?.("-")?.[1]?.trim?.() || null
-                  )
-                  : null,
-                StudioId: selectedStudio
-                  ? selectedStudio?.split?.(":")?.[1]?.trim?.() || null
-                  : null,
-                duration: selectedDuration,
-                level: selectedLevel,
-                time: workshopTime,
-                date: workshopDate.format("YYYY-MM-DD")
-              }
-              // Check if the current state is different from the previous state
+              const currentState = { ...formData, UserId: user?.UserId };
+
+              if (currentState?.endDate)
+                currentState.endDate = currentState.endDate?.toISOString();
+              if (currentState?.startDate)
+                currentState.startDate = currentState.startDate?.toISOString();
+
+              currentState.events = currentState.events.map((event) => {
+                const convertedEvent = { ...event };
+
+                if (convertedEvent?.date)
+                  convertedEvent.date = convertedEvent.date.toISOString();
+                if (convertedEvent?.startTime)
+                  convertedEvent.startTime =
+                    convertedEvent.startTime.format("HH:mm:ss");
+                if (convertedEvent?.endTime)
+                  convertedEvent.endTime =
+                    convertedEvent.endTime.format("HH:mm:ss");
+
+                return convertedEvent;
+              });
+
+              delete currentState.workshopImage;
+              delete currentState.venueType;
+
               if (!isEqual(previousState, currentState)) {
                 try {
                   await updateDoc(workshopRef, currentState);
-                  previousState = currentState; // Update previous state after successful save
-                  console.log("Next AutoSave in",DRAFT_INTERVAL_TIME)
+                  previousState = currentState;
                 } catch (error) {
                   console.error(error);
                 }
-              }else{
-                  console.log("Nothing for Autosave to save")
               }
             } catch (error) {
               console.error(error);
@@ -395,364 +546,1065 @@ function WorkshopAdd({ instructors, studioId, setWorkshop }) {
     if (isReady) main();
 
     return () => clearInterval(intervalId);
-  }, [
-    isReady,
-    selectedDanceStyles,
-    selectedInstructors,
-    description,
-    selectedStudio,
-    selectedDuration,
-    selectedLevel,
-    workshopTime,
-    workshopDate
-  ]);
+  }, [isReady, formData, isVideoLink]);
 
   useEffect(() => {
-    if (isDarkModeOn) {
-      const toolbarEle = document.getElementsByClassName("ql-toolbar ql-snow")[0]
+    if (isDarkModeOn && step === 1) {
+      const toolbarEle =
+        document.getElementsByClassName("ql-toolbar ql-snow")[0];
       toolbarEle.style.backgroundColor = "white";
 
-      const inputEle = document.getElementsByClassName("ql-container ql-snow")[0];
+      const inputEle = document.getElementsByClassName(
+        "ql-container ql-snow"
+      )[0];
       inputEle.style.backgroundColor = "white";
 
       const editEle = document.getElementsByClassName("ql-editor ")[0];
-      console.log(editEle);
-      inputEle.style.color = "black";      
+      inputEle.style.color = "black";
     }
-  }, [isDarkModeOn]);
+  }, [isDarkModeOn, step]);
 
   return (
-    <div>
-      {step === 1 && (
-        <Form
-          id="addStudioForm"
-          onSubmit={handleAddWorkshop}
-          style={{
-            backgroundColor: isDarkModeOn ? "#202020" : "",
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Typography
+          variant="body1"
+          sx={{
+            my: 3,
+            fontSize: "35px",
             color: isDarkModeOn ? "white" : "black",
+            fontFamily: "Nunito Sans",
           }}
         >
-          <Form.Group controlId="formBasicAdd">
-            <div>
-              <Row>
-                <Col md={6}>
-                  <Form.Label>Workshop Name</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
+          Add new Workshop
+        </Typography>
+
+        <Paper
+          elevation={2}
+          sx={{
+            my: 3,
+            p: 3,
+            borderRadius: 2,
+            bgcolor: isDarkModeOn ? "#00000040" : "unset",
+          }}
+        >
+          {step === 1 && (
+            <Form id="addStudioForm" onSubmit={gotoStep2}>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: isDarkModeOn ? "white" : "black",
+                  textTransform: "capitalize",
+                }}
+                gutterBottom
+              >
+                Workshop Info
+              </Typography>
+
+              <Grid container rowSpacing={3} columnSpacing={2}>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    type="textarea"
-                    placeholder="Enter workshop name"
+                    gutterBottom
+                  >
+                    Workshop Name
+                  </Typography>
+                  <TextField
+                    fullWidth
                     name="workshopName"
+                    sx={{ height: FORM_FIELD_HEIGHT }}
+                    variant="outlined"
+                    InputLabelProps={{ shrink: false }}
+                    placeholder="Enter workshop name"
+                    value={formData.workshopName}
+                    onChange={handleChange}
                   />
-                </Col>
-                <Col md={6}>
-                  <Form.Label>Dance Styles</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
+                </Grid>
 
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      multiple
-                      id="tags-standard"
-                      options={danceStylesOptions}
-                      value={selectedDanceStyles}
-                      onChange={handleDanceStylesChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select Dance Styles"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
-                <Col md={6}>
-                  <Form.Label>Names of Instructors</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      multiple
-                      id="tags-standard"
-                      options={instructorNamesWithIds}
-                      value={selectedInstructors}
-                      onChange={handleInstructorChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select Instructors"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-                <Col md={6}>
-                  <Form.Label>Duration (in hours)</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
-
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      id="tags-standard"
-                      options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
-                      value={selectedDuration}
-                      onChange={handleDurationChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select Duration"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
-                <Col md={6}>
-                  <TimeRange
-                    defaultTime={workshopTime || "00:00-00:00"}
-                    handleSelect={handleTimeSelect}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Form.Label>Date</Form.Label>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <ThemeProvider theme={darkTheme}>
-                        <CssBaseline />
-                        <DatePicker
-                          sx={{ width: "100%" }}
-                          value={workshopDate}
-                          onChange={(newValue) => setWorkshopDate(newValue)}
-                        />
-                      </ThemeProvider>
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
-                <Col md={6}>
-                  <Form.Label>Level</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
-
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      id="tags-standard"
-                      options={[LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]}
-                      value={selectedLevel}
-                      onChange={handleLevelChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select Level"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-                <Col md={6}>
-                  <Form.Label>Fees/Price</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
                       color: isDarkModeOn ? "white" : "black",
                     }}
-                    type="number"
-                    placeholder="Enter fees/price"
-                    name="workshopFees"
-                  />
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
-                <Col md={6}>
-                  <Form.Label>Maximum capacity</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    type="number"
-                    placeholder="Enter capacity"
-                    name="capacity"
-                  />
-                </Col>
-
-                <Col md={6}>
-                  <Form.Label>Studio</Form.Label>
-                  <ThemeProvider theme={darkTheme}>
-                    <CssBaseline />
-
-                    <Autocomplete
-                      style={{
-                        backgroundColor: isDarkModeOn ? "#333333" : "",
-                        color: isDarkModeOn ? "white" : "black",
-                      }}
-                      id="tags-standard"
-                      options={studioId}
-                      value={selectedStudio}
-                      onChange={handleSelectStudio}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          placeholder="Select Studio"
-                          style={{
-                            backgroundColor: isDarkModeOn ? "#333333" : "",
-                            color: isDarkModeOn ? "white" : "black",
-                          }}
-                        />
-                      )}
-                    />
-                  </ThemeProvider>
-                </Col>
-              </Row>
-
-              <br />
-
-              <Row>
-              <Col md={6}>
-                  <Form.Label>Youtube video link</Form.Label>
-                  <Form.Control
-                    rows={1}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    type="text"
-                    placeholder="Enter youtube video link"
-                    name="youtubeViedoLink"
-                  />
-                </Col>
-
-                <Col md={6}>
-                  <Form.Label>Brief Description</Form.Label>
-                  {/* <Form.Control
-                    rows={3}
-                    style={{
-                      backgroundColor: isDarkModeOn ? "#333333" : "",
-                      color: isDarkModeOn ? "white" : "black",
-                    }}
-                    as="textarea"
-                    placeholder="Enter Description"
-                    name="description"
-                  /> */}
-
-
+                    gutterBottom
+                  >
+                    Description
+                  </Typography>
                   <ReactQuill
                     theme="snow"
                     placeholder="Enter Description"
-                    value={description}
-                    onChange={setDescription}
+                    value={formData.description}
+                    onChange={(value) => {
+                      setFormData((prev) => ({ ...prev, description: value }));
+                    }}
                   />
+                </Grid>
 
-                </Col>
-              </Row>
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 2,
+                      flexWrap: "wrap",
+                      gap: 2,
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
+                      sx={{ fontSize: "16px" }}
+                      gutterBottom
+                    >
+                      Workshop Media
+                    </Typography>
+                    <Box sx={{ display: "flex" }}>
+                      <ButtonGroup>
+                        <Button
+                          size="small"
+                          variant={!isVideoLink ? "contained" : "outlined"}
+                          onClick={() => setIsVideoLink(false)}
+                          startIcon={<ImageIcon />}
+                          sx={{
+                            textTransform: "capitalize",
+                            ...(!isVideoLink && {
+                              bgcolor: "#67569E",
+                              color: "white",
+                              "&:hover": {
+                                bgcolor: "#67569E",
+                                color: "white",
+                              },
+                            }),
+                            ...(isVideoLink && {
+                              color: "text.primary",
+                              borderColor: "divider",
+                              "&:hover": {
+                                bgcolor: "action.hover",
+                                borderColor: "divider",
+                              },
+                            }),
+                          }}
+                        >
+                          Upload Image
+                        </Button>
+                        <Button
+                          size="small"
+                          variant={isVideoLink ? "contained" : "outlined"}
+                          onClick={() => setIsVideoLink(true)}
+                          startIcon={<YouTubeIcon />}
+                          sx={{
+                            textTransform: "capitalize",
+                            ...(isVideoLink && {
+                              bgcolor: "#67569E",
+                              color: "white",
+                              "&:hover": {
+                                bgcolor: "#67569E",
+                                color: "white",
+                              },
+                            }),
+                            ...(!isVideoLink && {
+                              color: "text.primary",
+                              borderColor: "divider",
+                              "&:hover": {
+                                bgcolor: "action.hover",
+                                borderColor: "divider",
+                              },
+                            }),
+                          }}
+                        >
+                          YouTube Link
+                        </Button>
+                      </ButtonGroup>
+                    </Box>
+                  </Box>
 
-              <hr></hr>
+                  {!isVideoLink ? (
+                    <Box>
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        component="label"
+                        startIcon={<UploadIcon sx={{ fontSize: 20 }} />}
+                        sx={{
+                          height: FORM_FIELD_HEIGHT,
+                          color: isDarkModeOn ? "white" : "black",
+                          borderColor: isDarkModeOn ? "#ffffff3b" : "#0000003b",
+                          "&:hover": {
+                            borderColor: isDarkModeOn
+                              ? "#ffffff3b"
+                              : "#0000003b",
+                          },
+                        }}
+                      >
+                        Upload Workshop Image
+                        <input
+                          hidden
+                          type="file"
+                          accept="image/*"
+                          name="workshopImage"
+                          onChange={handleImageUpload}
+                        />
+                      </Button>
+                      {formData?.workshopImage && (
+                        <Box
+                          sx={{
+                            fontSize: 12,
+                            marginTop: 1,
+                            color: isDarkModeOn ? "white" : "black",
+                          }}
+                        >
+                          Selected file: {formData?.workshopImage?.name}
+                        </Box>
+                      )}
+                    </Box>
+                  ) : (
+                    <TextField
+                      fullWidth
+                      name="videoLink"
+                      value={formData.videoLink || ""}
+                      onChange={handleChange}
+                      sx={{ height: FORM_FIELD_HEIGHT }}
+                      variant="outlined"
+                      InputLabelProps={{ shrink: false }}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                    />
+                  )}
+                </Grid>
 
-              <Row>
-                <Col xs={6}></Col>
-                <Col xs={6} className="d-flex justify-content-end">
+                <Grid item xs={12} sm={6}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Dance Styles
+                  </Typography>
+                  <Autocomplete
+                    multiple
+                    id="tags-standard"
+                    options={danceStylesOptions}
+                    value={formData.danceStyles}
+                    onChange={(_, value) => {
+                      setFormData((prev) => ({ ...prev, danceStyles: value }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        placeholder="Select Dance Styles"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Level
+                  </Typography>
+                  <FormControl fullWidth>
+                    <Select
+                      name="level"
+                      value={formData.level}
+                      onChange={handleChange}
+                      displayEmpty
+                      sx={{ height: FORM_FIELD_HEIGHT }}
+                    >
+                      <MenuItem value="">Select level</MenuItem>
+                      {Object.values(LEVELS).map((level, index) => (
+                        <MenuItem key={index} value={level}>
+                          {level}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={3}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Start Date
+                  </Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      sx={{ width: "100%" }}
+                      name="startDate"
+                      value={
+                        formData.startDate ? dayjs(formData.startDate) : null
+                      }
+                      onChange={(newValue) =>
+                        handleDateChange("startDate")(
+                          newValue ? newValue.toDate() : null
+                        )
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    End Date
+                  </Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      sx={{ width: "100%" }}
+                      name="endDate"
+                      value={formData.endDate ? dayjs(formData.endDate) : null}
+                      onChange={(newValue) =>
+                        handleDateChange("endDate")(
+                          newValue ? newValue.toDate() : null
+                        )
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                        />
+                      )}
+                      minDate={
+                        formData.startDate ? dayjs(formData.startDate) : null
+                      }
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Venue Type
+                  </Typography>
+                  <FormControl fullWidth>
+                    <Select
+                      name="venueType"
+                      value={formData.venueType || ""}
+                      onChange={handleVenueTypeChange}
+                      displayEmpty
+                      sx={{ height: FORM_FIELD_HEIGHT }}
+                    >
+                      <MenuItem value="Studio">Studio address</MenuItem>
+                      <MenuItem value="Independent">
+                        Independent location
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {formData.venueType === "Studio" && (
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontSize: "16px",
+                        color: isDarkModeOn ? "white" : "black",
+                      }}
+                      gutterBottom
+                    >
+                      Select Studio Address
+                    </Typography>
+                    <FormControl fullWidth>
+                      <Select
+                        name="studio"
+                        value={formData.venueDetails?.studio || ""}
+                        onChange={handleStudioChange}
+                        displayEmpty
+                        sx={{ height: FORM_FIELD_HEIGHT }}
+                      >
+                        <MenuItem value="">Select studio address</MenuItem>
+                        {studios.map((studio, index) => {
+                          const studioAddress = `${
+                            studio.buildingName
+                              ? studio.buildingName + ", "
+                              : ""
+                          }${studio.street}, ${studio.city}, ${studio.state}, ${
+                            studio.country
+                          } - ${studio.pincode}`;
+
+                          return (
+                            <MenuItem key={index} value={studio?.id || ""}>
+                              {studio?.studioName} - {studioAddress}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                )}
+
+                {formData.venueType === "Independent" && (
+                  <>
+                    <Grid item xs={12} sm={6}>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontSize: "16px" }}
+                        gutterBottom
+                      >
+                        Building Name
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="buildingName"
+                        value={formData.venueDetails?.buildingName || ""}
+                        onChange={handleIndependentVenueChange}
+                        sx={{ height: FORM_FIELD_HEIGHT }}
+                        variant="outlined"
+                        InputLabelProps={{ shrink: false }}
+                        placeholder="Enter building name"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: "16px",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                        gutterBottom
+                      >
+                        Landmark
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="landmark"
+                        value={formData.venueDetails?.landmark || ""}
+                        onChange={handleIndependentVenueChange}
+                        sx={{ height: FORM_FIELD_HEIGHT }}
+                        variant="outlined"
+                        InputLabelProps={{ shrink: false }}
+                        placeholder="Enter nearby landmark"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: "16px",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                        gutterBottom
+                      >
+                        Street Address
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="streetAddress"
+                        value={formData.venueDetails?.streetAddress || ""}
+                        onChange={handleIndependentVenueChange}
+                        sx={{ height: FORM_FIELD_HEIGHT }}
+                        variant="outlined"
+                        InputLabelProps={{ shrink: false }}
+                        placeholder="Enter street address"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: "16px",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                        gutterBottom
+                      >
+                        Pincode
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="pincode"
+                        value={formData.venueDetails?.pincode || ""}
+                        onChange={handleIndependentVenueChange}
+                        sx={{ height: FORM_FIELD_HEIGHT }}
+                        variant="outlined"
+                        InputLabelProps={{ shrink: false }}
+                        placeholder="Enter pincode"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: "16px",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                        gutterBottom
+                      >
+                        City
+                      </Typography>
+                      <FormControl fullWidth>
+                        <Select
+                          name="city"
+                          value={formData.venueDetails?.city || ""}
+                          onChange={handleIndependentVenueChange}
+                          displayEmpty
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                          InputLabelProps={{ shrink: false }}
+                          placeholder="Enter city"
+                        >
+                          <MenuItem value="">Select city</MenuItem>
+                          {cityOptions.map((city, index) => (
+                            <MenuItem key={index} value={city}>
+                              {city}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: "16px",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                        gutterBottom
+                      >
+                        State
+                      </Typography>
+                      <FormControl fullWidth>
+                        <Select
+                          name="state"
+                          value={formData.venueDetails?.state || ""}
+                          onChange={handleIndependentVenueChange}
+                          displayEmpty
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                        >
+                          <MenuItem value="">Select state</MenuItem>
+                          {stateOptions.map((state, index) => (
+                            <MenuItem key={index} value={state}>
+                              {state}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontSize: "16px",
+                          color: isDarkModeOn ? "white" : "black",
+                        }}
+                        gutterBottom
+                      >
+                        Google Maps Address
+                      </Typography>
+                      <MapsInput
+                        selectedLocation={
+                          formData.venueDetails?.selectedLocation
+                        }
+                        setSelectedLocation={(data) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            venueDetails: {
+                              ...prev.venueDetails,
+                              selectedLocation: data,
+                            },
+                          }))
+                        }
+                        mapAddress={formData.venueDetails?.mapAddress}
+                        setMapAddress={(data) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            venueDetails: {
+                              ...prev.venueDetails,
+                              mapAddress: data,
+                            },
+                          }))
+                        }
+                      />
+                    </Grid>
+                  </>
+                )}
+
+                <Grid item xs={12} sx={{ textAlign: "right" }}>
                   <MuiButton
                     variant="contained"
-                    style={{
-                      color: "white",
-                      backgroundColor: isDarkModeOn ? "#892cdc" : "black",
-                    }}
                     type="submit"
                     disabled={isSubmitting}
+                    sx={{
+                      bgcolor: "#67569E",
+                      color: "white",
+                      textTransform: "capitalize",
+                      "&:hover": { bgcolor: "#67569E", color: "white" },
+                    }}
                   >
                     Next
                   </MuiButton>
-                </Col>
-              </Row>
-            </div>
-          </Form.Group>
-        </Form>
-      )}
-      {isSubmitting && <LinearProgress />}
-      {step === 2 && (
-        <>
-          <Row>
-            <Col>
-              <ImageUpload
-                entityId={newWorkshopId}
-                title={"Workshop Images"}
-                storageFolder={STORAGES.WORKSHOPICON}
-                maxImageCount={1}
-              ></ImageUpload>
-            </Col>
-          </Row>
-          <Row style={{ margin: "1rem 0" }}>
-            <Col style={{ textAlign: "right" }}>
-              <MuiButton
-                variant="contained"
-                style={{
-                  color: "white",
-                  backgroundColor: isDarkModeOn ? "#892cdc" : "black",
-                }}
-                onClick={() => setStep((prev) => prev - 1)}
-              >
-                Done
-              </MuiButton>
-            </Col>
-          </Row>
-        </>
-      )}
-    </div>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+
+          {step === 2 && (
+            <Step2EventsInfo
+              onBack={() => setStep((prev) => prev - 1)}
+              onSubmit={handleAddWorkshop}
+              formData={formData}
+              setFormData={setFormData}
+            />
+          )}
+        </Paper>
+      </Container>
+    </ThemeProvider>
   );
 }
 
 export default WorkshopAdd;
+
+const Step2EventsInfo = ({ onBack, onSubmit, formData, setFormData }) => {
+  const isDarkModeOn = useSelector(selectDarkModeStatus);
+
+  const handleEventChange = (index, field) => (e) => {
+    const value = e?.target?.value ?? e;
+    const updatedEvents = [...formData.events];
+    updatedEvents[index][field] = value;
+    setFormData((prev) => ({ ...prev, events: updatedEvents }));
+  };
+
+  const handlePricingChange = (eventIndex, pricingIndex, field) => (e) => {
+    const value = e?.target?.value ?? e;
+    const updatedEvents = [...formData.events];
+    updatedEvents[eventIndex].pricingOptions[pricingIndex][field] = value;
+    setFormData((prev) => ({ ...prev, events: updatedEvents }));
+  };
+
+  const addEvent = () => {
+    setFormData((prev) => ({
+      ...prev,
+      events: [
+        ...prev.events,
+        {
+          date: null,
+          startTime: null,
+          endTime: null,
+          description: "",
+          pricingOptions: [
+            {
+              price: "",
+              capacity: "",
+              description: "",
+            },
+          ],
+        },
+      ],
+    }));
+  };
+
+  const removeEvent = (index) => {
+    const updatedEvents = [...formData.events];
+    updatedEvents.splice(index, 1);
+    setFormData((prev) => ({ ...prev, events: updatedEvents }));
+  };
+
+  const addPricingOption = (eventIndex) => {
+    const updatedEvents = [...formData.events];
+    updatedEvents[eventIndex].pricingOptions.push({
+      price: "",
+      capacity: "",
+      description: "",
+    });
+    setFormData((prev) => ({ ...prev, events: updatedEvents }));
+  };
+
+  const removePricingOption = (eventIndex, pricingIndex) => {
+    const updatedEvents = [...formData.events];
+    updatedEvents[eventIndex].pricingOptions.splice(pricingIndex, 1);
+    setFormData((prev) => ({ ...prev, events: updatedEvents }));
+  };
+
+  return (
+    <Grid container>
+      <Grid item xs={12}>
+        <Typography
+          variant="h6"
+          sx={{
+            color: isDarkModeOn ? "white" : "black",
+            textTransform: "capitalize",
+          }}
+          gutterBottom
+        >
+          Event Schedule & Pricing
+        </Typography>
+      </Grid>
+
+      {formData.events.map((event, eventIndex) => (
+        <React.Fragment key={eventIndex}>
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 1,
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: "16px",
+                  color: isDarkModeOn ? "white" : "black",
+                }}
+              >
+                Event {eventIndex + 1}
+              </Typography>
+              {formData.events.length > 1 && (
+                <IconButton
+                  onClick={() => removeEvent(eventIndex)}
+                  sx={{ color: isDarkModeOn ? "white" : "black" }}
+                  size="small"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </Box>
+            <Paper
+              elevation={2}
+              sx={{
+                mb: 3,
+                p: 3,
+                borderRadius: 2,
+                bgcolor: isDarkModeOn ? "#00000040" : "unset",
+              }}
+            >
+              <Grid container rowSpacing={3} columnSpacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Date
+                  </Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      name="date"
+                      sx={{ width: "100%" }}
+                      value={event.date ? dayjs(event.date) : null}
+                      onChange={handleEventChange(eventIndex, "date")}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Start Time
+                  </Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                      name="startTime"
+                      sx={{ width: "100%" }}
+                      value={event.startTime ? dayjs(event.startTime) : null}
+                      onChange={handleEventChange(eventIndex, "startTime")}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    End Time
+                  </Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                      name="endTime"
+                      sx={{ width: "100%" }}
+                      value={event.endTime ? dayjs(event.endTime) : null}
+                      onChange={handleEventChange(eventIndex, "endTime")}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontSize: "16px",
+                      color: isDarkModeOn ? "white" : "black",
+                    }}
+                    gutterBottom
+                  >
+                    Event Description
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    name="description"
+                    value={event.description}
+                    onChange={handleEventChange(eventIndex, "description")}
+                    sx={{ height: FORM_FIELD_HEIGHT }}
+                    variant="outlined"
+                    InputLabelProps={{ shrink: false }}
+                    placeholder="Description"
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mt: 2,
+                      mb: 1,
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontSize: "16px",
+                        color: isDarkModeOn ? "white" : "black",
+                      }}
+                      gutterBottom
+                    >
+                      Pricing Options
+                    </Typography>
+                    <Button
+                      onClick={() => addPricingOption(eventIndex)}
+                      startIcon={<AddIcon />}
+                      size="small"
+                      sx={{ textTransform: "capitalize" }}
+                    >
+                      Add Pricing
+                    </Button>
+                  </Box>
+
+                  {event.pricingOptions.map((pricing, pricingIndex) => (
+                    <Grid
+                      container
+                      rowSpacing={3}
+                      columnSpacing={2}
+                      sx={{
+                        mb:
+                          pricingIndex !== event.pricingOptions.length - 1
+                            ? 2
+                            : 0,
+                      }}
+                    >
+                      <Grid item xs={12} sm={3}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontSize: "16px" }}
+                          gutterBottom
+                        >
+                          Price
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          name="price"
+                          value={pricing.price}
+                          onChange={handlePricingChange(
+                            eventIndex,
+                            pricingIndex,
+                            "price"
+                          )}
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                          InputLabelProps={{ shrink: false }}
+                          placeholder="Enter price"
+                          type="number"
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={3}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontSize: "16px" }}
+                          gutterBottom
+                        >
+                          Capacity
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          name="capacity"
+                          value={pricing.capacity}
+                          onChange={handlePricingChange(
+                            eventIndex,
+                            pricingIndex,
+                            "capacity"
+                          )}
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                          InputLabelProps={{ shrink: false }}
+                          placeholder="Enter capacity"
+                          type="number"
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={5}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontSize: "16px" }}
+                          gutterBottom
+                        >
+                          Description
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          name="description"
+                          value={pricing.description}
+                          onChange={handlePricingChange(
+                            eventIndex,
+                            pricingIndex,
+                            "description"
+                          )}
+                          sx={{ height: FORM_FIELD_HEIGHT }}
+                          variant="outlined"
+                          InputLabelProps={{ shrink: false }}
+                          placeholder="Description"
+                        />
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sm={1}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {event.pricingOptions.length > 1 && (
+                          <IconButton
+                            onClick={() =>
+                              removePricingOption(eventIndex, pricingIndex)
+                            }
+                            sx={{ color: isDarkModeOn ? "white" : "black" }}
+                            size="small"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+        </React.Fragment>
+      ))}
+
+      <Grid item xs={12} sx={{ pb: 2 }}>
+        <Button
+          size="small"
+          onClick={addEvent}
+          startIcon={<AddIcon />}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Add Another Event
+        </Button>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              bgcolor: "#67569E",
+              color: "white",
+              textTransform: "capitalize",
+              "&:hover": { bgcolor: "#67569E", color: "white" },
+            }}
+            onClick={onBack}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              bgcolor: "#67569E",
+              color: "white",
+              textTransform: "capitalize",
+              "&:hover": { bgcolor: "#67569E", color: "white" },
+            }}
+            onClick={onSubmit}
+          >
+            Submit Workshop
+          </Button>
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};

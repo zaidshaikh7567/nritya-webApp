@@ -42,6 +42,8 @@ const MyBookings = lazy(() => import('./Components/MyBookings'));
 const JobHire = lazy(() => import('./Screens/JobHire'));
 const NotFoundPage = lazy(() => import('./Screens/NotFoundPage'));
 const CreatorWorkshop = lazy(() => import('./Screens/CreatorWorkshop'));
+const WorkshopAdd = lazy(() => import('./Components/WorkshopAdd'));
+// const WorkshopUpdate = lazy(() => import('./Components/WorkshopUpdate'));
 const CreatorOpenClass = lazy(() => import('./Screens/CreatorOpenClass'));
 const CreatorCourse = lazy(() => import('./Screens/CreatorCourse'));
 const NrityaPolicyPages = lazy(() => import('./Screens/NrityaPolicyPages'));
@@ -99,7 +101,9 @@ function App() {
                     <Route element={<CreatorRoute/>}>
                       <Route path='/creatorDashboard' element={<CreatorDashboard/>}/>
                       <Route path='/modifyStudios' element={<CreatorStudio/>}/>
-                      <Route path='/modifyWorkshops' element={<CreatorWorkshop/>}/>
+                      <Route path='/workshops' element={<CreatorWorkshop />}/>
+                      <Route path='/workshops/create' element={<WorkshopAdd />}/>
+                      {/* <Route path='/workshops/:workshopId' element={<WorkshopUpdate />}/> */}
                       <Route path='/modifyWorkshops2' element={<WorkshopForm/>}/>
                       <Route path='/workshopCrud' element={<WorkshopCrud/>}/>
                       <Route path='/workshopRevenue/:workshopId' element={<WorkshopRevenue/>}/>
