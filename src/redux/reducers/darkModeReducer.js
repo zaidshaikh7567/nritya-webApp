@@ -1,5 +1,5 @@
 const initialState = {
-  isDarkModeOn: localStorage.getItem('darkModeOn') === 'true' || true, // Load from local storage
+  isDarkModeOn: localStorage.getItem('darkModeOn') === 'true',
 };
 
 const darkModeReducer = (state = initialState, action) => {
