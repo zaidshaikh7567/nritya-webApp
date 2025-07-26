@@ -1,5 +1,5 @@
 const initialState = {
-  filterLocation: localStorage.getItem('filterLocation') || 'New Delhi',
+  filterLocation: typeof window !== 'undefined' ? (localStorage.getItem('filterLocation') || 'New Delhi') : 'New Delhi',
 };
   
   const refreshLocationReducer = (state = initialState, action) => {
@@ -7,7 +7,9 @@ const initialState = {
       case 'REFRESH_LOCATION' :
         const newFilterLocation = action.city
         console.log("New Filter Location", newFilterLocation)
+        if (typeof window !== 'undefined') {
         localStorage.setItem('filterLocation',newFilterLocation)
+      }
         return {
           filterLocation : newFilterLocation
         };

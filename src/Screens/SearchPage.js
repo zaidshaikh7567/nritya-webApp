@@ -42,7 +42,7 @@ const getCollectionForSearchType = (searchType) => {
   return searchTypeObject ? searchTypeObject.collection : COLLECTIONS.STUDIO;
 };
 
-const SearchPage = () => {
+const SearchPage = ({ entity }) => {
   const { setIsLoading } = useLoader();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -54,7 +54,7 @@ const SearchPage = () => {
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
-  const [selectedSearchType, setSelectedSearchType] = useState("studio"); 
+  const [selectedSearchType, setSelectedSearchType] = useState(entity || "studio"); 
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(MAX_PRICE);
   const [searchData, setSearchData] = useState({
@@ -181,6 +181,7 @@ const SearchPage = () => {
 
 
   const handleChange = async (event, value) => {
+    const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
     const baseUrl = `${BASEURL_PROD}api`;
     //setQuery(event.target.value);
     setQuery(value);
@@ -726,7 +727,7 @@ const SearchPage = () => {
                 md={2}
               >
                 <a
-                  href={`#/studio/${studio.studioId}`}
+                  href={`/studio/${studio.studioId}`}
                   style={{ textDecoration: "none" }}
                 >
                   <CardSliderCard studio={studio} />

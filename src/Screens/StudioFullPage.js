@@ -31,9 +31,8 @@ import nearby from '../assets/images/nearby.png';
 import StudioTimingsTable from '../Components/StudioTimingsTable.jsx';
 import { useLoader } from '../context/LoaderContext.js';
 
-function StudioFullPage() {
+function StudioFullPage({ studioId }) {
   const { setIsLoading } = useLoader();
-  const { studioId } = useParams();
   console.log("From StudioFullPage", studioId);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [studioData, setStudioData] = useState(null);

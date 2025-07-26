@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import {auth , provider}  from './../config.js';
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { db } from '../config';
@@ -24,7 +24,7 @@ function LoginPage() {
     localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
   };
 
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
     const addUserIfMissing = async (user) => {
       try {
@@ -89,7 +89,7 @@ function LoginPage() {
         onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL},user);
         await addUserIfMissing(user);
         await setCreatorMode(user.uid);
-        navigate(`/`);
+        navigate.push(`/`);
       } catch (error) {
 
         console.log('Invalid username or password');

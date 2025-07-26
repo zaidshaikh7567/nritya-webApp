@@ -1,0 +1,74 @@
+{
+  "app/search/[entity]/page.js -> ../../../src/Components/Footer": {
+    "id": "app/search/[entity]/page.js -> ../../../src/Components/Footer",
+    "files": [
+      "static/chunks/_app-pages-browser_src_Components_Footer_js.js"
+    ]
+  },
+  "app/search/[entity]/page.js -> ../../../src/Components/Header": {
+    "id": "app/search/[entity]/page.js -> ../../../src/Components/Header",
+    "files": [
+      "static/css/_app-pages-browser_src_Components_Header_js.css",
+      "static/chunks/_app-pages-browser_src_Components_Header_js.js"
+    ]
+  },
+  "app/search/[entity]/page.js -> ../../../src/Screens/SearchPage": {
+    "id": "app/search/[entity]/page.js -> ../../../src/Screens/SearchPage",
+    "files": [
+      "static/css/_app-pages-browser_src_Screens_SearchPage_js.css",
+      "static/chunks/_app-pages-browser_src_Screens_SearchPage_js.js"
+    ]
+  },
+  "app/studio/[studioId]/page.js -> ../../../src/Components/Footer": {
+    "id": "app/studio/[studioId]/page.js -> ../../../src/Components/Footer",
+    "files": [
+      "static/chunks/_app-pages-browser_src_Components_Footer_js.js"
+    ]
+  },
+  "app/studio/[studioId]/page.js -> ../../../src/Components/Header": {
+    "id": "app/studio/[studioId]/page.js -> ../../../src/Components/Header",
+    "files": [
+      "static/css/_app-pages-browser_src_Components_Header_js.css",
+      "static/chunks/_app-pages-browser_src_Components_Header_js.js"
+    ]
+  },
+  "app/studio/[studioId]/page.js -> ../../../src/Screens/StudioFullPage": {
+    "id": "app/studio/[studioId]/page.js -> ../../../src/Screens/StudioFullPage",
+    "files": [
+      "static/css/_app-pages-browser_src_Screens_StudioFullPage_js.css",
+      "static/chunks/_app-pages-browser_src_Screens_StudioFullPage_js.js"
+    ]
+  },
+  "app/workshop/[entityId]/page.js -> ../../../src/Components/Footer": {
+    "id": "app/workshop/[entityId]/page.js -> ../../../src/Components/Footer",
+    "files": [
+      "static/chunks/_app-pages-browser_src_Components_Footer_js.js"
+    ]
+  },
+  "app/workshop/[entityId]/page.js -> ../../../src/Components/Header": {
+    "id": "app/workshop/[entityId]/page.js -> ../../../src/Components/Header",
+    "files": [
+      "static/css/_app-pages-browser_src_Components_Header_js.css",
+      "static/chunks/_app-pages-browser_src_Components_Header_js.js"
+    ]
+  },
+  "app/workshop/[entityId]/page.js -> ../../../src/Screens/WorkShopFullPage": {
+    "id": "app/workshop/[entityId]/page.js -> ../../../src/Screens/WorkShopFullPage",
+    "files": [
+      "static/chunks/_app-pages-browser_src_Screens_WorkShopFullPage_js.js"
+    ]
+  },
+  "src/Components/Header.js -> ./LoginModalDailog": {
+    "id": "src/Components/Header.js -> ./LoginModalDailog",
+    "files": [
+      "static/chunks/_app-pages-browser_src_Components_LoginModalDailog_js.js"
+    ]
+  },
+  "src/Components/Header.js -> ./SideMenu": {
+    "id": "src/Components/Header.js -> ./SideMenu",
+    "files": [
+      "static/css/_app-pages-browser_src_Components_SideMenu_js.css",
+      "static/chunks/_app-pages-browser_src_Components_SideMenu_js.js"
+    ]
+  }
+}

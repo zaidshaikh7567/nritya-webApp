@@ -1,5 +1,5 @@
 const initialState = {
-  isDarkModeOn: localStorage.getItem('darkModeOn') === 'true' || true, // Load from local storage
+  isDarkModeOn: typeof window !== 'undefined' ? (localStorage.getItem('darkModeOn') === 'true' || true) : true, // Load from local storage
 };
 
 const darkModeReducer = (state = initialState, action) => {
@@ -10,8 +10,10 @@ const darkModeReducer = (state = initialState, action) => {
 
       // Save the new state to local storage
       console.log("dark mode state",newDarkModeState);
-      localStorage.setItem('darkModeOn', newDarkModeState);
-      console.log("dark mode state set",localStorage.getItem('darkModeOn') );
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('darkModeOn', newDarkModeState);
+        console.log("dark mode state set",localStorage.getItem('darkModeOn') );
+      }
 
       return {
         ...state,

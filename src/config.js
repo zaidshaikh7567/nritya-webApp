@@ -51,16 +51,25 @@ const gMapApiKey ={
   key: process.env.REACT_APP_GMAP_API_KEY
 };
 
-//console.log(process.env.REACT_APP_GMAP_API_KEY,"yo")
-//nitialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase only on client side
+let app, auth, db, storage, provider;
 
-const provider = new GoogleAuthProvider();
+if (typeof window !== 'undefined') {
+  try {
+    app = initializeApp(firebaseConfig);
+    provider = new GoogleAuthProvider();
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+  } catch (error) {
+    console.warn('Firebase initialization failed:', error);
+    // Provide fallback objects to prevent crashes
+    app = null;
+    auth = null;
+    db = null;
+    storage = null;
+    provider = null;
+  }
+}
 
-// References
-const auth = getAuth(app)
-// Get a reference to the Firestore databas e
-const db = getFirestore(app);
-const storage = getStorage(app)
-
-export {auth,provider,db,storage,gMapApiKey,firebaseConfig,envType};
+export {auth, provider, db, storage, gMapApiKey, firebaseConfig, envType};

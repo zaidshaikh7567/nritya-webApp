@@ -101,7 +101,7 @@ export default function NStudioCard({img_src,data}) {
         <Box display="flex" justifyContent="space-between" columnGap={1}>
           <Link
             alignSelf="center"
-            href={`#/studio/${studioId}`}
+            href={`/studio/${studioId}`}
             fontWeight="bold"
             color="neutral"
             textColor="text.primary"
