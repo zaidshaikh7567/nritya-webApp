@@ -1506,6 +1506,28 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
+/***/ "(ssr)/./node_modules/@mui/material/Stack/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@mui/material/Stack/index.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* reexport safe */ _Stack__WEBPACK_IMPORTED_MODULE_0__[\"default\"]),\n/* harmony export */   stackClasses: () => (/* reexport safe */ _stackClasses__WEBPACK_IMPORTED_MODULE_1__[\"default\"])\n/* harmony export */ });\n/* harmony import */ var _Stack__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Stack */ \"(ssr)/./node_modules/@mui/material/Stack/Stack.js\");\n/* harmony import */ var _stackClasses__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stackClasses */ \"(ssr)/./node_modules/@mui/material/Stack/stackClasses.js\");\n/* __next_internal_client_entry_do_not_use__ default,stackClasses auto */ \n\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvQG11aS9tYXRlcmlhbC9TdGFjay9pbmRleC5qcyIsIm1hcHBpbmdzIjoiOzs7Ozs7OzBFQUVrQztBQUN1QiIsInNvdXJjZXMiOlsid2VicGFjazovL25yaXR5YS13ZWJBcHAvLi9ub2RlX21vZHVsZXMvQG11aS9tYXRlcmlhbC9TdGFjay9pbmRleC5qcz9jM2VjIl0sInNvdXJjZXNDb250ZW50IjpbIid1c2UgY2xpZW50JztcblxuZXhwb3J0IHsgZGVmYXVsdCB9IGZyb20gJy4vU3RhY2snO1xuZXhwb3J0IHsgZGVmYXVsdCBhcyBzdGFja0NsYXNzZXMgfSBmcm9tICcuL3N0YWNrQ2xhc3Nlcyc7Il0sIm5hbWVzIjpbImRlZmF1bHQiLCJzdGFja0NsYXNzZXMiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/@mui/material/Stack/index.js\n");
+
+/***/ }),
+
+/***/ "(ssr)/./node_modules/@mui/material/Stack/stackClasses.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@mui/material/Stack/stackClasses.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__),\n/* harmony export */   getStackUtilityClass: () => (/* binding */ getStackUtilityClass)\n/* harmony export */ });\n/* harmony import */ var _mui_utils_generateUtilityClasses__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @mui/utils/generateUtilityClasses */ \"(ssr)/./node_modules/@mui/utils/generateUtilityClasses/generateUtilityClasses.js\");\n/* harmony import */ var _mui_utils_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @mui/utils/generateUtilityClass */ \"(ssr)/./node_modules/@mui/utils/generateUtilityClass/generateUtilityClass.js\");\n\n\nfunction getStackUtilityClass(slot) {\n    return (0,_mui_utils_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(\"MuiStack\", slot);\n}\nconst stackClasses = (0,_mui_utils_generateUtilityClasses__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(\"MuiStack\", [\n    \"root\"\n]);\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (stackClasses);\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvQG11aS9tYXRlcmlhbC9TdGFjay9zdGFja0NsYXNzZXMuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7OztBQUF1RTtBQUNKO0FBQzVELFNBQVNFLHFCQUFxQkMsSUFBSTtJQUN2QyxPQUFPRiwyRUFBb0JBLENBQUMsWUFBWUU7QUFDMUM7QUFDQSxNQUFNQyxlQUFlSiw2RUFBc0JBLENBQUMsWUFBWTtJQUFDO0NBQU87QUFDaEUsaUVBQWVJLFlBQVlBLEVBQUMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9ucml0eWEtd2ViQXBwLy4vbm9kZV9tb2R1bGVzL0BtdWkvbWF0ZXJpYWwvU3RhY2svc3RhY2tDbGFzc2VzLmpzPzkzZjMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGdlbmVyYXRlVXRpbGl0eUNsYXNzZXMgZnJvbSAnQG11aS91dGlscy9nZW5lcmF0ZVV0aWxpdHlDbGFzc2VzJztcbmltcG9ydCBnZW5lcmF0ZVV0aWxpdHlDbGFzcyBmcm9tICdAbXVpL3V0aWxzL2dlbmVyYXRlVXRpbGl0eUNsYXNzJztcbmV4cG9ydCBmdW5jdGlvbiBnZXRTdGFja1V0aWxpdHlDbGFzcyhzbG90KSB7XG4gIHJldHVybiBnZW5lcmF0ZVV0aWxpdHlDbGFzcygnTXVpU3RhY2snLCBzbG90KTtcbn1cbmNvbnN0IHN0YWNrQ2xhc3NlcyA9IGdlbmVyYXRlVXRpbGl0eUNsYXNzZXMoJ011aVN0YWNrJywgWydyb290J10pO1xuZXhwb3J0IGRlZmF1bHQgc3RhY2tDbGFzc2VzOyJdLCJuYW1lcyI6WyJnZW5lcmF0ZVV0aWxpdHlDbGFzc2VzIiwiZ2VuZXJhdGVVdGlsaXR5Q2xhc3MiLCJnZXRTdGFja1V0aWxpdHlDbGFzcyIsInNsb3QiLCJzdGFja0NsYXNzZXMiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/@mui/material/Stack/stackClasses.js\n");
+
+/***/ }),
+
 /***/ "(ssr)/./node_modules/@mui/material/SvgIcon/SvgIcon.js":
 /*!*******************************************************!*\
   !*** ./node_modules/@mui/material/SvgIcon/SvgIcon.js ***!
@@ -3583,6 +3605,27 @@ __webpack_require__.r(__webpack_exports__);
 
 /* __next_internal_client_entry_do_not_use__ default,*,skeletonClasses auto */ const { createProxy } = __webpack_require__(/*! next/dist/build/webpack/loaders/next-flight-loader/module-proxy */ "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js");
 module.exports = createProxy("/Users/ayushraj/nritya-webApp/node_modules/@mui/material/Skeleton/index.js");
+
+
+/***/ }),
+
+/***/ "(rsc)/./node_modules/@mui/material/Stack/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@mui/material/Stack/index.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   stackClasses: () => (/* binding */ e0)
+/* harmony export */ });
+/* harmony import */ var next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/dist/build/webpack/loaders/next-flight-loader/module-proxy */ "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`/Users/ayushraj/nritya-webApp/node_modules/@mui/material/Stack/index.js#default`));
+
+const e0 = (0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`/Users/ayushraj/nritya-webApp/node_modules/@mui/material/Stack/index.js#stackClasses`);
 
 
 /***/ }),

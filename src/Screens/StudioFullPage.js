@@ -1,5 +1,6 @@
+'use client'
+
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Badge, Stack } from 'react-bootstrap';
 import { db } from '../config';
 import { doc, getDoc, getDocs, collection, updateDoc, where, query } from "firebase/firestore";
@@ -31,20 +32,43 @@ import nearby from '../assets/images/nearby.png';
 import StudioTimingsTable from '../Components/StudioTimingsTable.jsx';
 import { useLoader } from '../context/LoaderContext.js';
 
-function StudioFullPage({ studioId }) {
+function StudioFullPage({ studioId, initialData = null, isSSR = false }) {
   const { setIsLoading } = useLoader();
-  console.log("From StudioFullPage", studioId);
+  console.log("From StudioFullPage", studioId, "isSSR:", isSSR, "hasInitialData:", !!initialData);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
-  const [studioData, setStudioData] = useState(null);
-  const [carouselImages, setCarouselImages] = useState([]);
-  const [announcementImages, setAnnouncementImages] = useState([]);
-  const [workshops, setWorkshops] = useState([]);
-  const [openClasses, setOpenClasses] = useState([]);
-  const [courses, setCourses] = useState([]);
+  
+  // Initialize state with SSR data if available
+  const [studioData, setStudioData] = useState(initialData?.studioData || null);
+  const [carouselImages, setCarouselImages] = useState(initialData?.carouselImages || []);
+  const [announcementImages, setAnnouncementImages] = useState(initialData?.announcementImages || []);
+  const [workshops, setWorkshops] = useState(initialData?.workshops || []);
+  const [openClasses, setOpenClasses] = useState(initialData?.openClasses || []);
+  const [courses, setCourses] = useState(initialData?.courses || []);
   const [carouselLoading, setCarouselLoading] = useState(false);
+  
+  // Log SSR data if available
+  useEffect(() => {
+    if (isSSR && initialData) {
+      console.log("[Client] Using SSR data:", {
+        hasStudioData: !!initialData.studioData,
+        carouselImagesCount: initialData.carouselImages?.length || 0,
+        announcementImagesCount: initialData.announcementImages?.length || 0,
+        workshopsCount: initialData.workshops?.length || 0,
+        openClassesCount: initialData.openClasses?.length || 0,
+        coursesCount: initialData.courses?.length || 0
+      });
+    }
+  }, [isSSR, initialData]);
 
   const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
+  
+  // Only fetch data on client side if not SSR or if initialData is not provided
   useEffect(() => {
+    if (isSSR && initialData) {
+      // Data already loaded from SSR, no need to fetch
+      return;
+    }
+    
     console.log(BASEURL_STUDIO)
     const fetchData = async () => {
       try {
@@ -82,10 +106,16 @@ function StudioFullPage({ studioId }) {
     };
 
     fetchData();
-  }, []);
+  }, [isSSR, initialData]);
 
   const whatsappMessage = encodeURIComponent("Hey, I found your Studio on nritya.co.in. I'm interested");
+  
   useEffect(() => {
+    if (isSSR && initialData) {
+      // Data already loaded from SSR, no need to fetch
+      return;
+    }
+    
     setIsLoading(true);
 
     Promise.all([
@@ -93,7 +123,7 @@ function StudioFullPage({ studioId }) {
       fetchStudioEntities(studioId, COLLECTIONS.WORKSHOPS, setWorkshops),
       fetchStudioEntities(studioId, COLLECTIONS.COURSES, setCourses),
     ]).finally(() => setIsLoading(false));
-  }, [studioId]);
+  }, [studioId, isSSR, initialData]);
 
   return (
     <Container fluid style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'color' }}>

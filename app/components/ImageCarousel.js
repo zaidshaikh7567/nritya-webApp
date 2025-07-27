@@ -10,7 +10,7 @@ import './CardSlider.css' // Make sure this file exists
 export default function ImageCarousel({ images, title }) {
   return (
     <div className="w-full px-4">
-      {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
+      {title && <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>{title}</h2>}
 
       <Swiper
         modules={[Navigation]}

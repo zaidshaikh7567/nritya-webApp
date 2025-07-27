@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
-import { Skeleton } from '@mui/material'
+import { Button, Skeleton, Stack, Chip } from '@mui/material'
 import dynamic from 'next/dynamic'
+import { FaPhoneAlt, FaWhatsapp } from 'react-icons/fa'
 
 // Generate dynamic metadata for studio pages
 export async function generateMetadata({ params }) {
@@ -138,131 +139,242 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Studio Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-start mb-4">
-          <h1 className="text-3xl font-bold text-gray-900">{studioData.studioName}</h1>
-          {studioData.avgRating > 0 && studioData.ratedBy > 0 && (
-            <div className="flex items-center">
-              <span className="text-yellow-500 text-xl">⭐</span>
-              <span className="ml-1 font-semibold">{studioData.avgRating.toFixed(1)}</span>
-              <span className="ml-1 text-gray-600">({studioData.ratedBy})</span>
+      {/* Main Content Row - Studio Header and About */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+        {/* Left Column - Studio Info */}
+        <div className="lg:col-span-8">
+          {/* Studio Name and Rating */}
+          <div className="flex justify-between items-start mb-4">
+            <h1 className="text-3xl font-bold text-gray-900" style={{ textTransform: 'none' }}>{studioData.studioName}</h1>
+            {studioData.avgRating > 0 && studioData.ratedBy > 0 && (
+              <div className="flex items-center">
+                <span className="text-yellow-500 text-xl">⭐</span>
+                <span className="ml-1 font-semibold">{studioData.avgRating.toFixed(1)}</span>
+                <span className="ml-1 text-gray-600">({studioData.ratedBy})</span>
+              </div>
+            )}
+          </div>
+          
+          {/* Social Links */}
+          {(studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
+            <div className="flex space-x-4 mb-4">
+              {studioData.youtube && (
+                <a href={studioData.youtube} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700">
+                  YouTube
+                </a>
+              )}
+              {studioData.facebook && (
+                <a href={studioData.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
+                  Facebook
+                </a>
+              )}
+              {studioData.instagram && (
+                <a
+                  href={
+                    studioData.instagram.startsWith('http://') || studioData.instagram.startsWith('https://')
+                      ? studioData.instagram
+                      : `https://${studioData.instagram}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-pink-600 hover:text-pink-700"
+                >
+                  Instagram
+                </a>
+              )}
+              {studioData.twitter && (
+                <a href={studioData.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500">
+                  Twitter
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* About Studio */}
+          {studioData.aboutStudio && (
+            <div className="mb-6">
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-semibold mb-3" style={{ textTransform: 'none' }}>About Studio</h2>
+                <p className="text-gray-700 leading-relaxed">{studioData.aboutStudio}</p>
+              </div>
             </div>
           )}
         </div>
-        
-        {/* Social Links */}
-        {(studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
-          <div className="flex space-x-4 mb-4">
-            {studioData.youtube && (
-              <a href={studioData.youtube} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700">
-                YouTube
-              </a>
-            )}
-            {studioData.facebook && (
-              <a href={studioData.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
-                Facebook
-              </a>
-            )}
-            {studioData.instagram && (
-            <a
-              href={
-                studioData.instagram.startsWith('http://') || studioData.instagram.startsWith('https://')
-                  ? studioData.instagram
-                  : `https://${studioData.instagram}`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-pink-600 hover:text-pink-700"
-            >
-              Instagram
-            </a>
+
+        {/* Right Column - Founder Info and Contact */}
+        <div className="lg:col-span-4 space-y-4">
+          {/* About Founder */}
+          {studioData.aboutFounder && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold mb-2" style={{ textTransform: 'none' }}>{studioData.founderName || "Founder"}</h3>
+              <p className="text-sm text-gray-600 mb-2" style={{ textTransform: 'none' }}>Founder</p>
+              <p className="text-gray-700" style={{ textTransform: 'none' }}>{studioData.aboutFounder}</p>
+            </div>
           )}
 
-            {studioData.twitter && (
-              <a href={studioData.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500">
-                Twitter
-              </a>
-            )}
+          {/* Contact Buttons */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex flex-col space-y-3">
+              {studioData.whatsappNumber && (
+                <a 
+                  href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I'm interested`}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700 transition-colors"
+                >
+                  Text Studio
+                </a>
+              )}
+              {studioData.mobileNumber && (
+                <a 
+                  href={`tel:${studioData.mobileNumber}`}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700 transition-colors"
+                >
+                  Call Studio
+                </a>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* About Studio */}
-      {studioData.aboutStudio && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">About Studio</h2>
-          <p className="text-gray-700 leading-relaxed">{studioData.aboutStudio}</p>
+            {/* Contact Information */}
+            <div className="mb-8">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            {studioData.mobileNumber && (
+              <Button 
+                variant="contained" 
+                color="primary"
+                startIcon={<FaPhoneAlt />}
+                href={`tel:${studioData.mobileNumber}`}
+                className="flex-1"
+                sx={{
+                  backgroundColor: '#1976d2',
+                  '&:hover': {
+                    backgroundColor: '#1565c0'
+                  }
+                }}
+              >
+                Call Studio
+              </Button>
+            )}
+            {studioData.whatsappNumber && (
+              <Button 
+                variant="contained"
+                startIcon={<FaWhatsapp />}
+                href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I'm interested`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1"
+                sx={{
+                  backgroundColor: '#25d366',
+                  '&:hover': {
+                    backgroundColor: '#128c7e'
+                  }
+                }}
+              >
+                Text Studio
+              </Button>
+            )}
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Dance Styles */}
       {studioData.danceStyles && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">Dance Styles</h2>
-          <div className="flex flex-wrap gap-2">
+          <h2 className="text-xl font-semibold" style={{ textTransform: 'none' }}>Dance styles</h2>
+          <div className="flex flex-wrap gap-1">
             {studioData.danceStyles.split(',').map((style, index) => (
-              <span 
+              <Chip
                 key={index}
-                className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
-              >
-                {style.trim()}
-              </span>
+                label={style.trim()}
+                sx={{
+                  backgroundColor: index % 4 === 0 ? '#ef4444' :
+                                index % 4 === 1 ? '#eab308' :
+                                index % 4 === 2 ? '#22c55e' :
+                                '#3b82f6',
+                  color: 'white',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  '&:hover': {
+                    backgroundColor: index % 4 === 0 ? '#dc2626' :
+                                  index % 4 === 1 ? '#ca8a04' :
+                                  index % 4 === 2 ? '#16a34a' :
+                                  '#2563eb'
+                  }
+                }}
+              />
             ))}
           </div>
         </div>
       )}
 
       {/* Studio Images Carousel */}
-      <ImageCarousel images={carouselImages} title="Studio Photos" />
-
-      {/* Contact Information */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-3">Contact Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {studioData.mobileNumber && (
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">Phone:</span>
-              <a href={`tel:${studioData.mobileNumber}`} className="text-blue-600 hover:text-blue-700">
-                {studioData.mobileNumber}
-              </a>
-            </div>
-          )}
-          {studioData.whatsappNumber && (
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">WhatsApp:</span>
-              <a 
-                href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I'm interested`}
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-green-600 hover:text-green-700"
-              >
-                {studioData.whatsappNumber}
-              </a>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Address */}
-      {studioData.city && (
+      {carouselImages.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">Location</h2>
-          <p className="text-gray-700">
-            {[
-              studioData.buildingName,
-              studioData.street,
-              studioData.landmark,
-              studioData.city
-            ].filter(Boolean).join(', ')}
-          </p>
+          <ImageCarousel images={carouselImages} title="Studio Photos" />
+        </div>
+      )}
+
+      {/* Studio Timings */}
+      {studioData.timings && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>Studio Timings</h2>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 text-sm">
+              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
+                const dayKey = day.toLowerCase();
+                const timing = studioData.timings[dayKey];
+                let displayText = 'Closed';
+                
+                if (timing) {
+                  if (typeof timing === 'string') {
+                    displayText = timing;
+                  } else if (typeof timing === 'object' && timing.open && timing.close) {
+                    displayText = `${timing.open} - ${timing.close}`;
+                  } else if (typeof timing === 'object') {
+                    displayText = JSON.stringify(timing);
+                  }
+                }
+                
+                return (
+                  <div key={day} className="text-center">
+                    <div className="font-semibold mb-2">{day}</div>
+                    <div className="text-gray-600">
+                      {displayText}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Class Schedule */}
+      {studioData.tableData && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Class Schedule</h2>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-gray-600">Class schedule information available</div>
+          </div>
+        </div>
+      )}
+
+      {/* Announcements */}
+      {announcementImages.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Announcements</h2>
+          <ImageCarousel images={announcementImages} title="Announcements" />
         </div>
       )}
 
       {/* Amenities */}
       {studioData.addAmenities && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">Amenities</h2>
+          <h2 className="text-xl font-semibold mb-4">Amenities</h2>
           <div className="flex flex-wrap gap-2">
             {studioData.addAmenities.split(',').map((amenity, index) => (
               <span 
@@ -276,8 +388,86 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
         </div>
       )}
 
-      {/* Announcements Carousel */}
-      <ImageCarousel images={announcementImages} title="Announcements" />
+      {/* Enrollment Process */}
+      {studioData.enrollmentProcess && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Enrollment Process</h2>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <p className="text-gray-700 whitespace-pre-wrap">{studioData.enrollmentProcess}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Location and Map */}
+      {studioData.city && (
+        <div className="mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-3">
+              <h2 className="text-xl font-semibold mb-4">Get Directions</h2>
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <p className="text-gray-700">
+                  {[
+                    studioData.buildingName,
+                    studioData.street,
+                    studioData.landmark,
+                    studioData.city
+                  ].filter(Boolean).join(', ')}
+                </p>
+                {studioData.geolocation && (
+                  <a
+                    href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center mt-2 text-blue-600 hover:text-blue-700"
+                  >
+                    <span>View on Map</span>
+                  </a>
+                )}
+              </div>
+            </div>
+            <div className="lg:col-span-9">
+              {studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (
+                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+                  <span className="text-gray-600">Map Component</span>
+                </div>
+              ) : (
+                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+                  <span className="text-gray-600">Location not available</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <Stack direction="horizontal" gap={1} className='mb-8'>
+                    {studioData && studioData.whatsappNumber && (
+                      <Button className='custom-btn-wa' size="md" style={{ color: "white" }}>
+                        <a
+                          href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I'm interested`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ backgroundColor: 'transparent', color: "white" }}
+                        >
+                          Text Studio <FaWhatsapp style={{ 'marginLeft': '2px' }} />
+                        </a>
+                      </Button>
+                    )}
+                    {studioData && studioData.mobileNumber && (
+                      <Button className='custom-btn' size="md">
+                        <a
+                          href={`tel:${studioData.mobileNumber}`}
+                          rel="noopener noreferrer"
+                          style={{ backgroundColor: 'transparent', color: 'white' }}
+                        >
+                          Call Studio <FaPhoneAlt style={{ 'marginLeft': '2px' }} />
+                        </a>
+                      </Button>
+                    )}
+
+                  </Stack>
+
+
     </div>
   )
 }
