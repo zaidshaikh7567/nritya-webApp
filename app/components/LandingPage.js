@@ -13,6 +13,7 @@ import {
   IconButton,
   useTheme,
   Skeleton,
+  Link,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -20,9 +21,10 @@ import {
   Star as StarIcon,
   ArrowForward as ArrowForwardIcon,
 } from '@mui/icons-material';
+import ImageCarousel from './ImageCarousel';
 
 // API endpoints from constants
-const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/" // Replace with your actual staging server URL
+//const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/" // Replace with your actual staging server URL
 const COLLECTIONS = {
   STUDIO: "Studio",
   WORKSHOPS: "Workshops",
@@ -30,117 +32,7 @@ const COLLECTIONS = {
   COURSES: "Courses",
 };
 
-// Fallback data when API is not available
-const fallbackStudios = [
-  {
-    name: "Rhythm Dance Academy",
-    location: "New Delhi",
-    rating: 4.8,
-    images: ["/assets/images/service-1.jpg"],
-    danceForms: ["Bollywood", "Hip Hop", "Jazz"],
-    price: "₹2000/month"
-  },
-  {
-    name: "Classical Arts Studio",
-    location: "Mumbai",
-    rating: 4.9,
-    images: ["/assets/images/service-2.jpg"],
-    danceForms: ["Bharatnatyam", "Kathak", "Odisi"],
-    price: "₹3000/month"
-  },
-  {
-    name: "Contemporary Dance Hub",
-    location: "Bangalore",
-    rating: 4.7,
-    images: ["/assets/images/service-3.jpg"],
-    danceForms: ["Contemporary", "Ballet", "Jazz"],
-    price: "₹2500/month"
-  }
-];
 
-const fallbackWorkshops = [
-  {
-    name: "Bollywood Dance Workshop",
-    instructor: "Priya Sharma",
-    duration: "2 weeks",
-    price: "₹5000",
-    images: ["/assets/images/ticket-dance-image-1.png"],
-    level: "Beginner"
-  },
-  {
-    name: "Kathak Intensive",
-    instructor: "Rajesh Kumar",
-    duration: "1 month",
-    price: "₹8000",
-    images: ["/assets/images/ticket-dance-image-2.png"],
-    level: "Intermediate"
-  },
-  {
-    name: "Hip Hop Masterclass",
-    instructor: "Amit Singh",
-    duration: "3 days",
-    price: "₹3000",
-    images: ["/assets/images/ticket-dance-image-3.png"],
-    level: "Advanced"
-  }
-];
-
-// Server-side data fetching function
-async function fetchLandingPageData() {
-  try {
-    const filterLocation = "New Delhi"; // Default location
-    const entities = [COLLECTIONS.STUDIO, COLLECTIONS.WORKSHOPS, COLLECTIONS.COURSES, COLLECTIONS.OPEN_CLASSES];
-    
-    // Fetch studio ID name mapping
-    const studioIdNameResponse = await fetch(`${BASEURL_PROD}api/autocomplete/?&city=${filterLocation}`);
-    if (!studioIdNameResponse.ok) {
-      throw new Error('Failed to fetch studio data');
-    }
-    const studioIdName = await studioIdNameResponse.json();
-    
-    // Fetch explore entities data
-    const exploreEntityPromises = entities.map(async (entity) => {
-      const response = await fetch(`${BASEURL_PROD}api/search/?&city=${filterLocation}&entity=${entity}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch ${entity} data`);
-      }
-      const data = await response.json();
-      return { [entity]: data };
-    });
-    
-    const exploreEntityResults = await Promise.all(exploreEntityPromises);
-    const exploreEntity = Object.assign({}, ...exploreEntityResults);
-    
-    // Fetch landing page images
-    const imagesResponse = await fetch(`${BASEURL_PROD}api/landingPageImages/`);
-    if (!imagesResponse.ok) {
-      throw new Error('Failed to fetch images');
-    }
-    const imagesData = await imagesResponse.json();
-    const danceImagesUrl = imagesData.signed_urls?.filter(image => 
-      typeof image === 'string' && !image.includes("LandingPageImages/?Expire")
-    ) || [];
-    
-    return {
-      studioIdName,
-      exploreEntity,
-      danceImagesUrl,
-    };
-  } catch (error) {
-    console.error('Error fetching landing page data:', error);
-    // Return fallback data when API fails
-    return {
-      studioIdName: {},
-      exploreEntity: {
-        [COLLECTIONS.STUDIO]: fallbackStudios,
-        [COLLECTIONS.WORKSHOPS]: fallbackWorkshops,
-        [COLLECTIONS.COURSES]: [],
-        [COLLECTIONS.OPEN_CLASSES]: [],
-      },
-      danceImagesUrl: [],
-    };
-  }
-}
 
 // Dance forms data
 const danceForms = [
@@ -154,10 +46,7 @@ const danceForms = [
   { name: "Jazz", icon: "🎷" },
 ];
 
-export default async function LandingPage() {
-  // Fetch data server-side
-  const { studioIdName, exploreEntity, danceImagesUrl } = await fetchLandingPageData();
-  
+export default async function LandingPage({studioIdName, exploreEntity, danceImagesUrl}) {
   // Get studios and workshops data - convert objects to arrays
   const studiosData = exploreEntity[COLLECTIONS.STUDIO] || {};
   const workshopsData = exploreEntity[COLLECTIONS.WORKSHOPS] || {};
@@ -188,80 +77,22 @@ export default async function LandingPage() {
     level: workshopsData[id].level || 'Beginner',
     description: workshopsData[id].description || ''
   }));
-  
-  // Take first 3 studios and workshops for display
+
   const featuredStudios = studios.slice(0, 3);
   const featuredWorkshops = workshops.slice(0, 3);
 
+
+  // Use danceImagesUrl from API or fallback images
+  const carouselImages = danceImagesUrl.length > 0 ? danceImagesUrl : [];
+  console.log(carouselImages);
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-      {/* Hero Section */}
-      <Box
-        sx={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-          py: 8,
-          textAlign: 'center',
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Discover the beat in your city!
-        </Typography>
-        <Typography variant="h5" sx={{ mb: 4, opacity: 0.9 }}>
-          India's first dance tech platform connecting dance enthusiasts with top dance studios
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Button 
-            variant="contained" 
-            size="large"
-              startIcon={<SearchIcon />}
-              sx={{ bgcolor: 'white', color: 'primary.main', '&:hover': { bgcolor: 'grey.100' } }}
-            >
-            Find Studios
-          </Button>
-          <Button 
-            variant="outlined" 
-            size="large"
-              sx={{ borderColor: 'white', color: 'white', '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' } }}
-          >
-            Explore Workshops
-          </Button>
-        </Box>
+      {/* Dance Images Carousel */}
+      {carouselImages.length > 0 && (
+        <Container maxWidth="100%" sx={{ py: 1 }}>
+          <ImageCarousel images={carouselImages} />
         </Container>
-      </Box>
-
-      {/* Popular Dance Forms */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Typography variant="h4" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 4 }}>
-          Popular Dance Forms
-        </Typography>
-        <Grid container spacing={3}>
-          {danceForms.map((dance, index) => (
-            <Grid item xs={6} sm={4} md={3} key={index}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'translateY(-4px)' },
-                }}
-              >
-                <CardContent sx={{ textAlign: 'center', flexGrow: 1 }}>
-                  <Typography variant="h3" sx={{ mb: 1 }}>
-                    {dance.icon}
-                  </Typography>
-                  <Typography variant="h6" component="h3">
-                    {dance.name}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+      )}
 
       {/* Featured Studios */}
       {featuredStudios.length > 0 && (
@@ -280,6 +111,7 @@ export default async function LandingPage() {
           <Grid container spacing={3}>
             {featuredStudios.map((studio, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
+                <Link href={`/studio/${studio.id}`}>
                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <CardMedia
                     component="img"
@@ -311,6 +143,7 @@ export default async function LandingPage() {
                     </Box>
                   </CardContent>
                 </Card>
+                </Link>
               </Grid>
             ))}
           </Grid>
@@ -370,28 +203,37 @@ export default async function LandingPage() {
           </Grid>
         </Container>
       )}
-
-      {/* Call to Action */}
-      <Box sx={{ bgcolor: 'grey.100', py: 6 }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h4" component="h2" gutterBottom>
-              Ready to Start Dancing?
+            {/* Popular Dance Forms */}
+            <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Typography variant="h4" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 4 }}>
+          Popular Dance Forms
         </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
-              Join thousands of dancers discovering their passion
-        </Typography>
-        <Button 
-          variant="contained" 
-          size="large"
-              startIcon={<SearchIcon />}
-              sx={{ px: 4, py: 1.5 }}
-            >
-              Find Your Perfect Studio
-        </Button>
-      </Box>
-    </Container>
-      </Box>
+        <Grid container spacing={3}>
+          {danceForms.map((dance, index) => (
+            <Grid item xs={6} sm={4} md={3} key={index}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  '&:hover': { transform: 'translateY(-4px)' },
+                }}
+              >
+                <CardContent sx={{ textAlign: 'center', flexGrow: 1 }}>
+                  <Typography variant="h3" sx={{ mb: 1 }}>
+                    {dance.icon}
+                  </Typography>
+                  <Typography variant="h6" component="h3">
+                    {dance.name}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     </Box>
   );
 } 

@@ -1,0 +1,14 @@
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 34px; /* bigger */
+  font-weight: 900; /* bold */
+}
+
+.swiper-button-prev::after {
+  content: '◀'; /* or '❮' or '<' */
+}
+
+.swiper-button-next::after {
+  content: '▶'; /* or '❯' or '>' */
+}
+
