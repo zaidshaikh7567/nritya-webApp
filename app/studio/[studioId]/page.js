@@ -21,17 +21,52 @@ export async function generateMetadata({ params }) {
       const city = studioData.city || ''
       const studioFounder = studioData.founderName || ''  
       const minFee = studioData.minFee || ''  
+      
+      // Fetch studio images for Open Graph
+      const responseImages = await fetch(`${BASEURL_STUDIO}${params.studioId}/images/`, {
+        cache: 'no-store'
+      })
+      
+      let ogImage = 'https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/logo.png' // Default image
+      
+      if (responseImages.ok) {
+        const imagesData = await responseImages.json()
+        if (imagesData.carouselImages && imagesData.carouselImages.length > 0) {
+          ogImage = imagesData.carouselImages[0] // Use first carousel image
+        }
+      }
+      
+      const currentUrl = `https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/studio/${params.studioId}`
+      const description = studioData.aboutStudio 
+        ? `${studioData.aboutStudio.substring(0, 160)}...`
+        : `Explore ${studioName} for ${danceStyles} in ${city} by ${studioFounder}.`
+      
       return {
         title: `${studioName} - ${city} - ${danceStyles}`,
-        description: studioData.aboutStudio 
-          ? `${studioData.aboutStudio.substring(0, 160)}...`
-          : `Explore ${studioName} for ${danceStyles} in ${city} by ${studioFounder}.`,
+        description: description,
         openGraph: {
           title: `${studioName} - ${city}`,
-          description: studioData.aboutStudio 
-            ? `${studioData.aboutStudio.substring(0, 160)}...`
-            : `Explore ${studioName} for ${danceStyles} in ${city} by ${studioFounder}`,
+          description: description,
           type: 'website',
+          url: currentUrl,
+          images: [
+            {
+              url: ogImage,
+              width: 1200,
+              height: 630,
+              alt: `${studioName} - ${city}`,
+            },
+          ],
+          siteName: 'Nritya',
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: `${studioName} - ${city}`,
+          description: description,
+          images: [ogImage],
+        },
+        alternates: {
+          canonical: currentUrl,
         },
       }
     }
@@ -43,6 +78,27 @@ export async function generateMetadata({ params }) {
   return {
     title: 'Studio Details - Nritya',
     description: 'Explore dance studio details, classes, and contact information on Nritya',
+    openGraph: {
+      title: 'Studio Details - Nritya',
+      description: 'Explore dance studio details, classes, and contact information on Nritya',
+      type: 'website',
+      url: `https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/studio/${params.studioId}`,
+      images: [
+        {
+          url: 'https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/logo.png',
+          width: 1200,
+          height: 630,
+          alt: 'Nritya - Dance Studio Platform',
+        },
+      ],
+      siteName: 'Nritya',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Studio Details - Nritya',
+      description: 'Explore dance studio details, classes, and contact information on Nritya',
+      images: ['https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/logo.png'],
+    },
   }
 }
 
