@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
           ogImage = imagesData.carouselImages[0] // Use first carousel image
         }
       }
-      
+      ogImage = "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&h=630&q=80"
       const currentUrl = `https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/studio/${params.studioId}`
       const description = studioData.aboutStudio 
         ? `${studioData.aboutStudio.substring(0, 160)}...`
