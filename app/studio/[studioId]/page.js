@@ -8,6 +8,7 @@ export async function generateMetadata({ params }) {
   try {
     const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
     const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
+    const BASEURL_ICON= `${BASEURL_PROD}imagesCrud/studioIcon/`
     
     // Fetch studio data for metadata
     const response = await fetch(`${BASEURL_STUDIO}${params.studioId}/text/`, {
@@ -23,19 +24,25 @@ export async function generateMetadata({ params }) {
       const minFee = studioData.minFee || ''  
       
       // Fetch studio images for Open Graph
-      const responseImages = await fetch(`${BASEURL_STUDIO}${params.studioId}/images/`, {
+      const responseImages = await fetch(`${BASEURL_ICON}${params.studioId}/`, {
         cache: 'no-store'
       })
       
       let ogImage = 'https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/logo.png' // Default image
-      
+      console.log("responseImages")
+      console.log(responseImages)
       if (responseImages.ok) {
         const imagesData = await responseImages.json()
-        if (imagesData.carouselImages && imagesData.carouselImages.length > 0) {
-          ogImage = imagesData.carouselImages[0] // Use first carousel image
+        console.log("imagesData")
+
+
+        console.log(imagesData)
+        if (imagesData.image_urls && imagesData.image_urls.length > 0) {
+          ogImage = imagesData.image_urls[0] // Use first carousel image
+          console.log(ogImage)
         }
       }
-      ogImage = "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&h=630&q=80"
+      //ogImage = "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&h=630&q=80"
       const currentUrl = `https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/studio/${params.studioId}`
       const description = studioData.aboutStudio 
         ? `${studioData.aboutStudio.substring(0, 160)}...`
@@ -43,6 +50,7 @@ export async function generateMetadata({ params }) {
       
       return {
         title: `${studioName} - ${city} - ${danceStyles}`,
+        subtitle: `${danceStyles}`,
         description: description,
         openGraph: {
           title: `${studioName} - ${city}`,
@@ -62,6 +70,7 @@ export async function generateMetadata({ params }) {
         twitter: {
           card: 'summary_large_image',
           title: `${studioName} - ${city}`,
+          subtitle: `${danceStyles}`,
           description: description,
           images: [ogImage],
         },

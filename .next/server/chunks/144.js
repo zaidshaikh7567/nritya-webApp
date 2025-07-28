@@ -1,1 +1,0 @@
-"use strict";exports.id=144,exports.ids=[144],exports.modules={17144:(e,t,r)=>{r.r(t),r.d(t,{default:()=>s});let s=(0,r(68570).createProxy)(String.raw`/Users/ayushraj/nritya-webApp/app/components/ClientFooter.js#default`)}};
