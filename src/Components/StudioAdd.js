@@ -663,15 +663,15 @@ function StudioAdd({instructors}) {
                 <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter studio name" name="studioName" />
                 
                 <Form.Label>About Studio *</Form.Label>
-                <Form.Control rows={6} style={{  minHeight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio's details" name="aboutStudio" />
+                <Form.Control rows={6} style={{  minHeight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter studio&apos;s details" name="aboutStudio" />
                 
                 </Col>
                 <Col md={6}>
-                <Form.Label>Founder's Name *</Form.Label>
+                <Form.Label>Founder&apos;s Name *</Form.Label>
                 <Form.Control rows={1} style={{ backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} type="textarea" placeholder="Enter founder name" name="founderName" />
                 
                 <Form.Label>About Founder *</Form.Label>
-                <Form.Control rows={6} style={{  minheight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter founder's details" name="aboutFounder" />
+                <Form.Control rows={6} style={{  minheight: '10rem', backgroundColor: isDarkModeOn ? '#333333' : '', color: isDarkModeOn ? 'white' : 'black' }} as="textarea" placeholder="Enter founder&apos;s details" name="aboutFounder" />
                 
                 </Col>
                 </Row>
@@ -778,7 +778,7 @@ function StudioAdd({instructors}) {
                   </ThemeProvider>
                 </Row> 
                 <a href="#/modifyInstructors" rel="noreferrer" target="_blank" style={{ textDecoration: 'none', color: isDarkModeOn ? 'cyan' : 'blue' }}>
-                      Go to Instrcutors' Add/update Page? 
+                      Go to Instrcutors&apos; Add/update Page? 
                     </a>
                 <hr></hr>   
                 

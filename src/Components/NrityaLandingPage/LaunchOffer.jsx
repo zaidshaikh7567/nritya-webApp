@@ -98,7 +98,7 @@ const LaunchOffer = () => {
               transition: "all 1s ease-out 0.5s",
             }}
           >
-            To help you experience the Nritya advantage, we've crafted an
+            To help you experience the Nritya advantage, we&apos;ve crafted an
             unbeatable offer
           </Typography>
 

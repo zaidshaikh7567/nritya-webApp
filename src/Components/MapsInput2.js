@@ -55,10 +55,11 @@ function MapsInput2({ studioId, geoLocation }) {
                 />
                 <div className="autocomplete-dropdown-container">
                   {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
+                  {suggestions.map((suggestion, index) => {
                     const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item';
                     return (
                       <div
+                        key={index}
                         {...getSuggestionItemProps(suggestion, {
                           className,
                         })}

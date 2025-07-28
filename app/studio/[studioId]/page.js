@@ -131,7 +131,7 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Studio Not Found</h1>
-          <p className="text-gray-600">The studio you're looking for doesn't exist or has been removed.</p>
+          <p className="text-gray-600">The studio you&apos;re looking for doesn&apos;t exist or has been removed.</p>
         </div>
       </div>
     )
@@ -217,7 +217,7 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
             <div className="flex flex-col space-y-3">
               {studioData.whatsappNumber && (
                 <a 
-                  href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I'm interested`}
+                  href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I&apos;m interested`}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700 transition-colors"

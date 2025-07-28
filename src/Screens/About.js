@@ -45,7 +45,7 @@ function AboutUs() {
               Discover the beat in your city.
             </Typography>
             <Typography variant="body1" paragraph>
-              Nritya is India's first dance tech community that connects dance enthusiasts to dance studios across the country. We are dedicated to promoting dance as a form of art and fitness by leveraging technology to create a vibrant community of learners and performers.
+              Nritya is India&apos;s first dance tech community that connects dance enthusiasts to dance studios across the country. We are dedicated to promoting dance as a form of art and fitness by leveraging technology to create a vibrant community of learners and performers.
             </Typography>
             <Typography variant="body1" paragraph>
               Our platform offers a seamless way to discover and book dance classes, providing learners with opportunities to experience free trials from various dance studios. Whether you are a beginner or an experienced dancer, Nritya has something for everyone.

@@ -340,6 +340,9 @@ const ImageUpload = forwardRef(({entityId,storageFolder,title, maxImageCount=10,
   );
 });
 
+// Set display name for the component
+ImageUpload.displayName = 'ImageUpload';
+
 // Set default prop values
 ImageUpload.defaultProps = {
   maxImageCount: 5, // Default maximum image count

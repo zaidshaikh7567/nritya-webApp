@@ -284,6 +284,7 @@ const WorkshopStep2EventInfo = ({
 
                   {event.pricingOptions.map((pricing, pricingIndex) => (
                     <Grid
+                      key={pricingIndex}
                       container
                       rowSpacing={3}
                       columnSpacing={2}

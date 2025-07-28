@@ -66,7 +66,7 @@ function Footer() {
             </Grid> */}
             <Grid item xs={12} sm={6} md={3} textAlign="left" py={1}>
               <Typography variant="body1" style={{ color: 'white' }}>
-                Introducing India's first dance tech platform connecting dance enthusiasts with top dance studios in the city.
+                Introducing India&apos;s first dance tech platform connecting dance enthusiasts with top dance studios in the city.
               </Typography>
 
               <div style={{ marginTop: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

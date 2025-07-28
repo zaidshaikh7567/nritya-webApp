@@ -374,4 +374,7 @@ const GetInTouch = forwardRef((_, getInTouchSectionRef) => {
   );
 });
 
+// Set display name for the component
+GetInTouch.displayName = 'GetInTouch';
+
 export default GetInTouch;

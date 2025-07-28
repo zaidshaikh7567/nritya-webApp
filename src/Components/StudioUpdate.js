@@ -500,7 +500,7 @@ function StudioUpdate({
             />
           </Col>
           <Col md={6}>
-            <Form.Label>Founder's Name *</Form.Label>
+            <Form.Label>Founder&apos;s Name *</Form.Label>
             <Form.Control
               rows={1}
               defaultValue={selectedStudio ? selectedStudio.founderName : ""}
@@ -707,7 +707,7 @@ function StudioUpdate({
                     color: isDarkModeOn ? "cyan" : "blue",
                   }}
                 >
-                  Go to Instrcutors' Add/update Page?
+                  Go to Instrcutors&apos; Add/update Page?
                 </a>
               </Row>
             </div>

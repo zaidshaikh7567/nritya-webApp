@@ -254,7 +254,7 @@ const Banner = ({ scrollToGetInTouchSection }) => {
           ))}
         </Typography>
         <Typography sx={{ mx: "auto", mt: 2, fontSize: "16px" }}>
-          Unlock your studio's full potential with Nritya - where dance dreams
+          Unlock your studio&apos;s full potential with Nritya - where dance dreams
           meet their perfect studio.
         </Typography>
         <Button

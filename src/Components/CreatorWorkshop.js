@@ -221,7 +221,7 @@ function CreatorWorkshop() {
                 <Form.Control as="select" name="title" onChange={handleSelectWorkshop}>
                 {workshop && workshop.length > 0 ? (
                     workshop.map((workshop, index) => (
-                      <option value={workshop.Title}>{workshop.Title}</option>
+                      <option key={index} value={workshop.Title}>{workshop.Title}</option>
                     ))
                   ) : (
                     <p>No workshop yet!</p>
