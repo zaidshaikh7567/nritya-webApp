@@ -1,0 +1,1 @@
+"use strict";exports.id=997,exports.ids=[997],exports.modules={10997:(e,r,s)=>{s.r(r),s.d(r,{default:()=>t});let t=(0,s(68570).createProxy)(String.raw`/Users/ayushraj/nritya-webApp/app/components/ImageCarousel.js#default`)}};
