@@ -1,6 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/studio/[studioId]/page": "app/studio/[studioId]/page.js",
+  "/api/placeholder/[...params]/route": "app/api/placeholder/[...params]/route.js",
+  "/search/[entity]/page": "app/search/[entity]/page.js",
   "/page": "app/page.js",
-  "/search/[entity]/page": "app/search/[entity]/page.js"
+  "/login/page": "app/login/page.js",
+  "/workshop/[entityId]/page": "app/workshop/[entityId]/page.js",
+  "/studio/[studioId]/page": "app/studio/[studioId]/page.js"
 }
