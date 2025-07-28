@@ -1,7 +1,21 @@
 import { Suspense } from 'react'
-import { Button, Skeleton, Stack, Chip } from '@mui/material'
+import { Button, Skeleton, Stack, Chip, Paper, Grid } from '@mui/material'
 import dynamic from 'next/dynamic'
-import { FaPhoneAlt, FaWhatsapp } from 'react-icons/fa'
+import { FaPhoneAlt, FaWhatsapp, FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaSnowflake, FaWifi, FaTint, FaToilet, FaPlug, FaFireExtinguisher, FaFirstAid, FaVideo, FaCreditCard, FaParking, FaMapMarkerAlt } from 'react-icons/fa'
+
+// Amenities icons mapping
+export const AMENITIES_ICONS = {
+    "AC": <FaSnowflake />,
+    "Free Wifi": <FaWifi />,
+    "RO Water": <FaTint />,
+    "Toilet": <FaToilet />,
+    "Power Backup": <FaPlug />,
+    "Fire Extinguisher": <FaFireExtinguisher />,
+    "First Aid Kit": <FaFirstAid />,
+    "CCTV Camera": <FaVideo />,
+    "Card Payment": <FaCreditCard />,
+    "Parking Space": <FaParking />,
+};
 
 // Generate dynamic metadata for studio pages
 export async function generateMetadata({ params }) {
@@ -136,6 +150,10 @@ const ImageCarousel = dynamic(() => import('../../components/ImageCarousel'), {
   ssr: false
 })
 
+const TableCarousel = dynamic(() => import('../../components/TableCarousel'), {
+  ssr: false
+})
+
 // Server component to fetch studio data
 async function getStudioData(studioId) {
   try {
@@ -205,32 +223,36 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Main Content Row - Studio Header and About */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         {/* Left Column - Studio Info */}
-        <div className="lg:col-span-8">
+        <Grid item xs={12} lg={8}>
           {/* Studio Name and Rating */}
-          <div className="flex justify-between items-start mb-4">
-            <h1 className="text-3xl font-bold text-gray-900" style={{ textTransform: 'none' }}>{studioData.studioName}</h1>
+          <Grid container alignItems="center" sx={{ mb: 1 }}>
+            <Grid item xs>
+              <h1 className="text-3xl font-bold text-gray-900" style={{ textTransform: 'none' }}>{studioData.studioName}</h1>
+            </Grid>
             {studioData.avgRating > 0 && studioData.ratedBy > 0 && (
-              <div className="flex items-center">
-                <span className="text-yellow-500 text-xl">⭐</span>
-                <span className="ml-1 font-semibold">{studioData.avgRating.toFixed(1)}</span>
-                <span className="ml-1 text-gray-600">({studioData.ratedBy})</span>
-              </div>
+              <Grid item>
+                <div className="flex items-center">
+                  <span className="text-yellow-500 text-xl">⭐</span>
+                  <span className="ml-1 font-semibold">{studioData.avgRating.toFixed(1)}</span>
+                  <span className="ml-1 text-gray-600">({studioData.ratedBy})</span>
+                </div>
+              </Grid>
             )}
-          </div>
+          </Grid>
           
           {/* Social Links */}
           {(studioData.facebook || studioData.youtube || studioData.instagram || studioData.twitter) && (
-            <div className="flex space-x-4 mb-4">
+            <div className="flex items-center gap-6 mb-4">
               {studioData.youtube && (
-                <a href={studioData.youtube} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700">
-                  YouTube
+                <a href={studioData.youtube} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700 transition-colors duration-200 p-2 rounded-full hover:bg-red-50">
+                  <FaYoutube className="w-18 h-18" style={{ color: "red" }} />
                 </a>
               )}
               {studioData.facebook && (
-                <a href={studioData.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
-                  Facebook
+                <a href={studioData.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transition-colors duration-200 p-2 rounded-full hover:bg-blue-50">
+                  <FaFacebook className="w-18 h-18" style={{ color: "blue" }}/>
                 </a>
               )}
               {studioData.instagram && (
@@ -242,14 +264,14 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-pink-600 hover:text-pink-700"
+                  className="text-pink-600 hover:text-pink-700 transition-colors duration-200 p-2 rounded-full hover:bg-pink-50"
                 >
-                  Instagram
+                  <FaInstagram className="w-18 h-18" style={{ color: "orange" }}/>
                 </a>
               )}
               {studioData.twitter && (
-                <a href={studioData.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500">
-                  Twitter
+                <a href={studioData.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500 transition-colors duration-200 p-2 rounded-full hover:bg-blue-50">
+                  <FaTwitter className="w-18 h-18" style={{ color: "black" }}/>
                 </a>
               )}
             </div>
@@ -258,98 +280,15 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
           {/* About Studio */}
           {studioData.aboutStudio && (
             <div className="mb-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <Paper elevation={2} sx={{ p: 3 }}>
                 <h2 className="text-xl font-semibold mb-3" style={{ textTransform: 'none' }}>About Studio</h2>
                 <p className="text-gray-700 leading-relaxed">{studioData.aboutStudio}</p>
-              </div>
+              </Paper>
             </div>
           )}
-        </div>
-
-        {/* Right Column - Founder Info and Contact */}
-        <div className="lg:col-span-4 space-y-4">
-          {/* About Founder */}
-          {studioData.aboutFounder && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold mb-2" style={{ textTransform: 'none' }}>{studioData.founderName || "Founder"}</h3>
-              <p className="text-sm text-gray-600 mb-2" style={{ textTransform: 'none' }}>Founder</p>
-              <p className="text-gray-700" style={{ textTransform: 'none' }}>{studioData.aboutFounder}</p>
-            </div>
-          )}
-
-          {/* Contact Buttons */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex flex-col space-y-3">
-              {studioData.whatsappNumber && (
-                <a 
-                  href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I&apos;m interested`}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700 transition-colors"
-                >
-                  Text Studio
-                </a>
-              )}
-              {studioData.mobileNumber && (
-                <a 
-                  href={`tel:${studioData.mobileNumber}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700 transition-colors"
-                >
-                  Call Studio
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-            {/* Contact Information */}
-            <div className="mb-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            {studioData.mobileNumber && (
-              <Button 
-                variant="contained" 
-                color="primary"
-                startIcon={<FaPhoneAlt />}
-                href={`tel:${studioData.mobileNumber}`}
-                className="flex-1"
-                sx={{
-                  backgroundColor: '#1976d2',
-                  '&:hover': {
-                    backgroundColor: '#1565c0'
-                  }
-                }}
-              >
-                Call Studio
-              </Button>
-            )}
-            {studioData.whatsappNumber && (
-              <Button 
-                variant="contained"
-                startIcon={<FaWhatsapp />}
-                href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I'm interested`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1"
-                sx={{
-                  backgroundColor: '#25d366',
-                  '&:hover': {
-                    backgroundColor: '#128c7e'
-                  }
-                }}
-              >
-                Text Studio
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Dance Styles */}
-      {studioData.danceStyles && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold" style={{ textTransform: 'none' }}>Dance styles</h2>
+           {studioData.danceStyles && (
+        <div className="mb-1">
+          <hr/>
           <div className="flex flex-wrap gap-1">
             {studioData.danceStyles.split(',').map((style, index) => (
               <Chip
@@ -375,6 +314,60 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
           </div>
         </div>
       )}
+        </Grid>
+
+        {/* Right Column - Founder Info and Contact */}
+        <Grid item xs={12} lg={4}>
+          <Stack spacing={2}>
+            {/* About Founder */}
+            {studioData.aboutFounder && (
+              <Paper elevation={2} sx={{ p: 3, backgroundColor: '#000000', color: '#ffffff' }}>
+                <h3 className="text-lg font-semibold mb-2 text-white" style={{ textTransform: 'none' }}>{studioData.founderName || "Founder"}</h3>
+                <p className="text-sm text-gray-300 mb-2" style={{ textTransform: 'none' }}>Founder</p>
+                <p className="text-gray-200" style={{ textTransform: 'none' }}>{studioData.aboutFounder}</p>
+              </Paper>
+            )}
+
+            {/* Contact Buttons */}
+            <Paper elevation={2} sx={{ p: 3 }}>
+              <Stack spacing={2}>
+                {studioData.whatsappNumber && (
+                  <Button
+                    variant="contained"
+                    startIcon={<FaWhatsapp />}
+                    href={`https://wa.me/91${studioData.whatsappNumber}?text=Hey, I found your Studio on nritya.co.in. I&apos;m interested`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      backgroundColor: '#25d366',
+                      '&:hover': {
+                        backgroundColor: '#128c7e'
+                      }
+                    }}
+                  >
+                    Text Studio
+                  </Button>
+                )}
+                {studioData.mobileNumber && (
+                  <Button
+                    variant="contained"
+                    startIcon={<FaPhoneAlt />}
+                    href={`tel:${studioData.mobileNumber}`}
+                    sx={{
+                      backgroundColor: '#1976d2',
+                      '&:hover': {
+                        backgroundColor: '#1565c0'
+                      }
+                    }}
+                  >
+                    Call Studio
+                  </Button>
+                )}
+              </Stack>
+            </Paper>
+          </Stack>
+        </Grid>
+      </Grid>
 
       {/* Studio Images Carousel */}
       {carouselImages.length > 0 && (
@@ -383,72 +376,114 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
         </div>
       )}
 
-      {/* Studio Timings */}
       {studioData.timings && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>Studio Timings</h2>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 text-sm">
-              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
-                const dayKey = day.toLowerCase();
-                const timing = studioData.timings[dayKey];
-                let displayText = 'Closed';
-                
-                if (timing) {
-                  if (typeof timing === 'string') {
-                    displayText = timing;
-                  } else if (typeof timing === 'object' && timing.open && timing.close) {
+          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>
+            Studio Timings
+          </h2>
+
+          {/* Desktop View */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="text-left px-4 py-2 border">Day</th>
+                  <th className="text-left px-4 py-2 border">Timing</th>
+                </tr>
+              </thead>
+              <tbody>
+                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => {
+                  const dayKey = day.toLowerCase();
+                  const timing = studioData.timings?.[dayKey];
+
+                  let displayText = 'Closed';
+                  let textColor = 'text-red-600';
+                  if (Array.isArray(timing) && timing[0]?.open && timing[0]?.close) {
+                    const open = timing[0].open;
+                    const close = timing[0].close;
+                    if (open !== 'Closed') {
+                      displayText = `${open} - ${close}`;
+                      textColor = 'text-red-600';
+                    }
+                  } else if (typeof timing === 'object' && timing?.open && timing?.close) {
                     displayText = `${timing.open} - ${timing.close}`;
-                  } else if (typeof timing === 'object') {
-                    displayText = JSON.stringify(timing);
+                    textColor = 'text-green-600';
+                  } else if (typeof timing === 'string') {
+                    displayText = timing;
                   }
-                }
-                
-                return (
-                  <div key={day} className="text-center">
-                    <div className="font-semibold mb-2">{day}</div>
-                    <div className="text-gray-600">
-                      {displayText}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+
+                  return (
+                    <tr key={day} className="border-t">
+                      <td className="px-4 py-2 font-semibold text-white bg-black border-b">{day}</td>
+                      <td className={`px-4 py-2 ${textColor} border`}>{displayText}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
-      {/* Class Schedule */}
-      {studioData.tableData && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Class Schedule</h2>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="text-gray-600">Class schedule information available</div>
+
+                    {/* Class Schedule with TableCarousel */}
+        {studioData.tableData && (
+          <div className="mb-8">
+            <TableCarousel 
+              tableData={studioData.tableData} 
+              title="Class Schedule"
+            />
           </div>
-        </div>
-      )}
+        )}
 
       {/* Announcements */}
       {announcementImages.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Announcements</h2>
-          <ImageCarousel images={announcementImages} title="Announcements" />
+          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>Announcements</h2>
+          <ImageCarousel images={announcementImages} title="" />
         </div>
       )}
 
-      {/* Amenities */}
+            {/* Amenities */}
       {studioData.addAmenities && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Amenities</h2>
-          <div className="flex flex-wrap gap-2">
-            {studioData.addAmenities.split(',').map((amenity, index) => (
-              <span 
-                key={index}
-                className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
-              >
-                {amenity.trim()}
-              </span>
-            ))}
+          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>Amenities</h2>
+          <div className="flex flex-wrap gap-3">
+            {studioData.addAmenities.split(',').map((amenity, index) => {
+              const trimmedAmenity = amenity.trim();
+              const IconComponent = AMENITIES_ICONS[trimmedAmenity];
+              
+              return (
+                <Chip
+                  key={index}
+                  label={
+                    <div className="flex items-center space-x-2">
+                      {IconComponent && (
+                        <span className="text-blue-600">
+                          {IconComponent}
+                        </span>
+                      )}
+                      <span> {' '}</span>
+                      <span>{trimmedAmenity}</span>
+                    </div>
+                  }
+                  sx={{
+                    backgroundColor: '#f3f4f6',
+                    color: '#374151',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    '&:hover': {
+                      backgroundColor: '#e5e7eb'
+                    },
+                    '& .MuiChip-label': {
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
       )}
@@ -468,27 +503,39 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
         <div className="mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-3">
-              <h2 className="text-xl font-semibold mb-4">Get Directions</h2>
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <p className="text-gray-700">
-                  {[
-                    studioData.buildingName,
-                    studioData.street,
-                    studioData.landmark,
-                    studioData.city
-                  ].filter(Boolean).join(', ')}
-                </p>
+              <h2 className="text-xl font-semibold mb-4 text-transform: none;" >Get Directions</h2>
+              <Paper elevation={2} sx={{ p: 3 }}>
+                <div className="flex items-start space-x-3 mb-3">
+                  <FaMapMarkerAlt className="text-red-500 w-5 h-5 mt-1 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-gray-700 font-medium">
+                      {[
+                        studioData.buildingName,
+                        studioData.street,
+                        studioData.landmark,
+                        studioData.city
+                      ].filter(Boolean).join(', ')}
+                    </p>
+                  </div>
+                </div>
                 {studioData.geolocation && (
-                  <a
+                  <Button
+                    variant="contained"
+                    startIcon={<FaMapMarkerAlt />}
                     href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center mt-2 text-blue-600 hover:text-blue-700"
+                    sx={{
+                      backgroundColor: '#1976d2',
+                      '&:hover': {
+                        backgroundColor: '#1565c0'
+                      }
+                    }}
                   >
-                    <span>View on Map</span>
-                  </a>
+                    View on Map
+                  </Button>
                 )}
-              </div>
+              </Paper>
             </div>
             <div className="lg:col-span-9">
               {studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (

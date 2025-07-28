@@ -89,16 +89,16 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       {/* Dance Images Carousel */}
       {carouselImages.length > 0 && (
-        <Container maxWidth="100%" sx={{ py: 1 }}>
+  
           <ImageCarousel images={carouselImages} />
-        </Container>
+  
       )}
 
       {/* Featured Studios */}
       {featuredStudios.length > 0 && (
-        <Container maxWidth="lg" sx={{ py: 6 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-            <Typography variant="h4" component="h2">
+        <div className="w-full px-4">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+            <Typography variant="h4" component="h3" sx={{ textTransform:'none' }}>
               Featured Studios
             </Typography>
             <Button
@@ -121,7 +121,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
                     sx={{ objectFit: 'cover' }}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="h3" gutterBottom>
+                    <Typography variant="h6" component="h3" sx={{ textTransform:'none' }} gutterBottom>
                       {studio.name}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -147,14 +147,14 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
               </Grid>
             ))}
           </Grid>
-        </Container>
+        </div>
       )}
 
       {/* Featured Workshops */}
       {featuredWorkshops.length > 0 && (
-        <Container maxWidth="lg" sx={{ py: 6 }}>
+        <div className="w-full px-2">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-            <Typography variant="h4" component="h2">
+            <Typography variant="h4" component="h3" sx={{ textTransform:'none' }}>
               Featured Workshops
             </Typography>
             <Button
@@ -176,7 +176,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
                     sx={{ objectFit: 'cover' }}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="h3" gutterBottom>
+                    <Typography variant="h6" component="h3" sx={{ textTransform:'none' }} gutterBottom>
                       {workshop.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -201,7 +201,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
               </Grid>
             ))}
           </Grid>
-        </Container>
+        </div>
       )}
             {/* Popular Dance Forms */}
             <Container maxWidth="lg" sx={{ py: 6 }}>
