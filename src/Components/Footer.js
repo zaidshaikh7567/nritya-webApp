@@ -112,13 +112,13 @@ function Footer() {
                 Quick Links
               </Typography>
               <Typography variant="body2">
-                <a href="#/ourServices" style={linkStyle}>Our Services</a>
+                <a href="/ourServices" style={linkStyle}>Our Services</a>
               </Typography>
               <Typography variant="body2">
-                <a href="#/modifyStudios" style={linkStyle}>List Studios</a>
+                <a href="/modifyStudios" style={linkStyle}>List Studios</a>
               </Typography>
               <Typography variant="body2">
-                <a href="#/search/studios" style={linkStyle}>Search Studios</a>
+                <a href="/search/studios" style={linkStyle}>Search Studios</a>
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={3} py={1}>
@@ -126,22 +126,22 @@ function Footer() {
                 Company
               </Typography>
               <Typography variant="body2">
-                <a href="#/npolicies/0" style={linkStyle}>Privacy Policy</a>
+                <a href="/npolicies/0" style={linkStyle}>Privacy Policy</a>
               </Typography>
               <Typography variant="body2">
-                <a href="#/npolicies/1" style={linkStyle}>Terms and Conditions</a>
+                <a href="/npolicies/1" style={linkStyle}>Terms and Conditions</a>
               </Typography>
               <Typography variant="body2">
-                <a href="#/npolicies/2" style={linkStyle}>Cancellation & Refund</a>
+                <a href="/npolicies/2" style={linkStyle}>Cancellation & Refund</a>
               </Typography>
               <Typography variant="body2">
-                <a href="#/npolicies/3" style={linkStyle}>Service Delivery</a>
+                <a href="/npolicies/3" style={linkStyle}>Service Delivery</a>
               </Typography>
-              <Typography hidden variant="body2">
-                <a href="#/aboutus" style={linkStyle}>About Us</a>
+              <Typography variant="body2">
+                <a href="/aboutus" style={linkStyle}>About Us</a>
               </Typography>
               <Typography variant="body2" sx={{textDecoration: 'none'}}>
-                <a href="#/contactus" style={linkStyle}>Contact Us</a>
+                <a href="/contactus" style={linkStyle}>Contact Us</a>
               </Typography>
             </Grid>
           </Grid>

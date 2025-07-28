@@ -96,9 +96,9 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
 
       {/* Featured Studios */}
       {featuredStudios.length > 0 && (
-        <div className="w-full px-4">
+        <div className="w-full px-4 mt-4">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-            <Typography variant="h4" component="h3" sx={{ textTransform:'none' }}>
+            <Typography variant="h4" component="h4" sx={{ textTransform:'none' }}>
               Featured Studios
             </Typography>
             <Button
@@ -112,7 +112,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
             {featuredStudios.map((studio, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Link href={`/studio/${studio.id}`}>
-                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' , '&:hover': { transform: 'translateY(-4px)', boxShadow: 6, }}}>
                   <CardMedia
                     component="img"
                     height="200"
@@ -131,9 +131,9 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Rating value={studio.rating || 4.5} readOnly size="small" />
+                      <Rating value={studio.rating || "N/A"} readOnly size="small" />
                       <Typography variant="body2" sx={{ ml: 1 }}>
-                        {studio.rating || 4.5}
+                        {studio.rating || "N/A"}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -152,9 +152,9 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
 
       {/* Featured Workshops */}
       {featuredWorkshops.length > 0 && (
-        <div className="w-full px-2">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-            <Typography variant="h4" component="h3" sx={{ textTransform:'none' }}>
+        <div className="w-full px-4 mt-4">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+            <Typography variant="h4" component="h4" sx={{ textTransform:'none' }}>
               Featured Workshops
             </Typography>
             <Button
@@ -167,7 +167,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
           <Grid container spacing={3}>
             {featuredWorkshops.map((workshop, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { transform: 'translateY(-4px)', boxShadow: 6, } }}>
                   <CardMedia
                     component="img"
                     height="200"
@@ -204,7 +204,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
         </div>
       )}
             {/* Popular Dance Forms */}
-            <Container maxWidth="lg" sx={{ py: 6 }}>
+      <div className="w-full px-4 mt-4 mb-1">
         <Typography variant="h4" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 4 }}>
           Popular Dance Forms
         </Typography>
@@ -233,7 +233,7 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </div>
     </Box>
   );
 } 

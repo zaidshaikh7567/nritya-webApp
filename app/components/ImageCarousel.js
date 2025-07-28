@@ -15,11 +15,11 @@ export default function ImageCarousel({ images, title }) {
       <Swiper
         modules={[Navigation]}
         navigation
-        spaceBetween={16}
-        slidesPerView={3}
+        spaceBetween={4}
+        slidesPerView={3.5}
         breakpoints={{
           768: {
-            slidesPerView: 4,
+            slidesPerView: 3.9,
           },
           0: {
             slidesPerView: 1.2,

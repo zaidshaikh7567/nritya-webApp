@@ -15,6 +15,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -27,6 +28,7 @@ function CreatorStudio() {
   const [premiumTill, setPremiumTill] = useState(-1);
   const { currentUser } = useAuth();
   const [value, setValue] = React.useState('1');
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -73,7 +75,7 @@ function CreatorStudio() {
     }
     if (!userId) {
       console.log('User not found');
-      alert('User not found');
+      navigate('/');
       return;
     }
 
@@ -99,8 +101,30 @@ function CreatorStudio() {
   useEffect(() => {
     console.log("Creator Studio getStudioCreated")
     const getStudioCreated = async ()=>{
-      const q = query(collection(db, COLLECTIONS.STUDIO), where("UserId", "==", JSON.parse(localStorage.getItem('userInfo')).UserId)    );
-      console.log("Hiiii",JSON.parse(localStorage.getItem('userInfo')).UserId)
+      const userInfo = localStorage.getItem('userInfo');
+      if (!userInfo) {
+        console.log('User info not found');
+        navigate('/');
+        return;
+      }
+
+      let parsedUserInfo;
+      try {
+        parsedUserInfo = JSON.parse(userInfo);
+      } catch (error) {
+        console.log('Error parsing user info:', error);
+        navigate('/');
+        return;
+      }
+
+      if (!parsedUserInfo.UserId) {
+        console.log('User ID not found in user info');
+        navigate('/');
+        return;
+      }
+
+      const q = query(collection(db, COLLECTIONS.STUDIO), where("UserId", "==", parsedUserInfo.UserId));
+      console.log("Hiiii", parsedUserInfo.UserId)
       const querySnapshot = await getDocs(q);
       console.log("Studios : ",querySnapshot)
       const studiosOfUser = querySnapshot.docs.filter(doc => doc.data().studioName).map(doc => 
@@ -118,7 +142,7 @@ function CreatorStudio() {
     };
       
       getStudioCreated();
-    },[setStudio]);
+    },[setStudio, navigate]);
  
   useEffect(() => {
     console.log("Creator Studio setStudioId")

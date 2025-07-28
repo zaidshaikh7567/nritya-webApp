@@ -24,7 +24,7 @@ const Header = dynamic(() => import('../../../src/Components/Header'), {
   )
 })
 
-const Footer = dynamic(() => import('../../../src/Components/Footer'), {
+const Footer = dynamic(() => import('../../components/ClientFooter'), {
   ssr: false
 })
 
