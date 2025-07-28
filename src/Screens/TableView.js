@@ -20,8 +20,8 @@ function processInstructors(instructors) {
       // If the input is a single string
       return instructors.split('-')[0];
   } else {
-      // If the input is neither a string nor an array
-      throw new Error('Invalid input type');
+      // If the input is neither a string nor an array, return as is or empty string
+      return instructors || '';
   }
 }
 

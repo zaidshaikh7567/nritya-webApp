@@ -102,7 +102,9 @@ export default function TableCarousel({ tableData, title }) {
                     <tr className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-sm font-bold text-white bg-black border-b">Instructors</td>
                       <td className="px-4 py-3 text-sm text-gray-500 border-b">
-                        {classItem.instructors.map((name) => name.split('-')[0].trim()).join(', ') || '-'}
+                        {Array.isArray(classItem.instructors) 
+                          ? classItem.instructors.map((name) => name.split('-')[0].trim()).join(', ')
+                          : classItem.instructors || '-'}
                       </td>
                     </tr>
                     <tr className="hover:bg-gray-50">

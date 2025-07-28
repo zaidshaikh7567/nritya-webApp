@@ -161,35 +161,46 @@ async function getStudioData(studioId) {
     const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
     
     // Fetch studio text data
-    const responseText = await fetch(`${BASEURL_STUDIO}${studioId}/text/`, {
-      cache: 'no-store' // Disable caching for fresh data
-    })
+    let studioData = null
     
-    if (!responseText.ok) {
-      throw new Error('Failed to fetch studio data')
+    try {
+      const responseText = await fetch(`${BASEURL_STUDIO}${studioId}/text/`, {
+        cache: 'no-store' // Disable caching for fresh data
+      })
+      
+      if (responseText.ok) {
+        studioData = await responseText.json()
+      } else {
+        console.error('Failed to fetch studio data:', responseText.status, responseText.statusText)
+      }
+    } catch (error) {
+      console.error('Error fetching studio text data:', error)
     }
     
-    const studioData = await responseText.json()
-    
     // Fetch studio images
-    const responseImages = await fetch(`${BASEURL_STUDIO}${studioId}/images/`, {
-      cache: 'no-store'
-    })
-    
     let carouselImages = []
     let announcementImages = []
     
-    if (responseImages.ok) {
-      const imagesData = await responseImages.json()
-      if (imagesData && imagesData.StudioImages) {
-        carouselImages = Array.isArray(imagesData.StudioImages) 
-          ? imagesData.StudioImages.filter(image => typeof image === 'string' && !image.includes(`${studioId}/?Expire`))
-          : []
-      }
+    try {
+      const responseImages = await fetch(`${BASEURL_STUDIO}${studioId}/images/`, {
+        cache: 'no-store'
+      })
       
-      if (imagesData && imagesData.StudioAnnouncements) {
-        announcementImages = imagesData.StudioAnnouncements
+      if (responseImages.ok) {
+        const imagesData = await responseImages.json()
+        if (imagesData && imagesData.StudioImages) {
+          carouselImages = Array.isArray(imagesData.StudioImages) 
+            ? imagesData.StudioImages.filter(image => typeof image === 'string' && !image.includes(`${studioId}/?Expire`))
+            : []
+        }
+        
+        if (imagesData && imagesData.StudioAnnouncements) {
+          announcementImages = imagesData.StudioAnnouncements
+        }
       }
+    } catch (error) {
+      console.error('Error fetching studio images:', error)
+      // Keep empty arrays if image fetch fails
     }
     
     return {
@@ -211,7 +222,7 @@ async function getStudioData(studioId) {
 function StudioFullPage({ studioData, carouselImages, announcementImages, studioId }) {
   if (!studioData) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="px-3 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Studio Not Found</h1>
           <p className="text-gray-600">The studio you&apos;re looking for doesn&apos;t exist or has been removed.</p>
@@ -221,7 +232,7 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="px-3 py-8">
       {/* Main Content Row - Studio Header and About */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {/* Left Column - Studio Info */}
@@ -287,8 +298,8 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
             </div>
           )}
            {studioData.danceStyles && (
-        <div className="mb-1">
-          <hr/>
+        <div className="mb-1 mt-4">
+          
           <div className="flex flex-wrap gap-1">
             {studioData.danceStyles.split(',').map((style, index) => (
               <Chip
@@ -587,7 +598,7 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
 // Loading component
 function StudioLoading() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="px-3 py-8">
       <Skeleton variant="rectangular" animation="wave" height="100vh" />
     </div>
   )
