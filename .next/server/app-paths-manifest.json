@@ -1,5 +1,14 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/creatorDashboard/page": "app/creatorDashboard/page.js",
+  "/bookings/page": "app/bookings/page.js",
   "/modifyStudios/page": "app/modifyStudios/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/api/placeholder/[...params]/route": "app/api/placeholder/[...params]/route.js",
+  "/transactions/page": "app/transactions/page.js",
+  "/search/[entity]/page": "app/search/[entity]/page.js",
+  "/login/page": "app/login/page.js",
+  "/workshop/[entityId]/page": "app/workshop/[entityId]/page.js",
+  "/studio/[studioId]/page": "app/studio/[studioId]/page.js"
 }
