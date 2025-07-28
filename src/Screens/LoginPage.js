@@ -75,15 +75,24 @@ function LoginPage() {
 
     const signin = async () => {
       try {
+        console.log("Starting Google Sign In...");
+        console.log("Auth object:", auth);
+        console.log("Provider object:", provider);
+        
         const result = await signInWithPopup(auth, provider);
+        console.log("Sign in result:", result);
+        
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const accessToken = credential.accessToken;
         const idToken = credential.idToken;
         const user = result.user;
 
+        console.log("User signed in:", user);
+        console.log("Access token:", accessToken);
+
         if (result) {
           let token = await auth.currentUser?.getIdToken();
-          console.log("token", token);
+          console.log("ID token:", token);
           localStorage.setItem("authToken", token);
         }
         onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL},user);
@@ -91,7 +100,9 @@ function LoginPage() {
         await setCreatorMode(user.uid);
         navigate.push(`/`);
       } catch (error) {
-
+        console.error('Google Sign In Error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
         console.log('Invalid username or password');
         setLoginFailed(true);
       }

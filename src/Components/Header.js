@@ -362,6 +362,7 @@ function Header() {
                           width: '3rem', height: '3rem', display: 'flex',
                           alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginRight: '0.5rem',
                           borderWidth: '2px',
+                          borderColor: 'white',
                         }}>
                         {getUserNameInitials()}
                       </Button>
