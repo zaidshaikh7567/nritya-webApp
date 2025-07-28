@@ -11,6 +11,10 @@ git commit -m # See https://help.github.com/articles/ignoring-files/ for more ab
 # production
 /build
 
+# Next.js
+/.next/
+/out/
+
 # misc
 .DS_Store
 .env.local
