@@ -7,9 +7,11 @@ import './SideMenu.css';
 import {useEffect} from "react";
 import secureLocalStorage from 'react-secure-storage';
 import { setCreatorMode } from '../utils/firebaseUtils';
+import { useRouter } from 'next/navigation';
 
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const router = useRouter();
 
   const handleLogout = async () => {
     console.log("Logging out SideMenu")
@@ -46,10 +48,10 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   }, []);
 
   const regularMenuItems = [
-    { action: () => window.location.hash = '#/profile', name: 'Profile', show: true },
-    { action: () => window.location.hash = '#/transactions', name: 'Transactions',show:true },
-    { action: () => window.location.hash = '#/creatorDashboard', name: 'Dashboard',show: secureLocalStorage.getItem('CreatorMode')  },
-    { action: () => window.location.hash = '#/myBookings', name: 'Bookings',show:true },
+    { action: () => router.push('/profile'), name: 'Profile', show: true },
+    { action: () => router.push('/transactions'), name: 'Transactions',show:true },
+    { action: () => router.push('/creatorDashboard'), name: 'Dashboard',show: secureLocalStorage.getItem('CreatorMode')  },
+    { action: () => router.push('/bookings'), name: 'Bookings',show:true },
     { action: handleLogout, name: 'Sign Out',show:true },
   ];
 

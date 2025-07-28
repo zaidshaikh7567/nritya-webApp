@@ -9,6 +9,13 @@ const nextConfig = {
       ...config.resolve.fallback,
       fs: false,
     };
+    
+    // Alias react-router-dom to our shim
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react-router-dom': require.resolve('./src/utils/ReactRouterShim.js'),
+    };
+    
     return config;
   },
   // Copy static assets

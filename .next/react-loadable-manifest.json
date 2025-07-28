@@ -1,4 +1,24 @@
 {
+  "app/modifyStudios/page.js -> ../../src/Components/Footer": {
+    "id": "app/modifyStudios/page.js -> ../../src/Components/Footer",
+    "files": [
+      "static/chunks/_app-pages-browser_src_Components_Footer_js.js"
+    ]
+  },
+  "app/modifyStudios/page.js -> ../../src/Components/Header": {
+    "id": "app/modifyStudios/page.js -> ../../src/Components/Header",
+    "files": [
+      "static/css/_app-pages-browser_src_Components_Header_js.css",
+      "static/chunks/_app-pages-browser_src_Components_Header_js.js"
+    ]
+  },
+  "app/modifyStudios/page.js -> ../../src/Screens/ModifyStudiosPage": {
+    "id": "app/modifyStudios/page.js -> ../../src/Screens/ModifyStudiosPage",
+    "files": [
+      "static/css/_app-pages-browser_src_Screens_ModifyStudiosPage_js.css",
+      "static/chunks/_app-pages-browser_src_Screens_ModifyStudiosPage_js.js"
+    ]
+  },
   "src/Components/Header.js -> ./LoginModalDailog": {
     "id": "src/Components/Header.js -> ./LoginModalDailog",
     "files": [
