@@ -2,6 +2,17 @@ import { Suspense } from 'react'
 import { Button, Skeleton, Stack, Chip, Paper, Grid } from '@mui/material'
 import dynamic from 'next/dynamic'
 import { FaPhoneAlt, FaWhatsapp, FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaSnowflake, FaWifi, FaTint, FaToilet, FaPlug, FaFireExtinguisher, FaFirstAid, FaVideo, FaCreditCard, FaParking, FaMapMarkerAlt } from 'react-icons/fa'
+import { Row, Col } from 'react-bootstrap'
+
+// Dynamic import for MapReadOnly component
+const MapReadOnly = dynamic(() => import('../../components/MapReadOnly'), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+      <Skeleton variant="rectangular" animation="wave" width="100%" height="100%" />
+    </div>
+  )
+})
 
 // Amenities icons mapping
 export const AMENITIES_ICONS = {
@@ -146,6 +157,7 @@ const ClientFooter = dynamic(() => import('../../components/ClientFooter'), {
   ssr: false
 })
 
+// Dynamic imports for client components
 const ImageCarousel = dynamic(() => import('../../components/ImageCarousel'), {
   ssr: false
 })
@@ -153,6 +165,8 @@ const ImageCarousel = dynamic(() => import('../../components/ImageCarousel'), {
 const TableCarousel = dynamic(() => import('../../components/TableCarousel'), {
   ssr: false
 })
+
+
 
 // Server component to fetch studio data
 async function getStudioData(studioId) {
@@ -409,12 +423,19 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
 
                   let displayText = 'Closed';
                   let textColor = 'text-red-600';
-                  if (Array.isArray(timing) && timing[0]?.open && timing[0]?.close) {
-                    const open = timing[0].open;
-                    const close = timing[0].close;
-                    if (open !== 'Closed') {
-                      displayText = `${open} - ${close}`;
-                      textColor = 'text-red-600';
+                  
+                  if (Array.isArray(timing) && timing.length > 0) {
+                    // Handle multiple timings
+                    const timingStrings = timing.map(t => {
+                      if (t?.open && t?.close) {
+                        return t.open !== 'Closed' ? `${t.open} - ${t.close}` : 'Closed';
+                      }
+                      return 'Closed';
+                    }).filter(t => t !== 'Closed');
+                    
+                    if (timingStrings.length > 0) {
+                      displayText = timingStrings.join(', ');
+                      textColor = 'text-green-600';
                     }
                   } else if (typeof timing === 'object' && timing?.open && timing?.close) {
                     displayText = `${timing.open} - ${timing.close}`;
@@ -449,16 +470,16 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
 
       {/* Announcements */}
       {announcementImages.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>Announcements</h2>
+        <div className="mb-1">
+          <h2 className="text-xl font-semibold mb-1 mt-2" style={{ textTransform: 'none' }}>Announcements</h2>
           <ImageCarousel images={announcementImages} title="" />
         </div>
       )}
 
             {/* Amenities */}
       {studioData.addAmenities && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4" style={{ textTransform: 'none' }}>Amenities</h2>
+        <div className="mb-1">
+          <h2 className="text-xl font-semibold mb-1 mt-2" style={{ textTransform: 'none' }}>Amenities</h2>
           <div className="flex flex-wrap gap-3">
             {studioData.addAmenities.split(',').map((amenity, index) => {
               const trimmedAmenity = amenity.trim();
@@ -512,56 +533,42 @@ function StudioFullPage({ studioData, carouselImages, announcementImages, studio
       {/* Location and Map */}
       {studioData.city && (
         <div className="mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-3">
-              <h2 className="text-xl font-semibold mb-4 text-transform: none;" >Get Directions</h2>
-              <Paper elevation={2} sx={{ p: 3 }}>
-                <div className="flex items-start space-x-3 mb-3">
-                  <FaMapMarkerAlt className="text-red-500 w-5 h-5 mt-1 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-gray-700 font-medium">
-                      {[
-                        studioData.buildingName,
-                        studioData.street,
-                        studioData.landmark,
-                        studioData.city
-                      ].filter(Boolean).join(', ')}
-                    </p>
-                  </div>
-                </div>
+          <Row>
+            <Col md={3} lg={3} className="d-flex flex-column">
+              <div className="d-flex align-items-center mb-4">
+                <h2 className="text-xl font-semibold mb-0" style={{ textTransform: 'none' }}>Get Directions</h2>
                 {studioData.geolocation && (
-                  <Button
-                    variant="contained"
-                    startIcon={<FaMapMarkerAlt />}
+                  <a
                     href={`https://www.google.com/maps?q=${studioData.geolocation.lat},${studioData.geolocation.lng}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    sx={{
-                      backgroundColor: '#1976d2',
-                      '&:hover': {
-                        backgroundColor: '#1565c0'
-                      }
-                    }}
+                    className="ms-2 p-1"
                   >
-                    View on Map
-                  </Button>
+                    <FaMapMarkerAlt 
+                      style={{ width: "24px", height: "24px", color: "#1976d2" }}
+                    />
+                  </a>
                 )}
-              </Paper>
-            </div>
-            <div className="lg:col-span-9">
+              </div>
+              <div className="mb-4">
+                <p className="text-gray-700" style={{ fontSize: '20px' }}>
+                  {`${studioData.buildingName ? studioData.buildingName + (studioData.buildingName.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.street ? studioData.street + (studioData.street.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.landmark ? studioData.landmark + (studioData.landmark.slice(-1) !== ',' ? ', ' : '') : ''}${studioData.city ? studioData.city : ''}`}
+                </p>
+              </div>
+            </Col>
+            <Col md={9} lg={9}>
               {studioData.geolocation && studioData.geolocation.lat && studioData.geolocation.lng ? (
-                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-                  <span className="text-gray-600">Map Component</span>
-                </div>
+                <MapReadOnly selectedLocationParam={studioData.geolocation} />
               ) : (
-                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+                <div className="bg-gray-200 rounded h-64 d-flex align-items-center justify-content-center">
                   <span className="text-gray-600">Location not available</span>
                 </div>
               )}
-            </div>
-          </div>
+            </Col>
+          </Row>
         </div>
       )}
+
       
       <Stack direction="horizontal" gap={1} className='mb-8'>
                     {studioData && studioData.whatsappNumber && (
