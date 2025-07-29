@@ -11,9 +11,9 @@ import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../../src/redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../../src/redux/selectors/refreshLocationSelector';
-import indianCities from '../../src/cities.json';
+import citiesData from '../../src/cities.json';
 import { toggleDarkMode } from '../../src/redux/actions/darkModeAction';
-import { useAuth } from '../../src/context/AuthContext';
+// import { useAuth } from '../../src/context/AuthContext';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getBrowserLocation } from '../../src/utils/location';
 import { styled } from '@mui/material/styles';
@@ -27,7 +27,7 @@ import Skeleton from '@mui/material/Skeleton';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../src/Components/Header.css';
-import { Apartment, PlaceTwoTone } from '@mui/icons-material';
+import { Apartment, PlaceTwoTone, Close } from '@mui/icons-material';
 
 // Logo image paths for Next.js
 const logoBig = '/assets/images/logo_large.png';
@@ -35,6 +35,7 @@ const logoMobile = '/assets/images/logo_small.jpg';
 
 const SideMenu = lazy(() => import('../../src/Components/SideMenu'));
 const LoginModalDailog = lazy(() => import('../../src/Components/LoginModalDailog'));
+const LocationModal = lazy(() => import('./LocationModal'));
 const FILTER_LOCATION_KEY = 'filterLocation';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -90,18 +91,25 @@ function ClientHeader() {
   const [showProfileOffcanvas, setShowProfileOffcanvas] = useState(false);
   const [searchText, setSearchText] = useState('');
   const router = useRouter();
-  const { currentUser, showSignInModal, setShowSignInModal } = useAuth();
+  // const { currentUser, showSignInModal, setShowSignInModal } = useAuth();
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  
+  // Check if user is logged in from localStorage
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+  const currentUser = isLoggedIn ? userInfo : null;
   const dispatch = useDispatch();
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const reduxLocation = useSelector(selectRefreshLocation);
   const isMobile = useMediaQuery({ query: '(max-width: 480px)' });
-  const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
   const photoURL = userInfo?.photoURL;
   
   // Debug logging
+  console.log('ClientHeader - isLoggedIn:', isLoggedIn);
   console.log('ClientHeader - currentUser:', currentUser);
   console.log('ClientHeader - userInfo:', userInfo);
   console.log('ClientHeader - showProfileOffcanvas:', showProfileOffcanvas);
+  console.log('ClientHeader - showSignInModal:', showSignInModal);
 
   const autocompleteTheme = createTheme({
     components: {
@@ -147,13 +155,29 @@ function ClientHeader() {
   };
 
   const handleButtonClick = () => {
+    console.log('Sign In button clicked, setting modal to true');
     setShowSignInModal(true);
   };
 
   const handleLocationChange = (event, location) => {
     if (location) {
+      console.log('handleLocationChange called with location:', location);
+      console.log('Current pathname:', window.location.pathname);
+      
       setSelectedLocation(location);
       localStorage.setItem(FILTER_LOCATION_KEY, location);
+      console.log('Location changed to:', location);
+      
+      // Update URL to reflect the new city
+      const currentPath = window.location.pathname;
+      console.log('Current path:', currentPath);
+      
+      // Always redirect to explore page with city parameter
+      const targetUrl = `/explore/?city=${encodeURIComponent(location)}`;
+      console.log('Redirecting to:', targetUrl);
+      router.push(targetUrl);
+      
+      setShowLocationDropdown(false);
     }
   };
 
@@ -167,18 +191,25 @@ function ClientHeader() {
     }
   };
 
+  // Removed document click handler since we're using MUI Dialog for location modal
+
+  // Listen for authentication changes
   useEffect(() => {
-    const handleDocumentClick = (event) => {
-      if (!event.target.closest('.location-dropdown-container')) {
-        setShowLocationDropdown(false);
-      }
+    const handleStorageChange = () => {
+      // Force re-render when localStorage changes
+      window.dispatchEvent(new Event('storage'));
     };
 
-    document.addEventListener('click', handleDocumentClick);
+    window.addEventListener('storage', handleStorageChange);
     return () => {
-      document.removeEventListener('click', handleDocumentClick);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  // Monitor showLocationDropdown state changes
+  useEffect(() => {
+    console.log('showLocationDropdown state changed to:', showLocationDropdown);
+  }, [showLocationDropdown]);
 
   const handleOpen = () => {
     setShowSignInModal(true);
@@ -193,7 +224,10 @@ function ClientHeader() {
       <Container fluid>
         <div className="d-flex align-items-center">
           {isMobile ? (
-            <Navbar.Brand onClick={() => router.push('/')} style={{ textTransform: 'none', cursor: 'pointer' }}>
+            <Navbar.Brand onClick={() => {
+              const storedCity = localStorage.getItem(FILTER_LOCATION_KEY) || 'New Delhi';
+              router.push(`/explore/?city=${encodeURIComponent(storedCity)}`);
+            }} style={{ textTransform: 'none', cursor: 'pointer' }}>
               <Image style={{ width: "4rem", height: "4rem" }}
                 src={logoMobile}
                 alt="Logo"
@@ -201,7 +235,10 @@ function ClientHeader() {
               />
             </Navbar.Brand>
           ) : (
-            <Navbar.Brand onClick={() => router.push('/')} style={{ textTransform: 'none', cursor: 'pointer' }}>
+            <Navbar.Brand onClick={() => {
+              const storedCity = localStorage.getItem(FILTER_LOCATION_KEY) || 'New Delhi';
+              router.push(`/explore/?city=${encodeURIComponent(storedCity)}`);
+            }} style={{ textTransform: 'none', cursor: 'pointer' }}>
               <Image style={{
                 width: "100%", height: "4rem", maxWidth: "200px",
                 margin: 0,
@@ -213,10 +250,17 @@ function ClientHeader() {
               />
             </Navbar.Brand>
           )}
+          
+                    {/* Location Button */}
           <Button
             variant="outlined"
             className="btn-hover-purple-bg me-2 rounded-3"
-            onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+            onClick={() => {
+              console.log('Location button clicked, opening location modal');
+              console.log('Current showLocationDropdown state:', showLocationDropdown);
+              setShowLocationDropdown(true);
+              console.log('setShowLocationDropdown(true) called');
+            }}
             style={{
               cursor: 'pointer', textTransform: 'none', color: 'white', borderColor: 'white',
               height: '3rem', borderWidth: '2px', width: '12rem'
@@ -320,12 +364,20 @@ function ClientHeader() {
         </Navbar.Collapse>
       </Container>
 
-      <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<div>Loading...</div>}>
         {showSignInModal && <LoginModalDailog open={showSignInModal} handleClose={handleClose} />}
         {showProfileOffcanvas && (
           <div>
             <SideMenu showProfileOffcanvas={showProfileOffcanvas} closeProfileOffcanvas={closeProfileOffcanvas} />
           </div>
+        )}
+        {showLocationDropdown && (
+          <LocationModal
+            open={showLocationDropdown}
+            onClose={() => setShowLocationDropdown(false)}
+            selectedLocation={selectedLocation}
+            onLocationChange={handleLocationChange}
+          />
         )}
       </Suspense>
     </Navbar>

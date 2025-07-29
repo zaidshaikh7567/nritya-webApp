@@ -48,7 +48,7 @@ const danceForms = [
   { name: "Jazz", icon: "🎷" },
 ];
 
-export default async function LandingPage({studioIdName, exploreEntity, danceImagesUrl}) {
+export default async function LandingPage({studioIdName, exploreEntity, danceImagesUrl, currentCity = "New Delhi"}) {
   // Get studios and workshops data - convert objects to arrays
   const studiosData = exploreEntity[COLLECTIONS.STUDIO] || {};
   const workshopsData = exploreEntity[COLLECTIONS.WORKSHOPS] || {};
@@ -96,6 +96,8 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
   console.log(carouselImages);
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+
+
       {/* Dance Images Carousel */}
       {carouselImages.length > 0 && (
   

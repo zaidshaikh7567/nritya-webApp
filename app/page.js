@@ -2,6 +2,7 @@ import LandingPage from './components/LandingPage'
 import ClientHeader from './components/ClientHeader'
 import ClientFooter from './components/ClientFooter'
 import ContactUsWidget from './components/ContactUsWidget'
+import LocationSync from './components/LocationSync'
 
 const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/" // Replace with your actual staging server URL
 const COLLECTIONS = {
@@ -10,9 +11,9 @@ const COLLECTIONS = {
   OPEN_CLASSES: "OpenClasses",
   COURSES: "Courses",
 };
-async function fetchLandingPageData() {
+async function fetchLandingPageData(city = "New Delhi") {
   try {
-    const filterLocation = "New Delhi";
+    const filterLocation = city;
     const entities = [COLLECTIONS.STUDIO, COLLECTIONS.WORKSHOPS, COLLECTIONS.COURSES, COLLECTIONS.OPEN_CLASSES];
 
     const studioIdNameResponse = await fetch(`${BASEURL_PROD}api/autocomplete/?&city=${filterLocation}`, {
@@ -61,13 +62,15 @@ async function fetchLandingPageData() {
 }
 
 
-export default async function Home() {
-  const landingPageData = await fetchLandingPageData();
+export default async function Home({ searchParams }) {
+  const city = searchParams?.city || 'New Delhi';
+  const landingPageData = await fetchLandingPageData(city);
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <LocationSync />
       <ClientHeader />
       <main className='py-1 flex-grow-1' style={{ width: '100%' }}>
-        <LandingPage {...landingPageData}/>
+        <LandingPage {...landingPageData} currentCity={city}/>
       </main>
       <ClientFooter />
       <ContactUsWidget />
