@@ -1,0 +1,114 @@
+/* Carousel Container Styles */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-scroll {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.carousel-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card Styles */
+.carousel-card {
+  flex: 0 0 320px !important;
+  max-width: 320px !important;
+  min-width: 320px !important;
+  flex-shrink: 0 !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.carousel-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Navigation Buttons */
+.carousel-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: #735EAB;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.carousel-nav-button:hover {
+  background-color: #5a4a8a;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav-button.left {
+  left: -20px;
+}
+
+.carousel-nav-button.right {
+  right: -20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .carousel-nav-button.left {
+    left: 0;
+  }
+  
+  .carousel-nav-button.right {
+    right: 0;
+  }
+  
+  .carousel-card {
+    flex: 0 0 280px;
+    max-width: 280px;
+  }
+}
+
+/* Dark Mode Support */
+.carousel-card.dark {
+  background-color: #444;
+  color: white;
+}
+
+/* Loading States */
+.carousel-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background-color: #f5f5f5;
+}
+
+.carousel-loading.dark {
+  background-color: #333;
+}
+
+/* Empty State */
+.carousel-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.carousel-empty.dark {
+  color: #ccc;
+} 

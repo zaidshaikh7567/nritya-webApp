@@ -22,6 +22,8 @@ import {
   ArrowForward as ArrowForwardIcon,
 } from '@mui/icons-material';
 import ImageCarousel from './ImageCarousel';
+import StudioCarousel from './StudioCarousel';
+import WorkshopCarousel from './WorkshopCarousel';
 
 // API endpoints from constants
 //const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/" // Replace with your actual staging server URL
@@ -51,15 +53,15 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
   const studiosData = exploreEntity[COLLECTIONS.STUDIO] || {};
   const workshopsData = exploreEntity[COLLECTIONS.WORKSHOPS] || {};
   
-  // Convert object to array format
+  // Convert object to array format for carousel components
   const studios = Object.keys(studiosData).map(id => ({
     id,
-    name: studiosData[id].studioName,
-    location: studiosData[id].city,
-    rating: studiosData[id].avgRating,
-    images: studiosData[id].iconUrl ? [studiosData[id].iconUrl] : ['/assets/images/service-1.jpg'],
-    danceForms: studiosData[id].danceStyles ? studiosData[id].danceStyles.split(',') : [],
-    price: studiosData[id].minFee > 0 ? `₹${studiosData[id].minFee}/month` : 'Contact for pricing',
+    studioName: studiosData[id].studioName,
+    city: studiosData[id].city,
+    avgRating: studiosData[id].avgRating,
+    iconUrl: studiosData[id].iconUrl,
+    danceStyles: studiosData[id].danceStyles,
+    minFee: studiosData[id].minFee,
     street: studiosData[id].street,
     state: studiosData[id].state,
     status: studiosData[id].status,
@@ -69,17 +71,24 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
   
   const workshops = Object.keys(workshopsData).map(id => ({
     id,
-    name: workshopsData[id].workshopName || 'Workshop',
-    instructor: workshopsData[id].instructorName || 'Expert Instructor',
-    duration: workshopsData[id].duration || '2 weeks',
-    price: workshopsData[id].price ? `₹${workshopsData[id].price}` : '₹5000',
-    images: workshopsData[id].iconUrl ? [workshopsData[id].iconUrl] : ['/assets/images/ticket-dance-image-1.png'],
-    level: workshopsData[id].level || 'Beginner',
-    description: workshopsData[id].description || ''
+    workshopName: workshopsData[id].workshopName,
+    instructorName: workshopsData[id].instructorName,
+    duration: workshopsData[id].duration,
+    price: workshopsData[id].price,
+    iconUrl: workshopsData[id].iconUrl,
+    level: workshopsData[id].level,
+    description: workshopsData[id].description,
+    venue: workshopsData[id].venue,
+    date: workshopsData[id].date,
+    time: workshopsData[id].time,
+    active: workshopsData[id].active,
+    danceStyles: workshopsData[id].danceStyles,
+    youtubeViedoLink: workshopsData[id].youtubeViedoLink,
+    studioDetails: workshopsData[id].studioDetails
   }));
 
-  const featuredStudios = studios.slice(0, 3);
-  const featuredWorkshops = workshops.slice(0, 3);
+  console.log('API Studios Data:', studios);
+  console.log('API Workshops Data:', workshops);
 
 
   // Use danceImagesUrl from API or fallback images
@@ -94,113 +103,17 @@ export default async function LandingPage({studioIdName, exploreEntity, danceIma
   
       )}
 
-      {/* Featured Studios */}
-      {featuredStudios.length > 0 && (
+      {/* Featured Studios Carousel */}
+      {studios.length > 0 && (
         <div className="w-full px-4 mt-4">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-            <Typography variant="h4" component="h4" sx={{ textTransform:'none' }}>
-              Featured Studios
-            </Typography>
-            <Button
-              endIcon={<ArrowForwardIcon />}
-              sx={{ color: 'primary.main' }}
-            >
-              View All
-            </Button>
-          </Box>
-          <Grid container spacing={3}>
-            {featuredStudios.map((studio, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Link href={`/studio/${studio.id}`}>
-                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' , '&:hover': { transform: 'translateY(-4px)', boxShadow: 6, }}}>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={studio.images?.[0] || '/assets/images/service-1.jpg'}
-                    alt={studio.name}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="h3" sx={{ textTransform:'none' }} gutterBottom>
-                      {studio.name}
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <LocationIcon sx={{ fontSize: 'small', mr: 0.5, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {studio.location || 'New Delhi'}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Rating value={studio.rating || "N/A"} readOnly size="small" />
-                      <Typography variant="body2" sx={{ ml: 1 }}>
-                        {studio.rating || "N/A"}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {studio.danceForms?.slice(0, 3).map((form, idx) => (
-                        <Chip key={idx} label={form} size="small" variant="outlined" />
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-                </Link>
-              </Grid>
-            ))}
-          </Grid>
+          <StudioCarousel studios={studios} title="Featured Studios" />
         </div>
       )}
 
-      {/* Featured Workshops */}
-      {featuredWorkshops.length > 0 && (
+      {/* Featured Workshops Carousel */}
+      {workshops.length > 0 && (
         <div className="w-full px-4 mt-4">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-            <Typography variant="h4" component="h4" sx={{ textTransform:'none' }}>
-              Featured Workshops
-            </Typography>
-            <Button
-              endIcon={<ArrowForwardIcon />}
-              sx={{ color: 'primary.main' }}
-            >
-              View All
-            </Button>
-          </Box>
-          <Grid container spacing={3}>
-            {featuredWorkshops.map((workshop, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { transform: 'translateY(-4px)', boxShadow: 6, } }}>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={workshop.images?.[0] || '/assets/images/ticket-dance-image-1.png'}
-                    alt={workshop.name}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="h3" sx={{ textTransform:'none' }} gutterBottom>
-                      {workshop.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      by {workshop.instructor || 'Expert Instructor'}
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Chip 
-                        label={workshop.level || 'Beginner'} 
-                        size="small" 
-                        color="primary" 
-                        variant="outlined"
-                      />
-                      <Typography variant="body2" sx={{ ml: 'auto' }}>
-                        ₹{workshop.price || '5000'}
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Duration: {workshop.duration || '2 weeks'}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <WorkshopCarousel workshops={workshops} title="Featured Workshops" />
         </div>
       )}
             {/* Popular Dance Forms */}
