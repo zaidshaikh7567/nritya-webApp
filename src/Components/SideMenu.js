@@ -18,10 +18,11 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
   const handleLogout = async () => {
     console.log("Logging out SideMenu")
     try {
-    await auth.signOut();
-    localStorage.clear()
-    secureLocalStorage.clear()
-     
+      await auth.signOut();
+      localStorage.clear()
+      secureLocalStorage.clear()
+      // Close the offcanvas after logout
+      closeProfileOffcanvas();
     } catch (error) {
       console.error('Error during logout:', error.message);
     }

@@ -1,5 +1,5 @@
 const initialState = {
-  isDarkModeOn: typeof window !== 'undefined' ? (localStorage.getItem('darkModeOn') === 'true' || true) : true, // Load from local storage
+  isDarkModeOn: typeof window !== 'undefined' ? (localStorage.getItem('darkModeOn') === 'true' || false) : false, // Load from local storage
 };
 
 const darkModeReducer = (state = initialState, action) => {
