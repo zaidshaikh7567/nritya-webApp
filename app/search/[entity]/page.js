@@ -8,7 +8,7 @@ const SearchPage = dynamic(() => import('../../../src/Screens/SearchPage'), {
   loading: () => <Skeleton variant="rectangular" animation="wave" height="100vh" />
 })
 
-const Header = dynamic(() => import('../../../src/Components/Header'), {
+const Header = dynamic(() => import('../../components/ClientHeader'), {
   ssr: false,
   loading: () => (
     <div style={{ 

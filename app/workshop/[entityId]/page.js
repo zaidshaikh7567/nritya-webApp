@@ -8,7 +8,7 @@ const WorkShopFullPage = dynamic(() => import('../../../src/Screens/WorkShopFull
   loading: () => <Skeleton variant="rectangular" animation="wave" height="100vh" />
 })
 
-const Header = dynamic(() => import('../../../src/Components/Header'), {
+const Header = dynamic(() => import('../../components/ClientHeader'), {
   ssr: false,
   loading: () => (
     <div style={{ 

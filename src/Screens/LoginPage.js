@@ -12,17 +12,9 @@ import { postData } from '../utils/common.js';
 
 
 
-function LoginPage() {
+function LoginPage({ onLogin, setIsLoggedIn }) {
   const [loginFailed, setLoginFailed] = useState(false);
   const [username, setUsername] = useState(null);
-  const onLogin = async (UserInfo,userInfoFull) => {
-    setUsername(UserInfo?.displayName);
-
-    localStorage.setItem('username',username);
-    localStorage.setItem('isLoggedIn', true);
-    localStorage.setItem('userInfo',JSON.stringify(UserInfo));
-    localStorage.setItem('userInfoFull',JSON.stringify(userInfoFull));
-  };
 
   const navigate = useRouter();
 
@@ -95,7 +87,9 @@ function LoginPage() {
           console.log("ID token:", token);
           localStorage.setItem("authToken", token);
         }
-        onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL},user);
+        if (onLogin) {
+          onLogin({"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL},user);
+        }
         await addUserIfMissing(user);
         await setCreatorMode(user.uid);
         navigate.push(`/`);

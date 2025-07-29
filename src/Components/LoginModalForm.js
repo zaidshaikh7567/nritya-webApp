@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { styled } from '@mui/system';
-import loginBoxLogo from '../../src/Components/DanceImg/Nritya_Login_logo.png';
-import loginText from '../../src/Components/DanceImg/Lets_dance.png';
 import LoginPage from "../Screens/LoginPage";
+// Logo paths for Next.js
+const loginBoxLogo = '/assets/images/Nritya_Login_logo.png';
+const loginText = '/assets/images/Lets_dance.png';
+//import loginBoxLogo from '../../src/Components/DanceImg/Nritya_Login_logo.png';
+//import loginText from '../../src/Components/DanceImg/Lets_dance.png';
+
 
 // Styled components using `styled`
 const LoginBoxMain = styled('div')(({ theme }) => ({
@@ -39,6 +43,7 @@ const LoginModalForm = ({ isLoggedIn, setIsLoggedIn }) => {
     });
 
     const handleLogin = (UserInfo, userInfoFull) => {
+        console.log("Login successful, setting isLoggedIn to true");
         setUsername(UserInfo.displayName);
         setIsLoggedIn(true);
         setUserID(UserInfo.localId);

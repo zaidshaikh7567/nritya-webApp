@@ -22,11 +22,17 @@ const LoginModalDailog = ({open, handleClose }) => {
   });
 
   useEffect(() => {
+    console.log("useEffect triggered - isLoggedIn:", isLoggedIn, "localStorage isLoggedIn:", localStorage.getItem('isLoggedIn'));
     if (isLoggedIn && localStorage.getItem('isLoggedIn') === 'true') {
       console.log("It's logged in",isLoggedIn)
       handleClose();
     }
   }, [isLoggedIn, handleClose]);
+
+  const handleCloseModal = () => {
+    console.log("Closing modal");
+    handleClose();
+  };
 
   
 
@@ -34,7 +40,7 @@ const LoginModalDailog = ({open, handleClose }) => {
 
         <React.Fragment>
           <BootstrapDialog
-            onClose={handleClose}
+            onClose={handleCloseModal}
             aria-labelledby="customized-dialog-title"
             open={open}
             maxWidth='xs'
@@ -47,12 +53,13 @@ const LoginModalDailog = ({open, handleClose }) => {
           >
           <IconButton
             aria-label="close"
-            onClick={handleClose}
+            onClick={handleCloseModal}
             sx={{
               position: 'absolute',
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
+              zIndex: 1,
             }}
           >
                 <CloseIcon />

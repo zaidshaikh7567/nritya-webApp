@@ -2,7 +2,8 @@ import { Offcanvas, Button } from 'react-bootstrap';
 import { auth } from '../config';
 import { selectDarkModeStatus } from '../redux/selectors/darkModeSelector';
 import { useSelector } from 'react-redux';
-import logo from './../logo.png';
+// Logo path for Next.js
+const logo = '/assets/images/logo_small.jpg';
 import './SideMenu.css';
 import {useEffect} from "react";
 import secureLocalStorage from 'react-secure-storage';
@@ -10,6 +11,7 @@ import { setCreatorMode } from '../utils/firebaseUtils';
 import { useRouter } from 'next/navigation';
 
 function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
+  console.log('SideMenu rendered with showProfileOffcanvas:', showProfileOffcanvas);
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const router = useRouter();
 
