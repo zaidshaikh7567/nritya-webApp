@@ -28,10 +28,23 @@ export const formatDateToReadable = (dateString) => {
 };
 
 export const convertTo12HourFormat = (timeStr) => {
-  const [hour, minute] = timeStr.split(":").map(Number);
+  if (!timeStr || typeof timeStr !== 'string') {
+    return '';
+  }
+  
+  try {
+    const [hour, minute] = timeStr.split(":").map(Number);
+    
+    if (isNaN(hour) || isNaN(minute)) {
+      return '';
+    }
 
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
 
-  return `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
+    return `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
+  } catch (error) {
+    console.error('Error converting time format:', error);
+    return '';
+  }
 };

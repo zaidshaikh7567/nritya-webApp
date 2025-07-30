@@ -364,7 +364,7 @@ function ClientHeader() {
         </Navbar.Collapse>
       </Container>
 
-            <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         {showSignInModal && <LoginModalDailog open={showSignInModal} handleClose={handleClose} />}
         {showProfileOffcanvas && (
           <div>
