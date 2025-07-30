@@ -7,18 +7,18 @@ import {
   Grid, 
   Button, 
   Card, 
-  CardContent,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
   IconButton,
-  Skeleton
+  Divider
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/navigation';
 import { FaCalendarAlt, FaClock, FaRegCalendarAlt } from 'react-icons/fa';
 import { Badge } from 'react-bootstrap';
+const INT_FEE = 0.03;
 
 const convertTo12HourFormat = (timeString) => {
   if (!timeString) return '';
@@ -83,7 +83,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
   const handleQuantityChange = (variantId, subvariantId, value) => {
     setQuantities(prev => ({
       ...prev,
-      [`${variantId}-${subvariantId}`]: parseInt(value) || 0
+      [`${variantId}__${subvariantId}`]: parseInt(value) || 0  // Use double underscore to avoid conflicts with hyphens
     }));
   };
 
@@ -92,32 +92,154 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
     const selectedItems = Object.entries(quantities)
       .filter(([key, quantity]) => quantity > 0)
       .map(([key, quantity]) => {
-        const [variantId, subvariantId] = key.split('-');
-        const variant = workshopData.variants.find(v => v.variant_id === variantId);
-        const subvariant = variant?.subvariants.find(s => s.subvariant_id === subvariantId);
-        return {
-          variantId,
-          subvariantId,
-          quantity,
-          price: subvariant?.price || 0,
-          description: subvariant?.description || '',
-          date: variant?.date || '',
-          time: variant?.time || ''
-        };
+        const [variantId, subvariantId] = key.split('__');  // Split by double underscore
+        console.log('Processing key:', key, 'variantId:', variantId, 'subvariantId:', subvariantId);
+        
+        // Debug: Log all variants to see what we have
+        console.log('All variants:', workshopData?.variants);
+        console.log('Looking for variant_id:', variantId);
+        
+        const variant = workshopData?.variants?.find(v => {
+          console.log('Checking variant:', v.variant_id, 'against:', variantId, 'match:', v.variant_id === variantId);
+          return v.variant_id === variantId;
+        });
+        console.log('Found variant:', variant);
+        
+        if (variant) {
+          console.log('Variant subvariants:', variant.subvariants);
+          console.log('Looking for subvariant_id:', subvariantId);
+          
+          const subvariant = variant.subvariants?.find(s => {
+            console.log('Checking subvariant:', s.subvariant_id, 'against:', subvariantId, 'match:', s.subvariant_id === subvariantId);
+            return s.subvariant_id === subvariantId;
+          });
+          console.log('Found subvariant:', subvariant);
+          
+          const result = {
+            variantId,
+            subvariantId,
+            quantity,
+            price: subvariant?.price || 0,
+            description: subvariant?.description || '',
+            date: variant?.date || '',
+            time: variant?.time || '',
+            variantDescription: variant?.description || '',
+            subvariantDescription: subvariant?.description || ''
+          };
+          
+          console.log('Created item:', result);
+          return result;
+        } else {
+          console.log('Variant not found!');
+          return {
+            variantId,
+            subvariantId,
+            quantity,
+            price: 0,
+            description: '',
+            date: '',
+            time: '',
+            variantDescription: '',
+            subvariantDescription: ''
+          };
+        }
       });
+
+    console.log('Selected items after mapping:', selectedItems);
 
     if (selectedItems.length === 0) {
       alert('Please select at least one ticket option.');
       return;
     }
 
-    // Here you would typically proceed to payment/booking confirmation
-    console.log('Selected items:', selectedItems);
-    alert('Booking functionality to be implemented');
-  };
+    // Calculate total amount
+    const total = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    // Calculate total quantity
+    const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const handleCancel = () => {
-    router.back();
+    // Calculate additional fees
+    const subtotal = total;
+    const internetConvenienceFee = Math.round(subtotal * INT_FEE); // 5% internet convenience fee
+    const totalWithFees = subtotal + internetConvenienceFee;
+
+    // Create detailed booking payload
+    const bookingPayload = {
+      workshop_id: workshopId,
+      workshop_name: workshopData?.name || 'Unknown Workshop',
+      workshop_description: workshopData?.description || '',
+      buyers_name: "Buyer Name", // This should come from user profile
+      buyer_email: "buyer@email.com", // This should come from user profile
+      buyer_number: "+919876543210", // This should come from user profile
+      subtotal: subtotal,
+      internet_convenience_fee: internetConvenienceFee,
+      total: totalWithFees,
+      total_quantity: totalQuantity,
+      details: {}
+    };
+
+    // Build variant structure with detailed information
+    selectedItems.forEach(item => {
+      const { variantId, subvariantId, quantity, price, variantDescription, subvariantDescription } = item;
+      
+      if (!bookingPayload.details[variantId]) {
+        bookingPayload.details[variantId] = {};
+      }
+
+      bookingPayload.details[variantId][subvariantId] = {
+        variant_id: variantId,
+        subvariant_id: subvariantId,
+        price_per_ticket: price,
+        quantity: quantity,
+        variant_description: variantDescription,
+        subvariant_description: subvariantDescription,
+        date: item.date,
+        time: item.time
+      };
+    });
+
+    // Create detailed price breakup
+    const priceBreakup = {
+      items: selectedItems.map(item => ({
+        variant_id: item.variantId,
+        subvariant_id: item.subvariantId,
+        variant_description: item.variantDescription,
+        subvariant_description: item.subvariantDescription,
+        date: item.date,
+        time: item.time,
+        quantity: item.quantity,
+        price_per_ticket: item.price,
+        subtotal: item.price * item.quantity
+      })),
+      summary: {
+        subtotal: subtotal,
+        booking_fee: internetConvenienceFee,
+        cgst: 0, // Removed GST
+        sgst: 0, // Removed GST
+        total: totalWithFees
+      }
+    };
+
+    // Log the complete booking information
+    console.log('=== WORKSHOP BOOKING DETAILS ===');
+    console.log('Price Breakup:');
+    console.log(JSON.stringify(priceBreakup, null, 2));
+    console.log('');
+    
+    console.log('=== PRICE BREAKDOWN ===');
+    console.log(`Subtotal: ₹${subtotal}`);
+    console.log(`Internet Con Fee (${INT_FEE * 100}%): ₹${internetConvenienceFee}`);
+    console.log(`Total: ₹${totalWithFees}`);
+    console.log(`Total Quantity: ${totalQuantity} tickets`);
+    console.log('=== END BOOKING DETAILS ===');
+    console.log(selectedItems);
+
+    // For now, just show an alert with summary
+    const summaryText = selectedItems.map(item => 
+      `${item.quantity} × ${item.subvariantDescription || 'Unknown'} (${item.variantDescription || 'Unknown'}) = ₹${item.price * item.quantity}`
+    ).join('\n');
+
+    alert(`Booking Summary:\n\n${summaryText}\n\nTotal: ₹${total}\n\nCheck console for detailed payload.`);
   };
 
   return (
@@ -281,7 +403,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
                       <FormControl sx={{ minWidth: 120 }}>
                         <InputLabel>Select Quantity</InputLabel>
                         <Select
-                          value={quantities[`${variant.variant_id}-${subvariant.subvariant_id}`] || 0}
+                          value={quantities[`${variant.variant_id}__${subvariant.subvariant_id}`] || 0}
                           onChange={(e) => handleQuantityChange(
                             variant.variant_id, 
                             subvariant.subvariant_id, 
@@ -306,20 +428,6 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
       {/* Action Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
         <Button
-          variant="outlined"
-          onClick={handleCancel}
-          sx={{
-            borderColor: '#735EAB',
-            color: '#735EAB',
-            '&:hover': {
-              borderColor: '#735EAB',
-              bgcolor: 'rgba(115, 94, 171, 0.1)'
-            }
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
           variant="contained"
           onClick={handleConfirm}
           sx={{
@@ -330,9 +438,84 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
             }
           }}
         >
-          Confirm
+          Book Tickets
         </Button>
       </Box>
+
+      {/* Price Display */}
+      {(() => {
+        const selectedItems = Object.entries(quantities)
+          .filter(([key, quantity]) => quantity > 0)
+          .map(([key, quantity]) => {
+            const [variantId, subvariantId] = key.split('__');
+            const variant = workshopData?.variants?.find(v => v.variant_id === variantId);
+            const subvariant = variant?.subvariants?.find(s => s.subvariant_id === subvariantId);
+            return {
+              quantity,
+              price: subvariant?.price || 0,
+              variantDescription: variant?.description || '',
+              subvariantDescription: subvariant?.description || '',
+              date: variant?.date || '',
+              time: variant?.time || ''
+            };
+          });
+
+        const subtotal = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const internetConvenienceFee = Math.round(subtotal * INT_FEE);
+        const total = subtotal + internetConvenienceFee;
+
+        if (total > 0) {
+          return (
+            <Box sx={{ mt: 3, p: 3, bgcolor: '#f8f9fa', borderRadius: 2, border: '1px solid #e9ecef' }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#735EAB' }}>
+                Price Summary
+              </Typography>
+              
+              {/* Itemized Breakdown */}
+              {selectedItems.map((item, index) => (
+                <Box key={index} sx={{ mb: 2, p: 2, bgcolor: 'white', borderRadius: 1 }}>
+                  <Typography variant="body2" sx={{ color: '#666', mb: 1 }}>
+                    {item.variantDescription}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 'medium', mb: 1 }}>
+                    {item.subvariantDescription}
+                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ color: '#666' }}>
+                      {item.date} at {convertTo12HourFormat(item.time)}
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      {item.quantity} × ₹{item.price} = ₹{item.quantity * item.price}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+              
+              <Divider sx={{ my: 2 }} />
+              
+              {/* Fee Breakdown */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="body1">Subtotal:</Typography>
+                <Typography variant="body1">₹{subtotal}</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="body1">Internet Convenience Fee ({INT_FEE * 100}%):</Typography>
+                <Typography variant="body1">₹{internetConvenienceFee}</Typography>
+              </Box>
+              <Divider sx={{ my: 1 }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#735EAB' }}>
+                  Total:
+                </Typography>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#735EAB' }}>
+                  ₹{total}
+                </Typography>
+              </Box>
+            </Box>
+          );
+        }
+        return null;
+      })()}
     </Box>
   );
 } 
