@@ -49,6 +49,54 @@ async function fetchWorkshopData(workshopId) {
   }
 }
 
+// Generate metadata function
+export async function generateMetadata({ params }) {
+  const { workshopId } = params;
+  const workshopData = await fetchWorkshopData(workshopId);
+
+  if (!workshopData) {
+    return {
+      title: 'Workshop Not Found',
+      description: 'The workshop you are looking for does not exist or has been removed.',
+    };
+  }
+
+  const name = workshopData.name || 'Workshop';
+  const city = workshopData.city || 'City';
+  const minPrice = workshopData.min_price || 0;
+  const danceStyles = workshopData.dance_styles || 'Dance';
+  const startDate = workshopData.start_date || '';
+  const endDate = workshopData.end_date || workshopData.start_date || '';
+  const description = workshopData.description || 'Join this amazing dance workshop';
+
+  const title = `${name} - ${city}`;
+  const metaDescription = `₹${minPrice} - ${danceStyles}, ${startDate}${endDate && endDate !== startDate ? ` to ${endDate}` : ''}, ${description}`;
+
+  return {
+    title,
+    description: metaDescription,
+    openGraph: {
+      title,
+      description: metaDescription,
+      type: 'website',
+      images: [
+        {
+          url: 'https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg',
+          width: 1200,
+          height: 630,
+          alt: name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: metaDescription,
+      images: ['https://cdn.pixabay.com/photo/2016/12/30/10/03/dance-1940245_960_720.jpg'],
+    },
+  };
+}
+
 export default async function WorkshopPage({ params }) {
   const { workshopId } = params;
   console.log("Workshop ID: ",workshopId)
