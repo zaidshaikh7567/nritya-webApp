@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, createTheme, ThemeProvider, Typography } from "@mui/material";
 import { BASEURL_PROD } from "../constants";
 import QRCode from "react-qr-code";
-import venueIcon from "../assets/images/venue-icon.png";
-import venueIconWhite from "../assets/images/venue-icon-white.png";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const theme = createTheme({
   typography: {
@@ -16,6 +16,52 @@ const theme = createTheme({
 function WorkshopList({ bookingData, setWorkshopClickTicket }) {
   const endpoint_url = BASEURL_PROD + "bookings/availFreeTrial/";
   const isDarkModeOn = useSelector(selectDarkModeStatus);
+  const router = useRouter();
+  const [workshopDetails, setWorkshopDetails] = useState(null);
+
+  // Calculate total quantity from items
+  const totalQuantity = bookingData?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+  
+  // Get the first item for display purposes
+  const firstItem = bookingData?.items?.[0];
+  
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "TBD";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+  };
+
+  // Format time for display
+  const formatTime = (timeString) => {
+    if (!timeString) return "TBD";
+    return timeString;
+  };
+
+  // Fetch workshop details
+  useEffect(() => {
+    const fetchWorkshopDetails = async () => {
+      if (bookingData?.workshop_id) {
+        try {
+          const response = await axios.get(`http://0.0.0.0:8000/crud/get_workshop_by_id/${bookingData.workshop_id}`);
+          setWorkshopDetails(response.data);
+        } catch (error) {
+          console.error('Error fetching workshop details:', error);
+        }
+      }
+    };
+
+    fetchWorkshopDetails();
+  }, [bookingData?.workshop_id]);
+
+  const handleBookingClick = () => {
+    // Navigate to ticket page
+    router.push(`/ticket/${bookingData.booking_id}`);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -25,15 +71,21 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
           mx: "auto",
           fontFamily: "Instrument Sans",
           color: isDarkModeOn ? "white" : "black",
+          mb: 3,
         }}
       >
         <Box
-          onClick={() => setWorkshopClickTicket(bookingData)}
+          onClick={handleBookingClick}
           sx={{
             cursor: "pointer",
             borderRadius: 4,
             bgcolor: "#735EAB",
             boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+            transition: "transform 0.2s ease-in-out",
+            "&:hover": {
+              transform: "translateY(-2px)",
+              boxShadow: "0px 6px 8px 0px rgba(0, 0, 0, 0.3)",
+            },
           }}
         >
           <Box
@@ -53,7 +105,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                 color: "white",
               }}
             >
-              {bookingData?.name_class || "NULL"}
+              {workshopDetails?.name || "Workshop Booking"}
             </Typography>
             <Typography
               variant="h6"
@@ -64,7 +116,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                 color: "#D9D9D9",
               }}
             >
-              Ticket for {bookingData?.persons_allowed || "NULL"}
+              {totalQuantity} Ticket{totalQuantity !== 1 ? 's' : ''} Booked
             </Typography>
             <Typography
               component="p"
@@ -78,7 +130,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                 color: "#D9D9D9",
               }}
             >
-              Booking ID: {bookingData?.id || "NULL"}
+              Booking ID: {bookingData?.booking_id || "N/A"}
             </Typography>
           </Box>
 
@@ -102,7 +154,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
             >
               <Box sx={{ p: 1, borderRadius: 2, bgcolor: "white" }}>
                 <QRCode
-                  value={endpoint_url + bookingData?.entity_id || ""}
+                  value={bookingData?.booking_id || "workshop-booking"}
                   size={120}
                 />
               </Box>
@@ -116,7 +168,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                   color: isDarkModeOn ? "white" : "black",
                 }}
               >
-                Admit 1 for once
+                Total Amount: ₹{bookingData?.total_amount || 0}
               </Typography>
             </Box>
 
@@ -149,7 +201,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                       component="p"
                       sx={{ fontFamily: "Instrument Sans", fontWeight: 500 }}
                     >
-                      NULL
+                      {formatDate(firstItem?.date)}
                     </Typography>
                   </Box>
                   <Box>
@@ -164,7 +216,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                       component="p"
                       sx={{ fontFamily: "Instrument Sans", fontWeight: 500 }}
                     >
-                      NULL
+                      {formatTime(firstItem?.time)}
                     </Typography>
                   </Box>
                 </Box>
@@ -179,11 +231,11 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                   }}
                 >
                   <img
-                    src={isDarkModeOn ? venueIconWhite : venueIcon}
+                    src={isDarkModeOn ? "/assets/images/venue-icon-white.png" : "/assets/images/venue-icon.png"}
                     alt="Venue"
                     style={{ width: "30px", height: "30px", marginRight: 4 }}
                   />
-                  <span>Venue</span>
+                  <span>Items</span>
                 </Typography>
                 <Typography
                   variant="h6"
@@ -194,7 +246,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
                     color: isDarkModeOn ? "white" : "black",
                   }}
                 >
-                  {bookingData?.studio_address || "NULL"}
+                  {bookingData?.items?.length || 0} Event{bookingData?.items?.length !== 1 ? 's' : ''} Booked
                 </Typography>
               </Box>
             </Box>

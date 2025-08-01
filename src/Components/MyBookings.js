@@ -25,12 +25,14 @@ function MyBookings() {
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [userBookings, setUserBookings] = useState([]);
+  const [workshopBookings, setWorkshopBookings] = useState([]);
   const [tabIndex, setTabIndex] = useState(0); // For tab selection
   const [currentClickTicket, setCurrentClickTicket] = useState(null);
   const [workshopClickTicket, setWorkshopClickTicket] = useState(null);
   const [openClassClickTicket, setOpenClassClickTicket] = useState(null);
   const handleTabChange = (event, newValue) => setTabIndex(newValue);
   const BASEURL = BASEURL_PROD;
+  const BASEURL2 = "http://0.0.0.0:8000/";
 
   useEffect(() => {
     const endpoint_url2 = `${BASEURL}bookings/getUserBookings/${userId}`;
@@ -50,6 +52,35 @@ function MyBookings() {
     console.log("fetchBookings ran");
     fetchBookings();
   }, [userId]);
+
+  // Fetch workshop bookings from new API
+  useEffect(() => {
+    const fetchWorkshopBookings = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`${BASEURL2}payments/workshop_bookings?user_id=${userId}`);
+        if (response.data.success) {
+          // Handle both single booking and array of bookings
+          if (response.data.bookings && Array.isArray(response.data.bookings)) {
+            setWorkshopBookings(response.data.bookings || []);
+          } else if (response.data.booking) {
+            setWorkshopBookings([response.data.booking]);
+          } else {
+            setWorkshopBookings([]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching workshop bookings:", error);
+        setWorkshopBookings([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchWorkshopBookings();
+    }
+  }, [userId, BASEURL2]);
 
   //console.log("userBookings => ",userBookings);
 
@@ -312,17 +343,6 @@ function MyBookings() {
         )}
         {tabIndex === 1 && (
           <Box p={3}>
-            {/* {bookingCategories.Workshops.length > 0 ? (
-            bookingCategories.Workshops.map((booking) =>(
-
-                renderBookingCard(booking, 'Workshop')
-              )
-            )
-          ) : (
-            <Typography style={{ color: isDarkModeOn ? "white" : "black" }}>
-              No Workshop bookings available.
-            </Typography>
-          )} */}
             {workshopClickTicket ? (
               <WorkshopInformation
                 workshopClickTicket={workshopClickTicket}
@@ -330,14 +350,19 @@ function MyBookings() {
               />
             ) : (
               <>
-                {/* {bookingCategories.Workshops.map((bookingData) => ( */}
-                <WorkshopList
-                  /* key={bookingData.id} */
-                  /* bookingData={bookingData} */
-                  bookingData={{}}
-                  setWorkshopClickTicket={setWorkshopClickTicket}
-                />
-                {/* ))} */}
+                {workshopBookings.length > 0 ? (
+                  workshopBookings.map((bookingData) => (
+                    <WorkshopList
+                      key={bookingData.booking_id}
+                      bookingData={bookingData}
+                      setWorkshopClickTicket={setWorkshopClickTicket}
+                    />
+                  ))
+                ) : (
+                  <Typography style={{ color: isDarkModeOn ? "white" : "black" }}>
+                    No Workshop bookings available.
+                  </Typography>
+                )}
               </>
             )}
           </Box>

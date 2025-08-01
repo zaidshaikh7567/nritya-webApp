@@ -12,7 +12,12 @@ import {
   FormControl,
   InputLabel,
   IconButton,
-  Divider
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/navigation';
@@ -38,6 +43,9 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
   const [selectedDay, setSelectedDay] = useState(null);
   const [quantities, setQuantities] = useState({});
   const [daysMap, setDaysMap] = useState(new Map());
+  const [loading, setLoading] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
 
   useEffect(() => {
     if (!workshopData?.variants) {
@@ -87,7 +95,116 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
     }));
   };
 
-  const handleConfirm = () => {
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve();
+      script.onerror = () => resolve();
+      document.body.appendChild(script);
+    });
+  };
+
+  const initiatePayment = async (bookingPayload) => {
+    try {
+      setLoading(true);
+      
+      // Load Razorpay script
+      await loadRazorpayScript();
+      
+      // Create payment order
+      const response = await fetch('http://0.0.0.0:8000/payments/workshop_payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          booking_data: bookingPayload
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create payment order');
+      }
+
+      const paymentData = await response.json();
+      setPaymentData(paymentData);
+      
+      // Initialize Razorpay
+      const options = {
+        key: paymentData.merchantId,
+        amount: paymentData.amount * 100, // Convert to paise
+        currency: paymentData.currency,
+        name: paymentData.name,
+        description: paymentData.description,
+        order_id: paymentData.orderId,
+        prefill: paymentData.prefill,
+        handler: function (response) {
+          handlePaymentSuccess(response, bookingPayload);
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+      
+    } catch (error) {
+      console.log('Payment initiation error:', error);
+      alert('Failed to initiate payment. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (response, bookingPayload) => {
+    try {
+      setLoading(true);
+      
+      // Verify payment
+      const verifyResponse = await fetch('http://0.0.0.0:8000/payments/workshop_payment_verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          response: response,
+          booking_data: bookingPayload
+        })
+      });
+
+      const verifyData = await verifyResponse.json();
+      
+      if (verifyResponse.ok) {
+        alert('Payment successful! Your workshop booking has been confirmed.');
+        // Redirect to booking confirmation page or dashboard
+        router.push('/myBookings');
+      } else {
+        alert(`Payment verification failed: ${verifyData.message}`);
+      }
+      
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      alert('Payment verification failed. Please contact support.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirm = async () => {
+    // Get user info from localStorage
+    let userInfo = null;
+    try {
+      const userInfoString = localStorage.getItem("userInfo");
+      if (userInfoString) {
+        userInfo = JSON.parse(userInfoString);
+      }
+    } catch (error) {
+      console.error('Error parsing user info from localStorage:', error);
+    }
+
     // Calculate total and proceed with booking
     const selectedItems = Object.entries(quantities)
       .filter(([key, quantity]) => quantity > 0)
@@ -116,34 +233,24 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
           console.log('Found subvariant:', subvariant);
           
           const result = {
-            variantId,
-            subvariantId,
-            quantity,
-            price: subvariant?.price || 0,
-            description: subvariant?.description || '',
+            variant_id: variantId,
+            subvariant_id: subvariantId,
+            variant_description: variant?.description || '',
+            subvariant_description: subvariant?.description || '',
             date: variant?.date || '',
             time: variant?.time || '',
-            variantDescription: variant?.description || '',
-            subvariantDescription: subvariant?.description || ''
+            quantity: quantity,
+            price_per_ticket: subvariant?.price || 0,
+            subtotal: (subvariant?.price || 0) * quantity
           };
           
           console.log('Created item:', result);
           return result;
         } else {
           console.log('Variant not found!');
-          return {
-            variantId,
-            subvariantId,
-            quantity,
-            price: 0,
-            description: '',
-            date: '',
-            time: '',
-            variantDescription: '',
-            subvariantDescription: ''
-          };
+          return null;
         }
-      });
+      }).filter(item => item !== null);
 
     console.log('Selected items after mapping:', selectedItems);
 
@@ -153,93 +260,45 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
     }
 
     // Calculate total amount
-    const total = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = selectedItems.reduce((sum, item) => sum + item.subtotal, 0);
     
-    // Calculate total quantity
-    const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
-
     // Calculate additional fees
-    const subtotal = total;
-    const internetConvenienceFee = Math.round(subtotal * INT_FEE); // 5% internet convenience fee
-    const totalWithFees = subtotal + internetConvenienceFee;
+    const booking_fee = Math.round(subtotal * INT_FEE);
+    const total = subtotal + booking_fee;
 
     // Create detailed booking payload
     const bookingPayload = {
       workshop_id: workshopId,
       workshop_name: workshopData?.name || 'Unknown Workshop',
       workshop_description: workshopData?.description || '',
-      buyers_name: "Buyer Name", // This should come from user profile
-      buyer_email: "buyer@email.com", // This should come from user profile
-      buyer_number: "+919876543210", // This should come from user profile
-      subtotal: subtotal,
-      internet_convenience_fee: internetConvenienceFee,
-      total: totalWithFees,
-      total_quantity: totalQuantity,
-      details: {}
-    };
-
-    // Build variant structure with detailed information
-    selectedItems.forEach(item => {
-      const { variantId, subvariantId, quantity, price, variantDescription, subvariantDescription } = item;
-      
-      if (!bookingPayload.details[variantId]) {
-        bookingPayload.details[variantId] = {};
-      }
-
-      bookingPayload.details[variantId][subvariantId] = {
-        variant_id: variantId,
-        subvariant_id: subvariantId,
-        price_per_ticket: price,
-        quantity: quantity,
-        variant_description: variantDescription,
-        subvariant_description: subvariantDescription,
-        date: item.date,
-        time: item.time
-      };
-    });
-
-    // Create detailed price breakup
-    const priceBreakup = {
-      items: selectedItems.map(item => ({
-        variant_id: item.variantId,
-        subvariant_id: item.subvariantId,
-        variant_description: item.variantDescription,
-        subvariant_description: item.subvariantDescription,
-        date: item.date,
-        time: item.time,
-        quantity: item.quantity,
-        price_per_ticket: item.price,
-        subtotal: item.price * item.quantity
-      })),
+      user_id: userInfo?.UserId || null,
+      buyer_name: userInfo?.displayName || "Guest User",
+      buyer_email: userInfo?.email || "guest@email.com",
+      buyer_phone: userInfo?.phone || "+919876543210",
+      items: selectedItems,
       summary: {
         subtotal: subtotal,
-        booking_fee: internetConvenienceFee,
-        cgst: 0, // Removed GST
-        sgst: 0, // Removed GST
-        total: totalWithFees
+        booking_fee: booking_fee,
+        cgst: 0,
+        sgst: 0,
+        total: total
       }
     };
 
     // Log the complete booking information
     console.log('=== WORKSHOP BOOKING DETAILS ===');
-    console.log('Price Breakup:');
-    console.log(JSON.stringify(priceBreakup, null, 2));
+    console.log('Booking Payload:');
+    console.log(JSON.stringify(bookingPayload, null, 2));
     console.log('');
     
     console.log('=== PRICE BREAKDOWN ===');
     console.log(`Subtotal: ₹${subtotal}`);
-    console.log(`Internet Con Fee (${INT_FEE * 100}%): ₹${internetConvenienceFee}`);
-    console.log(`Total: ₹${totalWithFees}`);
-    console.log(`Total Quantity: ${totalQuantity} tickets`);
+    console.log(`Booking Fee (${INT_FEE * 100}%): ₹${booking_fee}`);
+    console.log(`Total: ₹${total}`);
     console.log('=== END BOOKING DETAILS ===');
-    console.log(selectedItems);
 
-    // For now, just show an alert with summary
-    const summaryText = selectedItems.map(item => 
-      `${item.quantity} × ${item.subvariantDescription || 'Unknown'} (${item.variantDescription || 'Unknown'}) = ₹${item.price * item.quantity}`
-    ).join('\n');
-
-    alert(`Booking Summary:\n\n${summaryText}\n\nTotal: ₹${total}\n\nCheck console for detailed payload.`);
+    // Initiate payment
+    await initiatePayment(bookingPayload);
   };
 
   return (
@@ -430,6 +489,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
         <Button
           variant="contained"
           onClick={handleConfirm}
+          disabled={loading}
           sx={{
             bgcolor: '#735EAB',
             color: 'white',
@@ -438,7 +498,14 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
             }
           }}
         >
-          Book Tickets
+          {loading ? (
+            <>
+              <CircularProgress size={20} sx={{ color: 'white', mr: 1 }} />
+              Processing...
+            </>
+          ) : (
+            'Book Tickets'
+          )}
         </Button>
       </Box>
 
@@ -461,8 +528,8 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
           });
 
         const subtotal = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const internetConvenienceFee = Math.round(subtotal * INT_FEE);
-        const total = subtotal + internetConvenienceFee;
+        const booking_fee = Math.round(subtotal * INT_FEE);
+        const total = subtotal + booking_fee;
 
         if (total > 0) {
           return (
@@ -499,8 +566,8 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
                 <Typography variant="body1">₹{subtotal}</Typography>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="body1">Internet Convenience Fee ({INT_FEE * 100}%):</Typography>
-                <Typography variant="body1">₹{internetConvenienceFee}</Typography>
+                <Typography variant="body1">Booking Fee ({INT_FEE * 100}%):</Typography>
+                <Typography variant="body1">₹{booking_fee}</Typography>
               </Box>
               <Divider sx={{ my: 1 }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

@@ -25,87 +25,6 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaUser, FaEnvelope, FaPhone, Fa
 import TicketClient from './TicketClient';
 import TicketPDF from './TicketPDF';
 
-// Mock data - in real app this would come from API
-const mockTicketData = {
-  "booking_id": "1234",
-  "user_id": "user-id",
-  "user_email": "abc@gmail.com",
-  "workshop_id": "a8097cf1-cc6e-40c0-8a5f-0d3e252f9bf8",
-  "workshop_name": "Workshop by Rocks",
-  "address": {
-    "building": "4th floor,SBC Buildng",
-    "street": "beside ABC1 shop, ABC street",
-    "landmark": "NEw Tower",
-    "city": "Patna",
-    "latitude": "18.9",
-    "longitude": "23.4"
-  },
-  "booking_items": [
-    {
-      "variant_id": "dd852042-8e07-4f68-a0cf-a504332fc808",
-      "subvariant_id": "de551aa1-030a-46fc-bb6d-11a4c90fe104",
-      "variant_description": "DAY 1 | Tanish x Jhanavi | Bollywood",
-      "subvariant_description": "Couple(Early Bird)",
-      "date": "2025-07-30",
-      "time": "09:00",
-      "quantity": 1,
-      "price_per_ticket": 1999,
-      "subtotal": 1999
-    },
-    {
-      "variant_id": "56a67ae9-bc64-4c95-b4df-91ff24280a6f",
-      "subvariant_id": "a371c89c-aaeb-4e03-aae8-a891e747ed38",
-      "variant_description": "DAY 2 | Tanish x Jhanavi | Bollypop",
-      "subvariant_description": "Single",
-      "date": "2025-07-31",
-      "time": "19:15",
-      "quantity": 1,
-      "price_per_ticket": 1299,
-      "subtotal": 1299
-    },
-    {
-      "variant_id": "7ce6b7cc-ad00-4d27-9b88-bc0ed34e8e7c",
-      "subvariant_id": "bf94ea14-af53-4338-af09-ecfdcf5a7e3b",
-      "variant_description": "DAY 1 | Tanish x Jhanavi | Salsa",
-      "subvariant_description": "Single",
-      "date": "2025-07-30",
-      "time": "19:15",
-      "quantity": 1,
-      "price_per_ticket": 1999,
-      "subtotal": 1999
-    },
-    {
-      "variant_id": "dd852042-8e07-4f68-a0cf-a504332fc808",
-      "subvariant_id": "1d1eddab-35ac-4a8c-aafd-6fd1b0d0d309",
-      "variant_description": "DAY 1 | Tanish x Jhanavi | Bollywood",
-      "subvariant_description": "Single",
-      "date": "2025-07-30",
-      "time": "09:00",
-      "quantity": 2,
-      "price_per_ticket": 1499,
-      "subtotal": 2998
-    },
-    {
-      "variant_id": "7ce6b7cc-ad00-4d27-9b88-bc0ed34e8e7c",
-      "subvariant_id": "2663eb74-8b93-4123-8faf-13bd0a1ba551",
-      "variant_description": "DAY 1 | Tanish x Jhanavi | Salsa",
-      "subvariant_description": "Couple",
-      "date": "2025-07-30",
-      "time": "19:15",
-      "quantity": 2,
-      "price_per_ticket": 2999,
-      "subtotal": 5998
-    }
-  ],
-  "booking_summary": {
-    "subtotal": 14293,
-    "booking_fee": 429,
-    "cgst": 0,
-    "sgst": 0,
-    "total": 14722
-  }
-};
-
 const convertTo12HourFormat = (timeString) => {
   if (!timeString) return '';
   try {
@@ -120,6 +39,7 @@ const convertTo12HourFormat = (timeString) => {
 };
 
 const formatDate = (dateString) => {
+  if (!dateString) return '';
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -129,16 +49,71 @@ const formatDate = (dateString) => {
   });
 };
 
-// Mock API function - replace with actual API call
-async function fetchTicketData(ticketId) {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockTicketData;
+// Real API function to fetch ticket data
+async function fetchTicketData(bookingId) {
+  try {
+    const response = await fetch(`http://0.0.0.0:8000/payments/workshop_bookings?booking_id=${bookingId}`);
+    const data = await response.json();
+    
+    console.log("data", data);
+    
+    if (data.success && data.booking) {
+      const booking = data.booking;
+      
+      // Fetch workshop details using workshop_id
+      let workshopDetails = null;
+      try {
+        const workshopResponse = await fetch(`http://0.0.0.0:8000/crud/get_workshop_by_id/${booking.workshop_id}`);
+        const workshopData = await workshopResponse.json();
+        workshopDetails = workshopData;
+        console.log("workshopDetails", workshopDetails);
+      } catch (workshopError) {
+        console.error('Error fetching workshop details:', workshopError);
+      }
+      
+      // Transform the API data to match the expected format
+      return {
+        booking_id: booking.booking_id,
+        user_id: booking.user_id,
+        user_email: booking.buyer_email,
+        workshop_id: booking.workshop_id,
+        workshop_name: workshopDetails?.name || "Workshop Booking",
+        address: {
+          building: workshopDetails?.building || "Venue details to be added",
+          street: workshopDetails?.street || "Address information",
+          landmark: workshopDetails?.geolocation ? "Location available" : "Landmark",
+          city: workshopDetails?.city || "City",
+          latitude: workshopDetails?.geolocation?.split(',')[0] || "0",
+          longitude: workshopDetails?.geolocation?.split(',')[1] || "0"
+        },
+        booking_items: booking.items || [],
+        booking_summary: {
+          subtotal: booking.subtotal,
+          booking_fee: booking.booking_fee,
+          cgst: 0,
+          sgst: 0,
+          total: booking.total_amount
+        },
+        buyer_name: booking.buyer_name,
+        buyer_email: booking.buyer_email,
+        buyer_phone: booking.buyer_phone,
+        payment_method: booking.payment_method,
+        razorpay_payment_id: booking.razorpay_payment_id,
+        created_at: booking.created_at,
+        workshop_details: workshopDetails
+      };
+    } else {
+      throw new Error('Booking not found');
+    }
+  } catch (error) {
+    console.error('Error fetching ticket data:', error);
+    throw error;
+  }
 }
 
 export default async function TicketPage({ params }) {
   const { ticketId } = params;
-  
+  console.log("ticketId", ticketId);
   // Fetch ticket data
   const ticketData = await fetchTicketData(ticketId);
   
@@ -200,72 +175,73 @@ export default async function TicketPage({ params }) {
 
               {/* Workshop Info */}
               <Box sx={{ textAlign: 'center', mb: 4, pt: 2 }}>
-                                 <Typography variant="h4" sx={{ 
-                   fontWeight: 'bold', 
-                   color: '#735EAB',
-                   mb: 2,
-                   textTransform: 'none'
-                 }}>
-                   {sortedTicketData.workshop_name}
-                 </Typography>
+                <Typography variant="h4" sx={{ 
+                  fontWeight: 'bold', 
+                  color: '#735EAB',
+                  mb: 2,
+                  textTransform: 'none'
+                }}>
+                  {sortedTicketData.workshop_name}
+                </Typography>
                 
-                                 <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 3 }}>
-                   <Chip 
-                     icon={<FaCalendarAlt color="white" />} 
-                     label={`${sortedTicketData.booking_items.length} bookings`}
-                     sx={{ bgcolor: '#735EAB', color: 'white' }}
-                   />
-                 </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 3 }}>
+                  <Chip 
+                    icon={<FaCalendarAlt color="white" />} 
+                    label={`${sortedTicketData.booking_items.length} bookings`}
+                    sx={{ bgcolor: '#735EAB', color: 'white' }}
+                  />
+                </Box>
               </Box>
-                          {/* Location Info with QR Code */}
-            <Box sx={{ 
-                 bgcolor: '#f8f9fa', 
-                 p: 3, 
-                 borderRadius: 2, 
-                 mb: 4,
-                 border: '1px solid #e9ecef'
-               }}>
-                 <Grid container spacing={3}>
-                   <Grid item xs={12} md={8}>
-                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                       <LocationOn sx={{ color: '#735EAB', mr: 1 }} />
-                       <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform: 'none' }}>
-                         Venue Details
-                       </Typography>
-                     </Box>
-                     <Typography variant="body1" sx={{ mb: 1 }}>
-                       {sortedTicketData.address.building}
-                     </Typography>
-                     <Typography variant="body1" sx={{ mb: 1 }}>
-                       {sortedTicketData.address.street}
-                     </Typography>
-                     <Typography variant="body1" sx={{ mb: 1 }}>
-                       Near: {sortedTicketData.address.landmark}
-                     </Typography>
-                     <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#735EAB' }}>
-                       {sortedTicketData.address.city}
-                     </Typography>
-                   </Grid>
-                   <Grid item xs={12} md={4}>
-                     <Box sx={{ 
-                       textAlign: 'center',
-                       p: 2,
-                       bgcolor: '#735EAB',
-                       color: 'white',
-                       borderRadius: 2,
-                       height: 'fit-content'
-                     }}>
-                       <QrCode sx={{ fontSize: 80, mb: 1 }} />
-                       <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
-                         Scan QR Code
-                       </Typography>
-                       <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                         Present at venue for entry
-                       </Typography>
-                     </Box>
-                   </Grid>
-                 </Grid>
-               </Box>
+
+              {/* Location Info with QR Code */}
+              <Box sx={{ 
+                bgcolor: '#f8f9fa', 
+                p: 3, 
+                borderRadius: 2, 
+                mb: 4,
+                border: '1px solid #e9ecef'
+              }}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={8}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <LocationOn sx={{ color: '#735EAB', mr: 1 }} />
+                      <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform: 'none' }}>
+                        Venue Details
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      {sortedTicketData.address.building}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      {sortedTicketData.address.street}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      Near: {sortedTicketData.address.landmark}
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#735EAB' }}>
+                      {sortedTicketData.address.city}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Box sx={{ 
+                      textAlign: 'center',
+                      p: 2,
+                      bgcolor: '#735EAB',
+                      color: 'white',
+                      borderRadius: 2,
+                      height: 'fit-content'
+                    }}>
+                      <QrCode sx={{ fontSize: 80, mb: 1 }} />
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        Scan QR Code
+                      </Typography>
+                      <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                        Present at venue for entry
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
 
               {/* Booking Items */}
               <Box sx={{ mb: 4 }}>
@@ -278,7 +254,7 @@ export default async function TicketPage({ params }) {
                   Bookings
                 </Typography>
                 
-                                 {sortedTicketData.booking_items.map((item, index) => (
+                {sortedTicketData.booking_items.map((item, index) => (
                   <Card key={index} sx={{ 
                     mb: 2, 
                     p: 3,
@@ -321,21 +297,20 @@ export default async function TicketPage({ params }) {
                         </Box>
                       </Grid>
                       
-                                             <Grid item xs={12} sm={4}>
-                         <Box sx={{ textAlign: 'right' }}>
-                           <Typography variant="body2" sx={{ color: '#666' }}>
-                             Quantity: {item.quantity}
-                           </Typography>
-                           <Typography variant="body2" sx={{ color: '#735EAB', fontWeight: 'bold' }}>
-                             Ticket Type
-                           </Typography>
-                         </Box>
-                       </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <Box sx={{ textAlign: 'right' }}>
+                          <Typography variant="body2" sx={{ color: '#666' }}>
+                            Quantity: {item.quantity}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: '#735EAB', fontWeight: 'bold' }}>
+                            ₹{item.price_per_ticket} per ticket
+                          </Typography>
+                        </Box>
+                      </Grid>
                     </Grid>
                   </Card>
                 ))}
               </Box>
-
 
               {/* Booking Summary Button */}
               <Box sx={{ 
