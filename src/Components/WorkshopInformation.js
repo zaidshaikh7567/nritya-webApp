@@ -71,7 +71,7 @@ function WorkshopInformation({ workshopClickTicket, setWorkshopClickTicket }) {
     const fetchWorkshopDetails = async () => {
       if (workshopClickTicket?.workshop_id) {
         try {
-          const response = await axios.get(`http://0.0.0.0:8000/crud/get_workshop_by_id/${workshopClickTicket.workshop_id}`);
+          const response = await axios.get(`${BASEURL_PROD}crud/get_workshop_by_id/${workshopClickTicket.workshop_id}`);
           setWorkshopDetails(response.data);
         } catch (error) {
           console.error('Error fetching workshop details:', error);

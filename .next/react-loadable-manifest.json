@@ -42,7 +42,7 @@
       "static/chunks/332.30a07c3066898c63.js",
       "static/chunks/3328-96efeb79f8e7031c.js",
       "static/chunks/3266.782f6a32f3a3dd64.js",
-      "static/chunks/717.31861d957a91c99d.js",
+      "static/chunks/717.8841596eb57cb878.js",
       "static/chunks/1432.e00fed7420c3745d.js"
     ]
   },
@@ -225,7 +225,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-e374d3732af03215.js",
-      "static/chunks/7689.8e535f25e957d92d.js"
+      "static/chunks/7689.5963153a0de11efe.js"
     ]
   },
   "app/modifyInstructors/page.js -> ../../src/Screens/CreatorInstructor": {
@@ -278,7 +278,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-e374d3732af03215.js",
-      "static/chunks/7689.8e535f25e957d92d.js"
+      "static/chunks/7689.5963153a0de11efe.js"
     ]
   },
   "app/modifyStudios/page.js -> ../../src/Screens/ModifyStudiosPage": {
@@ -361,7 +361,7 @@
       "static/chunks/332.30a07c3066898c63.js",
       "static/chunks/3328-96efeb79f8e7031c.js",
       "static/chunks/3266.782f6a32f3a3dd64.js",
-      "static/chunks/717.31861d957a91c99d.js",
+      "static/chunks/717.8841596eb57cb878.js",
       "static/chunks/9376.98cef446bffbc81e.js"
     ]
   },
@@ -392,7 +392,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-e374d3732af03215.js",
-      "static/chunks/7689.8e535f25e957d92d.js"
+      "static/chunks/7689.5963153a0de11efe.js"
     ]
   },
   "app/npolicies/[selected]/page.js -> ../../components/ClientFooter": {
@@ -448,7 +448,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-e374d3732af03215.js",
-      "static/chunks/9238.f922dd3baf919ce6.js"
+      "static/chunks/9238.af4f1690076c737c.js"
     ]
   },
   "app/profile/page.js -> ../../src/Screens/ProfilePage": {
@@ -566,7 +566,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-e374d3732af03215.js",
-      "static/chunks/7689.8e535f25e957d92d.js"
+      "static/chunks/7689.5963153a0de11efe.js"
     ]
   },
   "app/ticket/[ticketId]/TicketPDF.js -> html2canvas": {
