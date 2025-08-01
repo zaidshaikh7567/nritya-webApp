@@ -24,6 +24,7 @@ import {
 import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaUser, FaEnvelope, FaPhone, FaCalendar } from 'react-icons/fa';
 import TicketClient from './TicketClient';
 import TicketPDF from './TicketPDF';
+import { BASEURL_PROD } from '../../../src/constants';
 
 const convertTo12HourFormat = (timeString) => {
   if (!timeString) return '';
@@ -52,7 +53,7 @@ const formatDate = (dateString) => {
 // Real API function to fetch ticket data
 async function fetchTicketData(bookingId) {
   try {
-    const response = await fetch(`http://0.0.0.0:8000/payments/workshop_bookings?booking_id=${bookingId}`);
+    const response = await fetch(`${BASEURL_PROD}payments/workshop_bookings?booking_id=${bookingId}`);
     const data = await response.json();
     
     console.log("data", data);
@@ -63,7 +64,7 @@ async function fetchTicketData(bookingId) {
       // Fetch workshop details using workshop_id
       let workshopDetails = null;
       try {
-        const workshopResponse = await fetch(`http://0.0.0.0:8000/crud/get_workshop_by_id/${booking.workshop_id}`);
+        const workshopResponse = await fetch(`${BASEURL_PROD}crud/get_workshop_by_id/${booking.workshop_id}`);
         const workshopData = await workshopResponse.json();
         workshopDetails = workshopData;
         console.log("workshopDetails", workshopDetails);

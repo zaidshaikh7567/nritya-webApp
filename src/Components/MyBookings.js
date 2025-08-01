@@ -32,7 +32,7 @@ function MyBookings() {
   const [openClassClickTicket, setOpenClassClickTicket] = useState(null);
   const handleTabChange = (event, newValue) => setTabIndex(newValue);
   const BASEURL = BASEURL_PROD;
-  const BASEURL2 = "http://0.0.0.0:8000/";
+  //const BASEURL = "http://0.0.0.0:8000/";
 
   useEffect(() => {
     const endpoint_url2 = `${BASEURL}bookings/getUserBookings/${userId}`;
@@ -58,7 +58,7 @@ function MyBookings() {
     const fetchWorkshopBookings = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`${BASEURL2}payments/workshop_bookings?user_id=${userId}`);
+        const response = await axios.get(`${BASEURL}payments/workshop_bookings?user_id=${userId}`);
         if (response.data.success) {
           // Handle both single booking and array of bookings
           if (response.data.bookings && Array.isArray(response.data.bookings)) {
@@ -80,7 +80,7 @@ function MyBookings() {
     if (userId) {
       fetchWorkshopBookings();
     }
-  }, [userId, BASEURL2]);
+  }, [userId, BASEURL]);
 
   //console.log("userBookings => ",userBookings);
 
