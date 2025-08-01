@@ -1,4 +1,4 @@
-// File: /Users/ayushraj/nritya-webApp/app/page.js
+// File: /Users/ayushraj/Nritya/nritya-webApp/app/page.js
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

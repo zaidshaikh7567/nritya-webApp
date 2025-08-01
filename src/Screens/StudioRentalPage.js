@@ -104,7 +104,7 @@ function StudioRentalPage() {
               Studio Rental Management
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-              Manage your studio's availability and pricing for rentals. Set up time slots, 
+              Manage your studio&apos;s availability and pricing for rentals. Set up time slots, 
               pricing, and availability schedules similar to Calendly.
             </Typography>
           </Box>

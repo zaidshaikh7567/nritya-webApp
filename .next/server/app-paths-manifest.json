@@ -1,5 +1,25 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/aboutus/page": "app/aboutus/page.js",
+  "/bookings/page": "app/bookings/page.js",
+  "/modifyInstructors/page": "app/modifyInstructors/page.js",
+  "/modifyStudios/page": "app/modifyStudios/page.js",
+  "/api/placeholder/[...params]/route": "app/api/placeholder/[...params]/route.js",
+  "/creatorDashboard/page": "app/creatorDashboard/page.js",
+  "/myBookings/page": "app/myBookings/page.js",
+  "/explore/page": "app/explore/page.js",
+  "/modifyWorkshops2/page": "app/modifyWorkshops2/page.js",
   "/page": "app/page.js",
+  "/contactus/page": "app/contactus/page.js",
+  "/ourServices/page": "app/ourServices/page.js",
+  "/npolicies/[selected]/page": "app/npolicies/[selected]/page.js",
+  "/search/[entity]/page": "app/search/[entity]/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/login/page": "app/login/page.js",
+  "/transactions/page": "app/transactions/page.js",
+  "/ticket/[ticketId]/page": "app/ticket/[ticketId]/page.js",
   "/workshop/[workshopId]/events/page": "app/workshop/[workshopId]/events/page.js",
-  "/explore/page": "app/explore/page.js"
+  "/workshop/[workshopId]/page": "app/workshop/[workshopId]/page.js",
+  "/studio/[studioId]/page": "app/studio/[studioId]/page.js",
+  "/studioRental/page": "app/studioRental/page.js"
 }

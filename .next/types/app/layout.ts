@@ -1,4 +1,4 @@
-// File: /Users/ayushraj/nritya-webApp/app/layout.js
+// File: /Users/ayushraj/Nritya/nritya-webApp/app/layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
