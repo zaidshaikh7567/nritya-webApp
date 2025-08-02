@@ -117,7 +117,6 @@ export default async function WorkshopPage({ params }) {
           </Box>
         </main>
         <ClientFooter />
-        <ContactUsWidget />
       </div>
     );
   }

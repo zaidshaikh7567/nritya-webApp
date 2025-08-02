@@ -154,7 +154,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
             >
               <Box sx={{ p: 1, borderRadius: 2, bgcolor: "white" }}>
                 <QRCode
-                  value={bookingData?.booking_id || "workshop-booking"}
+                  value={`${'http://localhost:3000'}/validate_workshop_bookings/${bookingData?.booking_id || "workshop-booking"}`}
                   size={120}
                 />
               </Box>
