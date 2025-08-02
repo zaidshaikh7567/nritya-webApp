@@ -118,7 +118,7 @@ const WorkshopCardForOwner = ({ workshop, isDarkModeOn, onEdit, onDelete }) => {
           <Button
             variant="outlined"
             color="info"
-            onClick={() => alert('Revenue tracking to be implemented')}
+            onClick={() => window.open(`/workshop_revenue/${workshop?.workshop_id}`, '_blank')}
           >
             Revenue
           </Button>

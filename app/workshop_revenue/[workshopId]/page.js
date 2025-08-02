@@ -6,6 +6,8 @@ import { BASEURL_PROD } from '../../../src/constants';
 import ClientHeader from '../../components/ClientHeader';
 import ClientFooter from '../../components/ClientFooter';
 
+const COMMISSION_PERCENTAGE = 0.1;
+
 const WorkshopRevenue = () => {
   const { workshopId } = useParams();
   const [revenueData, setRevenueData] = useState(null);
@@ -98,6 +100,12 @@ const WorkshopRevenue = () => {
         <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
           <strong>Total Revenue:</strong> ₹{totalRevenue.toLocaleString()}
         </div>
+          <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+           <strong>Commission:</strong> ₹{(totalRevenue * COMMISSION_PERCENTAGE).toLocaleString()}
+         </div>
+         <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+           <strong>Total Earnings:</strong> ₹{(totalRevenue * (1 - COMMISSION_PERCENTAGE)).toLocaleString()}
+         </div>
         <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
           <strong>Tickets Sold:</strong> {totalTickets}
         </div>
