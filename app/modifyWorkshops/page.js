@@ -118,7 +118,7 @@ const WorkshopCardForOwner = ({ workshop, isDarkModeOn, onEdit, onDelete }) => {
           <Button
             variant="outlined"
             color="info"
-            onClick={() => window.open(`/workshop_revenue/${workshop?.workshop_id}`, '_blank')}
+            onClick={() => window.open(`/workshopRevenue/${workshop?.workshop_id}`, '_blank')}
           >
             Revenue
           </Button>

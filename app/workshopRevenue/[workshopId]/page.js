@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { BASEURL_PROD } from '../../../src/constants';
 import ClientHeader from '../../components/ClientHeader';
 import ClientFooter from '../../components/ClientFooter';
@@ -10,9 +10,19 @@ const COMMISSION_PERCENTAGE = 0.1;
 
 const WorkshopRevenue = () => {
   const { workshopId } = useParams();
+  const router = useRouter();
   const [revenueData, setRevenueData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const userInfoString = localStorage.getItem("userInfo");
+    console.log(userInfoString);
+    if (userInfoString === null) {
+      router.push('/login');
+      return;
+    }
+  }, [router]);
 
   useEffect(() => {
     const fetchRevenueData = async () => {
@@ -59,6 +69,43 @@ const WorkshopRevenue = () => {
     return { totalRevenue, totalTickets, totalCapacity };
   };
 
+  const downloadCSV = () => {
+    if (!workshopData) return;
+
+    // Create CSV content
+    let csvContent = "Variant,Variant ID,Subvariant,Subvariant ID,Price,Capacity,Sold,Revenue\n";
+    
+    Object.entries(workshopData).forEach(([variantId, variant]) => {
+      const variantDescription = variant.variant_description;
+      const subvariants = Object.entries(variant).filter(([key, value]) => 
+        typeof value === 'object' && value.price !== undefined
+      );
+
+      subvariants.forEach(([subvariantId, subvariant]) => {
+        csvContent += `"${variantDescription}","${variantId}","${subvariant.subvariant_description}","${subvariantId}",${subvariant.price},${subvariant.capacity},${subvariant.quantity},${subvariant.subtotal}\n`;
+      });
+    });
+
+    // Add summary row
+    csvContent += `\nSummary\n`;
+    csvContent += `Tickets Sold,,,,,,${totalTickets}\n`;
+    csvContent += `Total Capacity,,,,,${totalCapacity}\n`;
+    csvContent += `Total Revenue,,,,,,,${totalRevenue}\n`;
+    csvContent += `Commission (10%),,,,,,,${(totalRevenue * COMMISSION_PERCENTAGE).toFixed(2)}\n`;
+    csvContent += `Total Earnings,,,,,,,${(totalRevenue * (1 - COMMISSION_PERCENTAGE)).toFixed(2)}\n`;
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `workshop_revenue_${workshopId}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
@@ -95,7 +142,6 @@ const WorkshopRevenue = () => {
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif'}}>
       <h2 style={{textTransform:'none'}}>Workshop Revenue Dashboard</h2>
       <p>Workshop ID: {workshopId}</p>
-      
       <div style={{ margin: '20px 0', display: 'flex', gap: '20px' }}>
         <div style={{ padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
           <strong>Total Revenue:</strong> ₹{totalRevenue.toLocaleString()}
@@ -114,7 +160,25 @@ const WorkshopRevenue = () => {
         </div>
       </div>
 
-      <h3 style={{textTransform:'none'}}>Revenue Breakdown</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <h3 style={{textTransform:'none'}}>Revenue Breakdown</h3>
+        <button 
+          onClick={downloadCSV}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '14px'
+          }}
+          onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'}
+          onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}
+        >
+          Download CSV
+        </button>
+      </div>
       
       <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}>
         <thead>

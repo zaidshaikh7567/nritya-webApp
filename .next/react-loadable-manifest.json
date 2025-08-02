@@ -228,7 +228,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3e3166586ceabff5.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.eb71d89d13eba776.js"
     ]
   },
   "app/modifyInstructors/page.js -> ../../src/Screens/CreatorInstructor": {
@@ -283,7 +283,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3e3166586ceabff5.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.eb71d89d13eba776.js"
     ]
   },
   "app/modifyStudios/page.js -> ../../src/Screens/ModifyStudiosPage": {
@@ -399,7 +399,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3e3166586ceabff5.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.eb71d89d13eba776.js"
     ]
   },
   "app/npolicies/[selected]/page.js -> ../../components/ClientFooter": {
@@ -576,7 +576,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3e3166586ceabff5.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.eb71d89d13eba776.js"
     ]
   },
   "app/ticket/[ticketId]/TicketPDF.js -> html2canvas": {

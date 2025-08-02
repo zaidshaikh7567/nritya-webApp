@@ -41,8 +41,15 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
   const [quantities, setQuantities] = useState({});
   const [daysMap, setDaysMap] = useState(new Map());
   const [loading, setLoading] = useState(false);
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
   const [paymentData, setPaymentData] = useState(null);
+
+  useEffect(() => {
+    const userInfoString = localStorage.getItem("userInfo");
+    if (userInfoString) {
+      setUserInfo(JSON.parse(userInfoString));
+    }
+  }, []);
 
   useEffect(() => {
     if (!workshopData?.variants) {
@@ -501,7 +508,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
               Processing...
             </>
           ) : (
-            'Book Tickets'
+              userInfo? ("Book Tickets") : ("Login to Book Tickets")
           )}
         </Button>
       </Box>
