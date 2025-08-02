@@ -22,7 +22,7 @@ import ClientFooter from '../../components/ClientFooter';
 
 // SSR function to fetch validation data
 async function validateWorkshopBooking(encryptedBookingId) {
-  const BASEURL_LOCAL = 'http://0.0.0.0:8000/'
+  const BASEURL_LOCAL = BASEURL_PROD //'http://0.0.0.0:8000/'
   try {
     const response = await fetch(`${BASEURL_LOCAL}payments/validate_workshop_bookings/${encryptedBookingId}`, {
       method: 'GET',

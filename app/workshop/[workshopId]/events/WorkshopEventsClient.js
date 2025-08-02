@@ -13,16 +13,13 @@ import {
   InputLabel,
   IconButton,
   Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   CircularProgress
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/navigation';
 import { FaCalendarAlt, FaClock, FaRegCalendarAlt } from 'react-icons/fa';
 import { Badge } from 'react-bootstrap';
+import { BASEURL_PROD } from '../../../../src/constants';
 const INT_FEE = 0.03;
 
 const convertTo12HourFormat = (timeString) => {
@@ -113,7 +110,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
       await loadRazorpayScript();
       
       // Create payment order
-      const response = await fetch('http://0.0.0.0:8000/payments/workshop_payment', {
+      const response = await fetch(`${BASEURL_PROD}payments/workshop_payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +161,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
       setLoading(true);
       
       // Verify payment
-      const verifyResponse = await fetch('http://0.0.0.0:8000/payments/workshop_payment_verify', {
+      const verifyResponse = await fetch(`${BASEURL_PROD}payments/workshop_payment_verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

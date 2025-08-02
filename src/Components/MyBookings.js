@@ -36,7 +36,7 @@ function MyBookings() {
 
   useEffect(() => {
     const endpoint_url2 = `${BASEURL}bookings/getUserBookings/${userId}`;
-    console.log(endpoint_url2);
+    console.log("HIIII ",endpoint_url2);
 
     const fetchBookings = async () => {
       try {
@@ -58,8 +58,11 @@ function MyBookings() {
     const fetchWorkshopBookings = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`${BASEURL}payments/workshop_bookings?user_id=${userId}`);
+        const url = `${BASEURL}payments/workshop_bookings?user_id=${userId}`
+        console.log(url)
+        const response = await axios.get(url);
         if (response.data.success) {
+          console.log(response)
           // Handle both single booking and array of bookings
           if (response.data.bookings && Array.isArray(response.data.bookings)) {
             setWorkshopBookings(response.data.bookings || []);
@@ -80,7 +83,7 @@ function MyBookings() {
     if (userId) {
       fetchWorkshopBookings();
     }
-  }, [userId, BASEURL]);
+  }, [userId]);
 
   //console.log("userBookings => ",userBookings);
 

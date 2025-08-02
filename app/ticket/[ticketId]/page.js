@@ -119,7 +119,7 @@ export default async function TicketPage({ params }) {
   console.log("ticketId", ticketId);
   // Fetch ticket data
   const ticketData = await fetchTicketData(ticketId);
-  
+  const client_url  = "https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/"
   // Sort booking items by date and time
   const sortedBookingItems = [...ticketData.booking_items].sort((a, b) => {
     // First sort by date
@@ -244,9 +244,9 @@ export default async function TicketPage({ params }) {
                             display: 'inline-block'
                           }}>
                             <QRCode
-                  value={`${'http://localhost:3000'}/validate_workshop_bookings/${sortedTicketData?.booking_id || "workshop-booking"}`}
-                  size={120}
-                />
+                              value={`${client_url}/validate_workshop_bookings/${sortedTicketData?.booking_id || "workshop-booking"}`}
+                              size={120}
+                            />
                             <Typography variant="body2" sx={{ 
                               fontWeight: 'bold',
                               color: '#735EAB'

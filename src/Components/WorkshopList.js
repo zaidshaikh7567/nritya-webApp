@@ -15,6 +15,7 @@ const theme = createTheme({
 
 function WorkshopList({ bookingData, setWorkshopClickTicket }) {
   const endpoint_url = BASEURL_PROD + "bookings/availFreeTrial/";
+  const client_url  = "https://nritya-webapp-ssr-1-b3a1c0b4b8f2.herokuapp.com/"
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const router = useRouter();
   const [workshopDetails, setWorkshopDetails] = useState(null);
@@ -154,7 +155,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
             >
               <Box sx={{ p: 1, borderRadius: 2, bgcolor: "white" }}>
                 <QRCode
-                  value={`${'http://localhost:3000'}/validate_workshop_bookings/${bookingData?.booking_id || "workshop-booking"}`}
+                  value={`${client_url}validate_workshop_bookings/${bookingData?.booking_id || "workshop-booking"}`}
                   size={120}
                 />
               </Box>

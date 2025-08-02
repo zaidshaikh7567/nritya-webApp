@@ -89,7 +89,7 @@ export default function TransactionsPage() {
     limit: 20,
     total: 0
   });
-  const BASESERVER_URL = 'http://0.0.0.0:8000/'
+  const BASESERVER_URL =  BASEURL_PROD//'http://0.0.0.0:8000/'
   // Get user info from localStorage
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
