@@ -5,7 +5,6 @@ import RoomIcon from '@mui/icons-material/Room';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import ClientHeader from '../../components/ClientHeader';
 import ClientFooter from '../../components/ClientFooter';
-import ContactUsWidget from '../../components/ContactUsWidget';
 import { formatDateString } from '../../../src/utils/common';
 import { convertTo12HourFormat } from '../../../src/utils/timeUtils';
 import { CHIP_LEVELS_DESIGN } from '../../../src/constants';
@@ -408,8 +407,6 @@ export default async function WorkshopPage({ params }) {
           </Grid>
         </Box>
       </main>
-      <ClientFooter />
-      <ContactUsWidget />
     </div>
   );
 } 
