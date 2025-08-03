@@ -67,10 +67,10 @@ async function fetchTicketData(bookingId) {
     if (data.success && data.booking) {
       const booking = data.booking;
       
-      // Fetch workshop details using entity_id
+      // Fetch workshop details using workshop_id
       let workshopDetails = null;
       try {
-        const workshopResponse = await fetch(`${BASEURL_PROD}crud/get_workshop_by_id/${booking.entity_id}`);
+        const workshopResponse = await fetch(`${BASEURL_PROD}crud/get_workshop_by_id/${booking.workshop_id}`);
         const workshopData = await workshopResponse.json();
         workshopDetails = workshopData;
         console.log("workshopDetails", workshopDetails);
@@ -83,8 +83,7 @@ async function fetchTicketData(bookingId) {
         booking_id: booking.booking_id,
         user_id: booking.user_id,
         user_email: booking.buyer_email,
-        entity_id: booking.entity_id,
-        entity_type: booking.entity_type || 'Workshop',
+        workshop_id: booking.workshop_id,
         workshop_name: workshopDetails?.name || "Workshop Booking",
         address: {
           building: workshopDetails?.building || "Venue details to be added",

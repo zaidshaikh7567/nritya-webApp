@@ -46,9 +46,9 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
   // Fetch workshop details
   useEffect(() => {
     const fetchWorkshopDetails = async () => {
-          if (bookingData?.entity_id) {
-      try {
-        const response = await axios.get(`${BASEURL_PROD}crud/get_workshop_by_id/${bookingData.entity_id}`);
+      if (bookingData?.workshop_id) {
+        try {
+          const response = await axios.get(`${BASEURL_PROD}crud/get_workshop_by_id/${bookingData.workshop_id}`);
           setWorkshopDetails(response.data);
         } catch (error) {
           console.error('Error fetching workshop details:', error);
@@ -57,7 +57,7 @@ function WorkshopList({ bookingData, setWorkshopClickTicket }) {
     };
 
     fetchWorkshopDetails();
-      }, [bookingData?.entity_id]);
+  }, [bookingData?.workshop_id]);
 
   const handleBookingClick = () => {
     // Navigate to ticket page

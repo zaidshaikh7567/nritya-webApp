@@ -272,10 +272,9 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
 
     // Create detailed booking payload
     const bookingPayload = {
-      entity_id: workshopId,
-      entity_type: 'Workshop',
-      entity_name: workshopData?.name || 'Unknown Workshop',
-      entity_description: workshopData?.description || '',
+      workshop_id: workshopId,
+      workshop_name: workshopData?.name || 'Unknown Workshop',
+      workshop_description: workshopData?.description || '',
       user_id: userInfo?.UserId || null,
       buyer_name: userInfo?.displayName || "Guest User",
       buyer_email: userInfo?.email || "guest@email.com",
