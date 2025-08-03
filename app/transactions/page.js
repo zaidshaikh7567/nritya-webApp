@@ -319,7 +319,7 @@ export default function TransactionsPage() {
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2">
-                              {transaction.booking?.workshop_id || 'N/A'}
+                              {transaction.booking?.entity_id || 'N/A'}
                             </Typography>
                           </TableCell>
                         </TableRow>
