@@ -228,7 +228,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3fd526bfda83fbb2.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.b48208405d9b7854.js"
     ]
   },
   "app/modifyInstructors/page.js -> ../../src/Screens/CreatorInstructor": {
@@ -283,7 +283,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3fd526bfda83fbb2.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.b48208405d9b7854.js"
     ]
   },
   "app/modifyStudios/page.js -> ../../src/Screens/ModifyStudiosPage": {
@@ -319,7 +319,7 @@
       "static/chunks/2601-467ef39b626dfe36.js",
       "static/chunks/8676.b5e301dc4af24dc7.js",
       "static/chunks/9929.f96428a80d19a599.js",
-      "static/chunks/9590.02358fd3dab93606.js"
+      "static/chunks/9590.41767d1c8cdea5dd.js"
     ]
   },
   "app/modifyStudios/page.js -> ../components/ClientFooter": {
@@ -399,7 +399,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3fd526bfda83fbb2.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.b48208405d9b7854.js"
     ]
   },
   "app/npolicies/[selected]/page.js -> ../../components/ClientFooter": {
@@ -576,7 +576,7 @@
       "static/chunks/9737-acfd9c9d5de5a03e.js",
       "static/chunks/5918-1e67820f4096d079.js",
       "static/chunks/821-3fd526bfda83fbb2.js",
-      "static/chunks/7581.bc270accac876153.js"
+      "static/chunks/7581.b48208405d9b7854.js"
     ]
   },
   "app/ticket/[ticketId]/TicketPDF.js -> html2canvas": {

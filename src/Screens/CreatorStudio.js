@@ -142,7 +142,7 @@ function CreatorStudio() {
     };
       
       getStudioCreated();
-    },[setStudio, navigate]);
+    },[]);
  
   useEffect(() => {
     console.log("Creator Studio setStudioId")

@@ -180,7 +180,7 @@ function StudioUpdate({
     // Fetch data for the selected studio when studioId changes
     if (selectedStudio) {
       //console.log("Studio Instructors Names",selectedStudio.instructorsNames)
-      setSelectedInstructors(selectedStudio.instructorsNames);
+      setSelectedInstructors(selectedStudio.instructorsNames || []);
       if (selectedStudio && selectedStudio.danceStyles) {
         setSelectedDanceStyles(selectedStudio.danceStyles.split(","));
       }
@@ -188,7 +188,7 @@ function StudioUpdate({
         setSelectedAmenities(selectedStudio.addAmenities.split(","));
       }
       if (selectedStudio && selectedStudio.tableData) {
-        const maxIndex = Math.max(...Object.keys(tableData).map(Number));
+        const maxIndex = Math.max(...Object.keys(selectedStudio.tableData).map(Number));
         setSelectedStudioFrozenClassRows(maxIndex);
       }
       if (selectedStudio && selectedStudio?.timings) {
@@ -369,6 +369,7 @@ function StudioUpdate({
   };
 
   const handleTableChange = (index, field, value) => {
+    console.log("handleTableChange:", { index, field, value });
     setTableData((prevData) => {
       if (field === "days") {
         value = Array.isArray(value) ? value.join(",") : value;
@@ -413,7 +414,18 @@ function StudioUpdate({
       if (!entry.level?.trim()) return "Level is required";
       if (!entry.instructors.length)
         return "At least one instructor is required";
-      if (!entry.classCategory.length || !entry.classCategory[0]?.trim())
+      
+      // Debug logging
+      console.log("Class category validation:", {
+        classCategory: entry.classCategory,
+        length: entry.classCategory?.length,
+        firstElement: entry.classCategory?.[0],
+        trimmed: entry.classCategory?.[0]?.trim()
+      });
+      
+      // Check if classCategory exists, has length, and the first element is not empty
+      const categoryValue = entry.classCategory?.[0];
+      if (!entry.classCategory || !entry.classCategory.length || !categoryValue || categoryValue === "" || !categoryValue.trim())
         return "Class category is required";
     }
 
