@@ -8,6 +8,42 @@ import { useJsApiLoader } from "@react-google-maps/api";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { TextField } from "@mui/material";
 
+// Add CSS styles for autocomplete dropdown
+const autocompleteStyles = {
+  autocompleteContainer: {
+    position: 'relative',
+    zIndex: 1000,
+  },
+  autocompleteDropdown: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    border: '1px solid #ccc',
+    borderTop: 'none',
+    borderRadius: '0 0 4px 4px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    maxHeight: '200px',
+    overflowY: 'auto',
+    zIndex: 1000,
+  },
+  suggestionItem: {
+    padding: '10px 15px',
+    cursor: 'pointer',
+    borderBottom: '1px solid #eee',
+    '&:hover': {
+      backgroundColor: '#f5f5f5',
+    },
+  },
+  suggestionItemActive: {
+    padding: '10px 15px',
+    cursor: 'pointer',
+    backgroundColor: '#e3f2fd',
+    borderBottom: '1px solid #eee',
+  },
+};
+
 const libraries = ["places"];
 const apiKey = "AIzaSyAAPq5IMotbu90TZAEtyj8qgYyVJoROzsQ";
 
@@ -35,12 +71,18 @@ function MapsInput({
   }, [selectedLocation]);
 
   const handleSelect = async (selectedAddress) => {
-    const results = await geocodeByAddress(selectedAddress);
-    const latLng = await getLatLng(results[0]);
+    try {
+      const results = await geocodeByAddress(selectedAddress);
+      const latLng = await getLatLng(results[0]);
 
-    setMapAddress(selectedAddress);
-    setCenter(latLng);
-    setSelectedLocation(latLng);
+      setMapAddress(selectedAddress);
+      setCenter(latLng);
+      setSelectedLocation(latLng);
+    } catch (error) {
+      console.error("Error in handleSelect:", error);
+      // Still update the address even if geocoding fails
+      setMapAddress(selectedAddress);
+    }
   };
 
   const handleMapClick = async ({ lat, lng }) => {
@@ -70,45 +112,44 @@ function MapsInput({
   return (
     <div>
       {/* Autocomplete Input */}
-      <PlacesAutocomplete
-        value={mapAddress}
-        onChange={setMapAddress}
-        onSelect={handleSelect}
-      >
-        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div>
-            {/* <input
-              {...getInputProps({
-                placeholder: "Enter address...",
-                className: "location-search-input",
-                style: { height: "40px", fontSize: "16px", width: "100%" },
-              })}
-            /> */}
-            <TextField
-              fullWidth
-              {...getInputProps({
-                placeholder: "Enter address...",
-              })}
-              sx={{ height: FORM_FIELD_HEIGHT }}
-              variant="outlined"
-            />
+      {isLoaded && (
+        <PlacesAutocomplete
+          value={mapAddress}
+          onChange={setMapAddress}
+          onSelect={handleSelect}
+        >
+          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+            <div style={autocompleteStyles.autocompleteContainer}>
+              <TextField
+                fullWidth
+                {...getInputProps({
+                  placeholder: "Enter address...",
+                })}
+                sx={{ height: FORM_FIELD_HEIGHT }}
+                variant="outlined"
+              />
 
-            <div className="autocomplete-dropdown-container">
-              {loading && <div>Loading...</div>}
-              {suggestions.map((suggestion) => (
-                <div
-                  {...getSuggestionItemProps(suggestion, {
-                    className: "suggestion-item",
-                  })}
-                  key={suggestion.placeId}
-                >
-                  <span>{suggestion.description}</span>
+              {suggestions.length > 0 && (
+                <div style={autocompleteStyles.autocompleteDropdown}>
+                  {loading && <div style={{ padding: '10px 15px' }}>Loading...</div>}
+                  {suggestions.map((suggestion) => (
+                    <div
+                      {...getSuggestionItemProps(suggestion, {
+                        style: suggestion.active 
+                          ? autocompleteStyles.suggestionItemActive 
+                          : autocompleteStyles.suggestionItem,
+                      })}
+                      key={suggestion.placeId}
+                    >
+                      <span>{suggestion.description}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          </div>
-        )}
-      </PlacesAutocomplete>
+          )}
+        </PlacesAutocomplete>
+      )}
 
       <br />
 

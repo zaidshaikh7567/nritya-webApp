@@ -60,7 +60,7 @@ function CreatorStudio() {
     }
   
     getCreatorMode();
-  }, [isCreator]); // Run once on mount
+  }, [currentUser.uid]); // Only run when currentUser.uid changes
 
     // Fetch instructors for the current user
   useEffect(() => {
@@ -136,27 +136,16 @@ function CreatorStudio() {
       });
       localStorage.setItem("StudioCreated", JSON.stringify(studiosOfUser));
       setStudio(studiosOfUser);
-      setStudioId(studiosOfUser.map((studio) => (String(studio.studioName) + " :" + String(studio.id))));
-      console.log(studio)
-      console.log("studioId",studioId)
+      setStudioId(studiosOfUser.map((studio) => (String(studio.studioName) + " : " + String(studio.id))));
+      console.log("Studios fetched:", studiosOfUser);
+      console.log("Studio IDs set:", studiosOfUser.map((studio) => (String(studio.studioName) + " : " + String(studio.id))));
     };
       
       getStudioCreated();
     },[]);
  
-  useEffect(() => {
-    console.log("Creator Studio setStudioId")
-    // Fetch the list of studios created by the user from localStorage
-    const studiosOfUser = JSON.parse(localStorage.getItem('StudioCreated')) || [];
-    setStudio(studiosOfUser);
-
-    // Create the list of studio IDs with the format "studioName: studioId"
-    const studioIdList = studiosOfUser.map((studio) => `${studio.studioName} : ${studio.id}`);
-    setStudioId(studioIdList);
-
-    console.log("studio:", studio);
-    console.log("studioId", studioId);
-  }, [setStudioId]);
+  // Remove this useEffect as it's redundant and causes circular dependency
+  // The first useEffect already handles setting both studio and studioId states
 
   console.log("studio :",studio)
   return (
@@ -180,13 +169,15 @@ function CreatorStudio() {
         </TabPanel>
         <TabPanel value="2">
         <>
-        <StudioUpdate
-                  studio={studio}
-                  setStudio={setStudio}
-                  instructors={instructors}
-                  studioId={studioId}
-                  setStudioId={setStudioId}
-                />
+        {studio.length > 0 && studioId.length > 0 && (
+          <StudioUpdate
+            studio={studio}
+            setStudio={setStudio}
+            instructors={instructors}
+            studioId={studioId}
+            setStudioId={setStudioId}
+          />
+        )}
         </>
     
         </TabPanel>
