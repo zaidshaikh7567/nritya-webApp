@@ -19,7 +19,12 @@ function SideMenu({ showProfileOffcanvas, closeProfileOffcanvas }) {
     console.log("Logging out SideMenu")
     try {
       await auth.signOut();
-      localStorage.clear()
+      // Remove only authentication-related localStorage items
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('userInfoFull');
+      localStorage.removeItem('userDetails');
+      localStorage.removeItem('authToken');
+      // Clear secure storage for creator mode and other secure data
       secureLocalStorage.clear()
       // Close the offcanvas after logout
       closeProfileOffcanvas();

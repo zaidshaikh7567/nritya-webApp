@@ -200,7 +200,11 @@ function Header() {
   //console.log("Hii-1", entity)
 
   const handleOpen = () => {
-    localStorage.clear();
+    // Clear authentication-related localStorage items before opening sign-in modal
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('userInfoFull');
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('authToken');
     setShowSignInModal(true);
   }
 

@@ -3,7 +3,6 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Image from 'react-bootstrap/Image';
 import Nav from 'react-bootstrap/Nav';
 import { useMediaQuery } from 'react-responsive';
@@ -11,23 +10,18 @@ import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkModeStatus } from '../../src/redux/selectors/darkModeSelector';
 import { selectRefreshLocation } from '../../src/redux/selectors/refreshLocationSelector';
-import citiesData from '../../src/cities.json';
 import { toggleDarkMode } from '../../src/redux/actions/darkModeAction';
 // import { useAuth } from '../../src/context/AuthContext';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import { getBrowserLocation } from '../../src/utils/location';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Chip from '@mui/material/Chip';
 import Switch from '@mui/material/Switch';
-import Skeleton from '@mui/material/Skeleton';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../src/Components/Header.css';
-import { Apartment, PlaceTwoTone, Close } from '@mui/icons-material';
+import { Apartment, PlaceTwoTone } from '@mui/icons-material';
 
 // Logo image paths for Next.js
 const logoBig = '/assets/images/logo_large.png';
@@ -95,8 +89,8 @@ function ClientHeader() {
   const [showSignInModal, setShowSignInModal] = useState(false);
   
   // Check if user is logged in from localStorage
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+  const isLoggedIn = userInfo !== null;
   const currentUser = isLoggedIn ? userInfo : null;
   const dispatch = useDispatch();
   const isDarkModeOn = useSelector(selectDarkModeStatus);

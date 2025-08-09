@@ -8,7 +8,7 @@ import { COLLECTIONS } from "./../constants.js";
 import {  Row, Col } from 'react-bootstrap';
 import { Button, Container } from '@mui/material';
 import { setCreatorMode } from '../utils/firebaseUtils.js';
-import { postData } from '../utils/common.js';
+import { postData, setUserInfo } from '../utils/common.js';
 
 
 
@@ -92,7 +92,21 @@ function LoginPage({ onLogin, setIsLoggedIn }) {
         }
         await addUserIfMissing(user);
         await setCreatorMode(user.uid);
-        navigate.push(`/`);
+        if (user !== null) {
+          setUserInfo(user);
+        }
+        //const UserInfo = {"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL}
+        //const userInfoFull = user;
+        //localStorage.setItem('userInfo', JSON.stringify(UserInfo));
+        //localStorage.setItem('userInfoFull', JSON.stringify(userInfoFull));
+  
+        const redirectUrl = localStorage.getItem("redirectUrl");
+        if (redirectUrl) {
+          localStorage.removeItem("redirectUrl");
+          navigate.push(redirectUrl);
+        } else {
+          navigate.push(`/`);
+        }
       } catch (error) {
         console.error('Google Sign In Error:', error);
         console.error('Error code:', error.code);

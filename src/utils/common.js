@@ -31,6 +31,13 @@ export async function postData(dbPayload, collection_name, notify, metadata) {
   }
 }
 
+export async function setUserInfo(user) {
+  const UserInfo = {"UserId":user.uid,"email":user.email,"isPremium":user.isPremium,"displayName":user.displayName,"WorkshopCreated":user.WorkshopCreated,"WorkshopEnrolled":user.WorkshopEnrolled,"CreatorMode":false,"photoURL":user.photoURL}
+  const userInfoFull = user;
+  localStorage.setItem('userInfo', JSON.stringify(UserInfo));
+  localStorage.setItem('userInfoFull', JSON.stringify(userInfoFull));
+}
+
 export async function putData(dbPayload, collection_name, entity_id, notify = null, metadata = null) {
   const BASEURL = BASEURL_PROD;
   const endpoint = `crud/updateEntity/${entity_id}`;

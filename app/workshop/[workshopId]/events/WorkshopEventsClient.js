@@ -49,6 +49,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
     if (userInfoString) {
       setUserInfo(JSON.parse(userInfoString));
     }
+    localStorage.removeItem("redirectUrl");
   }, []);
 
   useEffect(() => {
@@ -204,6 +205,10 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
       const userInfoString = localStorage.getItem("userInfo");
       if (userInfoString) {
         userInfo = JSON.parse(userInfoString);
+      } else {
+        localStorage.setItem("redirectUrl", window.location.pathname);
+        router.push('/login');
+        return;
       }
     } catch (error) {
       console.error('Error parsing user info from localStorage:', error);

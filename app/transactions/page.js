@@ -3,10 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Box, 
-  Typography, 
-  Grid, 
+  Typography,
   Card, 
-  CardContent,
   Chip,
   Table,
   TableBody,
@@ -19,13 +17,9 @@ import {
   Pagination,
   Alert,
   CircularProgress,
-  IconButton,
-  Tooltip
 } from '@mui/material';
 import { 
   Refresh,
-  Visibility,
-  Receipt,
   Payment,
   Error,
   CheckCircle,
@@ -91,8 +85,8 @@ export default function TransactionsPage() {
   });
   const BASESERVER_URL =  BASEURL_PROD//'http://0.0.0.0:8000/'
   // Get user info from localStorage
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+  const isLoggedIn = userInfo !== null;
 
   // Memoize fetchTransactions to prevent infinite loops
   const fetchTransactions = useCallback(async () => {

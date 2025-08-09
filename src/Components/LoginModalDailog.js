@@ -17,13 +17,15 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const LoginModalDailog = ({open, handleClose }) => {
   console.log("Open",open)
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
-    return storedIsLoggedIn === 'true';
+    const userInfo = localStorage.getItem('userInfo');
+    return userInfo !== null && userInfo !== 'null';
   });
 
   useEffect(() => {
-    console.log("useEffect triggered - isLoggedIn:", isLoggedIn, "localStorage isLoggedIn:", localStorage.getItem('isLoggedIn'));
-    if (isLoggedIn && localStorage.getItem('isLoggedIn') === 'true') {
+    const userInfo = localStorage.getItem('userInfo');
+    const currentlyLoggedIn = userInfo !== null && userInfo !== 'null';
+    console.log("useEffect triggered - isLoggedIn:", isLoggedIn, "userInfo exists:", !!userInfo);
+    if (isLoggedIn && currentlyLoggedIn) {
       console.log("It's logged in",isLoggedIn)
       handleClose();
     }

@@ -36,7 +36,6 @@ const LoginText = styled('div')(({ theme }) => ({
 }));
 
 const LoginModalForm = ({ isLoggedIn, setIsLoggedIn }) => {
-    const [username, setUsername] = useState(() => localStorage.getItem('username') || '');
     const [userID, setUserID] = useState(() => {
         const userInfo = localStorage.getItem('userInfo');
         return userInfo ? JSON.parse(userInfo).localId : '';
@@ -44,13 +43,10 @@ const LoginModalForm = ({ isLoggedIn, setIsLoggedIn }) => {
 
     const handleLogin = (UserInfo, userInfoFull) => {
         console.log("Login successful, setting isLoggedIn to true");
-        setUsername(UserInfo.displayName);
         setIsLoggedIn(true);
         setUserID(UserInfo.localId);
-        localStorage.setItem('username', UserInfo.displayName);
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userInfo', JSON.stringify(UserInfo));
-        localStorage.setItem('userInfoFull', JSON.stringify(userInfoFull));
+        //localStorage.setItem('userInfo', JSON.stringify(UserInfo));
+        //localStorage.setItem('userInfoFull', JSON.stringify(userInfoFull));
         console.log("User Info Full local", JSON.parse(localStorage.getItem('userInfoFull')));
     };
 
