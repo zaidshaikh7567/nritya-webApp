@@ -109,7 +109,7 @@ export const SEARCH_FILTERS ={
 }
 
 export const BASEURL_DEV = "http://0.0.0.0:8000/"
-export const BASEURL_PROD=  "https://nrityaserver-2b241e0a97e5.herokuapp.com/" //process.env.REACT_APP_BACKEND_URL
+export const BASEURL_PROD=  BASEURL_DEV//"https://nrityaserver-2b241e0a97e5.herokuapp.com/" //process.env.REACT_APP_BACKEND_URL
 export const STUDIO_ICON_DEFAULT = "https://firebasestorage.googleapis.com/v0/b/nritya-7e526.appspot.com/o/RichEmailImages%2FDance3.jpg?alt=media&token=d7d41929-39c1-40d1-ad6a-1b2281769e84"
 
 export const AMENITIES_ICONS = {

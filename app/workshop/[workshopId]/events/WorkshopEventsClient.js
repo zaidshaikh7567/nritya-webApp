@@ -13,7 +13,12 @@ import {
   InputLabel,
   IconButton,
   Divider,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/navigation';
@@ -42,6 +47,9 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
   const [daysMap, setDaysMap] = useState(new Map());
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('+91');
+  const [pendingBookingPayload, setPendingBookingPayload] = useState(null);
   const [paymentData, setPaymentData] = useState(null);
 
   useEffect(() => {
@@ -113,7 +121,7 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
   const initiatePayment = async (bookingPayload) => {
     try {
       setLoading(true);
-      
+      console.log('Initiating payment for booking payload:', bookingPayload);
       // Load Razorpay script
       await loadRazorpayScript();
       
@@ -275,15 +283,42 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
     const booking_fee = Math.round(subtotal * INT_FEE);
     const total = subtotal + booking_fee;
 
-    // Create detailed booking payload
+    // Check if phone number is missing and show popup
+    const currentPhone = userInfo?.phoneNumber || "";
+    if (!currentPhone.trim()) {
+      // Create booking payload and store it for later use
+      const bookingPayload = {
+        workshop_id: workshopId,
+        workshop_name: workshopData?.name || 'Unknown Workshop',
+        workshop_description: workshopData?.description || '',
+        user_id: userInfo?.UserId || null,
+        buyer_name: userInfo?.displayName || "Guest User",
+        buyer_email: userInfo?.email || "",
+        buyer_phone: "", // Will be updated after phone input
+        items: selectedItems,
+        summary: {
+          subtotal: subtotal,
+          booking_fee: booking_fee,
+          cgst: 0,
+          sgst: 0,
+          total: total
+        }
+      };
+      
+      setPendingBookingPayload(bookingPayload);
+      setPhoneDialogOpen(true);
+      return;
+    }
+
+    // Create detailed booking payload with existing phone
     const bookingPayload = {
       workshop_id: workshopId,
       workshop_name: workshopData?.name || 'Unknown Workshop',
       workshop_description: workshopData?.description || '',
       user_id: userInfo?.UserId || null,
       buyer_name: userInfo?.displayName || "Guest User",
-      buyer_email: userInfo?.email || "guest@email.com",
-      buyer_phone: userInfo?.phone || "+919876543210",
+      buyer_email: userInfo?.email || "",
+      buyer_phone: currentPhone,
       items: selectedItems,
       summary: {
         subtotal: subtotal,
@@ -308,6 +343,46 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
 
     // Initiate payment
     await initiatePayment(bookingPayload);
+  };
+
+  const handlePhoneSubmit = async () => {
+    // Validate phone number
+    const cleanPhone = phoneNumber.replace(/\s+/g, '').trim();
+    if (!cleanPhone || cleanPhone === '+91' || cleanPhone.length < 10) {
+      alert('Please enter a valid phone number');
+      return;
+    }
+
+    // Update the pending booking payload with the phone number
+    const updatedPayload = {
+      ...pendingBookingPayload,
+      buyer_phone: cleanPhone
+    };
+
+    // Log the complete booking information
+    console.log('=== WORKSHOP BOOKING DETAILS (with phone) ===');
+    console.log('Booking Payload:');
+    console.log(JSON.stringify(updatedPayload, null, 2));
+    console.log('');
+    
+    console.log('=== PRICE BREAKDOWN ===');
+    console.log(`Subtotal: ₹${updatedPayload.summary.subtotal}`);
+    console.log(`Booking Fee (${INT_FEE * 100}%): ₹${updatedPayload.summary.booking_fee}`);
+    console.log(`Total: ₹${updatedPayload.summary.total}`);
+    console.log('=== END BOOKING DETAILS ===');
+
+    // Close dialog and initiate payment
+    setPhoneDialogOpen(false);
+    setPendingBookingPayload(null);
+    
+    // Initiate payment with updated payload
+    await initiatePayment(updatedPayload);
+  };
+
+  const handlePhoneCancel = () => {
+    setPhoneDialogOpen(false);
+    setPhoneNumber('+91');
+    setPendingBookingPayload(null);
   };
 
   return (
@@ -592,6 +667,48 @@ export default function WorkshopEventsClient({ workshopData, workshopId }) {
         }
         return null;
       })()}
+
+      {/* Phone Number Dialog */}
+      <Dialog open={phoneDialogOpen} onClose={handlePhoneCancel} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          Phone Number Required
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Please enter your phone number to complete the booking:
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Phone Number"
+            type="tel"
+            fullWidth
+            variant="outlined"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="+91 9876543210"
+            helperText="Include country code (e.g., +91 for India)"
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePhoneCancel} color="inherit">
+            Cancel
+          </Button>
+          <Button 
+            onClick={handlePhoneSubmit} 
+            variant="contained" 
+            sx={{ 
+              backgroundColor: '#735EAB',
+              '&:hover': {
+                backgroundColor: '#5a4a8a'
+              }
+            }}
+          >
+            Continue to Payment
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 } 
