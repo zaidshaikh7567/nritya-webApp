@@ -35,12 +35,15 @@ function MapsInput({
   }, [selectedLocation]);
 
   const handleSelect = async (selectedAddress) => {
-    const results = await geocodeByAddress(selectedAddress);
-    const latLng = await getLatLng(results[0]);
-
-    setMapAddress(selectedAddress);
-    setCenter(latLng);
-    setSelectedLocation(latLng);
+    try {
+      const results = await geocodeByAddress(selectedAddress);
+      const latLng = await getLatLng(results[0]);
+      setMapAddress(selectedAddress);
+      setCenter(latLng);
+      setSelectedLocation(latLng);
+    } catch (err) {
+      console.error("Error selecting address:", err);
+    }
   };
 
   const handleMapClick = async ({ lat, lng }) => {
@@ -48,24 +51,22 @@ function MapsInput({
     setSelectedLocation(latLng);
     setCenter(latLng);
 
-    if (!mapAddress.trim()) {
-      try {
-        const geocoder = new window.google.maps.Geocoder();
-        geocoder.geocode({ location: latLng }, (results, status) => {
-          if (status === "OK" && results[0]) {
-            setMapAddress(results[0].formatted_address);
-          } else {
-            console.error("Geocoder failed due to: ", status);
-          }
-        });
-      } catch (error) {
-        console.error("Error with reverse geocoding:", error);
-      }
+    if (!mapAddress.trim() && window.google?.maps) {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ location: latLng }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          setMapAddress(results[0].formatted_address);
+        } else {
+          console.error("Geocoder failed:", status);
+        }
+      });
     }
   };
 
   if (loadError) return <p>Error loading maps</p>;
-  if (!isLoaded) return <p>Loading maps...</p>;
+  if (!isLoaded || !window.google?.maps?.places) {
+    return <p>Loading maps...</p>;
+  }
 
   return (
     <div>
@@ -77,18 +78,9 @@ function MapsInput({
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
-            {/* <input
-              {...getInputProps({
-                placeholder: "Enter address...",
-                className: "location-search-input",
-                style: { height: "40px", fontSize: "16px", width: "100%" },
-              })}
-            /> */}
             <TextField
               fullWidth
-              {...getInputProps({
-                placeholder: "Enter address...",
-              })}
+              {...getInputProps({ placeholder: "Enter address..." })}
               sx={{ height: FORM_FIELD_HEIGHT }}
               variant="outlined"
             />
@@ -115,11 +107,11 @@ function MapsInput({
       {/* Google Map */}
       <div style={{ height: "400px", width: "100%" }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: apiKey }}
           defaultCenter={center}
           center={center}
           defaultZoom={16}
           onClick={handleMapClick}
+          yesIWantToUseGoogleMapApiInternals
         >
           {selectedLocation && (
             <PinMarker lat={selectedLocation.lat} lng={selectedLocation.lng} />
