@@ -3,16 +3,19 @@
   overflow: hidden;
   width: 100%;
   position: relative;
+  --slide-spacing: 16px;
 }
 
 .embla__container {
   display: flex;
-  gap: 1rem;
+  margin-left: calc(var(--slide-spacing) * -1);
+  padding-right: var(--slide-spacing);
 }
 
 .embla__slide {
   flex: 0 0 auto;
   min-width: 0;
+  padding-left: var(--slide-spacing);
 }
 
 /* Responsive design */
