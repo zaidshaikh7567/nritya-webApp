@@ -106,26 +106,14 @@ const WorkshopCarousel = ({ workshops, title = "Featured Workshops" }) => {
       <Box sx={{ position: 'relative' }}>
         {/* Left Arrow */}
         {canScrollLeft && (
-          <IconButton
+          <button
+            className="scroll-button left"
             onClick={() => scroll("left")}
-            sx={{
-              position: 'absolute',
-              left: -20,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              bgcolor: '#735EAB',
-              color: 'white',
-              '&:hover': {
-                bgcolor: '#5a4a8a',
-              },
-              '@media (max-width: 768px)': {
-                left: 0,
-              },
-            }}
+            aria-label="Previous slide"
+            type="button"
           >
             <MdArrowBackIosNew />
-          </IconButton>
+          </button>
         )}
 
         {/* Carousel Container */}
@@ -257,26 +245,14 @@ const WorkshopCarousel = ({ workshops, title = "Featured Workshops" }) => {
 
         {/* Right Arrow */}
         {canScrollRight && (
-          <IconButton
+          <button
+            className="scroll-button right"
             onClick={() => scroll("right")}
-            sx={{
-              position: 'absolute',
-              right: -20,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              bgcolor: '#735EAB',
-              color: 'white',
-              '&:hover': {
-                bgcolor: '#5a4a8a',
-              },
-              '@media (max-width: 768px)': {
-                right: 0,
-              },
-            }}
+            aria-label="Next slide"
+            type="button"
           >
             <MdArrowForwardIos />
-          </IconButton>
+          </button>
         )}
       </Box>
     </Box>
