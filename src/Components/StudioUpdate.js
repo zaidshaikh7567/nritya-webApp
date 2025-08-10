@@ -180,7 +180,7 @@ function StudioUpdate({
     // Fetch data for the selected studio when studioId changes
     if (selectedStudio) {
       //console.log("Studio Instructors Names",selectedStudio.instructorsNames)
-      setSelectedInstructors(selectedStudio.instructorsNames);
+      setSelectedInstructors(Array.isArray(selectedStudio.instructorsNames) ? selectedStudio.instructorsNames : []);
       if (selectedStudio && selectedStudio.danceStyles) {
         setSelectedDanceStyles(selectedStudio.danceStyles.split(","));
       }
@@ -606,7 +606,7 @@ function StudioUpdate({
                 multiple
                 id="tags-standard"
                 options={danceStylesOptions}
-                value={selectedDanceStyles}
+                value={Array.isArray(selectedDanceStyles) ? selectedDanceStyles : []}
                 onChange={handleDanceStylesChange}
                 renderInput={(params) => (
                   <TextField
@@ -683,7 +683,7 @@ function StudioUpdate({
                     multiple
                     id="tags-standard"
                     options={instructorNamesWithIds}
-                    value={selectedInstructors}
+                    value={Array.isArray(selectedInstructors) ? selectedInstructors : []}
                     onChange={handleInstructorChange}
                     renderInput={(params) => (
                       <TextField
@@ -875,7 +875,7 @@ function StudioUpdate({
                 multiple
                 id="tags-standard"
                 options={amenityKeys}
-                value={selectedAmenities}
+                value={Array.isArray(selectedAmenities) ? selectedAmenities : []}
                 onChange={handleAmenitiesChange}
                 renderInput={(params) => (
                   <TextField
@@ -1195,7 +1195,7 @@ function StudioUpdate({
                         Array.isArray(tableData[index].classCategory) &&
                         tableData[index].classCategory?.length
                           ? tableData[index].classCategory[0]
-                          : ""
+                          : tableData[index].classCategory ? tableData[index].classCategory : ""
                       }
                       onChange={(e) =>
                         handleTableChange(index, "classCategory", [
