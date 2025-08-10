@@ -281,7 +281,11 @@ const SearchPage = ({ entity }) => {
     const storedDanceForm = localStorage.getItem(FILTER_DANCE_FORMS_KEY);
     const storedSearchType = localStorage.getItem(FILTER_SEARCH_TYPE_KEY);
 
-    if (storedSearchType) {
+    const urlEntity = entity || "";
+    if (urlEntity) {
+      setSelectedSearchType(urlEntity);
+      localStorage.setItem(FILTER_SEARCH_TYPE_KEY, urlEntity);
+    } else if (storedSearchType) {
       setSelectedSearchType(storedSearchType);
     } else {
       setSelectedSearchType("studio");
@@ -297,7 +301,7 @@ const SearchPage = ({ entity }) => {
     }
     setActiveFilters(countActiveFilters());
     handleSearch();
-  }, [selectedLevel, selectedMaxPrice]);
+  }, [selectedLevel, selectedMaxPrice, entity]);
 
   const [label, setLabel] = useState('Search studios, workshops, open classes, courses...');
 

@@ -6,6 +6,7 @@ import { MdArrowBackIosNew, MdArrowForwardIos } from 'react-icons/md';
 import { danceStylesColorChips } from '../../src/constants';
 import './Carousel.css';
 import { Button } from '@mui/material';
+import Link from 'next/link';
 
 const WorkshopCarousel = ({ workshops, title = "Featured Workshops" }) => {
   const [isDarkModeOn, setIsDarkModeOn] = useState(false);
@@ -92,16 +93,37 @@ const WorkshopCarousel = ({ workshops, title = "Featured Workshops" }) => {
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Typography 
-        level="h4" 
-        sx={{ 
-          mb: 2, 
-          color: isDarkModeOn ? 'white' : 'black',
-          fontWeight: 'bold'
-        }}
-      >
-        {title}
-      </Typography>
+      <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography 
+          level="h4" 
+          sx={{ 
+            color: isDarkModeOn ? 'white' : 'black',
+            fontWeight: 'bold'
+          }}
+        >
+          {title}
+        </Typography>
+        <Button
+          size='small'
+          variant="contained"
+          sx={{
+            color: 'white',
+            backgroundColor: '#735EAB',
+            '&:hover': {
+              backgroundColor: '#735EAB',
+              color: 'white',
+            },
+            '&.Mui-disabled': {
+              backgroundColor: isDarkModeOn ? 'rgba(115, 94, 171, 0.5)' : 'rgba(115, 94, 171, 0.3)',
+              color: 'rgba(255, 255, 255, 0.5)',
+            },
+          }}
+          component={Link}
+          href="/search/workshop"
+        >
+          View all
+        </Button>
+      </Box>
       
       <Box sx={{ position: 'relative' }}>
         {/* Left Arrow */}
@@ -143,7 +165,7 @@ const WorkshopCarousel = ({ workshops, title = "Featured Workshops" }) => {
                 key={workshop.id || index}
                 variant="solid"
                 sx={cardStyle}
-                component="a"
+                component={Link}
                 href={`/workshop/${workshop.id}`}
               >
                 <AspectRatio ratio="1.78" sx={{ position: 'relative' }}>
