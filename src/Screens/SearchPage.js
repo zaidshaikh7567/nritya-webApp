@@ -1,24 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectDarkModeStatus } from "../redux/selectors/darkModeSelector";
-import {Form, Button, Col,Row, Modal, ButtonGroup,
-      Container,} from "react-bootstrap";
-import { Badge as MuiBadge, Chip as MuiChip, Autocomplete as MuiAutocomplete,
-  TextField as MuiTextField, createTheme,ThemeProvider,
-  Stack as MuiStack,Grid as MuiGrid, Box } from "@mui/material";
+import {
+  Form,
+  Button,
+  Col,
+  Row,
+  Modal,
+  ButtonGroup,
+  Container,
+} from "react-bootstrap";
+import {
+  Badge as MuiBadge,
+  Chip as MuiChip,
+  Autocomplete as MuiAutocomplete,
+  TextField as MuiTextField,
+  createTheme,
+  ThemeProvider,
+  Stack as MuiStack,
+  Grid as MuiGrid,
+  Box,
+} from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
 import danceStyles from "../danceStyles.json";
 import CardSliderCard from "../Components/CardSliderCard";
-import './SearchPage.css';
+import "./SearchPage.css";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
 import { COLLECTIONS, LEVELS, BASEURL_PROD } from "../constants";
 import NWorkshopCard from "../Components/NWorkshopCard";
 import NOpenClassCard from "../Components/NOpenClassCard";
 import NCourseCard from "../Components/NCourseCard";
-import { useMediaQuery } from '@mui/material';
+import { useMediaQuery } from "@mui/material";
 import { useLoader } from "../context/LoaderContext";
+import { Grid } from "@mui/material";
+import Link from "next/link";
 
 const FILTER_LOCATION_KEY = "filterLocation";
 const FILTER_SEARCH_TYPE_KEY = "filterSearchType";
@@ -26,19 +43,28 @@ const FILTER_DISTANCES_KEY = "filterDistances";
 const FILTER_DANCE_FORMS_KEY = "filterDanceForms";
 const FILTER_USER_GEO_LOC = "browserGeoLoc";
 
-const levelsTypes = [LEVELS.ALL, LEVELS.BEGINNERS, LEVELS.INTERMEDIATE, LEVELS.ADVANCED]
-const MAX_PRICE  = 10**10
+const levelsTypes = [
+  LEVELS.ALL,
+  LEVELS.BEGINNERS,
+  LEVELS.INTERMEDIATE,
+  LEVELS.ADVANCED,
+];
+const MAX_PRICE = 10 ** 10;
 
 const distances = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const searchTypes = [
   { name: "studio", label: "Studios", collection: COLLECTIONS.STUDIO },
   { name: "workshop", label: "Workshops", collection: COLLECTIONS.WORKSHOPS },
-  { name: "openClass",label: "Open Classes",collection: COLLECTIONS.OPEN_CLASSES},
+  {
+    name: "openClass",
+    label: "Open Classes",
+    collection: COLLECTIONS.OPEN_CLASSES,
+  },
   { name: "course", label: "Courses", collection: COLLECTIONS.COURSES },
 ];
 
 const getCollectionForSearchType = (searchType) => {
-  const searchTypeObject = searchTypes.find(type => type.name === searchType);
+  const searchTypeObject = searchTypes.find((type) => type.name === searchType);
   return searchTypeObject ? searchTypeObject.collection : COLLECTIONS.STUDIO;
 };
 
@@ -49,12 +75,14 @@ const SearchPage = ({ entity }) => {
   const [selectedDistances, setSelectedDistances] = useState("");
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [showFilters, setShowFilters] = useState(false);
-  const [studioIdName,setStudioIdName] = useState({});
+  const [studioIdName, setStudioIdName] = useState({});
   const [showFilterValue, setShowFilterValue] = useState("distances");
   const [activeFilters, setActiveFilters] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedDanceForms, setSelectedDanceForms] = useState([]);
-  const [selectedSearchType, setSelectedSearchType] = useState(entity || "studio"); 
+  const [selectedSearchType, setSelectedSearchType] = useState(
+    entity || "studio"
+  );
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(MAX_PRICE);
   const [searchData, setSearchData] = useState({
@@ -117,10 +145,9 @@ const SearchPage = ({ entity }) => {
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
-      
+
       const data = await response.json();
       setStudioIdName(data);
-      
     } catch (error) {
       console.error("Error in processing:", error);
     }
@@ -133,8 +160,7 @@ const SearchPage = ({ entity }) => {
       selectedSearchType ||
       "studio";
 
-      
-      if (query == null) {
+    if (query == null) {
       setQuery("");
     }
     let apiEndpoint = `${BASEURL_PROD}api/search/?query=${query}`;
@@ -142,27 +168,47 @@ const SearchPage = ({ entity }) => {
 
     const city = localStorage.getItem(FILTER_LOCATION_KEY) || "New Delhi";
     apiEndpoint += `&city=${encodeURIComponent(city)}`;
-    fetchIdNameMp(city)
+    fetchIdNameMp(city);
     if (storedSelectedSearchType) {
       apiEndpoint += `&entity=${encodeURIComponent(entity)}`;
     }
-    
-    const storedSelectedDanceForms = JSON.parse(localStorage.getItem(FILTER_DANCE_FORMS_KEY) || "[]");
+
+    const storedSelectedDanceForms = JSON.parse(
+      localStorage.getItem(FILTER_DANCE_FORMS_KEY) || "[]"
+    );
     if (storedSelectedDanceForms.length > 0) {
-      apiEndpoint += `&danceStyle=${encodeURIComponent(storedSelectedDanceForms.join(","))}`;
+      apiEndpoint += `&danceStyle=${encodeURIComponent(
+        storedSelectedDanceForms.join(",")
+      )}`;
     }
 
-    if (entity !== COLLECTIONS.STUDIO && selectedLevel && selectedLevel !== LEVELS.ALL) {
-      apiEndpoint += `&level=${encodeURIComponent(selectedLevel)}`
+    if (
+      entity !== COLLECTIONS.STUDIO &&
+      selectedLevel &&
+      selectedLevel !== LEVELS.ALL
+    ) {
+      apiEndpoint += `&level=${encodeURIComponent(selectedLevel)}`;
     }
 
-    if ((entity === COLLECTIONS.WORKSHOPS || entity === COLLECTIONS.COURSES) && selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) {
-      apiEndpoint += `&price=${encodeURIComponent(selectedMaxPrice)}`
+    if (
+      (entity === COLLECTIONS.WORKSHOPS || entity === COLLECTIONS.COURSES) &&
+      selectedMaxPrice &&
+      selectedMaxPrice !== MAX_PRICE
+    ) {
+      apiEndpoint += `&price=${encodeURIComponent(selectedMaxPrice)}`;
     }
 
     const geoLocation = getGeoLocationFromLocalStorage();
-    if (selectedDistances && geoLocation && localStorage.getItem(FILTER_DISTANCES_KEY)) {
-      apiEndpoint += `&distance=${encodeURIComponent(selectedDistances)}&user_lat=${encodeURIComponent(geoLocation.latitude)}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
+    if (
+      selectedDistances &&
+      geoLocation &&
+      localStorage.getItem(FILTER_DISTANCES_KEY)
+    ) {
+      apiEndpoint += `&distance=${encodeURIComponent(
+        selectedDistances
+      )}&user_lat=${encodeURIComponent(
+        geoLocation.latitude
+      )}&user_lon=${encodeURIComponent(geoLocation.longitude)}`;
     }
 
     console.log("apiEndpoint ", apiEndpoint);
@@ -172,16 +218,14 @@ const SearchPage = ({ entity }) => {
         const formattedData = Array.isArray(data) ? data : Object.values(data);
         setResults(formattedData);
       })
-      .catch((error) =>
-        console.error("Error fetching search results:", error)
-      ).finally(() => {
+      .catch((error) => console.error("Error fetching search results:", error))
+      .finally(() => {
         setIsLoading(false);
       });
   };
 
-
   const handleChange = async (event, value) => {
-    const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
+    const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/";
     const baseUrl = `${BASEURL_PROD}api`;
     //setQuery(event.target.value);
     setQuery(value);
@@ -198,10 +242,11 @@ const SearchPage = ({ entity }) => {
 
         //const endpoint = baseUrl + `/autocomplete?query=${value}&city=Patna`;
         const response = await axios.get(endpoint);
-        console.log("Response :",response.data)
-        const filteredSuggestions = Object.values(response.data).filter(value => value !== null);
+        console.log("Response :", response.data);
+        const filteredSuggestions = Object.values(response.data).filter(
+          (value) => value !== null
+        );
         setSuggestions(filteredSuggestions);
-
       } catch (error) {
         console.error("Error fetching autocomplete suggestions:", error);
       }
@@ -303,24 +348,26 @@ const SearchPage = ({ entity }) => {
     handleSearch();
   }, [selectedLevel, selectedMaxPrice, entity]);
 
-  const [label, setLabel] = useState('Search studios, workshops, open classes, courses...');
+  const [label, setLabel] = useState(
+    "Search studios, workshops, open classes, courses..."
+  );
 
   // Function to update label based on window width
   const updateLabel = () => {
     if (window.innerWidth < 600) {
-      setLabel('Search...');
+      setLabel("Search...");
     } else {
-      setLabel('Search studios, workshops, open classes, courses...');
+      setLabel("Search studios, workshops, open classes, courses...");
     }
   };
 
   // Update label on component mount and window resize
   useEffect(() => {
     updateLabel(); // Set initial label
-    window.addEventListener('resize', updateLabel); // Listen for resize
+    window.addEventListener("resize", updateLabel); // Listen for resize
 
     return () => {
-      window.removeEventListener('resize', updateLabel); // Clean up listener
+      window.removeEventListener("resize", updateLabel); // Clean up listener
     };
   }, []);
 
@@ -356,7 +403,7 @@ const SearchPage = ({ entity }) => {
                     getOptionLabel={(option) => option.toString()}
                     renderInput={(params) => (
                       <MuiTextField
-                      className="autocomplete-input" // Style for Css
+                        className="autocomplete-input" // Style for Css
                         {...params}
                         label={label}
                         variant="outlined"
@@ -377,7 +424,7 @@ const SearchPage = ({ entity }) => {
                                   cursor: "pointer",
                                   color: isDarkModeOn ? "#892CDC" : "black",
                                   marginRight: 1,
-                                  width:"40px"
+                                  width: "40px",
                                 }}
                                 onClick={handleSearch}
                               />
@@ -392,7 +439,7 @@ const SearchPage = ({ entity }) => {
                         }}
                       />
                     )}
-                    style={{ flex: 1/1 }}
+                    style={{ flex: 1 / 1 }}
                   />
                 </MuiStack>
               </ThemeProvider>
@@ -403,22 +450,37 @@ const SearchPage = ({ entity }) => {
             <div className="horizontal-scroll-wrapper-for-filters">
               {/* Studio, Workshops, Open Classes, Courses */}
               {searchTypes.map((searchType) => (
-                <Col key={searchType.name} xs="auto" style={{ marginTop: "0.5rem" }}>
+                <Col
+                  key={searchType.name}
+                  xs="auto"
+                  style={{ marginTop: "0.5rem" }}
+                  className="mx-2 first-ml-0 last:mr-0"
+                >
                   <button
                     onClick={() => handleSearchTypeClick(searchType.name)} // Add this line
                     style={{
-                      cursor: 'pointer',
-                      backgroundColor: selectedSearchType === searchType.name
-                        ? (isDarkModeOn ? "white" : "black")
-                        : (isDarkModeOn ? "black" : "white"),
-                      color: selectedSearchType === searchType.name
-                        ? (isDarkModeOn ? "black" : "white")
-                        : (isDarkModeOn ? "white" : "black"),
-                      borderRadius: '10px',
-                      fontWeight: 'bold',
+                      cursor: "pointer",
+                      backgroundColor:
+                        selectedSearchType === searchType.name
+                          ? isDarkModeOn
+                            ? "white"
+                            : "black"
+                          : isDarkModeOn
+                          ? "black"
+                          : "white",
+                      color:
+                        selectedSearchType === searchType.name
+                          ? isDarkModeOn
+                            ? "black"
+                            : "white"
+                          : isDarkModeOn
+                          ? "white"
+                          : "black",
+                      borderRadius: "10px",
+                      fontWeight: "bold",
                       border: `1px solid ${isDarkModeOn ? "white" : "black"}`,
-                      padding: '5px 10px',
-                      transition: 'background-color 0.3s, color 0.3s',
+                      padding: "5px 10px",
+                      transition: "background-color 0.3s, color 0.3s",
                     }}
                   >
                     {searchType.label}
@@ -429,132 +491,135 @@ const SearchPage = ({ entity }) => {
           </Row>
 
           <Row className="align-items-center">
-          <div className="horizontal-scroll-wrapper-for-filters"> 
-            <Col xs="auto" style={{ marginTop: "0.5rem" }}>
-              <MuiBadge
-                onClick={toggleFilters}
-                badgeContent={activeFilters}
-                color={isDarkModeOn ? "warning" : "secondary"}
-                pill
-              >
-                <MuiChip
-                  className="rounded-3"
-                  color={isDarkModeOn ? "warning" : "secondary"}
-                  label="&#9776; filters"
-                  variant={isDarkModeOn ? "outlined" : "contained"}
-                />
-              </MuiBadge>
-            </Col>
-
-            {(selectedDanceForms.length || selectedDistances || (selectedLevel && selectedLevel !== LEVELS.ALL) ||(selectedMaxPrice && selectedMaxPrice !== MAX_PRICE)) && (
+            <div className="horizontal-scroll-wrapper-for-filters">
               <Col xs="auto" style={{ marginTop: "0.5rem" }}>
                 <MuiBadge
-                  color="error"
-                  onClick={handleClearFilters}
-                  style={{ cursor: "pointer" }}
+                  onClick={toggleFilters}
+                  badgeContent={activeFilters}
+                  color={isDarkModeOn ? "warning" : "secondary"}
                   pill
                 >
                   <MuiChip
+                    className="rounded-3"
+                    color={isDarkModeOn ? "warning" : "secondary"}
+                    label="&#9776; filters"
+                    variant={isDarkModeOn ? "outlined" : "contained"}
+                  />
+                </MuiBadge>
+              </Col>
+
+              {(selectedDanceForms.length ||
+                selectedDistances ||
+                (selectedLevel && selectedLevel !== LEVELS.ALL) ||
+                (selectedMaxPrice && selectedMaxPrice !== MAX_PRICE)) && (
+                <Col xs="auto" style={{ marginTop: "0.5rem" }}>
+                  <MuiBadge
                     color="error"
-                    label="Clear All"
-                    onDelete={handleClearFilters}
+                    onClick={handleClearFilters}
                     style={{ cursor: "pointer" }}
-                    variant={isDarkModeOn ? "outlined" : "contained"}
-                    className="rounded-3"
-                  />
-                </MuiBadge>
-              </Col>
-            )}
-
-            <Box display="flex">
-            {/* Filter Badges */}
-            {selectedDistances && (
-              <Col xs="auto" style={{ marginTop: "0.5rem" }}>
-                <MuiBadge color="success" pill>
-                  <MuiChip
-                    className="rounded-3"
-                    color="success"
-                    label={`Distance: ${selectedDistances} km`}
-                    variant={isDarkModeOn ? "outlined" : "contained"}
-                    onDelete={handleRemoveDistance}
-                  />
-                </MuiBadge>
-              </Col>
-            )}
-
-            {(selectedLevel && selectedLevel !== LEVELS.ALL) &&(
-              <Col xs="auto">
-                {
-                  <MuiBadge
-                    key={selectedLevel}
-                    color="info"
-                    style={{
-                      marginLeft: "0",
-                      marginTop: "0.5rem",
-                    }}
                     pill
                   >
                     <MuiChip
-                      className="rounded-3"
-                      color="info"
-                      label={`Level: ${selectedLevel}`}
+                      color="error"
+                      label="Clear All"
+                      onDelete={handleClearFilters}
+                      style={{ cursor: "pointer" }}
                       variant={isDarkModeOn ? "outlined" : "contained"}
-                      onDelete={() => setSelectedLevel(LEVELS.ALL)}
+                      className="rounded-3"
                     />
                   </MuiBadge>
-                }
-              </Col>
-            )}
+                </Col>
+              )}
 
-            {(selectedMaxPrice && selectedMaxPrice !== MAX_PRICE) &&(
-              <Col xs="auto">
-                {
-                  <MuiBadge
-                    key={selectedMaxPrice}
-                    color="info"
-                    style={{
-                      marginLeft: "0",
-                      marginTop: "0.5rem",
-                    }}
-                    pill
-                  >
-                    <MuiChip
-                      className="rounded-3"
-                      color="info"
-                      label={`Prices Upto: ${selectedMaxPrice}`}
-                      variant={isDarkModeOn ? "outlined" : "contained"}
-                      onDelete={() => setSelectedMaxPrice(MAX_PRICE)}
-                    />
-                  </MuiBadge>
-                }
-              </Col>
-            )}
+              <Box display="flex">
+                {/* Filter Badges */}
+                {selectedDistances && (
+                  <Col xs="auto" style={{ marginTop: "0.5rem" }}>
+                    <MuiBadge color="success" pill>
+                      <MuiChip
+                        className="rounded-3"
+                        color="success"
+                        label={`Distance: ${selectedDistances} km`}
+                        variant={isDarkModeOn ? "outlined" : "contained"}
+                        onDelete={handleRemoveDistance}
+                      />
+                    </MuiBadge>
+                  </Col>
+                )}
 
-            {selectedDanceForms && (
-              <Col xs="auto">
-                {selectedDanceForms.map((danceForm, index) => (
-                  <MuiBadge
-                    key={index}
-                    color="info"
-                    style={{
-                      marginLeft: index !== 0 ? "0.25rem" : "0",
-                      marginTop: "0.5rem",
-                    }}
-                    pill
-                  >
-                    <MuiChip
-                      className="rounded-3"
-                      color="info"
-                      label={`Dance Form: ${danceForm}`}
-                      variant={isDarkModeOn ? "outlined" : "contained"}
-                      onDelete={() => handleRemoveDanceForm(danceForm)}
-                    />
-                  </MuiBadge>
-                ))}
-              </Col>
-            )}
-            </Box>
-           </div>
+                {selectedLevel && selectedLevel !== LEVELS.ALL && (
+                  <Col xs="auto">
+                    {
+                      <MuiBadge
+                        key={selectedLevel}
+                        color="info"
+                        style={{
+                          marginLeft: "0",
+                          marginTop: "0.5rem",
+                        }}
+                        pill
+                      >
+                        <MuiChip
+                          className="rounded-3"
+                          color="info"
+                          label={`Level: ${selectedLevel}`}
+                          variant={isDarkModeOn ? "outlined" : "contained"}
+                          onDelete={() => setSelectedLevel(LEVELS.ALL)}
+                        />
+                      </MuiBadge>
+                    }
+                  </Col>
+                )}
+
+                {selectedMaxPrice && selectedMaxPrice !== MAX_PRICE && (
+                  <Col xs="auto">
+                    {
+                      <MuiBadge
+                        key={selectedMaxPrice}
+                        color="info"
+                        style={{
+                          marginLeft: "0",
+                          marginTop: "0.5rem",
+                        }}
+                        pill
+                      >
+                        <MuiChip
+                          className="rounded-3"
+                          color="info"
+                          label={`Prices Upto: ${selectedMaxPrice}`}
+                          variant={isDarkModeOn ? "outlined" : "contained"}
+                          onDelete={() => setSelectedMaxPrice(MAX_PRICE)}
+                        />
+                      </MuiBadge>
+                    }
+                  </Col>
+                )}
+
+                {selectedDanceForms && (
+                  <Col xs="auto">
+                    {selectedDanceForms.map((danceForm, index) => (
+                      <MuiBadge
+                        key={index}
+                        color="info"
+                        style={{
+                          marginLeft: index !== 0 ? "0.25rem" : "0",
+                          marginTop: "0.5rem",
+                        }}
+                        pill
+                      >
+                        <MuiChip
+                          className="rounded-3"
+                          color="info"
+                          label={`Dance Form: ${danceForm}`}
+                          variant={isDarkModeOn ? "outlined" : "contained"}
+                          onDelete={() => handleRemoveDanceForm(danceForm)}
+                        />
+                      </MuiBadge>
+                    ))}
+                  </Col>
+                )}
+              </Box>
+            </div>
           </Row>
         </Container>
       </header>
@@ -569,7 +634,6 @@ const SearchPage = ({ entity }) => {
             <Col md={4}>
               <h5>Filter By:</h5>
               <ul style={{ listStyleType: "none", padding: 0 }}>
-
                 {selectedSearchType === "studio" && (
                   <>
                     <hr style={{ margin: "5px 0" }}></hr>
@@ -584,7 +648,8 @@ const SearchPage = ({ entity }) => {
                   </>
                 )}
 
-              {(selectedSearchType === "workshop" || selectedSearchType === "course") && (
+                {(selectedSearchType === "workshop" ||
+                  selectedSearchType === "course") && (
                   <>
                     <hr style={{ margin: "5px 0" }}></hr>
                     <li
@@ -609,7 +674,6 @@ const SearchPage = ({ entity }) => {
                     >
                       Level
                     </li>
-                    
                   </>
                 )}
 
@@ -658,7 +722,7 @@ const SearchPage = ({ entity }) => {
                     <option value="">Select Lavel</option>
                     {levelsTypes.map((level) => (
                       <option key={level} value={level}>
-                        {level} 
+                        {level}
                       </option>
                     ))}
                   </Form.Control>
@@ -675,11 +739,13 @@ const SearchPage = ({ entity }) => {
                     onChange={(e) => setSelectedMaxPrice(e.target.value)}
                   >
                     <option value="">Prices below</option>
-                    {[499,999,1499,1999,2999,4999,9999,MAX_PRICE].map((price) => (
-                      <option key={price} value={price}>
-                        {price >= MAX_PRICE ?"All":price} 
-                      </option>
-                    ))}
+                    {[499, 999, 1499, 1999, 2999, 4999, 9999, MAX_PRICE].map(
+                      (price) => (
+                        <option key={price} value={price}>
+                          {price >= MAX_PRICE ? "All" : price}
+                        </option>
+                      )
+                    )}
                   </Form.Control>
                 </Form.Group>
               )}
@@ -719,99 +785,76 @@ const SearchPage = ({ entity }) => {
 
       <hr></hr>
       {selectedSearchType === "studio" && (
-        <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
           {results.length === 0 ? (
-            <div className="" style={{ minHeight: "30vh" }}></div>
+            <Grid item xs={12} sx={{ minHeight: "30vh" }} />
           ) : (
             results.map((studio, index) => (
-              <div
-                key={index}
-                className="studio-card-container"
-                style={{ padding: "0.2rem" }}
-                md={2}
-              >
-                <a
+              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                <Link
                   href={`/studio/${studio.studioId}`}
                   style={{ textDecoration: "none" }}
                 >
                   <CardSliderCard studio={studio} />
-                </a>
-              </div>
+                </Link>
+              </Grid>
             ))
           )}
-        </div>
+        </Grid>
       )}
 
       {selectedSearchType === "workshop" && (
-        
-          <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
-            {results.length === 0 ? (
-              <div className="" style={{ minHeight: "30vh" }}></div>
-            ) : (
-              results.map((data, index) => (
-                <div
-                  key={index}
-                  className="studio-card-container"
-                  style={{ padding: "0.2rem" }}
-                  md={2}
-                >
-                  
-                    <NWorkshopCard
-                    key={data.id}
-                    dataItem={data}
-                    studioIdName={studioIdName}
-                  />
-                  
-                </div>
-              ))
-            )}
-          </div>
-      
-        
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          {results.length === 0 ? (
+            <Grid item xs={12} sx={{ minHeight: "30vh" }} />
+          ) : (
+            results.map((data, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                <NWorkshopCard
+                  key={data.id}
+                  dataItem={data}
+                  studioIdName={studioIdName}
+                />
+              </Grid>
+            ))
+          )}
+        </Grid>
       )}
+
       {selectedSearchType === "openClass" && (
-         <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
-         {results.length === 0 ? (
-           <div className="" style={{ minHeight: "30vh" }}></div>
-         ) : (
-           results.map((data, index) => (
-             <div
-               key={index}
-               className="studio-card-container"
-               style={{ padding: "0.2rem" }}
-               md={2}
-             >
-               <NOpenClassCard
-                key={data.id}
-                dataItem={data}
-                studioIdName={studioIdName}
-              />
-             </div>
-           ))
-         )}
-       </div>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          {results.length === 0 ? (
+            <Grid item xs={12} sx={{ minHeight: "30vh" }} />
+          ) : (
+            results.map((data, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                <NOpenClassCard
+                  key={data.id}
+                  dataItem={data}
+                  studioIdName={studioIdName}
+                />
+              </Grid>
+            ))
+          )}
+        </Grid>
       )}
+
       {selectedSearchType === "course" && (
-       <div style={{ display: "flex", flexWrap: "wrap", padding: "10px" }}>
-       {results.length === 0 ? (
-         <div className="" style={{ minHeight: "30vh" }}></div>
-       ) : (
-         results.map((data, index) => (
-           <div
-             key={index}
-             className="studio-card-container"
-             style={{ padding: "0.2rem" }}
-             md={2}
-           >
-             <NCourseCard
-            key={data.id}
-            dataItem={data}
-            studioIdName={studioIdName}
-          />
-           </div>
-         ))
-       )}
-     </div>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          {results.length === 0 ? (
+            <Grid item xs={12} sx={{ minHeight: "30vh" }} />
+          ) : (
+            results.map((data, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                <NCourseCard
+                  key={data.id}
+                  dataItem={data}
+                  studioIdName={studioIdName}
+                />
+              </Grid>
+            ))
+          )}
+        </Grid>
       )}
     </div>
   );

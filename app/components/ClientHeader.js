@@ -214,7 +214,7 @@ function ClientHeader() {
   };
 
   return (
-    <Navbar expand="lg" className="px-3 py-2" style={{ backgroundColor: "black", position: 'sticky', top: 0, zIndex: 1000 }}>
+    <Navbar expand="lg" className="p-0" style={{ backgroundColor: "black", position: 'sticky', top: 0, zIndex: 1000 }}>
       <Container fluid>
         <div className="d-flex align-items-center">
           {isMobile ? (

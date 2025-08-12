@@ -69,7 +69,7 @@ export default async function Home({ searchParams }) {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <LocationSync />
       <ClientHeader />
-      <main className='py-1 flex-grow-1' style={{ width: '100%' }}>
+      <main className='container py-1 flex-grow-1' style={{ width: '100%' }}>
         <LandingPage {...landingPageData} currentCity={city}/>
       </main>
       <ClientFooter />
