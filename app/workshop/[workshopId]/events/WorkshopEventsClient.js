@@ -24,9 +24,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/navigation';
 import { FaCalendarAlt, FaClock, FaRegCalendarAlt } from 'react-icons/fa';
 import { Badge } from 'react-bootstrap';
-import { BASEURL_PROD } from '../../../../src/constants';
+import { BASEURL_PROD1 } from '../../../../src/constants';
 const INT_FEE = 0.03;
-
+const BASEURL_PROD = "http://0.0.0.0:8000/"
 const convertTo12HourFormat = (timeString) => {
   if (!timeString) return '';
   try {

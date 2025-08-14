@@ -8,8 +8,8 @@ import ClientFooter from '../../components/ClientFooter';
 import { formatDateString } from '../../../src/utils/common';
 import { convertTo12HourFormat } from '../../../src/utils/timeUtils';
 import { CHIP_LEVELS_DESIGN } from '../../../src/constants';
-
-const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/";
+import { BASEURL_PROD } from '../../../src/constants';
+//const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/";
 
 const findMinTime = (data, targetDate) => {
   let minTime = Infinity; 

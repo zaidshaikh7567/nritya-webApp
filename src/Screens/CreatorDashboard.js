@@ -21,6 +21,11 @@ function CreatorDashboard() {
 
   useEffect(() => {
     const fetchCounts = async () => {
+      if (!currentUser) {
+        console.log('No current user, skipping counts fetch');
+        return;
+      }
+      
       const instructorsCount = await queryDocumentsCount(COLLECTIONS.INSTRUCTORS, 'createdBy', '==', currentUser.uid);
       const studiosCount = await queryDocumentsCount(COLLECTIONS.STUDIO, "UserId", '==', currentUser.uid);
       const workshopsCount = await queryDocumentsCount(COLLECTIONS.WORKSHOPS, "UserId", '==', currentUser.uid);

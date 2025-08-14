@@ -137,6 +137,10 @@ function Header() {
   }
 
   function getUserNameInitials() {
+    if (!currentUser || !currentUser.displayName) {
+      return '';
+    }
+    
     const displayName = currentUser.displayName;
     const nameParts = displayName.split(" ");
     let buttonContent = nameParts[0].charAt(0);

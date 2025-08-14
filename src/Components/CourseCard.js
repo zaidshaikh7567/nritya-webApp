@@ -129,6 +129,7 @@ function WorkshopDetailsModal({
           <Grid item xs={12} lg={8}>
             <img
               src={dataItem.imageUrl}
+              alt={`${dataItem.name || 'Course'} image`}
               style={{
                 width: "100%",
                 height: "100%",

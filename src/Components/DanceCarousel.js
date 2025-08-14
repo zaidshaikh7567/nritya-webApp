@@ -52,7 +52,7 @@ const DanceCarousel = ({ danceImages }) => {
     <Slider {...settings}>
       {danceImages.map((image, index) => (
         <div key={index} id={index} className="image-container">
-            <img className="img-fluid hover-image" loading="lazy" style={{paddingRight:"5px"}} src={image}></img>
+            <img className="img-fluid hover-image" loading="lazy" style={{paddingRight:"5px"}} src={image} alt={`Dance image ${index + 1}`}></img>
         </div>
 
         

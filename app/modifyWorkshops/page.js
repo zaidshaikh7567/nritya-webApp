@@ -20,8 +20,14 @@ const getUserEmail = () => {
 
 // Utility function to format date
 const formatDateToReadable = (dateString) => {
-  if (!dateString) return '';
+  if (!dateString) return 'N/A';
   const date = new Date(dateString);
+  console.log("Hii",date, dateString);
+  // Check if the date is valid (not Jan 1, 1970)
+  if (date.getTime() === 0 || isNaN(date.getTime())) {
+    return 'N/A';
+  }
+  
   return date.toLocaleDateString('en-US', { 
     year: 'numeric', 
     month: 'short', 
@@ -29,15 +35,21 @@ const formatDateToReadable = (dateString) => {
   });
 };
 
+const formatEpochToReadable = (dateEpoch) => {
+  if (!dateEpoch) return 'N/A';;
+  const dateFromMilliseconds = new Date(dateEpoch*1000);
+  
+  return dateFromMilliseconds.toLocaleString();
+};
+
 // Utility function to check draft status
 const getDraftStatus = (creationTimeString) => {
   if (!creationTimeString) return { isDraftActive: false };
   
-  const creationTime = new Date(creationTimeString);
+  const creationTime = new Date(creationTimeString*1000);
   const currentTime = new Date();
   const timeDifference = currentTime - creationTime;
   const hoursDifference = timeDifference / (1000 * 60 * 60);
-  
   return {
     isDraftActive: hoursDifference <= 24,
     hoursRemaining: Math.max(0, 24 - hoursDifference)
@@ -76,7 +88,7 @@ const WorkshopCardForOwner = ({ workshop, isDarkModeOn, onEdit, onDelete }) => {
         
         {workshop.creation_time && (
           <Typography variant="caption" color="text.secondary">
-            Created: {formatDateToReadable(workshop.creation_time)}
+            Created: {workshop.creation_time ? formatEpochToReadable(workshop.creation_time) : 'N/A'}
           </Typography>
         )}
 

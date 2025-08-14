@@ -19,7 +19,7 @@ import { useLoader } from "../context/LoaderContext";
 function MyBookings() {
   const { currentUser } = useAuth();
   const { setIsLoading } = useLoader();
-  const userId = currentUser.uid;
+  const userId = currentUser?.uid;
   const isDarkModeOn = useSelector(selectDarkModeStatus);
   const [bookings, setBookings] = useState([]);
   const [showModal, setShowModal] = useState(false);

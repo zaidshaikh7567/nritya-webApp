@@ -24,6 +24,11 @@ function Transactions() {
   const { currentUser } = useAuth();
   useEffect(() => {
     const getTransactions = async () => {
+      if (!currentUser) {
+        console.log('No current user, skipping transactions fetch');
+        return;
+      }
+      
       try {
         const userRef = doc(db, "User", currentUser.uid);
         const userSnap = await getDoc(userRef);

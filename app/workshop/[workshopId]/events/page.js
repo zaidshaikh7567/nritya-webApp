@@ -6,8 +6,8 @@ import {
 import ClientHeader from '../../../components/ClientHeader';
 import ClientFooter from '../../../components/ClientFooter';
 import WorkshopEventsClient from './WorkshopEventsClient';
-
-const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/";
+import { BASEURL_PROD } from '../../../../src/constants';
+//const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/";
 
 async function fetchWorkshopData(workshopId) {
   try {

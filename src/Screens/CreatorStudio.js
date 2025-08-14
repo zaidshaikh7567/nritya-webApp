@@ -38,6 +38,11 @@ function CreatorStudio() {
   useEffect(() => {
     console.log("Creator Studio getCreatorMode")
     const getCreatorMode = async (event) => {
+      if (!currentUser) {
+        console.log('No current user, skipping creator mode fetch');
+        return;
+      }
+      
       try{
       const userRef = doc(db, "User", currentUser.uid);
       const userSnap = await getDoc(userRef);
@@ -60,7 +65,7 @@ function CreatorStudio() {
     }
   
     getCreatorMode();
-  }, [currentUser.uid]); // Only run when currentUser.uid changes
+  }, [currentUser?.uid]); // Only run when currentUser.uid changes
 
     // Fetch instructors for the current user
   useEffect(() => {

@@ -15,7 +15,7 @@ const MapReadOnly = dynamic(() => import('../../components/MapReadOnly'), {
 })
 
 // Amenities icons mapping
-export const AMENITIES_ICONS = {
+const AMENITIES_ICONS = {
     "AC": <FaSnowflake />,
     "Free Wifi": <FaWifi />,
     "RO Water": <FaTint />,

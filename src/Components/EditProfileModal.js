@@ -43,6 +43,11 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
 
 
   const handleSave = async () => {
+    if (!currentUser) {
+      console.log('No current user, cannot save profile');
+      return;
+    }
+    
     userProfileInfo.DanceStyles = userDanceStyles;
     const data = await saveDocument(COLLECTIONS.USER, currentUser.uid, userProfileInfo);
     if (data) {
@@ -53,6 +58,11 @@ const EditProfileModal = ({ open, onClose, userProfileInfo, setUserProfileInfo }
   };
 
   const handleSavePostOTP = async () => {
+    if (!currentUser) {
+      console.log('No current user, cannot save OTP');
+      return;
+    }
+    
     const docRef = handleSavePostOTPSuccess(COLLECTIONS.USER, currentUser.uid,userProfileInfo.PhoneNumber);
   };
 

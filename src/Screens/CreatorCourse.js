@@ -62,6 +62,11 @@ function CreatorCourse() {
 
   useEffect(() => {
     const getCreatorMode = async (event) => {
+      if (!currentUser) {
+        console.log('No current user, skipping creator mode fetch');
+        return;
+      }
+      
       try {
         const userRef = doc(db, "User", currentUser.uid);
         const userSnap = await getDoc(userRef);

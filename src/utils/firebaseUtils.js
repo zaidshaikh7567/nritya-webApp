@@ -35,7 +35,7 @@ export const setCreatorMode = async (uid) => {
 export const fetchStudioEntities = async (studioId, entityType, setState) => {
   const BASE_URL = BASEURL_PROD;
   try {
-    const url = `${BASE_URL}crud/${studioId}/${entityType}/`;
+    const url = `${BASE_URL}crud/asscoiatedEntities/${studioId}/${entityType}/`;
     console.log(url)
     const response = await fetch(url);
     const data = await response.json();
