@@ -45,6 +45,7 @@ function StudioFullPage({ studioId, initialData = null, isSSR = false }) {
   const [openClasses, setOpenClasses] = useState(initialData?.openClasses || []);
   const [courses, setCourses] = useState(initialData?.courses || []);
   const [carouselLoading, setCarouselLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
   
   // Log SSR data if available
   useEffect(() => {
@@ -124,6 +125,20 @@ function StudioFullPage({ studioId, initialData = null, isSSR = false }) {
       fetchStudioEntities(studioId, COLLECTIONS.COURSES, setCourses),
     ]).finally(() => setIsLoading(false));
   }, [studioId, isSSR, initialData]);
+
+  // Safely read localStorage on client to avoid SSR errors
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const info = JSON.parse(localStorage.getItem('userInfo'));
+        if (info && info.UserId) {
+          setUserId(info.UserId);
+        }
+      }
+    } catch (e) {
+      // ignore malformed localStorage
+    }
+  }, []);
 
   return (
     <Container fluid style={{ backgroundColor: isDarkModeOn ? '#202020' : 'white', color: isDarkModeOn ? 'white' : 'color' }}>
@@ -439,8 +454,8 @@ function StudioFullPage({ studioId, initialData = null, isSSR = false }) {
       <br></br>
       <Row className="justify-content-center">
         <Col xs="auto">
-       { JSON.parse(localStorage.getItem('userInfo')) && JSON.parse(localStorage.getItem('userInfo')).UserId && (
-          <Ratings userID={JSON.parse(localStorage.getItem('userInfo')) ? JSON.parse(localStorage.getItem('userInfo')).UserId : null} studioID={studioId}></Ratings>
+       { userId && (
+          <Ratings userID={userId} studioID={studioId}></Ratings>
         )}
         </Col>
       </Row>

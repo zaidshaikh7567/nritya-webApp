@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import './TableView.css';
 import { Button, Table, Modal, Spinner, Card } from 'react-bootstrap';
 import MUIButton from "@mui/material/Button";
@@ -10,6 +11,7 @@ import { BASEURL_PROD } from '../constants';
 import logo from './../logo.png';
 import { Typography } from '@mui/material';
 import { useSnackbar } from '../context/SnackbarContext';
+import { CircularProgress, Box } from '@mui/material';
 
 
 function processInstructors(instructors) {
@@ -25,6 +27,20 @@ function processInstructors(instructors) {
   }
 }
 
+const LoadingSpinner = () => (
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 2,
+    }}
+  >
+    <CircularProgress />
+    <Typography variant="body1">Booking in progress...</Typography>
+  </Box>
+);
 
 const TableView = ({ studioData, studioId }) => {
   const showSnackbar = useSnackbar();
@@ -95,19 +111,14 @@ const TableView = ({ studioData, studioId }) => {
         <Modal.Body>
         <>
             <div style={{ textAlign: "center" }}>
-              <img
+              <Image
                 src={logo}
                 alt="Nritya Icon"
-                style={{ width: "4rem", borderRadius: "50%" }}
+                style={{ width: "4rem", height: "4rem", borderRadius: "50%" }}
               />
             <hr></hr>
             {loading ? (
-            <>
-              <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-              </Spinner>
-              <p>Booking in progress...</p>
-            </>
+            <LoadingSpinner />
           ) : (
             <>
             <div style={{ textAlign: "center" }}>
