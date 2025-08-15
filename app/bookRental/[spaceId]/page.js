@@ -30,7 +30,7 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-
+import StudioRentalImagesCarousel from './StudioRentalImagesCarousel';
 import { format, addDays, startOfDay } from "date-fns";
 import { BASEURL_PROD } from '../../../src/constants';
 const INT_CHARGE = 0.03;
@@ -109,6 +109,10 @@ export default function BookStudio({ params }) {
 
   const [loading, setLoading] = useState(true);
   const [studioAvailability, setStudioAvailability] = useState([]);
+  
+  // Studio images state
+  const [studioImages, setStudioImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Booking state
   const [bookingStatus, setBookingStatus] = useState('pending');
@@ -354,6 +358,17 @@ export default function BookStudio({ params }) {
             }));
           }
         }
+
+        // Fetch studio images
+        const imagesResponse = await fetch(`${BASEURL_PROD}imagesCrud/studioSpaceRental/${spaceId}/`);
+        if (imagesResponse.ok) {
+          const imagesData = await imagesResponse.json();
+          console.log('Fetched studio images:', imagesData);
+          
+          if (imagesData.image_urls && imagesData.image_urls.length > 0) {
+            setStudioImages(imagesData.image_urls);
+          }
+        }
       } catch (error) {
         console.error('Error fetching studio data:', error);
       } finally {
@@ -484,16 +499,11 @@ export default function BookStudio({ params }) {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ClientHeader />
       <main className='py-1 flex-grow-1' style={{ width: '100%' }}>
-        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+            {/* Studio Images Card */}
+            {studioImages.length > 0 && (
+              <StudioRentalImagesCarousel studioImages={studioImages} />
+            )}
           <Container maxWidth="lg" sx={{ py: 4 }}>
-            {/* Back Button */}
-            <Box sx={{ mb: 3 }}>
-              <Link href="/" style={{ textDecoration: 'none' }}>
-                <Button variant="text" startIcon={<ArrowBack />}>
-                  Back to Studios
-                </Button>
-              </Link>
-            </Box>
 
             {/* Progress Indicator */}
             <Box sx={{ mb: 4 }}>
@@ -914,86 +924,88 @@ export default function BookStudio({ params }) {
 
               {/* Studio Info Sidebar */}
               <Grid item xs={12} lg={4}>
-                <Card>
-                  <Box sx={{ 
-                    height: 200, 
-                    bgcolor: 'grey.300', 
-                    position: 'relative',
-                    borderRadius: '4px 4px 0 0'
-                  }}>
-                    <Chip 
-                      label={studio.type}
-                      sx={{ 
-                        position: 'absolute', 
-                        top: 16, 
-                        left: 16,
-                        bgcolor: 'background.paper'
-                      }}
-                    />
-                  </Box>
-                  
-                  <CardContent>
-                    <Typography variant="h5" sx={{ mb: 1 }}>
-                      {studio.name}
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <LocationOn sx={{ fontSize: 20, color: 'text.secondary' }} />
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {studio.location}
-                      </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {/* Main Studio Card */}
+                  <Card>
+                    <Box sx={{ 
+                      height: 200, 
+                      bgcolor: 'grey.300', 
+                      position: 'relative',
+                      borderRadius: '4px 4px 0 0'
+                    }}>
+                      <Chip 
+                        label={studio.type}
+                        sx={{ 
+                          position: 'absolute', 
+                          top: 16, 
+                          left: 16,
+                          bgcolor: 'background.paper'
+                        }}
+                      />
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-                      <Rating value={studio.rating} readOnly size="small" />
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {studio.rating} ({studio.reviews} reviews)
+                    
+                    <CardContent>
+                      <Typography variant="h5" sx={{ mb: 1 }}>
+                        {studio.name}
                       </Typography>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 'medium' }}>
-                          About this studio
-                        </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <LocationOn sx={{ fontSize: 20, color: 'text.secondary' }} />
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                          {studio.description}
+                          {studio.location}
                         </Typography>
                       </Box>
-                      
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 'medium' }}>
-                          Amenities
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                        <Rating value={studio.rating} readOnly size="small" />
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          {studio.rating} ({studio.reviews} reviews)
                         </Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                          {studio.amenities.map((amenity, index) => (
-                            <Chip 
-                              key={index} 
-                              label={amenity} 
-                              size="small"
-                              variant="outlined"
-                            />
-                          ))}
-                        </Box>
                       </Box>
 
-                      <Divider />
-                      <Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                          <AttachMoney sx={{ color: 'purple', fontSize: 24 }} />
-                          <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'purple', textTransform:'none' }}>
-                            From ₹{studio.basePrice}/hour
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <Box>
+                          <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 'medium' }}>
+                            About this studio
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            {studio.description}
                           </Typography>
                         </Box>
-                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                          Prices may vary by time of day
-                        </Typography>
+                        
+                        <Box>
+                          <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 'medium' }}>
+                            Amenities
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {studio.amenities.map((amenity, index) => (
+                              <Chip 
+                                key={index} 
+                                label={amenity} 
+                                size="small"
+                                variant="outlined"
+                              />
+                            ))}
+                          </Box>
+                        </Box>
+
+                        <Divider />
+                        <Box>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                            <AttachMoney sx={{ color: 'purple', fontSize: 24 }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'purple', textTransform:'none' }}>
+                              From ₹{studio.basePrice}/hour
+                            </Typography>
+                          </Box>
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                            Prices may vary by time of day
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </Box>
               </Grid>
             </Grid>
           </Container>
-        </Box>
       </main>
       <ClientFooter />
     </div>

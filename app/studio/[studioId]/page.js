@@ -3,6 +3,7 @@ import { Button, Skeleton, Stack, Chip, Paper, Grid } from '@mui/material'
 import dynamic from 'next/dynamic'
 import { FaPhoneAlt, FaWhatsapp, FaYoutube, FaFacebook, FaInstagram, FaTwitter, FaSnowflake, FaWifi, FaTint, FaToilet, FaPlug, FaFireExtinguisher, FaFirstAid, FaVideo, FaCreditCard, FaParking, FaMapMarkerAlt } from 'react-icons/fa'
 import { Row, Col } from 'react-bootstrap'
+import { BASEURL_PROD } from '../../../src/constants'
 
 // Dynamic import for MapReadOnly component
 const MapReadOnly = dynamic(() => import('../../components/MapReadOnly'), {
@@ -31,7 +32,6 @@ const AMENITIES_ICONS = {
 // Generate dynamic metadata for studio pages
 export async function generateMetadata({ params }) {
   try {
-    const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
     const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
     const BASEURL_ICON= `${BASEURL_PROD}imagesCrud/studioIcon/`
     
@@ -171,7 +171,6 @@ const TableCarousel = dynamic(() => import('../../components/TableCarousel'), {
 // Server component to fetch studio data
 async function getStudioData(studioId) {
   try {
-    const BASEURL_PROD = "https://nrityaserver-2b241e0a97e5.herokuapp.com/"
     const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`
     
     // Fetch studio text data

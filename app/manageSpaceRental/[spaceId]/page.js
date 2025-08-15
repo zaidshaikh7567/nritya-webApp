@@ -23,13 +23,14 @@ import {
 } from '@mui/material';
 import { 
   Camera, ArrowLeft, Clock, DollarSign, Plus, Trash2, 
-  Copy, Save, Settings, Calendar as CalendarIcon
+  Copy, Save, Settings, Calendar as CalendarIcon, Upload, X
 } from "lucide-react";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format, addDays, isSameDay, startOfDay } from "date-fns";
 import { styled } from '@mui/material/styles';
+import { BASEURL_PROD } from "../../../src/constants";
 const START_HOUR = 8;
 const END_HOUR = 24;
 // Dynamic imports for client components
@@ -85,6 +86,11 @@ export default function ManageAvailability({ params }) {
   const [isSingedIn, setIsSingedIn] = useState(false);
   const [studioExists, setStudioExists] = useState(false);
   const [userInfoFull, setUserInfoFull] = useState(null);
+  
+  // Image upload states
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
   const isDateDisabled = (date) => {
     const today = startOfDay(new Date());
@@ -254,7 +260,7 @@ export default function ManageAvailability({ params }) {
       const endDateStr = format(endDate, 'yyyy-MM-dd');
       
       console.log(`Loading availability for date range: ${startDateStr} to ${endDateStr}`);
-      const BASEURL_PROD = "http://0.0.0.0:8000/";
+      // const BASEURL_PROD = "http://0.0.0.0:8000/";
       const response = await fetch(
         `${BASEURL_PROD}api/crud/studio-availability/${spaceId}/date-range/?start_date=${startDateStr}&end_date=${endDateStr}`
       );
@@ -358,7 +364,7 @@ export default function ManageAvailability({ params }) {
       console.log('Current deletedSlotIds state:', deletedSlotIds);
       
       // Send payload to Django API
-      const BASEURL_PROD = "http://0.0.0.0:8000/";
+      // const BASEURL_PROD = "http://0.0.0.0:8000/";
       const response = await fetch(`${BASEURL_PROD}crud/studio-availability/save/`, {
         method: 'POST',
         headers: {
@@ -413,7 +419,7 @@ export default function ManageAvailability({ params }) {
           console.error('Login required');
         }
         
-        const BASEURL_PROD = "http://0.0.0.0:8000/";
+        // const BASEURL_PROD = "http://0.0.0.0:8000/";
         const BASEURL_STUDIO = `${BASEURL_PROD}api/studio/`;
         
         const response = await fetch(`${BASEURL_STUDIO}${spaceId}/text/`);
@@ -481,7 +487,7 @@ export default function ManageAvailability({ params }) {
       try {
         setLoadingAvailability(true);
         console.log('Loading existing availability for studio:', spaceId);
-        const BASEURL_PROD = "http://0.0.0.0:8000/";
+        // const BASEURL_PROD = "http://0.0.0.0:8000/";
         const response = await fetch(`${BASEURL_PROD}crud/studio-availability/${spaceId}/`);
         
         if (response.ok) {
@@ -582,6 +588,13 @@ export default function ManageAvailability({ params }) {
     loadExistingAvailability();
   }, [spaceId, studioExists, isOwner]);
 
+  // Load existing images when component mounts
+  useEffect(() => {
+    if (spaceId && studioExists && isOwner) {
+      loadExistingImages();
+    }
+  }, [spaceId, studioExists, isOwner]);
+
   // Standalone function to refresh availability data
   const refreshAvailabilityData = async () => {
     if (!spaceId || !studioExists || !isOwner) return;
@@ -589,7 +602,7 @@ export default function ManageAvailability({ params }) {
     try {
       setLoadingAvailability(true);
       console.log('Refreshing availability data for studio:', spaceId);
-      const BASEURL_PROD = "http://0.0.0.0:8000/";
+      // const BASEURL_PROD = "http://0.0.0.0:8000/";
       const response = await fetch(`${BASEURL_PROD}crud/studio-availability/${spaceId}/`);
       
       if (response.ok) {
@@ -696,6 +709,100 @@ export default function ManageAvailability({ params }) {
     }
   };
 
+  // Image upload functions
+  const handleImageUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    setUploadingImages(true);
+    setImageUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append('images', file);
+      });
+      formData.append('entity_id', spaceId);
+
+      const response = await fetch(`${BASEURL_PROD}imagesCrud/studioSpaceRental/`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Image upload result:', result);
+        
+        // Add uploaded images to state
+        const newImages = result.results.map(item => ({
+          name: item.file,
+          url: item.response.file_url,
+          uploadedAt: new Date().toISOString()
+        }));
+        
+        setUploadedImages(prev => [...prev, ...newImages]);
+        setImageUploadProgress(100);
+        
+        // Show success message
+        alert(`Successfully uploaded ${files.length} image(s)!`);
+      } else {
+        const errorData = await response.json();
+        console.error('Image upload failed:', errorData);
+        alert(`Failed to upload images: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert(`Error uploading images: ${error.message}`);
+    } finally {
+      setUploadingImages(false);
+      setImageUploadProgress(0);
+      // Reset file input
+      event.target.value = '';
+    }
+  };
+
+  const loadExistingImages = async () => {
+    if (!spaceId) return;
+    
+    try {
+      const response = await fetch(`${BASEURL_PROD}imagesCrud/studioSpaceRental/${spaceId}/`);
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.image_urls && result.image_urls.length > 0) {
+          const images = result.image_urls.map(url => ({
+            name: url.split('/').pop(),
+            url: url,
+            uploadedAt: new Date().toISOString()
+          }));
+          setUploadedImages(images);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading existing images:', error);
+    }
+  };
+
+  const deleteImage = async (imageName) => {
+    try {
+      const response = await fetch(`${BASEURL_PROD}imagesCrud/studioSpaceRental/${spaceId}/${imageName}/`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setUploadedImages(prev => prev.filter(img => img.name !== imageName));
+        alert('Image deleted successfully!');
+      } else {
+        const errorData = await response.json();
+        console.error('Image deletion failed:', errorData);
+        alert(`Failed to delete image: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert(`Error deleting image: ${error.message}`);
+    }
+  };
+
   // Render different states based on conditions
   const renderContent = () => {
     console.log("isSingedIn", isSingedIn);
@@ -748,7 +855,7 @@ export default function ManageAvailability({ params }) {
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <CalendarIcon size={20} />
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform:'none' }}>
                       Select Date
                     </Typography>
                   </Box>
@@ -786,7 +893,7 @@ export default function ManageAvailability({ params }) {
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <DollarSign size={20} />
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform:'none' }}>
                       Default Pricing
                     </Typography>
                   </Box>
@@ -825,7 +932,7 @@ export default function ManageAvailability({ params }) {
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <Copy size={20} />
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform:'none' }}>
                       Quick Actions
                     </Typography>
                   </Box>
@@ -853,6 +960,128 @@ export default function ManageAvailability({ params }) {
                   </Box>
                 </CardContent>
               </StyledCard>
+
+              {/* Image Upload Section */}
+              <StyledCard>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <Camera size={20} />
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform:'none' }}>
+                      Studio Images
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                    Upload images of your studio space to showcase to potential renters
+                  </Typography>
+                  
+                  {/* Upload Area */}
+                  <Box sx={{ 
+                    border: '2px dashed', 
+                    borderColor: 'divider', 
+                    borderRadius: 2, 
+                    p: 3, 
+                    textAlign: 'center',
+                    mb: 3,
+                    '&:hover': {
+                      borderColor: 'primary.main',
+                      bgcolor: 'action.hover'
+                    }
+                  }}>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      style={{ display: 'none' }}
+                      id="image-upload-input"
+                      disabled={uploadingImages}
+                    />
+                    <label htmlFor="image-upload-input">
+                      <Box sx={{ cursor: uploadingImages ? 'not-allowed' : 'pointer' }}>
+                        <Upload size={32} style={{ color: '#666', margin: '0 auto 8px' }} />
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                          {uploadingImages ? 'Uploading...' : 'Click to upload images'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          PNG, JPG, JPEG up to 10MB each
+                        </Typography>
+                      </Box>
+                    </label>
+                  </Box>
+
+                  {/* Upload Progress */}
+                  {uploadingImages && (
+                    <Box sx={{ mb: 3 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body2">Uploading...</Typography>
+                        <Typography variant="body2">{imageUploadProgress}%</Typography>
+                      </Box>
+                      <Box sx={{ 
+                        width: '100%', 
+                        height: 4, 
+                        bgcolor: 'divider', 
+                        borderRadius: 2,
+                        overflow: 'hidden'
+                      }}>
+                        <Box sx={{ 
+                          width: `${imageUploadProgress}%`, 
+                          height: '100%', 
+                          bgcolor: 'primary.main',
+                          transition: 'width 0.3s ease'
+                        }} />
+                      </Box>
+                    </Box>
+                  )}
+
+                  {/* Uploaded Images Grid */}
+                  {uploadedImages.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 2 }}>
+                        Uploaded Images ({uploadedImages.length})
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {uploadedImages.map((image, index) => (
+                          <Grid item xs={6} sm={4} key={index}>
+                            <Box sx={{ 
+                              position: 'relative',
+                              borderRadius: 2,
+                              overflow: 'hidden',
+                              border: 1,
+                              borderColor: 'divider'
+                            }}>
+                              <img
+                                src={image.url}
+                                alt={image.name}
+                                style={{
+                                  width: '100%',
+                                  height: 120,
+                                  objectFit: 'cover'
+                                }}
+                              />
+                              <IconButton
+                                onClick={() => deleteImage(image.name)}
+                                sx={{
+                                  position: 'absolute',
+                                  top: 4,
+                                  right: 4,
+                                  bgcolor: 'rgba(0,0,0,0.5)',
+                                  color: 'white',
+                                  '&:hover': {
+                                    bgcolor: 'rgba(0,0,0,0.7)'
+                                  }
+                                }}
+                                size="small"
+                              >
+                                <X size={14} />
+                              </IconButton>
+                            </Box>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  )}
+                </CardContent>
+              </StyledCard>
             </Box>
           </Grid>
 
@@ -863,7 +1092,7 @@ export default function ManageAvailability({ params }) {
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                     <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                      <Typography variant="h6" sx={{ fontWeight: 'bold', textTransform:'none' }}>
                         Availability for {format(selectedDate, 'EEEE, MMMM d, yyyy')}
                       </Typography>
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -884,7 +1113,7 @@ export default function ManageAvailability({ params }) {
                   {!currentSchedule.isActive ? (
                     <Box sx={{ textAlign: 'center', py: 6 }}>
                       <Clock size={48} style={{ color: '#666', margin: '0 auto 16px' }} />
-                      <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 }}>
+                      <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 , textTransform:'none'}}>
                         Studio Unavailable
                       </Typography>
                       <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
@@ -963,7 +1192,7 @@ export default function ManageAvailability({ params }) {
               {currentSchedule.isActive && (
                 <StyledCard>
                   <CardContent>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, textTransform:'none' }}>
                       Daily Summary
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
